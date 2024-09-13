@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 public class Client
 {
-    public required string Passport { get; set; }
-    public required string FullName { get; set; }
+    public string Passport { get; set; }
+    public string FullName { get; set; }
     public DateTime BirthDate { get; set; }
+    public Client(string passport, string fullName, DateTime birthDate)
+    {
+        Passport = passport;
+        FullName= fullName;
+        BirthDate = birthDate;
+    }
 }
