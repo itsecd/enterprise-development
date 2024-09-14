@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Query.Impl.Enums
+﻿namespace Query.Impl.Enums
 {
+    /// <summary>
+    /// Собственность учреждения
+    /// </summary>
     public enum InstitutionOwnership
     {
+        /// <summary>
+        /// Муниципальная
+        /// </summary>
+        Municipality = 1,
+
+        /// <summary>
+        /// Частная
+        /// </summary>
+        Personal
     }
 }
