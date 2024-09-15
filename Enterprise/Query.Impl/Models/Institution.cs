@@ -6,7 +6,7 @@ namespace Query.Impl.Models
     /// <summary>
     /// Реализация сущности институт
     /// </summary>
-    public class University: EntityWithName
+    public class Institution: EntityWithName
     {
         #region ctors
         /// <summary>
@@ -19,11 +19,12 @@ namespace Query.Impl.Models
         /// <param name="faculties"></param>
         /// <param name="buildingOwnership"></param>
         /// <param name="institutionOwnership"></param>
-        public University(
+        public Institution(
             string name,
             string registrationNumber,
             string address,
             Rector rector,
+            ICollection<Speciality> specialities,
             ICollection<Faculty> faculties,
             BuildingOwnership buildingOwnership,
             InstitutionOwnership institutionOwnership): base(name)
@@ -35,16 +36,16 @@ namespace Query.Impl.Models
             Faculties = faculties;
             BuildingOwnership = buildingOwnership;
             InstitutionOwnership = institutionOwnership;
-
+            Specialities = specialities;
         }
 
         /// <summary>
         /// ctor
         /// </summary>
-        public University() { }
+        public Institution() { }
         #endregion
 
-        #region Field
+        #region Fields
         /// <summary>
         /// 
         /// </summary>
@@ -64,6 +65,11 @@ namespace Query.Impl.Models
         /// 
         /// </summary>
         public virtual ICollection<Faculty> Faculties { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual ICollection<Speciality> Specialities { get; set; }
 
         /// <summary>
         /// 

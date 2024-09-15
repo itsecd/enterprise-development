@@ -36,6 +36,11 @@ namespace Query.Impl.Models
         /// 
         /// </summary>
         public virtual ICollection<Group> Groups { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual Institution Institution { get; set; }
         #endregion
     }
 }

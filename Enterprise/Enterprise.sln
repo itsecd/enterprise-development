@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Query.Impl", "Query.Impl\Query.Impl.csproj", "{A9893823-5B24-4340-8AD0-E07F3496E949}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Query.Impl", "Query.Impl\Query.Impl.csproj", "{A9893823-5B24-4340-8AD0-E07F3496E949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueriesClassLibraryTests", "QueriesClassLibraryTests\QueriesClassLibraryTests.csproj", "{6C1890AB-18FE-4325-A35E-6483499D0944}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueriesClassLibraryTests", "QueriesClassLibraryTests\QueriesClassLibraryTests.csproj", "{6C1890AB-18FE-4325-A35E-6483499D0944}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,11 +12,11 @@ namespace Query.Impl.Models
         /// ctor
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="university"></param>
+        /// <param name="institution"></param>
         /// <param name="departments"></param>
-        public Faculty(string name, University university, ICollection<Department> departments) : base(name) 
+        public Faculty(string name, Institution institution, ICollection<Department> departments) : base(name) 
         {
-            University = university;
+            Institution = institution;
             Departments = departments;
         }
 
@@ -30,7 +30,7 @@ namespace Query.Impl.Models
         /// <summary>
         /// 
         /// </summary>
-        public virtual University University { get; set; }
+        public virtual Institution Institution { get; set; }
 
         /// <summary>
         /// 

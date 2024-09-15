@@ -1,10 +1,10 @@
-namespace QueriesClassLibraryTests
+п»їnamespace QueriesClassLibraryTests
 {
     /// <summary>
-    /// тесты для проверки запросов о факультетах
+    /// С‚РµСЃС‚С‹ РґР»СЏ РїСЂРѕРІРµСЂРєРё Р·Р°РїСЂРѕСЃРѕРІ РѕР± РёРЅСЃС‚РёС‚СѓС‚Р°С…
     /// </summary>
     [TestFixture]
-    public class FacultyQueriesTests
+    public class InstitutionQueriesTests
     {
         [SetUp]
         public void Setup()
