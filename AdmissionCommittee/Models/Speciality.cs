@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdmissionCommittee.Models
+﻿namespace AdmissionCommittee.Domain.Models
 {
     public class Speciality
     {
-        public int Id { get; set; }
-        public string Number { get; set; }
-        public string Name { get; set; }
-        public string Facility { get; set; }
+        public required int Id { get; set; }
+        public required string Number { get; set; }
+        public required string Name { get; set; }
+        public required string Facility { get; set; }
     }
 }
