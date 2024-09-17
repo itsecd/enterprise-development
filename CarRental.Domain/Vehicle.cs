@@ -1,5 +1,4 @@
-﻿
-namespace CarRental.Domain;
+﻿namespace CarRental.Domain;
 
 /// <summary>
 /// Реализация транспортного средства

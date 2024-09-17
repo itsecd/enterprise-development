@@ -1,4 +1,5 @@
 ﻿namespace CarRental.Domain;
+
 /// <summary>
 /// Реализация клиента проката
 /// </summary>
