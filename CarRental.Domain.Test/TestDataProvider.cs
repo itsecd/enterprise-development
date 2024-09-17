@@ -4,23 +4,23 @@ public class TestDataProvider
 {
     public List<Vehicle> vehicles = new List<Vehicle>
     {
-        new("Number 1", "Model 1", "Color 1"),
-        new("Number 2", "Model 2", "Color 2"),
-        new("Number 3", "Model 3", "Color 3"),
-        new("Number 4", "Model 4", "Color 4"),
-        new("Number 5", "Model 5", "Color 5"),
-        new("Number 6", "Model 6", "Color 6"),
-        new("Number 7", "Model 7", "Color 7")
+        new( "Number 1", "Model 1", "Color 1" ),
+        new( "Number 2", "Model 2", "Color 2" ),
+        new( "Number 3", "Model 3", "Color 3" ),
+        new( "Number 4", "Model 4", "Color 4" ),
+        new( "Number 5", "Model 5", "Color 5" ),
+        new( "Number 6", "Model 6", "Color 6" ),
+        new( "Number 7", "Model 7", "Color 7" )
     };
 
     public List<RentalPoint> rentalPoints = new List<RentalPoint>
     {
-        new("Name 1", "Address 1"),
-        new("Name 2", "Address 2"),
-        new("Name 3", "Address 3"),
-        new("Name 4", "Address 4"),
-        new("Name 5", "Address 5"),
-        new("Name 6", "Address 6")
+        new( "Name 1", "Address 1" ),
+        new( "Name 2", "Address 2" ),
+        new( "Name 3", "Address 3" ),
+        new( "Name 4", "Address 4" ),
+        new( "Name 5", "Address 5" ),
+        new( "Name 6", "Address 6" )
     };
 
     public List<RentalClient> clients = new List<RentalClient>
