@@ -28,10 +28,10 @@ namespace AdmissionCommittee.Tests.Tests
         [Fact]
         public void TestSelectOlderAbiturients()
         {
-            var query = _fixture.Abiturients.Where(a => a.BirthdayDate.AddYears(20) < DateTime.Now).Select(a => a.Id).ToList();
+            var query = _fixture.Abiturients.Where(a => a.BirthdayDate.AddYears(20) < DateTime.Now).OrderBy(a => a.Name).Select(a => a.Name).ToList();
 
             Assert.Equivalent(5, query.Count());
-            Assert.Equal(new List<int> { 1, 3, 4, 5, 8 }, query);
+            Assert.Equal(new List<string> { "Anna", "Dmitry", "Mikhail", "Olga", "Pasha" }, query);
         }
 
         /// <summary>
