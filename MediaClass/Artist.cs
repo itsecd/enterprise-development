@@ -1,5 +1,4 @@
-namespace MediaClass
-{
+﻿namespace MediaClass {
     /// <summary>
     /// class Artist
     /// 
@@ -8,10 +7,18 @@ namespace MediaClass
     /// - name
     /// - description
     /// </summary>
-    public class Artist
-    {
-        public int? _id { get; set; }
-        public string? _name { get; set; }
-        public string? _description { get; set; }
+    public class Artist {
+        public int ? Id {
+            get;
+            set;
+        }
+        public string ? Name {
+            get;
+            set;
+        }
+        public string ? Description {
+            get;
+            set;
+        }
     }
 }

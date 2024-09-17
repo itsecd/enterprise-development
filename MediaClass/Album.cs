@@ -1,5 +1,4 @@
-namespace MediaClass
-{
+﻿namespace MediaClass {
     /// <summary>
     /// class Album
     /// 
@@ -8,10 +7,18 @@ namespace MediaClass
     /// - title
     /// - release: date of release
     /// </summary>
-    public class Album
-    {
-        public int? _id { get; set; }
-        public string? _title { get; set; }
-        public DateTime? _release { get; set; }
+    public class Album {
+        public int ? Id {
+            get;
+            set;
+        }
+        public string ? Title {
+            get;
+            set;
+        }
+        public DateTime ? Release {
+            get;
+            set;
+        }
     }
 }

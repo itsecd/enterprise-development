@@ -1,5 +1,4 @@
-namespace MediaClass
-{
+﻿namespace MediaClass {
     /// <summary>
     /// class Track
     /// 
@@ -8,14 +7,28 @@ namespace MediaClass
     /// - trackNum: number of track
     /// - title
     /// - duration
-    /// - idAlbum: external key of album
+    /// - idAlbum: identification of album
     /// </summary>
-    public class Track
-    {
-        public int? _id { get; set; }
-        public int? _trackNum { get; set; }
-        public string? _title { get; set; }
-        public int? _duration { get; set; }
-        public int? _idAlbum { get; set; }
+    public class Track {
+        public int ? Id {
+            get;
+            set;
+        }
+        public int ? TrackNum {
+            get;
+            set;
+        }
+        public string ? Title {
+            get;
+            set;
+        }
+        public int ? Duration {
+            get;
+            set;
+        }
+        public int ? IdAlbum {
+            get;
+            set;
+        }
     }
 }
