@@ -11,8 +11,8 @@
 /// <param name="rentalTimeReturn">Время, когда был возвращен автомобиль</param>
 /// <param name="rentalPointReturnTo">Пункт, в который был возвращен автомобиль</param>
 public class CarOnRent(Vehicle vehicle, RentalClient client, RentalPoint rentalPointGetFrom,
-        DateTime rentalTimeGet, TimeSpan rentalDuration,
-        DateTime? rentalTimeReturn = null, RentalPoint? rentalPointReturnTo = null)
+    DateTime rentalTimeGet, TimeSpan rentalDuration,
+    DateTime? rentalTimeReturn = null, RentalPoint? rentalPointReturnTo = null)
 {
     public Vehicle? Vehicle { get; set; } = vehicle;
     public RentalClient? Client { get; set; } = client;
