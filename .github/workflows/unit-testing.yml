@@ -20,8 +20,8 @@ jobs:
     env:
       Solution_Name: CarRentalService.sln                         
       Test_Project_Path: CarRental.Domain.Test\CarRental.Domain.Test.csproj             
-      Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      Wap_Project_Directory:  N/A
+      Wap_Project_Path: N/A
 
     steps:
     - name: Checkout
