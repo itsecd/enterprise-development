@@ -1,32 +1,30 @@
-﻿using MediaClass;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediaClasses;
 
-namespace MediaLibrary.Tests {
+namespace MediaLibrary.Tests;
+
+/// <summary>
+/// Данные для тестов медиатеки
+/// </summary>
+public class TestData
+{
     /// <summary>
-    /// class TestData
-    /// contains lists of class instances of Artists, Albums, Tracks, Genres
-    /// and its getters and setters
+    /// Список музыкальных исполнителей
     /// </summary>
-    public class TestData {
-        public List < Artist > ? Artists {
-            get;
-            set;
-        }
-        public List < Album > ? Albums {
-            get;
-            set;
-        }
-        public List < Track > ? Tracks {
-            get;
-            set;
-        }
-        public List < Genre > ? Genres {
-            get;
-            set;
-        }
-    }
+    public List<Artist>? Artists { get; set; }
+    /// <summary>
+    /// Список музыкальных альбомов
+    /// </summary>
+    public List<Album>? Albums { get; set; }
+    /// <summary>
+    /// Список музыкальных треков
+    /// </summary>
+    public List<Track>? Tracks { get; set; }
+    /// <summary>
+    /// Список жанров музыки
+    /// </summary>
+    public List<Genre>? Genres { get; set; }
+    /// <summary>
+    /// Список связей артист и жанр музыки
+    /// </summary>
+    public List<ParticipationArtistGenre>? ParticipationArtistGenre { get; set; }
 }
