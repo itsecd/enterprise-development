@@ -1,32 +1,31 @@
-﻿namespace AdmissionCommittee.Domain.Models
+﻿namespace AdmissionCommittee.Domain.Models;
+
+/// <summary>
+/// Represents an application submitted by an abiturient for a specific speciality.
+/// </summary>
+public class Application
 {
     /// <summary>
-    /// Represents an application submitted by an abiturient for a specific speciality.
+    /// Unique identifier of the application.
     /// </summary>
-    public class Application
-    {
-        /// <summary>
-        /// Unique identifier of the application.
-        /// </summary>
-        /// <example>101</example>
-        public required int Id { get; set; }
+    /// <example>101</example>
+    public required int Id { get; set; }
 
-        /// <summary>
-        /// Identifier of the speciality that the abiturient is applying for.
-        /// </summary>
-        /// <example>5001</example>
-        public required int SpecialityId { get; set; }
+    /// <summary>
+    /// Identifier of the speciality that the abiturient is applying for.
+    /// </summary>
+    /// <example>5001</example>
+    public required int SpecialityId { get; set; }
 
-        /// <summary>
-        /// Identifier of the abiturient who submitted the application.
-        /// </summary>
-        /// <example>1</example>
-        public required int AbiturientId { get; set; }
+    /// <summary>
+    /// Identifier of the abiturient who submitted the application.
+    /// </summary>
+    /// <example>1</example>
+    public required int AbiturientId { get; set; }
 
-        /// <summary>
-        /// Priority of the application. Lower values indicate higher priority.
-        /// </summary>
-        /// <example>1</example>
-        public required int Priority { get; set; }
-    }
+    /// <summary>
+    /// Priority of the application. Lower values indicate higher priority.
+    /// </summary>
+    /// <example>1</example>
+    public required int Priority { get; set; }
 }
