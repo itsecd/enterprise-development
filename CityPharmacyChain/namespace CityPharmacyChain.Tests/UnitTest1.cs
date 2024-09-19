@@ -1,4 +1,4 @@
-namespace namespace_CityPharmacyChain.Tests
+namespace CityPharmacyChain.Tests
 {
     public class UnitTest1
     {

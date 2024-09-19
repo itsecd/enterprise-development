@@ -8,5 +8,4 @@ public class Pharmacy(int number, string name, long phoneNumber, string address,
     public string Address { get; set; } = address;
     public string DirectorFullName { get; set; } = directorFullName;
     public List<Product> Products { get; set; } = [];
-    public Dictionary<long, PriceListEntry> PriceList { get; set; } = [];
 }

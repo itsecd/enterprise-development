@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain", "CityPh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Domain", "CityPharmacyChainLibrary\CityPharmacyChain.Domain.csproj", "{DF803A53-A8A6-4062-A5A7-9A477EED93E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "namespace CityPharmacyChain.Tests", "namespace CityPharmacyChain.Tests\namespace CityPharmacyChain.Tests.csproj", "{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Tests", "namespace CityPharmacyChain.Tests\CityPharmacyChain.Tests.csproj", "{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
