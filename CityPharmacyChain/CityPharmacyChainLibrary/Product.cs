@@ -1,10 +1,10 @@
 ﻿namespace CityPharmacyChain.Domain;
 
-public class Product(int code, int count, string name, string productGroup, List<string> pharmaceuticalGroup)
+public class Product(int productCode, int number, int count, string name, string productGroup)
 {
-    public int Code { get; set; } = code;
+    public int ProductCode { get; set; } = productCode;
+    public int PharmacyNumber { get; set; } = number;
     public int Count { get; set; } = count;
     public string Name { get; set; } = name;
     public string ProductGroup { get; set; } = productGroup;
-    public List<string> PharmaceuticalGroup { get; set; } = pharmaceuticalGroup;
 }
