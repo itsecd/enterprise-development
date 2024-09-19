@@ -115,23 +115,24 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
             ExamName = g.Key,
             MaxScore = g.Max(er => er.Result)
         });
-        var query = maxScoreByExam.Join(_fixture.ExamResults, maxScore => maxScore.MaxScore, er => er.Result, (maxScore, er) => new
+
+        var maxScoreByExamWithAbiturientId = maxScoreByExam.Join(_fixture.ExamResults, maxScore => maxScore.MaxScore, er => er.Result,
+        (maxScore, er) => new { maxScore, er }).Where(joined => joined.maxScore.ExamName == joined.er.ExamName);
+
+        var maxScoreWithExamAndAbiturientInfo = maxScoreByExamWithAbiturientId.Join(_fixture.Abiturients, ms => ms.er.AbiturientId, ab => ab.Id,
+        (ms, ab) => new { ms, ab });
+
+        var topRatedAbiturientsSpecialities = maxScoreWithExamAndAbiturientInfo.Join(_fixture.Applications, ms => ms.ab.Id, ap => ap.AbiturientId,
+        (ms, ap) => new
         {
-            maxScore,
-            er
-        }).Where(joined => joined.maxScore.ExamName == joined.er.ExamName)
-        .Join(_fixture.Abiturients, joined => joined.er.AbiturientId, ab => ab.Id, (joined, ab) => new
-        {
-            joined,
-            ab
-        }).Join(_fixture.Applications, abJoined => abJoined.ab.Id, ap => ap.AbiturientId, (abJoined, ap) => new
-        {
-            Abiturient = abJoined.ab,
+            Abiturient = ms.ab,
             SpecialityId = ap.SpecialityId,
-            ExamName = abJoined.joined.er.ExamName,
-            MaxScore = abJoined.joined.er.Result,
+            ExamName = ms.ms.er.ExamName,
+            MaxScore = ms.ms.er.Result,
             Priority = ap.Priority
-        }).Where(q => q.Priority == 1).Select(q => q).ToList();
+        });
+
+        var query = topRatedAbiturientsSpecialities.Where(sp => sp.Priority == 1).Select(sp => sp).ToList();
 
         Assert.Equivalent(9, query.Count);
         Assert.Equal(["Anna", "Natalia", "Anna", "Olga", "Anna", "Natalia", "Ivan", "Ivan", "Dmitry"], query.Select(q => q.Abiturient.Name).ToList());
