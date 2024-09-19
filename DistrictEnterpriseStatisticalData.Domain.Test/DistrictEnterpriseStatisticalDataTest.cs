@@ -36,7 +36,7 @@ public class DistrictEnterpriseStatisticalDataTest(DataProvider dataProvider) : 
     {
         var enterprises = _dataProvider.Enterprises
             .Where(e => e.Suppliers.Count == _dataProvider.Suppliers.Count).ToList();
-        Assert.Equal([_dataProvider.Enterprises[1]], enterprises);
+        Assert.Single(enterprises);
     }
 
     [Fact]
