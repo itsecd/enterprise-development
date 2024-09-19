@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaLibrary", "MediaLibrary\MediaLibrary.csproj", "{E20E271E-4EB8-4911-BBA8-622C6F311800}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaLibraryMain", "MediaLibrary\MediaLibraryMain.csproj", "{E20E271E-4EB8-4911-BBA8-622C6F311800}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaClasses", "MediaClasses\MediaClasses.csproj", "{B5BF75AD-323A-42C5-803A-F12C4911F585}"
 EndProject
