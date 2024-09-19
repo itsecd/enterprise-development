@@ -6,13 +6,18 @@ name: build and test
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - 'main'
+    paths:
+      - 'CarRental.Domain/**'
+      - 'CarRental.Domain.Test/**'
 
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
