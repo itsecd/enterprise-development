@@ -1,0 +1,32 @@
+name: .NET Unit Tests
+
+on:
+  push:
+    branches:
+      - main   # Запускать тесты при пуше в ветку main
+  pull_request:
+    branches:
+      - main   # Запускать тесты при создании pull request в ветку main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest  # Выбор среды для выполнения (можно использовать также Windows или MacOS)
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Получение исходного кода из репозитория
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'  # Укажите версию .NET, которая используется в вашем проекте
+
+    - name: Restore dependencies
+      run: dotnet restore  # Восстановление зависимостей
+
+    - name: Build project
+      run: dotnet build --configuration Release --no-restore  # Сборка проекта
+
+    - name: Run tests
+      run: dotnet test MediaLibrary.Tests\MediaLibrary.Tests.csproj --no-restore --verbosity normal  # Запуск юнит-тестов
