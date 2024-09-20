@@ -5,8 +5,8 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetInfoAboutVehicleById()
     {
-        int vehicleId = 1;
-        Vehicle? vehicle = testDataProvider.Vehicles.FirstOrDefault(v => v.Id == vehicleId);
+        const int vehicleId = 1;
+        var vehicle = testDataProvider.Vehicles.FirstOrDefault(v => v.Id == vehicleId);
 
         Assert.NotNull(vehicle);
         Assert.Equal(vehicleId, vehicle.Id);
@@ -19,10 +19,10 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetDriversByPeriod()
     {
-        DateTime startDate = new DateTime(2024, 9, 20, 10, 0, 0);
-        DateTime endDate = new DateTime(2024, 9, 20, 19, 0, 0);
+        var startDate = new DateTime(2024, 9, 20, 10, 0, 0);
+        var endDate = new DateTime(2024, 9, 20, 19, 0, 0);
 
-        List<Driver> drivers = testDataProvider.RouteAssignments
+        var drivers = testDataProvider.RouteAssignments
             .Where(ra => startDate <= ra.StartTime && ra.EndTime <= endDate)
             .Select(ra => ra.Driver)
             .Distinct()
@@ -39,7 +39,7 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetTotalTripTimeByVehicleType()
     {
-        Dictionary<VehicleType, double> tripDurationsForVehicleType = testDataProvider.RouteAssignments
+        var tripDurationsForVehicleType = testDataProvider.RouteAssignments
             .GroupBy(ra => new { ra.Vehicle.VehicleType })
             .ToDictionary
             (
@@ -55,7 +55,7 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetTotalTripTimeByVehicleModel()
     {
-        Dictionary<int, double> tripDurationsForVehicleModel = testDataProvider.RouteAssignments
+        var tripDurationsForVehicleModel = testDataProvider.RouteAssignments
             .GroupBy(ra => new { ra.Vehicle.VehicleModel.Id })
             .ToDictionary
             (
@@ -112,10 +112,10 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetVehiclesWithMaxTripsForPeriod()
     {
-        DateTime startDate = new DateTime(2024, 9, 19, 00, 0, 0);
-        DateTime endDate = new DateTime(2024, 9, 22, 00, 0, 0);
+        var startDate = new DateTime(2024, 9, 19, 00, 0, 0);
+        var endDate = new DateTime(2024, 9, 22, 00, 0, 0);
 
-        int maxTripCount = testDataProvider.RouteAssignments.Where(ra => ra.StartTime >= startDate && ra.EndTime <= endDate)
+        var maxTripCount = testDataProvider.RouteAssignments.Where(ra => ra.StartTime >= startDate && ra.EndTime <= endDate)
             .GroupBy(ra => ra.Vehicle)
             .Select(group => group.Count())
             .Max();
