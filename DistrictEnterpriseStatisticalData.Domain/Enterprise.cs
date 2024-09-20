@@ -49,6 +49,11 @@ public class Enterprise
     ///     Поставщики
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = [];
+
+    /// <summary>
+    ///     Поставки
+    /// </summary>
+    public List<Supply> Supplies { get; set; } = [];
 }
 
 /// <summary>
