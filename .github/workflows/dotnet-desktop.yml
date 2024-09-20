@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      Solution_Name: CityPharmacyChain                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: CityPharmacyChain/CityPharmacyChain.Tests                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Solution_Name: ./CityPharmacyChain/CityPharmacyChain.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Test_Project_Path: ./CityPharmacyChain/CityPharmacyChain.Tests                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       
     steps:
     - name: Checkout
