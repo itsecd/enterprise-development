@@ -1,5 +1,7 @@
 ﻿using CityPharmacyChain.Tests;
 using CityPharmacyChain.Domain;
+using System.Security.Cryptography;
+using Xunit;
 
 namespace CityPharmacyChain
 {
@@ -9,25 +11,29 @@ namespace CityPharmacyChain
         {
             var _fixture = new PharmacyChainFixture();
 
-            var maxProductSales =
+            var tmpPharmaciesWithMinProductPrice =
                 from pharmacy in _fixture.PharmacyList
                 join priceListEntry in _fixture.PriceList on pharmacy.PharmacyNumber equals priceListEntry.PharmacyNumber
-                join product in _fixture.ProductList on priceListEntry.PharmacyNumber equals product.PharmacyNumber
-                where product.Name == "Левомеколь" && (priceListEntry.SaleDate > DateTime.Parse("2024-08-15") && priceListEntry.SaleDate < DateTime.Parse("2024-09-20"))
-                group product by new { pharmacy.Name, product.Count } into result
+                join product in _fixture.ProductList on priceListEntry.ProductCode equals product.ProductCode
+                where product.Name == "Левомеколь"
+                group priceListEntry by priceListEntry.PharmacyNumber into result
                 select new
                 {
-                    result.Key.Name,
-                    SaleCount = result.Count(),
-                    SaleVolume = result.Sum(p => p.Count),
+                    PharmacyNumber = result.Key,
+                    SoldVolume = result.Min(p => p.Price),
                 };
-            maxProductSales =
-                (from maxProductSale in maxProductSales
-                 orderby maxProductSale.SaleCount, maxProductSale.SaleVolume descending
-                 select maxProductSale).Take(5);
-            foreach (var product in maxProductSales)
+            var pharmaciesWithMinProductPrice =
+                 from entry in tmpPharmaciesWithMinProductPrice
+                 join pharmacy in _fixture.PharmacyList on entry.PharmacyNumber equals pharmacy.PharmacyNumber
+                 let min = tmpPharmaciesWithMinProductPrice.Min(p => p.SoldVolume)
+                 where entry.SoldVolume < min + 0.01 && entry.SoldVolume > min - 0.01
+                 select new
+                 {
+                     pharmacy.Name,
+                 };
+            foreach (var product in pharmaciesWithMinProductPrice)
             {
-                Console.WriteLine($"{product.Name} {product.SaleCount} {product.SaleVolume}");
+                Console.WriteLine($"{product.Name}");
             }
         }
     }
