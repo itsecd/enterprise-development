@@ -37,37 +37,21 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     }
 
     [Fact]
-    public void GetTotalTripTimeByVehicleType()
+    public void GetTotalTripTimeByVehicleTypeAndModel()
     {
-        var tripDurationsForVehicleType = testDataProvider.RouteAssignments
-            .GroupBy(ra => new { ra.Vehicle.VehicleType })
+        var tripDurationsForVehicleTypeAndModel = testDataProvider.RouteAssignments
+            .GroupBy(ra => new { ra.Vehicle.VehicleType, ra.Vehicle.VehicleModel.Id })
             .ToDictionary
             (
-                group => group.Key.VehicleType,
+                group => new { group.Key.VehicleType, group.Key.Id },
                 group => group.Sum(ra => (ra.EndTime - ra.StartTime).TotalHours)
             );
 
-        Assert.Equal(6, tripDurationsForVehicleType[VehicleType.Bus]);
-        Assert.Equal(1, tripDurationsForVehicleType[VehicleType.Trolley]);
-        Assert.Equal(2, tripDurationsForVehicleType[VehicleType.Tram]);
-    }
-
-    [Fact]
-    public void GetTotalTripTimeByVehicleModel()
-    {
-        var tripDurationsForVehicleModel = testDataProvider.RouteAssignments
-            .GroupBy(ra => new { ra.Vehicle.VehicleModel.Id })
-            .ToDictionary
-            (
-                group => group.Key.Id,
-                group => group.Sum(ra => (ra.EndTime - ra.StartTime).TotalHours)
-            );
-
-        Assert.Equal(1, tripDurationsForVehicleModel[1]);
-        Assert.Equal(1, tripDurationsForVehicleModel[2]);
-        Assert.Equal(2, tripDurationsForVehicleModel[3]);
-        Assert.Equal(3, tripDurationsForVehicleModel[4]);
-        Assert.Equal(2, tripDurationsForVehicleModel[5]);
+        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Bus, Id = 1 }]);
+        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Trolley, Id = 2 }]);
+        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Bus, Id = 3 }]);
+        Assert.Equal(3, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Bus, Id = 4 }]);
+        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Tram, Id = 5 }]);
     }
 
     [Fact]
