@@ -1,7 +1,4 @@
-﻿using CityPharmacyChain.Tests;
-using CityPharmacyChain.Domain;
-namespace CityPharmacyChain;
-
+﻿namespace CityPharmacyChain;
 
 internal class Program
 {
