@@ -1,5 +1,3 @@
-using CityPharmacyChain.Domain;
-
 namespace CityPharmacyChain.Tests
 {
     public class PharmacyChainTest(PharmacyChainFixture fixture): IClassFixture<PharmacyChainFixture>
