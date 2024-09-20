@@ -11,7 +11,7 @@ public class RouteAssignment
     public required int Id { get; set; }
 
     /// <summary>
-    /// Транспротное средство
+    /// Транспортное средство
     /// </summary>
     public required Vehicle Vehicle { get; set; }
 
