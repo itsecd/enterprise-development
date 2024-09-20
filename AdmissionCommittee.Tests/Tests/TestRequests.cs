@@ -82,45 +82,45 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     public void TestFirstPrioritySpecialitiesByAbiturientsAmount()
     {
         var query1 = _fixture.Applications
-            .Where(a => a.SpecialityId == 0 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 0, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query2 = _fixture.Applications
-            .Where(a => a.SpecialityId == 1 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 1, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query3 = _fixture.Applications
-            .Where(a => a.SpecialityId == 2 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 2, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query4 = _fixture.Applications
-            .Where(a => a.SpecialityId == 3 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 3, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query5 = _fixture.Applications
-            .Where(a => a.SpecialityId == 4 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 4, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query6 = _fixture.Applications
-            .Where(a => a.SpecialityId == 5 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 5, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query7 = _fixture.Applications
-            .Where(a => a.SpecialityId == 6 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 6, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query8 = _fixture.Applications
-            .Where(a => a.SpecialityId == 7 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 7, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query9 = _fixture.Applications
-            .Where(a => a.SpecialityId == 8 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 8, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
         var query10 = _fixture.Applications
-            .Where(a => a.SpecialityId == 9 && a.Priority == 1)
+            .Where(a => a is { SpecialityId: 9, Priority: 1 })
             .ToList()
-            .Count();
+            .Count;
 
         Assert.Equivalent(2, query1);
         Assert.Equivalent(1, query2);

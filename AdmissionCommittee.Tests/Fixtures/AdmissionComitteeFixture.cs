@@ -4,8 +4,8 @@ namespace AdmissionCommittee.Tests.Fixtures;
 
 public class AdmissionComitteeFixture
 {
-    public List<Application> Applications = new()
-    {
+    public List<Application> Applications =
+    [
         new() { Id = 0, AbiturientId = 0, SpecialityId = 0, Priority = 1 },
         new() { Id = 1, AbiturientId = 0, SpecialityId = 1, Priority = 2 },
         new() { Id = 2, AbiturientId = 0, SpecialityId = 2, Priority = 3 },
@@ -26,10 +26,10 @@ public class AdmissionComitteeFixture
         new() { Id = 17, AbiturientId = 8, SpecialityId = 7, Priority = 1 },
         new() { Id = 18, AbiturientId = 8, SpecialityId = 8, Priority = 2 },
         new() { Id = 19, AbiturientId = 9, SpecialityId = 9, Priority = 1 }
-    };
+    ];
 
-    public List<Abiturient> Abiturients = new()
-    {
+    public List<Abiturient> Abiturients =
+    [
         new() { Id = 0, BirthdayDate = new DateTime(2005, 5, 18), City = "Moscow", Country = "Russia", Name = "Ivan" },
         new() { Id = 1, BirthdayDate = new DateTime(2003, 6, 11), City = "Samara", Country = "Russia", Name = "Pasha" },
         new() { Id = 2, BirthdayDate = new DateTime(2004, 11, 8), City = "Rostov", Country = "Russia", Name = "Roma" },
@@ -40,10 +40,10 @@ public class AdmissionComitteeFixture
         new() { Id = 7, BirthdayDate = new DateTime(2005, 8, 1), City = "Nizhny Novgorod", Country = "Russia", Name = "Natalia" },
         new() { Id = 8, BirthdayDate = new DateTime(2003, 9, 7), City = "Chelyabinsk", Country = "Russia", Name = "Mikhail" },
         new() { Id = 9, BirthdayDate = new DateTime(2004, 11, 16), City = "Omsk", Country = "Russia", Name = "Ivan" }
-    };
+    ];
 
-    public List<ExamResult> ExamResults = new()
-    {
+    public List<ExamResult> ExamResults =
+    [
         new() { Id = 0, AbiturientId = 0, ExamName = "Mathematics", Result = 82 },
         new() { Id = 1, AbiturientId = 0, ExamName = "Physics", Result = 75 },
         new() { Id = 2, AbiturientId = 0, ExamName = "Computer Science", Result = 90 },
@@ -74,10 +74,10 @@ public class AdmissionComitteeFixture
         new() { Id = 27, AbiturientId = 9, ExamName = "History", Result = 92 },
         new() { Id = 28, AbiturientId = 9, ExamName = "Geography", Result = 88 },
         new() { Id = 29, AbiturientId = 9, ExamName = "Physics", Result = 85 }
-    };
+    ];
 
-    public List<Speciality> Specialities = new()
-    {
+    public List<Speciality> Specialities =
+    [
         new() { Id = 0, Number = "105003D", Name = "Cyber Security", Facility = "Informatics" },
         new() { Id = 1, Number = "205004A", Name = "Mechanical Engineering", Facility = "Engineering" },
         new() { Id = 2, Number = "305005B", Name = "Business Administration", Facility = "Business" },
@@ -88,5 +88,5 @@ public class AdmissionComitteeFixture
         new() { Id = 7, Number = "805010G", Name = "Medicine", Facility = "Medical School" },
         new() { Id = 8, Number = "905011H", Name = "Environmental Studies", Facility = "Environmental Sciences" },
         new() { Id = 9, Number = "1005012I", Name = "Philosophy", Facility = "Humanities" }
-    };
+    ];
 }
