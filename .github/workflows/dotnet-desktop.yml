@@ -28,5 +28,5 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test ./CityPharmacyChain.Tests/CityPharmacyChain.Tests.csproj --no-build --verbosity normal
+      run: dotnet test ./CityPharmacyChain.Tests/CityPharmacyChain.Tests.csproj --configuration Release --verbosity normal
       
