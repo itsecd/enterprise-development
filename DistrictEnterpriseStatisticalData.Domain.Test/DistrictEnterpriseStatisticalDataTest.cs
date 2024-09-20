@@ -32,11 +32,15 @@ public class DistrictEnterpriseStatisticalDataTest(DataProvider dataProvider) : 
     }
 
     [Fact]
-    public void ReturnEnterpriseWithAllSuppliers()
+    public void ReturnEnterprisesCountForEachSupplier()
     {
-        var enterprises = _dataProvider.Enterprises
-            .Where(e => e.Suppliers.Count == _dataProvider.Suppliers.Count).ToList();
-        Assert.Single(enterprises);
+        var suppliers = _dataProvider.Suppliers;
+        
+        Assert.Equal(2, suppliers[0].Enterprises.Count);
+        Assert.Equal(3, suppliers[1].Enterprises.Count);
+        Assert.Equal(3, suppliers[2].Enterprises.Count);
+        Assert.Equal(2, suppliers[3].Enterprises.Count);
+        Assert.Equal(3, suppliers[4].Enterprises.Count);
     }
 
     [Fact]
