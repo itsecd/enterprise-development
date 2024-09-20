@@ -5,9 +5,9 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain", "CityPharmacyChain\CityPharmacyChain.csproj", "{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Domain", "CityPharmacyChainLibrary\CityPharmacyChain.Domain.csproj", "{DF803A53-A8A6-4062-A5A7-9A477EED93E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Domain", "CityPharmacyChain.Domain\CityPharmacyChain.Domain.csproj", "{32C9244D-3257-46D6-98B2-9BE2538E5AD1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Tests", "namespace CityPharmacyChain.Tests\CityPharmacyChain.Tests.csproj", "{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Tests", "CityPharmacyChain.Tests\CityPharmacyChain.Tests.csproj", "{F5B15FBF-DB14-4E80-9955-74D599B39262}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF803A53-A8A6-4062-A5A7-9A477EED93E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF803A53-A8A6-4062-A5A7-9A477EED93E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF803A53-A8A6-4062-A5A7-9A477EED93E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF803A53-A8A6-4062-A5A7-9A477EED93E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FD5FC8F-C4A0-42CE-BE5A-C4FAAF88177A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5B15FBF-DB14-4E80-9955-74D599B39262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B15FBF-DB14-4E80-9955-74D599B39262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B15FBF-DB14-4E80-9955-74D599B39262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B15FBF-DB14-4E80-9955-74D599B39262}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
