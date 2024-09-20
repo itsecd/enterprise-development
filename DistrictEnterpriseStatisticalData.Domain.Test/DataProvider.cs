@@ -18,7 +18,8 @@ public class DataProvider
 
     public List<Enterprise> Enterprises =
     [
-        new() {
+        new()
+        {
             RegistrationNumber = 1,
             Type = EnterpriseType.Agriculture,
             Name = "Enterprise 1",
@@ -28,7 +29,8 @@ public class DataProvider
             EmployeesNumber = 1,
             TotalArea = 1
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 2,
             Type = EnterpriseType.Agriculture,
             Name = "Enterprise 2",
@@ -38,7 +40,8 @@ public class DataProvider
             EmployeesNumber = 2,
             TotalArea = 2
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 3,
             Type = EnterpriseType.HeavyIndustry,
             Name = "Enterprise 3",
@@ -48,7 +51,8 @@ public class DataProvider
             EmployeesNumber = 3,
             TotalArea = 3
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 4,
             Type = EnterpriseType.HeavyIndustry,
             Name = "Enterprise 4",
@@ -58,7 +62,8 @@ public class DataProvider
             EmployeesNumber = 4,
             TotalArea = 4
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 5,
             Type = EnterpriseType.MaterialAndTechnicalSupply,
             Name = "Enterprise 5",
@@ -68,7 +73,8 @@ public class DataProvider
             EmployeesNumber = 5,
             TotalArea = 5
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 6,
             Type = EnterpriseType.MaterialAndTechnicalSupply,
             Name = "Enterprise 6",
@@ -78,7 +84,8 @@ public class DataProvider
             EmployeesNumber = 6,
             TotalArea = 6
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 7,
             Type = EnterpriseType.LightIndustry,
             Name = "Enterprise 7",
@@ -88,7 +95,8 @@ public class DataProvider
             EmployeesNumber = 7,
             TotalArea = 7
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 8,
             Type = EnterpriseType.LightIndustry,
             Name = "Enterprise 8",
@@ -98,7 +106,8 @@ public class DataProvider
             EmployeesNumber = 8,
             TotalArea = 8
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 9,
             Type = EnterpriseType.Building,
             Name = "Enterprise 9",
@@ -108,7 +117,8 @@ public class DataProvider
             EmployeesNumber = 9,
             TotalArea = 9
         },
-        new() {
+        new()
+        {
             RegistrationNumber = 10,
             Type = EnterpriseType.Transport,
             Name = "Enterprise 10",
@@ -117,7 +127,7 @@ public class DataProvider
             Form = FormOfOwnership.TOO,
             EmployeesNumber = 10,
             TotalArea = 10
-        },
+        }
     ];
 
     public List<Supplier> Suppliers;
@@ -126,36 +136,41 @@ public class DataProvider
     {
         Suppliers =
         [
-            new Supplier { 
-                Id = 1, 
+            new Supplier
+            {
+                Id = 1,
                 Name = "Supplier 1",
-                Supplies = Supplies.Slice(1, 2), 
+                Supplies = Supplies.Slice(1, 2),
                 Enterprises = [Enterprises[0], Enterprises[1]]
             },
-            new Supplier { 
-                Id = 2, 
+            new Supplier
+            {
+                Id = 2,
                 Name = "Supplier 2",
-                Supplies = Supplies.Slice(3, 1), 
+                Supplies = Supplies.Slice(3, 1),
                 Enterprises = [Enterprises[5], Enterprises[6], Enterprises[1]]
             },
-            new Supplier { 
-                Id = 3, 
+            new Supplier
+            {
+                Id = 3,
                 Name = "Supplier 3",
-                Supplies = Supplies.Slice(6, 3), 
+                Supplies = Supplies.Slice(6, 3),
                 Enterprises = [Enterprises[1], Enterprises[7], Enterprises[1]]
             },
-            new Supplier { 
-                Id = 4, 
+            new Supplier
+            {
+                Id = 4,
                 Name = "Supplier 4",
-                Supplies = Supplies.Slice(1, 5), 
+                Supplies = Supplies.Slice(1, 5),
                 Enterprises = [Enterprises[8], Enterprises[1]]
             },
-            new Supplier { 
-                Id = 5, 
+            new Supplier
+            {
+                Id = 5,
                 Name = "Supplier 5",
-                Supplies = Supplies.Slice(8, 1), 
+                Supplies = Supplies.Slice(8, 1),
                 Enterprises = [Enterprises[0], Enterprises[9], Enterprises[1]]
-            },
+            }
         ];
         Enterprises[0].Suppliers = [Suppliers[0], Suppliers[4]];
         Enterprises[1].Suppliers = [Suppliers[0], Suppliers[1], Suppliers[2], Suppliers[3], Suppliers[4]];

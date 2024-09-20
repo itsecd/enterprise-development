@@ -7,7 +7,7 @@ public class DistrictEnterpriseStatisticalDataTest(DataProvider dataProvider) : 
     [Fact]
     public void ReturnAllEnterpriseData()
     {
-        Enterprise enterprise = _dataProvider.Enterprises.First();
+        var enterprise = _dataProvider.Enterprises.First();
         Assert.Equal(1, enterprise.RegistrationNumber);
         Assert.Equal(EnterpriseType.Agriculture, enterprise.Type);
         Assert.Equal("Enterprise 1", enterprise.Name);
@@ -22,11 +22,11 @@ public class DistrictEnterpriseStatisticalDataTest(DataProvider dataProvider) : 
     [Fact]
     public void ReturnSupplyBetweenDates()
     {
-        DateOnly date1 = DateOnly.ParseExact("2020-01-02", "yyyy-mm-dd");
-        DateOnly date2 = DateOnly.ParseExact("2021-01-02", "yyyy-mm-dd");
+        var date1 = new DateOnly(2020, 01, 02);
+        var date2 = new DateOnly(2021, 01, 02);
 
         var suppliers = _dataProvider.Suppliers
-            .Where(s => s.Supplies.Any(s => s.Date >= date1 && s.Date <= date2))
+            .Where(supplier => supplier.Supplies.Any(supply => supply.Date >= date1 && supply.Date <= date2))
             .OrderBy(s => s.Name).ToList();
         Assert.Equal([_dataProvider.Suppliers[2], _dataProvider.Suppliers[3]], suppliers);
     }
@@ -42,7 +42,7 @@ public class DistrictEnterpriseStatisticalDataTest(DataProvider dataProvider) : 
     [Fact]
     public void ReturnSuppliersCountForTypeAndForm()
     {
-        var groupedData = _dataProvider.Enterprises.SelectMany(enterprise => enterprise.Suppliers, 
+        var groupedData = _dataProvider.Enterprises.SelectMany(enterprise => enterprise.Suppliers,
                 (enterprise, supplier) => new { enterprise.Type, enterprise.Form, supplier })
             .GroupBy(e => new { e.Type, e.Form })
             .Select(group => new
@@ -92,21 +92,19 @@ public class DistrictEnterpriseStatisticalDataTest(DataProvider dataProvider) : 
     [Fact]
     public void MaxProvidedSuppliers()
     {
-        DateOnly date1 = DateOnly.ParseExact("2021-01-02", "yyyy-mm-dd");
-        DateOnly date2 = DateOnly.ParseExact("2022-01-02", "yyyy-mm-dd");
-        
+        var date1 = new DateOnly(2021, 01, 02);
+        var date2 = new DateOnly(2022, 01, 02);
+
         var supplierWithMaxSupplies = _dataProvider.Suppliers
             .OrderByDescending(s => s.Supplies
                 .Where(supply => supply.Date >= date1 && supply.Date <= date2)
                 .Sum(supply => supply.Quantity))
             .ToList();
-        
+
         Assert.Equal(_dataProvider.Suppliers[2], supplierWithMaxSupplies[0]);
         Assert.Equal(_dataProvider.Suppliers[4], supplierWithMaxSupplies[1]);
         Assert.Equal(_dataProvider.Suppliers[0], supplierWithMaxSupplies[2]);
         Assert.Equal(_dataProvider.Suppliers[1], supplierWithMaxSupplies[3]);
         Assert.Equal(_dataProvider.Suppliers[3], supplierWithMaxSupplies[4]);
     }
-    
-    
 }

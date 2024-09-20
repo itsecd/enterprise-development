@@ -9,9 +9,9 @@ public class Supplier
     ///     Идентификатор поставщика
     /// </summary>
     public required int Id { get; set; }
-    
+
     /// <summary>
-    /// Имя поставщика
+    ///     Имя поставщика
     /// </summary>
     public required string Name { get; set; }
 
