@@ -19,8 +19,8 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetDriversByPeriod()
     {
-        DateTime startDate = testDataProvider.DatetimeNow.AddHours(-5);
-        DateTime endDate = testDataProvider.DatetimeNow.AddHours(4);
+        DateTime startDate = new DateTime(2024, 9, 20, 10, 0, 0);
+        DateTime endDate = new DateTime(2024, 9, 20, 19, 0, 0);
 
         List<Driver> drivers = testDataProvider.RouteAssignments
             .Where(ra => startDate <= ra.StartTime && ra.EndTime <= endDate)
@@ -112,8 +112,8 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     [Fact]
     public void GetVehiclesWithMaxTripsForPeriod()
     {
-        DateTime startDate = testDataProvider.DatetimeNow.AddHours(-5);
-        DateTime endDate = testDataProvider.DatetimeNow.AddHours(10);
+        DateTime startDate = new DateTime(2024, 9, 19, 00, 0, 0);
+        DateTime endDate = new DateTime(2024, 9, 22, 00, 0, 0);
 
         int maxTripCount = testDataProvider.RouteAssignments.Where(ra => ra.StartTime >= startDate && ra.EndTime <= endDate)
             .GroupBy(ra => ra.Vehicle)

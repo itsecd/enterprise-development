@@ -2,8 +2,6 @@
 
 public class TestDataProvider
 {
-    public DateTime DatetimeNow = DateTime.Now;
-
     public List<VehicleModel> VehicleModels =
     [
         new() { Id = 1, Name = "vehicleName1", LowFloor = true, MaxCapacity = 10 },
@@ -130,8 +128,8 @@ public class TestDataProvider
                 Vehicle = Vehicles[0],
                 Driver = Drivers[0],
                 RouteNumber = "routeNumber1",
-                StartTime = DatetimeNow,
-                EndTime = DatetimeNow.AddHours(1)
+                StartTime = new DateTime(2024, 9, 20, 15, 0, 0),
+                EndTime = new DateTime(2024, 9, 20, 16, 0, 0)
             },
             new RouteAssignment
             {
@@ -139,8 +137,8 @@ public class TestDataProvider
                 Vehicle = Vehicles[1],
                 Driver = Drivers[2],
                 RouteNumber = "routeNumber2",
-                StartTime = DatetimeNow.AddHours(1),
-                EndTime = DatetimeNow.AddHours(3)
+                StartTime = new DateTime(2024, 9, 20, 16, 0, 0),
+                EndTime = new DateTime(2024, 9, 20, 18, 0, 0)
             },
             new RouteAssignment
             {
@@ -148,8 +146,8 @@ public class TestDataProvider
                 Vehicle = Vehicles[2],
                 Driver = Drivers[1],
                 RouteNumber = "routeNumber3",
-                StartTime = DatetimeNow.AddHours(1),
-                EndTime = DatetimeNow.AddHours(2)
+                StartTime = new DateTime(2024, 9, 20, 16, 0, 0),
+                EndTime = new DateTime(2024, 9, 20, 17, 0, 0)
             },
             new RouteAssignment
             {
@@ -157,8 +155,8 @@ public class TestDataProvider
                 Vehicle = Vehicles[3],
                 Driver = Drivers[4],
                 RouteNumber = "routeNumber4",
-                StartTime = DatetimeNow.AddHours(3),
-                EndTime = DatetimeNow.AddHours(5)
+                StartTime = new DateTime(2024, 9, 20, 18, 0, 0),
+                EndTime = new DateTime(2024, 9, 20, 20, 0, 0)
             },
             new RouteAssignment
             {
@@ -166,8 +164,8 @@ public class TestDataProvider
                 Vehicle = Vehicles[4],
                 Driver = Drivers[3],
                 RouteNumber = "routeNumber5",
-                StartTime = DatetimeNow.AddHours(3),
-                EndTime = DatetimeNow.AddHours(4)
+                StartTime = new DateTime(2024, 9, 20, 18, 0, 0),
+                EndTime = new DateTime(2024, 9, 20, 19, 0, 0)
             },
             new RouteAssignment
             {
@@ -175,8 +173,8 @@ public class TestDataProvider
                 Vehicle = Vehicles[4],
                 Driver = Drivers[3],
                 RouteNumber = "routeNumber6",
-                StartTime = DatetimeNow.AddHours(7),
-                EndTime = DatetimeNow.AddHours(9)
+                StartTime = new DateTime(2024, 9, 20, 22, 0, 0),
+                EndTime = new DateTime(2024, 9, 21, 00, 0, 0)
             }
         ];
     }
