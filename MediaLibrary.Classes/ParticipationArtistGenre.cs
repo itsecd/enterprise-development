@@ -1,4 +1,4 @@
-﻿namespace MediaClasses;
+﻿namespace MediaLibrary.Classes;
 
 /// <summary>
 /// Связь между артистом и исполняемым жанром

@@ -1,4 +1,4 @@
-﻿using MediaClasses;
+﻿using MediaLibrary.Classes;
 
 namespace MediaLibrary.Tests;
 

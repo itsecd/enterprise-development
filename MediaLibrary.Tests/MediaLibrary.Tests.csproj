@@ -17,8 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MediaClasses\MediaClasses.csproj" />
-    <ProjectReference Include="..\MediaLibrary\MediaLibraryMain.csproj" />
+    <ProjectReference Include="..\MediaLibrary.Classes\MediaLibrary.Classes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,7 +17,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     [Fact]
     public void TestDisplayAllArtists()
     {
-        var artists = _fixture.TestData.Artists.ToList();
+        var artists = _fixture.TestData.Artists!.ToList();
         Assert.NotEmpty(artists);
         Assert.Equal(5, artists.Count);
     }
@@ -29,7 +29,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     public void TestDisplayTracksInAlbum()
     {
         int albumId = 4;
-        var tracks = _fixture.TestData.Tracks
+        var tracks = _fixture.TestData.Tracks!
             .Where(t => t.IdAlbum == albumId)
             .OrderBy(t => t.TrackNum)
             .ToList();
@@ -49,7 +49,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     public void TestDisplayAlbumsWithTrackCountInYear()
     {
         int year = 2020;
-        var albums = _fixture.TestData.Albums
+        var albums = _fixture.TestData.Albums!
             .Where(a => a.Release.Year == year)
             .Select(a => new
             {
@@ -76,7 +76,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     [Fact]
     public void TestDisplayTop5AlbumsByDuration()
     {
-        var albums = _fixture.TestData.Albums
+        var albums = _fixture.TestData.Albums!
             .Select(a => new
             {
                 Album = a,
@@ -103,7 +103,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     [Fact]
     public void TestDisplayArtistsWithMostAlbums()
     {
-        var artistAlbumCounts = _fixture.TestData.Artists
+        var artistAlbumCounts = _fixture.TestData.Artists!
             .Select(a => new
             {
                 Artist = a,
@@ -130,7 +130,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     [Fact]
     public void TestDisplayAlbumDurationStats()
     {
-        var albumDurations = _fixture.TestData.Albums
+        var albumDurations = _fixture.TestData.Albums!
             .Select(a => _fixture.TestData.Tracks
             .Where(t => t.IdAlbum == a.Id)
             .Sum(t => t.Duration.TotalSeconds))

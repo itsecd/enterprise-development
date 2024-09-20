@@ -1,4 +1,4 @@
-﻿namespace MediaClasses;
+﻿namespace MediaLibrary.Classes;
 
 /// <summary>
 /// Музыкальный альбом
