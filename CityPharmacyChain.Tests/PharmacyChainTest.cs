@@ -12,7 +12,7 @@ namespace CityPharmacyChain.Tests
                 join pharmacyProduct in _fixture.PharmacyProductList on pharmacy.PharmacyNumber equals pharmacyProduct.PharmacyNumber
                 join product in _fixture.ProductList on pharmacyProduct.ProductCode equals product.ProductCode
                 orderby product.Name
-                where pharmacy.Name is "Апрель"
+                where pharmacy.Name is "April"
                 select new
                 {
                     product.ProductCode,
@@ -23,13 +23,13 @@ namespace CityPharmacyChain.Tests
             
             Assert.Equal(allProductsForPharmacy.ToArray(),
                 ([
-                    new { ProductCode = 1, Name = "Гепариновая мазь", Count = 10, ProductGroup = "Мазь для наружного применения" },
-                    new { ProductCode = 2, Name = "Левомеколь", Count = 19, ProductGroup = "Мазь для наружного применения" },
-                    new { ProductCode = 4, Name = "Нурофен таблетки", Count = 6, ProductGroup = "Таблетки, покрытые оболочкой" },
-                    new { ProductCode = 8, Name = "Пенталгин Экстра гель", Count = 2, ProductGroup = "Гель для наружного применения" },
-                    new { ProductCode = 5, Name = "Риностоп спрей", Count = 17, ProductGroup = "Спрей назальный" },
-                    new { ProductCode = 6, Name = "Стрептоцид порошок", Count = 3, ProductGroup = "Порошок для наружного применения" },
-                    new { ProductCode = 9, Name = "Тромбо АСС таблетки", Count = 12, ProductGroup = "Таблетки, покрытые оболочкой" },
+                    new { ProductCode = 1, Name = "Heparin ointment", Count = 10, ProductGroup = "Ointment for external use" },
+                    new { ProductCode = 2, Name = "Levomekol", Count = 19, ProductGroup = "Ointment for external use" },
+                    new { ProductCode = 4, Name = "Nurofen", Count = 6, ProductGroup = "Pills" },
+                    new { ProductCode = 8, Name = "Pentalgin", Count = 2, ProductGroup = "Gel for external use" },
+                    new { ProductCode = 5, Name = "Rinostop", Count = 17, ProductGroup = "Nasal spray" },
+                    new { ProductCode = 6, Name = "Streptocide", Count = 3, ProductGroup = "Powder for external use" },
+                    new { ProductCode = 9, Name = "Trombo", Count = 12, ProductGroup = "Pills" },
                 ]));
         }
 
@@ -41,7 +41,7 @@ namespace CityPharmacyChain.Tests
                 join pharmacyProduct in _fixture.PharmacyProductList on pharmacy.PharmacyNumber equals pharmacyProduct.PharmacyNumber
                 join product in _fixture.ProductList on pharmacyProduct.ProductCode equals product.ProductCode
                 orderby product.Name
-                where product.Name is "Левомеколь"
+                where product.Name is "Levomekol"
                 select new
                 {
                     pharmacy.Name,
@@ -49,9 +49,9 @@ namespace CityPharmacyChain.Tests
                 };
             Assert.Equal(productCount.ToArray(), 
                 [
-                    new { Name = "ВИТА", Count = 10 }, 
-                    new { Name = "Апрель", Count = 19 }, 
-                    new { Name = "Имплозия", Count = 3 },
+                    new { Name = "VITA", Count = 10 }, 
+                    new { Name = "April", Count = 19 }, 
+                    new { Name = "Implosion", Count = 3 },
                 ]);
         }
 
@@ -72,14 +72,14 @@ namespace CityPharmacyChain.Tests
                 };
             var avgPharmaceuticalGroupPriceForPharmacy =
                 from entry in pharmaceuticalGroupPriceForPharmacy
-                where entry.PharmacyName == "ВИТА"
+                where entry.PharmacyName == "VITA"
                 group entry by entry.Name into result
                 select new
                 {
                     Name = result.Key,
                     Price = result.Average(p => p.Price),
                 };
-            Assert.Equal("Антикоагулянт", avgPharmaceuticalGroupPriceForPharmacy.First().Name);
+            Assert.Equal("Anticoagulant", avgPharmaceuticalGroupPriceForPharmacy.First().Name);
             Assert.True(145.9 < avgPharmaceuticalGroupPriceForPharmacy.First().Price && avgPharmaceuticalGroupPriceForPharmacy.First().Price < 146.1);
         }
 
@@ -90,7 +90,7 @@ namespace CityPharmacyChain.Tests
                 from pharmacy in _fixture.PharmacyList
                 join priceListEntry in _fixture.PriceList on pharmacy.PharmacyNumber equals priceListEntry.PharmacyNumber
                 join product in _fixture.ProductList on priceListEntry.ProductCode equals product.ProductCode
-                where product.Name == "Левомеколь" && (priceListEntry.SaleDate > DateTime.Parse("2024-08-15") && priceListEntry.SaleDate < DateTime.Parse("2024-09-20"))
+                where product.Name == "Levomekol" && (priceListEntry.SaleDate > DateTime.Parse("2024-08-15") && priceListEntry.SaleDate < DateTime.Parse("2024-09-20"))
                 group priceListEntry by priceListEntry.PharmacyNumber into results
                 select new
                 {
@@ -111,9 +111,9 @@ namespace CityPharmacyChain.Tests
                  }).Take(5);
             Assert.Equal(maxProductSoldVolumes.ToArray(),
                 [
-                    new { Name = "Имплозия", SoldCount = 2, SoldVolume = 7 },
-                    new { Name = "ВИТА", SoldCount = 2, SoldVolume = 5 },
-                    new { Name = "БУДЬ ЗДОРОВ!", SoldCount = 1, SoldVolume = 3 },
+                    new { Name = "Implosion", SoldCount = 2, SoldVolume = 7 },
+                    new { Name = "VITA", SoldCount = 2, SoldVolume = 5 },
+                    new { Name = "BE HEALTHY!", SoldCount = 1, SoldVolume = 3 },
                 ]);
         }
 
@@ -124,7 +124,7 @@ namespace CityPharmacyChain.Tests
                 from pharmacy in _fixture.PharmacyList
                 join priceListEntry in _fixture.PriceList on pharmacy.PharmacyNumber equals priceListEntry.PharmacyNumber
                 join product in _fixture.ProductList on priceListEntry.ProductCode equals product.ProductCode
-                where pharmacy.Address.Contains("пр-т. Ленина") && product.Name == "Левомеколь"
+                where pharmacy.Address.Contains("Lenin ave.") && product.Name == "Levomekol"
                 group priceListEntry by priceListEntry.PharmacyNumber into result
                 select new
                 {
@@ -141,8 +141,8 @@ namespace CityPharmacyChain.Tests
                  };
             Assert.Equal(pharmaciesWithBigProductSoldVolumes,
                 [
-                    new { Name = "БУДЬ ЗДОРОВ!" },
-                    new { Name = "Имплозия" }
+                    new { Name = "BE HEALTHY!" },
+                    new { Name = "Implosion" }
                 ]);
         }
 
@@ -153,7 +153,7 @@ namespace CityPharmacyChain.Tests
                 from pharmacy in _fixture.PharmacyList
                 join priceListEntry in _fixture.PriceList on pharmacy.PharmacyNumber equals priceListEntry.PharmacyNumber
                 join product in _fixture.ProductList on priceListEntry.ProductCode equals product.ProductCode
-                where product.Name == "Левомеколь"
+                where product.Name == "Levomekol"
                 group priceListEntry by priceListEntry.PharmacyNumber into result
                 select new
                 {
@@ -171,8 +171,8 @@ namespace CityPharmacyChain.Tests
                  };
             Assert.Equal(pharmaciesWithMinProductPrice,
                 [
-                    new { Name = "БУДЬ ЗДОРОВ!" },
-                    new { Name = "Имплозия" }
+                    new { Name = "BE HEALTHY!" },
+                    new { Name = "Implosion" }
                 ]);
         }
     }

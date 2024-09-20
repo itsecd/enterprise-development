@@ -14,67 +14,67 @@ public class PharmacyChainFixture
     {
         PharmacyList =
         [
-            new(1, "ВИТА", 89456372837, "г. Самара, ул. Ново-Садовая, д. 36", "Иванов Иван Иванович"),
-            new(2, "Апрель", 86748356473, "г. Самара, пр-т. Ленина, д. 6", "Сергеев Геннадий Васильевич"),
-            new(3, "БУДЬ ЗДОРОВ!", 87443856936, "г. Самара, пр-т. Ленина, д. 14", "Андреева Надежда Ивановна"),
-            new(4, "Имплозия", 89975362563, "г. Самара, пр-т. Ленина, д. 6", "Петров Павел Сергеевич"),
+            new(1, "VITA", 89456372837, "Samara, Novo-Sadovaya st., 36", "Ivanov Ivan Ivanovich"),
+            new(2, "April", 86748356473, "Samara, Lenin ave., 6", "Sergeev Gennady Vasilievich"),
+            new(3, "BE HEALTHY!", 87443856936, "Samara, Lenin ave., 14", "Andreeva Nadezhda Ivanovna"),
+            new(4, "Implosion", 89975362563, "Samara, Lenin ave., 6", "Petrov Petr Sergeevich"),
         ];
 
         PriceList =
         [
-            new(1, 1, 146, 1, "АО Нижфарм", PaymentType.Cashless, DateTime.Parse("2024-08-01")),
-            new(2, 1, 198, 2,  "АО Нижфарм", PaymentType.Cash, DateTime.Parse("2024-09-12")),
-            new(5, 1, 110, 3, "Фармстрандарт-Лексредства", PaymentType.Cash, DateTime.Parse("2024-07-24")),
-            new(1, 1, 146, 2, "АО Нижфарм", PaymentType.Cashless, DateTime.Parse("2024-08-01")),
-            new(2, 1, 198, 3, "АО Нижфарм", PaymentType.Cash, DateTime.Parse("2024-09-12")),
-            new(5, 1, 110, 1, "Фармстрандарт-Лексредства", PaymentType.Cash, DateTime.Parse("2024-07-24")),
+            new(1, 1, 146, 1, "JSC Nizhpharm", PaymentType.Cashless, DateTime.Parse("2024-08-01")),
+            new(2, 1, 198, 2,  "JSC Nizhpharm", PaymentType.Cash, DateTime.Parse("2024-09-12")),
+            new(5, 1, 110, 3, "Pharmstandard-medicines", PaymentType.Cash, DateTime.Parse("2024-07-24")),
+            new(1, 1, 146, 2, "JSC Nizhpharm", PaymentType.Cashless, DateTime.Parse("2024-08-01")),
+            new(2, 1, 198, 3, "JSC Nizhpharm", PaymentType.Cash, DateTime.Parse("2024-09-12")),
+            new(5, 1, 110, 1, "Pharmstandard-medicines", PaymentType.Cash, DateTime.Parse("2024-07-24")),
 
-            new(3, 2, 99, 1, "ООО Тульская Фармацевтическая Фабрика", PaymentType.Cashless, DateTime.Parse("2024-09-05")),
-            new(4, 2, 211, 2, "ЛТД Рекитт Бенкизер Хелскэр Интернешнл", PaymentType.Cashless, DateTime.Parse("2024-08-11")),
-            new(3, 2, 99, 3, "ООО Тульская Фармацевтическая Фабрика", PaymentType.Cashless, DateTime.Parse("2024-09-05")),
-            new(4, 2, 211, 2, "ЛТД Рекитт Бенкизер Хелскэр Интернешнл", PaymentType.Cashless, DateTime.Parse("2024-08-11")),
+            new(3, 2, 99, 1, "JSC Tula Pharmaceutical Factory", PaymentType.Cashless, DateTime.Parse("2024-09-05")),
+            new(4, 2, 211, 2, "JSC Reckitt Benckiser", PaymentType.Cashless, DateTime.Parse("2024-08-11")),
+            new(3, 2, 99, 3, "JSC Tula Pharmaceutical Factory", PaymentType.Cashless, DateTime.Parse("2024-09-05")),
+            new(4, 2, 211, 2, "JSC Reckitt Benckiser", PaymentType.Cashless, DateTime.Parse("2024-08-11")),
 
-            new(2, 3, 190, 3, "АО Нижфарм", PaymentType.Cash, DateTime.Parse("2024-09-12")),
-            new(6, 3, 150, 4, "ООО Лекарь", PaymentType.Cashless, DateTime.Parse("2024-09-01")),
-            new(8, 3,382, 2, "ЗАО Лекко", PaymentType.Cash, DateTime.Parse("2024-08-30")),
-            new(6, 3, 150, 3, "ООО Лекарь", PaymentType.Cashless, DateTime.Parse("2024-09-01")),
-            new(8, 3, 382, 1, "ЗАО Лекко", PaymentType.Cash, DateTime.Parse("2024-08-30")),
+            new(2, 3, 190, 3, "JSC Nizhpharm", PaymentType.Cash, DateTime.Parse("2024-09-12")),
+            new(6, 3, 150, 4, "JSC Doctor", PaymentType.Cashless, DateTime.Parse("2024-09-01")),
+            new(8, 3,382, 2, "JSC Lecco", PaymentType.Cash, DateTime.Parse("2024-08-30")),
+            new(6, 3, 150, 3, "JSC Doctor", PaymentType.Cashless, DateTime.Parse("2024-09-01")),
+            new(8, 3, 382, 1, "JSC Lekko", PaymentType.Cash, DateTime.Parse("2024-08-30")),
 
-            new(2, 4, 190, 4, "АО Нижфарм", PaymentType.Cash, DateTime.Parse("2024-09-12")),
-            new(2, 4, 190, 3, "АО Нижфарм", PaymentType.Cashless, DateTime.Parse("2024-09-14")),
+            new(2, 4, 190, 4, "JSC Nizhpharm", PaymentType.Cash, DateTime.Parse("2024-09-12")),
+            new(2, 4, 190, 3, "JSC Nizhpharm", PaymentType.Cashless, DateTime.Parse("2024-09-14")),
             new(9, 4, 144, 4, "Jelfa S A", PaymentType.Cash, DateTime.Parse("2024-08-30")),
             new(9, 4, 144, 5, "Jelfa S A", PaymentType.Cash, DateTime.Parse("2024-08-30")),
-            new(7, 4, 139, 1, "ЗАО Лекко", PaymentType.Cash, DateTime.Parse("2024-09-03")),
-            new(7, 4, 139, 1, "ЗАО Лекко", PaymentType.Cash, DateTime.Parse("2024-09-03")),
+            new(7, 4, 139, 1, "JSC Lekko", PaymentType.Cash, DateTime.Parse("2024-09-03")),
+            new(7, 4, 139, 1, "JSC Lekko", PaymentType.Cash, DateTime.Parse("2024-09-03")),
         ];
 
         PharmaceuticalGroups =
         [
-            new(1, "Антикоагулянт"),
-            new(2, "Антибактериальное средство"),
-            new(2, "Дезинфицирующее средство"),
-            new(3, "Линимент"),
-            new(4, "Нестероидное противовоспалительное средство"),
-            new(5, "Сосудосуживающий препарат"),
-            new(6, "Антибактериальное средство"),
-            new(7, "Антибактериальное средство"),
-            new(8, "Анальгезирующее средство"),
-            new(8, "Нестероидное противовоспалительное средство"),
-            new(8, "Психостимулирующее средство"),
-            new(9, "Нестероидное противовоспалительное средство"),
+            new(1, "Anticoagulant"),
+            new(2, "Antibacterial agent"),
+            new(2, "Desinfectant"),
+            new(3, "Liniment"),
+            new(4, "Nonsteroidal anti-inflammatory drug"),
+            new(5, "Vasoconstrictor drug"),
+            new(6, "Antibacterial agent"),
+            new(7, "Antibacterial agent"),
+            new(8, "Analgesic agent"),
+            new(8, "Nonsteroidal anti-inflammatory drug"),
+            new(8, "Psychostimulant"),
+            new(9, "Nonsteroidal anti-inflammatory drug"),
         ];
 
         ProductList =
         [
-            new(1, "Гепариновая мазь", "Мазь для наружного применения"),
-            new(2, "Левомеколь", "Мазь для наружного применения"),
-            new(3, "Линимент бальзамический (по Вишневскому)", "Мазь для наружного применения"),
-            new(4, "Нурофен таблетки", "Таблетки, покрытые оболочкой"),
-            new(5, "Риностоп спрей", "Спрей назальный"),
-            new(6, "Стрептоцид порошок", "Порошок для наружного применения"),
-            new(7, "Сульфацил-натрия капли глазные", "Капли глазные"),
-            new(8, "Пенталгин Экстра гель", "Гель для наружного применения"),
-            new(9, "Тромбо АСС таблетки", "Таблетки, покрытые оболочкой"),
+            new(1, "Heparin ointment", "Ointment for external use"),
+            new(2, "Levomekol", "Ointment for external use"),
+            new(3, "Vishnevsky ointment", "Ointment for external use"),
+            new(4, "Nurofen", "Pills"),
+            new(5, "Rinostop", "Nasal spray"),
+            new(6, "Streptocide", "Powder for external use"),
+            new(7, "Sodium sulfacyl", "Капли глазные"),
+            new(8, "Pentalgin", "Gel for external use"),
+            new(9, "Trombo", "Pills"),
         ];
 
         PharmacyProductList =
