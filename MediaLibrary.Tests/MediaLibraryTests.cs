@@ -54,7 +54,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
             .Select(a => new
             {
                 Album = a,
-                TrackCount = _fixture.TestData.Tracks.Count(t => t.IdAlbum == a.Id)
+                TrackCount = _fixture.TestData.Tracks!.Count(t => t.IdAlbum == a.Id)
             })
             .ToList();
         Assert.NotEmpty(albums);
@@ -80,7 +80,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
             .Select(a => new
             {
                 Album = a,
-                TotalDuration = _fixture.TestData.Tracks
+                TotalDuration = _fixture.TestData.Tracks!
                     .Where(t => t.IdAlbum == a.Id)
                     .Sum(t => t.Duration.TotalSeconds)
             })
@@ -107,7 +107,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
             .Select(a => new
             {
                 Artist = a,
-                AlbumCount = _fixture.TestData.Albums.Count(al => al.IdArtist == a.Id)
+                AlbumCount = _fixture.TestData.Albums!.Count(al => al.IdArtist == a.Id)
             })
             .OrderByDescending(a => a.AlbumCount)
             .ToList();
@@ -131,7 +131,7 @@ public class MediaLibraryTests(MediaFixture fixture) : IClassFixture<MediaFixtur
     public void TestDisplayAlbumDurationStats()
     {
         var albumDurations = _fixture.TestData.Albums!
-            .Select(a => _fixture.TestData.Tracks
+            .Select(a => _fixture.TestData.Tracks!
             .Where(t => t.IdAlbum == a.Id)
             .Sum(t => t.Duration.TotalSeconds))
             .ToList();
