@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain", "CityPharmacyChain\CityPharmacyChain.csproj", "{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Domain", "CityPharmacyChain.Domain\CityPharmacyChain.Domain.csproj", "{32C9244D-3257-46D6-98B2-9BE2538E5AD1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityPharmacyChain.Tests", "CityPharmacyChain.Tests\CityPharmacyChain.Tests.csproj", "{F5B15FBF-DB14-4E80-9955-74D599B39262}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74CE2716-E4E1-4EAF-8D0D-9AAED39A0733}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32C9244D-3257-46D6-98B2-9BE2538E5AD1}.Release|Any CPU.ActiveCfg = Release|Any CPU

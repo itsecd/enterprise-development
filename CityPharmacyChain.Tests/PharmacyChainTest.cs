@@ -1,3 +1,5 @@
+using CityPharmacyChain.Domain;
+
 namespace CityPharmacyChain.Tests
 {
     public class PharmacyChainTest(PharmacyChainFixture fixture): IClassFixture<PharmacyChainFixture>
@@ -21,8 +23,8 @@ namespace CityPharmacyChain.Tests
                     product.ProductGroup,
                 };
             
-            Assert.Equal(allProductsForPharmacy.ToArray(),
-                ([
+            Assert.Equal(allProductsForPharmacy.ToList(),
+                [
                     new { ProductCode = 1, Name = "Heparin ointment", Count = 10, ProductGroup = "Ointment for external use" },
                     new { ProductCode = 2, Name = "Levomekol", Count = 19, ProductGroup = "Ointment for external use" },
                     new { ProductCode = 4, Name = "Nurofen", Count = 6, ProductGroup = "Pills" },
@@ -30,7 +32,7 @@ namespace CityPharmacyChain.Tests
                     new { ProductCode = 5, Name = "Rinostop", Count = 17, ProductGroup = "Nasal spray" },
                     new { ProductCode = 6, Name = "Streptocide", Count = 3, ProductGroup = "Powder for external use" },
                     new { ProductCode = 9, Name = "Trombo", Count = 12, ProductGroup = "Pills" },
-                ]));
+                ]);
         }
 
         [Fact]
@@ -47,7 +49,7 @@ namespace CityPharmacyChain.Tests
                     pharmacy.Name,
                     pharmacyProduct.Count,
                 };
-            Assert.Equal(productCount.ToArray(), 
+            Assert.Equal(productCount.ToList(), 
                 [
                     new { Name = "VITA", Count = 10 }, 
                     new { Name = "April", Count = 19 }, 
@@ -68,10 +70,10 @@ namespace CityPharmacyChain.Tests
                 {
                     pharmaceuticalGroup.Name,
                     PharmacyName = pharmacy.Name,
-                    priceListEntry.Price,
+                    pharmacyProduct.Price,
                 };
             var avgPharmaceuticalGroupPriceForPharmacy =
-                from entry in pharmaceuticalGroupPriceForPharmacy
+                from entry in pharmaceuticalGroupPriceForPharmacy.ToList()
                 where entry.PharmacyName == "VITA"
                 group entry by entry.Name into result
                 select new
@@ -101,15 +103,14 @@ namespace CityPharmacyChain.Tests
             var maxProductSoldVolumes =
                 (from maxProductSoldVolume in tmpMaxProductSoldVolumes
                  join pharmacy in _fixture.PharmacyList on maxProductSoldVolume.PharmacyNumber equals pharmacy.PharmacyNumber
-                 orderby maxProductSoldVolume.SoldCount descending
-                 orderby maxProductSoldVolume.SoldVolume descending
+                 orderby maxProductSoldVolume.SoldCount descending, maxProductSoldVolume.SoldVolume descending
                  select new
                  {
                      pharmacy.Name,
                      maxProductSoldVolume.SoldCount,
                      maxProductSoldVolume.SoldVolume
                  }).Take(5);
-            Assert.Equal(maxProductSoldVolumes.ToArray(),
+            Assert.Equal(maxProductSoldVolumes.ToList(),
                 [
                     new { Name = "Implosion", SoldCount = 2, SoldVolume = 7 },
                     new { Name = "VITA", SoldCount = 2, SoldVolume = 5 },
@@ -132,14 +133,14 @@ namespace CityPharmacyChain.Tests
                     SoldVolume = result.Sum(p => p.SoldCount),
                 };
             var pharmaciesWithBigProductSoldVolumes =
-                 from entry in tmpPharmaciesWithBigProductSoldVolumes
+                 from entry in tmpPharmaciesWithBigProductSoldVolumes.ToList()
                  join pharmacy in _fixture.PharmacyList on entry.PharmacyNumber equals pharmacy.PharmacyNumber
                  where entry.SoldVolume > 2
                  select new
                  {
                      pharmacy.Name,
                  };
-            Assert.Equal(pharmaciesWithBigProductSoldVolumes,
+            Assert.Equal(pharmaciesWithBigProductSoldVolumes.ToList(),
                 [
                     new { Name = "BE HEALTHY!" },
                     new { Name = "Implosion" }
@@ -151,17 +152,17 @@ namespace CityPharmacyChain.Tests
         {
             var tmpPharmaciesWithMinProductPrice =
                 from pharmacy in _fixture.PharmacyList
-                join priceListEntry in _fixture.PriceList on pharmacy.PharmacyNumber equals priceListEntry.PharmacyNumber
-                join product in _fixture.ProductList on priceListEntry.ProductCode equals product.ProductCode
+                join pharmacyProduct in _fixture.PharmacyProductList on pharmacy.PharmacyNumber equals pharmacyProduct.PharmacyNumber
+                join product in _fixture.ProductList on pharmacyProduct.ProductCode equals product.ProductCode
                 where product.Name == "Levomekol"
-                group priceListEntry by priceListEntry.PharmacyNumber into result
+                group pharmacyProduct by pharmacy.PharmacyNumber into result
                 select new
                 {
                     PharmacyNumber = result.Key,
                     SoldVolume = result.Min(p => p.Price),
                 };
             var pharmaciesWithMinProductPrice =
-                 from entry in tmpPharmaciesWithMinProductPrice
+                 from entry in tmpPharmaciesWithMinProductPrice.ToList()
                  join pharmacy in _fixture.PharmacyList on entry.PharmacyNumber equals pharmacy.PharmacyNumber
                  let min = tmpPharmaciesWithMinProductPrice.Min(p => p.SoldVolume)
                  where entry.SoldVolume < min + 0.01 && entry.SoldVolume > min - 0.01
@@ -169,10 +170,9 @@ namespace CityPharmacyChain.Tests
                  {
                      pharmacy.Name,
                  };
-            Assert.Equal(pharmaciesWithMinProductPrice,
+            Assert.Equal(pharmaciesWithMinProductPrice.ToList(),
                 [
-                    new { Name = "BE HEALTHY!" },
-                    new { Name = "Implosion" }
+                    new { Name = "April" },
                 ]);
         }
     }
