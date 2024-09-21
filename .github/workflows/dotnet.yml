@@ -22,10 +22,13 @@ jobs:
           dotnet-version: '8.x' # Замените на нужную вам версию
 
       - name: Restore dependencies
+        working-directory: ./MediaLibrary
         run: dotnet restore
 
       - name: Build project
+        working-directory: ./MediaLibrary
         run: dotnet build --no-restore --configuration Release
 
       - name: Run tests
+        working-directory: ./MediaLibrary.Tests
         run: dotnet test --no-restore --verbosity normal
