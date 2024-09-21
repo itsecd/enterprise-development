@@ -8,31 +8,31 @@ public class MediaLibraryFixture
     {
         new() { ArtistId = 1, Name = "Jon Bon Jovi",
                 Description = "У него есть кожаная куртка с дюжиной застежек",
-                AlbumIds = new List<int> { 1, 2 }, GenreIds = new List<int> { 1, 2 } },
+                AlbumIds = [ 1, 2 ], GenreIds = new List<int> { 1, 2 } },
 
         new() { ArtistId = 2, Name = "Bob Seger",
                 Description = "Его не заткнуть, а его смех похож на скрежет бетономешалки",
-                AlbumIds = new List<int> { 3, 4 }, GenreIds = new List<int> { 3 } },
+                AlbumIds = [ 3, 4 ], GenreIds = new List<int> { 3 } },
 
         new() { ArtistId = 3, Name = "Jay Kay",
                 Description = "Он как-то говорил, что не смог бы стать раллийным гонщиком",
-                AlbumIds = new List<int> { 5 }, GenreIds = new List<int> { 4 } },
+                AlbumIds = [5], GenreIds = new List<int> { 4 } },
 
         new() { ArtistId = 4, Name = "Roger Daltrey",
                 Description = "Самый быстрый человек с билетом на автобус",
-                AlbumIds = new List<int> { 6, 7 }, GenreIds = new List<int> { 3 } },
+                AlbumIds = [6, 7], GenreIds = new List<int> { 3 } },
 
         new() { ArtistId = 5, Name = "Lionel Richie",
                 Description = "Он часто оказывался на обочине и пытался открыть правую дверь",
-                AlbumIds = new List<int> { 8 }, GenreIds = new List<int> { 4 } },
+                AlbumIds = [8], GenreIds = new List<int> { 4 } },
 
         new() { ArtistId = 6, Name = "Cliff Richard",
                 Description = "Его усилия разогнаться иссякли на 130 километрах в час",
-                AlbumIds = new List<int> { 9, 10 }, GenreIds = new List<int> { 4, 5 } },
+                AlbumIds = [9, 10], GenreIds = new List<int> { 4, 5 } },
 
         new() { ArtistId = 7, Name = "James Blunt",
                 Description = "Оденажды он спел о чем-то там в море",
-                AlbumIds = new List<int> { 11, 12 }, GenreIds = new List<int> { 3, 5 } }
+                AlbumIds = [11, 12], GenreIds = new List<int> { 3, 5 } }
     };
 
     public List<Song> Songs = new()
@@ -59,16 +59,16 @@ public class MediaLibraryFixture
     public List<Album> Albums = new()
     {
         new() { AlbumId = 1, Title = "Against The Wind", ArtistId = 2,
-                ReleaseDate = 1980, SongIds = new List<int> { 1, 2, 12, 14 } },
+                ReleaseDate = 1980, SongIds = [ 1, 2, 12, 14 ] },
 
         new() { AlbumId = 2, Title = "Stranger in Town", ArtistId = 2,
-                ReleaseDate = 1978, SongIds = new List<int> { 4, 5, 24, 45, 444 } },
+                ReleaseDate = 1978, SongIds = [ 4, 5, 24, 45, 444 ] },
 
         new() { AlbumId = 3, Title = "Nine Tonight", ArtistId = 3,
-                ReleaseDate = 1980, SongIds = new List<int> { 6, 7, 86, 90 } },
+                ReleaseDate = 1980, SongIds = [ 6, 7, 86, 90 ] },
 
         new() { AlbumId = 4, Title = "Beautiful Loser", ArtistId = 2,
-                ReleaseDate = 2075, SongIds = new List<int> { 9, 11, 100, 1120 } }
+                ReleaseDate = 2075, SongIds = [ 9, 11, 100, 1120 ] }
     };
 
     public List<Song> SongsInOneAlbum = new()

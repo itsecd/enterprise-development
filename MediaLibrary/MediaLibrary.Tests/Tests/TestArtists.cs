@@ -48,7 +48,7 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
     {
         var query = _fixture.Songs.Where(a => a.AlbumName == "Stronger").OrderBy(a => a.NumberInAlbum).ToList();
 
-        Assert.Equivalent(6, query.Count());
+        Assert.Equal(6, query.Count);
 
         Assert.Equal(new () { "Stronger Than That", "Who's In Love", "The Best Of Me",
             "Clear Blue Skies", "Lean On You", "Keep Me Warm"},
