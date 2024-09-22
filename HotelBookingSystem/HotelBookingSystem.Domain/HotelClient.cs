@@ -38,6 +38,5 @@ public class HotelClient
     /// <summary>
     /// Забронированные клиентом номера
     /// </summary>
-    public List<BookedRooms> Brooms { get; set; } = [];
-
+    public List<BookedRoom> Brooms { get; set; } = [];
 }

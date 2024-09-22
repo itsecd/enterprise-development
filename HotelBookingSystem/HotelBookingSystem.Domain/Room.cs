@@ -16,7 +16,7 @@ public class Room
     public required string TypeRoom { get; set; }
 
     /// <summary>
-    /// Количество номеров
+    /// Количество номеров такого типа
     /// </summary>
     public required int Number { get; set; }
 
@@ -31,7 +31,7 @@ public class Room
     public required int HotelID { get; set; }
 
     /// <summary>
-    /// Забронированные номера 
+    /// Бронь этого номера 
     /// </summary>
     public List<BookedRoom> BookedRooms { get; set; } = [];
 }
