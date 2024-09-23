@@ -3,26 +3,16 @@
 namespace AirlineCompany.Domain;
 public class AirFlight
 {
-    private string _codeNumber;
-    public string DeparturePoint; //*отправление*
-    public string ArrivalPoint; //*прибытие*
-    public DateTime Departure;
-    public DateTime Arrive;
-    public string FlyingTime;
-    public string PlaneType; // изменить на Plane
-
-    public AirFlight(string codeNumber, string departurePoint, string arrivalPoint, DateTime departure, 
-        DateTime arrive, string flyingTime, string planeType)
-    {
-        _codeNumber = codeNumber; //можно задать рандомом
-        DeparturePoint = departurePoint;
-        ArrivalPoint = arrivalPoint;
-        Departure = departure;
-        Arrive = arrive;
-        FlyingTime = flyingTime;
-        PlaneType = planeType;
-    }
-
-    public string CodeNumber => _codeNumber;
+    /// <summary>
+    /// Класс описывает 1 полет какого-либо самолета
+    /// </summary>
+    public required ushort Idflight { get; set; }
+    public required string CodeNumber { get; set; }
+    public required string DeparturePoint { get; set; } //*отправление*
+    public required string ArrivalPoint { get; set; } //*прибытие*
+    public required DateTime Departure { get; set; }
+    public required DateTime Arrive { get; set; }
+    public required double FlyingTime { get; set; }
+    public required ushort PlaneType { get; set; }
 }
 

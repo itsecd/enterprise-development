@@ -7,43 +7,39 @@ using System.Threading.Tasks;
 namespace AirlineCompany.Domain;
 internal class Passenegr
 {
-    public string FIO;
-    private string _passport;
-    private bool _registration = false;
-    private string _flyingNumber = null!; // ~ TicketNumber
-    private string _seatNumber = null!;
-    private int _baggageWeight = 0;
+    /// <summary>
+    /// Класс описывает информацию о пассажире
+    /// </summary>
+    public required uint IdPassenger { get; set; }
+    public required string FIO { get; set; }
+    public required string Passport { get; set; }
 
-    public Passenegr(string fio, string passport)
-    {
-        FIO = fio;
-        _passport = passport;
-    }
-
-    public string Passport => _passport;
+    public required bool registration = false;
+    public required string ticketnumber = null!; // ~ TicketNumber
+    public required string seatNumber = null!;
+    public required float baggageWeight = 0;
 
     public bool Registration
     {
-        get { return _registration; }
-        set { _registration = value; }
+        get { return registration; }
+        set { registration = value; }
     }
 
-    public string FlyingNumber
+    public string TicketNumber
     {
-        get { return _flyingNumber; }
-        set { _flyingNumber = value; }
+        get { return ticketnumber; }
+        set { ticketnumber = value; }
     }
-
     public string SeatNumber
     {
-        get { return _seatNumber; }
-        set { _seatNumber = value; }
+        get { return seatNumber; }
+        set { seatNumber = value; }
     }
 
-    public int BaggageWeight
+    public float BaggageWeight
     {
-        get { return _baggageWeight; }
-        set { _baggageWeight = value; }
+        get { return baggageWeight; }
+        set { baggageWeight = value; }
     }
 }
 
