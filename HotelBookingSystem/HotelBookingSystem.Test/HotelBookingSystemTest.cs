@@ -16,13 +16,13 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     {
         var result = _testData.Hotels;
 
-        Assert.Equal("Альфа", result[0].Name);
-        Assert.Equal("Браво", result[1].Name);
-        Assert.Equal("Чарли", result[2].Name);
-        Assert.Equal("Дельта", result[3].Name);
-        Assert.Equal("Эхо", result[4].Name);
-        Assert.Equal("Фокстрот", result[5].Name);
-        Assert.Equal("Голф", result[6].Name);
+        Assert.Equal("Alpha", result[0].Name);
+        Assert.Equal("Bravo", result[1].Name);
+        Assert.Equal("Charlie", result[2].Name);
+        Assert.Equal("Delta", result[3].Name);
+        Assert.Equal("Echo", result[4].Name);
+        Assert.Equal("Foxtrot", result[5].Name);
+        Assert.Equal("Golf", result[6].Name);
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     [Fact]
     public void InfoClientsInHotels()
     {
-        var hotelId = _testData.Hotels.FirstOrDefault(hotel => hotel.Name == "Альфа")?.Id;
+        var hotelId = _testData.Hotels.FirstOrDefault(hotel => hotel.Name == "Alpha")?.Id;
 
         var hotelClients = _testData.HotelClients
             .Where(client => client.Brooms
@@ -44,8 +44,8 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
             .ToList();
 
         Assert.True(hotelClients.Any());
-        Assert.Equal("Сидоров", hotelClients[0].Surname);
-        Assert.Equal("Щербакова", hotelClients[1].Surname);
+        Assert.Equal("Shcherbakova", hotelClients[0].Surname);
+        Assert.Equal("Sidorov", hotelClients[1].Surname);
     }
 
     /// <summary>
@@ -67,8 +67,8 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
             .Take(5)
             .ToList();
 
-        Assert.Equal("Альфа", hotelBookingCounts[0].Hotel.Name);
-        Assert.Equal("Браво", hotelBookingCounts[1].Hotel.Name);
+        Assert.Equal("Alpha", hotelBookingCounts[0].Hotel.Name);
+        Assert.Equal("Bravo", hotelBookingCounts[1].Hotel.Name);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     public void FreeRoomsInCity()
     {
         var freeRooms = _testData.Hotels
-            .Where(hotel => hotel.City == "Москва") 
+            .Where(hotel => hotel.City == "Moscow") 
             .Select(hotel => new
             {
                 HotelName = hotel.Name,
@@ -99,7 +99,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
             .ToList();
 
         Assert.True(freeRooms.Any());
-        Assert.Equal("Альфа", freeRooms[0].HotelName);
+        Assert.Equal("Alpha", freeRooms[0].HotelName);
         Assert.Equal(2, freeRooms[0].Rooms.Count()); // типы свободных номеров
         var availableRooms = freeRooms[0].Rooms.Select(r => r.AvailableRooms).ToList();
         Assert.Equal(15, availableRooms.Sum()); //количество свободных
@@ -126,7 +126,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
         Assert.True(clientsWithLongestRental.Any());
         Assert.Equal(maxRentalPeriod, clientsWithLongestRental[0].RentalDays);
         Assert.Equal(1, clientsWithLongestRental[0].Client.Id);
-        Assert.Equal("Морозов", clientsWithLongestRental[1].Client.Surname);
+        Assert.Equal("Morozov", clientsWithLongestRental[1].Client.Surname);
     }
 
     /// <summary>

@@ -7,13 +7,13 @@ public class TestData
 {
     public List<Hotel> Hotels =
     [
-        new(){ Id = 1, Name = "Альфа", City = "Москва", Address = "ул. Ленина, 1" },
-        new(){ Id = 2, Name = "Браво", City = "Санкт-Петербург", Address = "Невский пр., 123" },
-        new(){ Id = 3, Name = "Чарли", City = "Санкт-Петербург", Address = "ул. Невская, 45" },
-        new(){ Id = 4, Name = "Дельта", City = "Самара", Address = "ул. Ленинская, 111" },
-        new(){ Id = 5, Name = "Эхо", City = "Самара", Address = "ул. Панова, 12" },
-        new(){ Id = 6, Name = "Фокстрот", City = "Москва", Address = "ул. Самарская, 34" },
-        new(){ Id = 7, Name = "Голф", City = "Москва", Address = "ул. Пушкинская, 56" },
+        new(){ Id = 1, Name = "Alpha", City = "Moscow", Address = "Lenina St, 1" },
+        new(){ Id = 2, Name = "Bravo", City = "St Petersburg", Address = "Nevsky Ave, 123" },
+        new(){ Id = 3, Name = "Charlie", City = "St Petersburg", Address = "Nevskaya St, 45" },
+        new(){ Id = 4, Name = "Delta", City = "Samara", Address = "Leninskaya St, 111" },
+        new(){ Id = 5, Name = "Echo", City = "Samara", Address = "Panova St, 12" },
+        new(){ Id = 6, Name = "Foxtrot", City = "Moscow", Address = "Samarskaya St, 34" },
+        new(){ Id = 7, Name = "Golf", City = "Moscow", Address = "Pushkinskaya St, 56" },
     ];
 
     public List<Room> Rooms =
@@ -33,12 +33,12 @@ public class TestData
 
     public List<HotelClient> HotelClients =
     [
-        new(){ Id = 0, Passport = 1111, Name = "Иван", Surname = "Сидоров", Patronymic = "Сергеевич", Birthdate = new DateOnly(1990, 01, 01) },
-        new(){ Id = 1, Passport = 2222, Name = "Петр", Surname = "Челаев", Patronymic = "Михайлович", Birthdate = new DateOnly(1992, 02, 02) },
-        new(){ Id = 2, Passport = 3333, Name = "Сергей", Surname = "Морозов", Patronymic = "Иванович", Birthdate = new DateOnly(1995, 03, 03) },
-        new(){ Id = 3, Passport = 4444, Name = "Анна", Surname = "Щербакова", Patronymic = "Никитична", Birthdate = new DateOnly(1998, 04, 04) },
-        new(){ Id = 4, Passport = 5555, Name = "Михаил", Surname = "Попов", Patronymic = "Андреевич", Birthdate = new DateOnly(2000, 05, 05) },
-        new(){ Id = 5, Passport = 6666, Name = "Елена", Surname = "Васина", Patronymic = "Александровна", Birthdate = new DateOnly(2002, 06, 06) },
+        new(){ Id = 0, Passport = 1111, Name = "John", Surname = "Sidorov", Patronymic = "Sergeevich", Birthdate = new DateOnly(1990, 01, 01) },
+        new(){ Id = 1, Passport = 2222, Name = "Peter", Surname = "Chelaev", Patronymic = "Mikhailovich", Birthdate = new DateOnly(1992, 02, 02) },
+        new(){ Id = 2, Passport = 3333, Name = "Sergey", Surname = "Morozov", Patronymic = "Ivanovich", Birthdate = new DateOnly(1995, 03, 03) },
+        new(){ Id = 3, Passport = 4444, Name = "Anna", Surname = "Shcherbakova", Patronymic = "Nikitichna", Birthdate = new DateOnly(1998, 04, 04) },
+        new(){ Id = 4, Passport = 5555, Name = "Michael", Surname = "Popov", Patronymic = "Andreevich", Birthdate = new DateOnly(2000, 05, 05) },
+        new(){ Id = 5, Passport = 6666, Name = "Elena", Surname = "Vasina", Patronymic = "Aleksandrovna", Birthdate = new DateOnly(2002, 06, 06) },
     ];
 
     public List<BookedRoom> BookedRooms;
