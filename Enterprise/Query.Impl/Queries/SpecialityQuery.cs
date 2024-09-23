@@ -14,7 +14,7 @@ namespace Query.Impl.Queries
         public SpecialityQuery(ICollection<Speciality> repository) : base(repository) { }
 
         /// <summary>
-        /// Получить топ 5 вузов
+        /// Получить топ 5 специальностей
         /// </summary>
         /// <returns></returns>
         public List<Speciality> GetTopFiveSpecialities()

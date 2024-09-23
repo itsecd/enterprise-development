@@ -14,7 +14,7 @@ namespace Query.Impl.Models
         /// <param name="name"></param>
         /// <param name="code"></param>
         /// <param name="groups"></param>
-        public Speciality(string name, string code, ICollection<Group> groups): base(name)
+        public Speciality(string name, string code, ICollection<Group> groups) : base(name)
         {
             Code = code;
             Groups = groups;
@@ -36,11 +36,6 @@ namespace Query.Impl.Models
         /// 
         /// </summary>
         public virtual ICollection<Group> Groups { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Institution Institution { get; set; }
         #endregion
     }
 }

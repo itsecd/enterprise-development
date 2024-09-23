@@ -56,7 +56,11 @@ namespace Query.Impl.Queries
         {
             return Repository
                 .Where(x => selector(x).Equals(value))
-                .SelectMany(x => x.Specialities)
+                .SelectMany(x => x.Faculties)
+                .SelectMany(x => x.Departments)
+                .SelectMany(x => x.Groups)
+                .Select(x => x.Speciality)
+                .Distinct()
                 .ToList();
         }
 
@@ -134,7 +138,12 @@ namespace Query.Impl.Queries
             return Repository
                 .Where(x => x.InstitutionOwnership == institutionOwnership)
                 .Where(x => x.BuildingOwnership == buildingOwnership)
-                .Sum(x => x.Specialities.Count);
+                .SelectMany(x => x.Faculties)
+                .SelectMany(faculty => faculty.Departments)
+                .SelectMany(department => department.Groups)
+                .Select(group => group.Speciality.Name)
+                .Distinct()
+                .Count();
         }
     }
 }

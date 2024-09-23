@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Query.Impl.Queries;
 
 namespace QueriesClassLibraryTests
 {
@@ -10,17 +6,25 @@ namespace QueriesClassLibraryTests
     /// тесты для проверки запросов о специальностях
     /// </summary>
     [TestFixture]
-    public class SpecialityInfoTests
+    public class SpecialityInfoTests: TestBase
     {
+        private SpecialityQuery _specialitiesQuery;
+
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
+            _specialitiesQuery = new SpecialityQuery(Specialities);
         }
 
+
+        #region Вывести информацию о топ 5 популярных специальностях
         [Test]
         public void Test1()
         {
-            Assert.Pass();
+            Assert.That(
+                _specialitiesQuery.GetTopFiveSpecialities().Select(x => x.Name).ToList(),
+                Is.EquivalentTo(new List<string> { "SPEC1", "SPEC2", "SPEC3", "SPEC4", "SPEC5" }));
         }
+        #endregion
     }
 }

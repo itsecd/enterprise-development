@@ -24,7 +24,6 @@ namespace Query.Impl.Models
             string registrationNumber,
             string address,
             Rector rector,
-            ICollection<Speciality> specialities,
             ICollection<Faculty> faculties,
             BuildingOwnership buildingOwnership,
             InstitutionOwnership institutionOwnership): base(name)
@@ -36,7 +35,6 @@ namespace Query.Impl.Models
             Faculties = faculties;
             BuildingOwnership = buildingOwnership;
             InstitutionOwnership = institutionOwnership;
-            Specialities = specialities;
         }
 
         /// <summary>
@@ -65,11 +63,6 @@ namespace Query.Impl.Models
         /// 
         /// </summary>
         public virtual ICollection<Faculty> Faculties { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual ICollection<Speciality> Specialities { get; set; }
 
         /// <summary>
         /// 
