@@ -13,6 +13,6 @@ public class AirFlight
     public required DateTime Departure { get; set; }
     public required DateTime Arrive { get; set; }
     public required double FlyingTime { get; set; }
-    public required ushort PlaneType { get; set; }
+    public required string PlaneType { get; set; }
 }
 

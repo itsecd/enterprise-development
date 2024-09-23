@@ -18,6 +18,7 @@ internal class Passenegr
     public required string ticketnumber = null!; // ~ TicketNumber
     public required string seatNumber = null!;
     public required float baggageWeight = 0;
+    public required ushort codeFlight = 0; // поле для связи пассажира и рейса
 
     public bool Registration
     {
@@ -40,6 +41,12 @@ internal class Passenegr
     {
         get { return baggageWeight; }
         set { baggageWeight = value; }
+    }
+
+    public ushort сodeFlight
+    {
+        get { return codeFlight; }
+        set { codeFlight = value; }
     }
 }
 
