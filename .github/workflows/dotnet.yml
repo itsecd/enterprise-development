@@ -20,9 +20,11 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Change direction
+      run: Enterprise/
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test Enterprise/QueriesClassLibraryTests/QueriesClassLibraryTests.csproj --no-build --verbosity normal
+      run: dotnet test QueriesClassLibraryTests/QueriesClassLibraryTests.csproj --no-build --verbosity normal
