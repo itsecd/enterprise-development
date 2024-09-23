@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build Enterprise/ --no-restore
     - name: Test
-      run: dotnet test QueriesClassLibraryTests/QueriesClassLibraryTests.csproj --no-build --verbosity normal
+      run: dotnet test Enterprise/QueriesClassLibraryTests/QueriesClassLibraryTests.csproj --no-build --verbosity normal
