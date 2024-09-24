@@ -19,7 +19,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         (from type in types
          where type.Name.Equals("Спортивный")
          join bike in bikes on type.TypeId equals bike.TypeId
-         select bike);.ToList();
+         select bike).ToList();
         Assert.Equal(2, sport_bikes.Count);
     }
     /// <summary>
