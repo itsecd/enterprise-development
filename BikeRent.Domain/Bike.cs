@@ -7,9 +7,17 @@ public class Bike
     /// <summary>
     /// Идентификатор велосипеда
     /// </summary>
-    public int BikeId { get; set; }
+    required public int BikeId { get; set; }
     /// <summary>
     /// идентификатор типа велосипеда
     /// </summary>
-    public int TypeId { get; set; }
+    required public int TypeId { get; set; }
+    /// <summary>
+    /// Модель
+    /// </summary>
+    required public string Model { get; set; }
+    /// <summary>
+    /// Цвет
+    /// </summary>
+    required public string Color { get; set; }
 }

@@ -20,6 +20,4 @@ public class Rent
     /// Конец аренды
     /// </summary>
     required public DateTime End { get; set; }
-
 }
-

@@ -12,5 +12,8 @@ public class BikeType
     /// Стоимость аренды
     /// </summary>
     required public double Price { get; set; }
-
+    /// <summary>
+    /// Наименование типа
+    /// </summary>
+    required public string Name { get; set; }
 }
