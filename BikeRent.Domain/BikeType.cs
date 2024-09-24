@@ -7,7 +7,7 @@ public class BikeType
     /// <summary>
     /// Идентификатор типа велосипеда
     /// </summary>
-    required public int TypeId { get; set; }
+    required public int Id { get; set; }
     /// <summary>
     /// Стоимость аренды
     /// </summary>

@@ -7,7 +7,7 @@ public class Bike
     /// <summary>
     /// Идентификатор велосипеда
     /// </summary>
-    required public int BikeId { get; set; }
+    required public int Id { get; set; }
     /// <summary>
     /// идентификатор типа велосипеда
     /// </summary>

@@ -18,7 +18,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         var sport_bikes =
         (from type in types
          where type.Name.Equals("Sport")
-         join bike in bikes on type.TypeId equals bike.TypeId
+         join bike in bikes on type.Id equals bike.TypeId
          select bike).ToList();
         Assert.Equal(2, sport_bikes.Count);
     }
@@ -35,13 +35,13 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         var mountain_clients = 
             (from type in types
              where type.Name.Equals("Mountain")
-             join bike in bikes on type.TypeId equals bike.TypeId
+             join bike in bikes on type.Id equals bike.TypeId
              join rent in rents on bike.TypeId equals rent.BikeId
-             join client in clients on rent.ClientId equals client.ClientId
-             orderby client.ClientSecondName
+             join client in clients on rent.ClientId equals client.Id
+             orderby client.SecondName
              select client).Distinct().ToList();
         Assert.Equal(4, mountain_clients.Count);
-        Assert.Equal("Arshinov", mountain_clients.First().ClientSecondName);
+        Assert.Equal("Arshinov", mountain_clients.First().SecondName);
     }
     /// <summary>
     /// Суммарное время аренды для велосипеда каждого типа
@@ -56,8 +56,8 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         {
             var type_time =
                 (from bike in bikes
-                where bike.TypeId == type.TypeId
-                join rent in rents on bike.BikeId equals rent.BikeId
+                where bike.TypeId == type.Id
+                join rent in rents on bike.Id equals rent.BikeId
                 select new
                 {
                     type = type.Name,
@@ -84,7 +84,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         {
             var client_rent_count =
                 (from rent in rents
-                where rent.ClientId == client.ClientId
+                where rent.ClientId == client.Id
                 select rent).Count();
             Assert.True(client_rent_count > 1);
         }

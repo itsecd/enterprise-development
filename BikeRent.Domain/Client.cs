@@ -7,19 +7,19 @@ public class Client
     /// <summary>
     /// Идентификатор клиента
     /// </summary>
-    required public  int ClientId { get; set; }
+    required public  int Id { get; set; }
     /// <summary>
     /// Имя клиента
     /// </summary>
-    required public  string ClientFirstName { get; set; }
+    required public  string FirstName { get; set; }
     /// <summary>
     /// Фамилия Клиента
     /// </summary>
-    required public string ClientSecondName { get; set; }
+    required public string SecondName { get; set; }
     /// <summary>
     /// Отчество клиента
     /// </summary>
-    required public string ClientThirdName { get; set; }
+    required public string ThirdName { get; set; }
     /// <summary>
     /// Дата рождения
     /// </summary>
