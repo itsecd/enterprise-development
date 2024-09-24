@@ -17,9 +17,9 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         var types = _fixture.Types.ToList();
         var sport_bikes =
         (from type in types
-         where type.Name == "Спортивный"
+         where type.Name.Equals("Спортивный")
          join bike in bikes on type.TypeId equals bike.TypeId
-         select bike).ToList();
+         select bike);.ToList();
         Assert.Equal(2, sport_bikes.Count);
     }
     /// <summary>
@@ -34,7 +34,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         var clients = _fixture.Clients.ToList();
         var mountain_clients = 
             (from type in types
-             where type.Name == "Горный"
+             where type.Name.Equals("Горный")
              join bike in bikes on type.TypeId equals bike.TypeId
              join rent in rents on bike.TypeId equals rent.BikeId
              join client in clients on rent.ClientId equals client.ClientId
