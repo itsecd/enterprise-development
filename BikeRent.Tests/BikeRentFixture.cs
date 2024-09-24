@@ -3,29 +3,29 @@ public class BikeRentFixture
 {
     public List<Client> Clients =
         [
-            new(){ ClientId = 0, ClientFirstName = "Василий", ClientSecondName = "Денисов", ClientThirdName = "Николаевич", BirthDate = new DateTime(1970, 7, 20), PhoneNumber = "+7 908 216 48 93"},
-            new(){ ClientId = 1, ClientFirstName = "Александр", ClientSecondName = "Катков", ClientThirdName = "Дмитриевич", BirthDate = new DateTime(1984, 11, 14), PhoneNumber = "+7 908 156 38 26"},
-            new(){ ClientId = 2, ClientFirstName = "Георгий", ClientSecondName = "Гранитов", ClientThirdName = "Альбертович", BirthDate = new DateTime(2001, 3, 30), PhoneNumber = "+7 907 511 63 89"},
-            new(){ ClientId = 3, ClientFirstName = "Алексей", ClientSecondName = "Кузнецов", ClientThirdName = "Васильевич", BirthDate = new DateTime(2005, 5, 17), PhoneNumber = "+7 908 312 58 50"},
-            new(){ ClientId = 4, ClientFirstName = "Вячеслав", ClientSecondName = "Гвоздев", ClientThirdName = "Андреевич", BirthDate = new DateTime(1993, 1, 1), PhoneNumber = "+7 908 333 65 32"},
-            new(){ ClientId = 5, ClientFirstName = "Всеволод", ClientSecondName = "Аршинов", ClientThirdName = "Владимирович", BirthDate = new DateTime(1999, 12, 21), PhoneNumber = "+7 905 041 32 61"},
-            new(){ ClientId = 6, ClientFirstName = "Ратибор", ClientSecondName = "Захаров", ClientThirdName = "Викторович", BirthDate = new DateTime(1975, 9, 18), PhoneNumber = "+7 908 216 18 97"}
+            new(){ ClientId = 0, ClientFirstName = "Vasily", ClientSecondName = "Denisov", ClientThirdName = "Nikolayevich", BirthDate = new DateTime(1970, 7, 20), PhoneNumber = "+7 908 216 48 93"},
+            new(){ ClientId = 1, ClientFirstName = "Alexandr", ClientSecondName = "Katkov", ClientThirdName = "Dmitrievich", BirthDate = new DateTime(1984, 11, 14), PhoneNumber = "+7 908 156 38 26"},
+            new(){ ClientId = 2, ClientFirstName = "George", ClientSecondName = "Granitov", ClientThirdName = "Albertovich", BirthDate = new DateTime(2001, 3, 30), PhoneNumber = "+7 907 511 63 89"},
+            new(){ ClientId = 3, ClientFirstName = "Alexey", ClientSecondName = "Kuznetsov", ClientThirdName = "Vasilievich", BirthDate = new DateTime(2005, 5, 17), PhoneNumber = "+7 908 312 58 50"},
+            new(){ ClientId = 4, ClientFirstName = "Vyacheslav", ClientSecondName = "Gvozdev", ClientThirdName = "Andreevich", BirthDate = new DateTime(1993, 1, 1), PhoneNumber = "+7 908 333 65 32"},
+            new(){ ClientId = 5, ClientFirstName = "Vsevolod", ClientSecondName = "Arshinov", ClientThirdName = "Vladimirivoch", BirthDate = new DateTime(1999, 12, 21), PhoneNumber = "+7 905 041 32 61"},
+            new(){ ClientId = 6, ClientFirstName = "Ratibor", ClientSecondName = "Zaharov", ClientThirdName = "Viktorovich", BirthDate = new DateTime(1975, 9, 18), PhoneNumber = "+7 908 216 18 97"}
         ];
     public List<BikeType> Types =
         [
-            new(){ TypeId = 0, Price = 300, Name = "Спортивный"},
-            new(){ TypeId = 1, Price = 350, Name = "Горный"},
-            new(){ TypeId = 2, Price = 250, Name = "Прогулочный"}
+            new(){ TypeId = 0, Price = 300, Name = "Sport"},
+            new(){ TypeId = 1, Price = 350, Name = "Mountain"},
+            new(){ TypeId = 2, Price = 250, Name = "Walking"}
         ];
     public List<Bike> Bikes =
         [
-            new(){BikeId = 0, Color = "Синий", Model = "003v5", TypeId = 0 },
-            new(){BikeId = 1, Color = "Красный", Model = "003b", TypeId = 1 },
-            new(){BikeId = 2, Color = "Черный", Model = "004v8", TypeId = 2 },
-            new(){BikeId = 3, Color = "Желтый", Model = "01006n", TypeId= 2 },
-            new(){BikeId = 4, Color = "Зеленый", Model = "331h", TypeId = 1},
-            new(){BikeId = 5, Color = "Фиолетовый", Model = "34rf", TypeId = 1},
-            new(){BikeId = 6, Color = "Оранжевый", Model = "0004f", TypeId = 0}
+            new(){BikeId = 0, Color = "Blue", Model = "003v5", TypeId = 0 },
+            new(){BikeId = 1, Color = "Red", Model = "003b", TypeId = 1 },
+            new(){BikeId = 2, Color = "Black", Model = "004v8", TypeId = 2 },
+            new(){BikeId = 3, Color = "Yellow", Model = "01006n", TypeId= 2 },
+            new(){BikeId = 4, Color = "Green", Model = "331h", TypeId = 1},
+            new(){BikeId = 5, Color = "Violet", Model = "34rf", TypeId = 1},
+            new(){BikeId = 6, Color = "Orange", Model = "0004f", TypeId = 0}
         ];
     public List<Rent> Rents =
         [

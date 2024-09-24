@@ -17,7 +17,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         var types = _fixture.Types.ToList();
         var sport_bikes =
         (from type in types
-         where type.Name.Equals("Спортивный")
+         where type.Name.Equals("Sport")
          join bike in bikes on type.TypeId equals bike.TypeId
          select bike).ToList();
         Assert.Equal(2, sport_bikes.Count);
@@ -34,14 +34,14 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         var clients = _fixture.Clients.ToList();
         var mountain_clients = 
             (from type in types
-             where type.Name.Equals("Горный")
+             where type.Name.Equals("Mountain")
              join bike in bikes on type.TypeId equals bike.TypeId
              join rent in rents on bike.TypeId equals rent.BikeId
              join client in clients on rent.ClientId equals client.ClientId
              orderby client.ClientSecondName
              select client).Distinct().ToList();
         Assert.Equal(4, mountain_clients.Count);
-        Assert.Equal("Аршинов", mountain_clients.First().ClientSecondName);
+        Assert.Equal("Arshinov", mountain_clients.First().ClientSecondName);
     }
     /// <summary>
     /// Суммарное время аренды для велосипеда каждого типа
