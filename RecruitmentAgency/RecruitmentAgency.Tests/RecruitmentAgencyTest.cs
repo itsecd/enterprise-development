@@ -64,7 +64,7 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
     }
 
     [Fact]
-    public void Test_ApplicationCount_BySectionAndPosition_All()
+    public void TestApplicationCountBySectionAndPositionAll()
     {
         var expectedData = new List<(string Section, string Position, int Count)>
     {
