@@ -2,18 +2,39 @@
 
 namespace MediaLibrary.Tests;
 
+/// <summary>
+/// Класс для тестовых данных
+/// </summary>
 internal class MediaLibraryFixture
 {
+    /// <summary>
+    /// Список исполнителей 
+    /// </summary>
     private List<Actor>? _actors { get; }
 
+    /// <summary>
+    /// Список сущностей Исполнитель-Жанр
+    /// </summary>
     private List<ActorGenre>? _actorGenres { get; }
 
+    /// <summary>
+    /// Список жанров
+    /// </summary>
     private List<Genre>? _genres { get; }
 
+    /// <summary>
+    /// Список треков
+    /// </summary>
     private List<Track>? _tracks { get; }
 
+    /// <summary>
+    /// Список альбомов
+    /// </summary>
     private List<Album>? _albums { get; }
 
+    /// <summary>
+    /// Инициализация тестовых данных 
+    /// </summary>
     public MediaLibraryFixture()
     {
         _actors = new() 
@@ -190,5 +211,4 @@ internal class MediaLibraryFixture
                 AlbumId = 9, Time = TimeSpan.FromSeconds(229) },
         };
     }
-
 }
