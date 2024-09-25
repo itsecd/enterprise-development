@@ -4,7 +4,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
 {
     private readonly BikeRentFixture _fixture = fixture;
     /// <summary>
-    /// Информация обо всех спортивных велосипедах
+    /// информация обо всех спортивных велосипедах
     /// </summary>
     [Fact]
     public void TestSelectSportBikes()
@@ -64,7 +64,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal(3, TypeRentTime.Count());
     }
     /// <summary>
-    /// Информация о клиентах, бравших велосипеды на прокат больше всего раз
+    /// Информация о клиентах , бравших велосипеды на прокат больше всего раз
     /// </summary>
     [Fact]
     public void TestClientMaxRents()
@@ -89,7 +89,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal(7, MostRentClients.Count());
     }
     /// <summary>
-    /// Информация о пяти наиболее често арендуемых велосипедах
+    /// Информация о пяти наиболее часто арендуемых велосипедах
     /// </summary>
     [Fact]
     public void TestTopFiveBikes()

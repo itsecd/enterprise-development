@@ -58,7 +58,4 @@ public class BikeRentFixture
         new(){ClientId = 6, BikeId = 3, Begin = new DateTime(2023, 9, 22, 13, 31, 0 ), End = new DateTime(2023, 9, 22, 15, 0, 0)},
         new(){ClientId = 5, BikeId = 3, Begin = new DateTime(2023, 9, 1, 12, 31, 0 ), End = new DateTime(2023, 9, 1, 13, 0, 0)},
     ];
-    /// <summary>
-    /// Тип велосипеда
-    /// </summary>
 }
