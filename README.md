@@ -7,7 +7,8 @@
 
 ### Структура классов проекта
 
-![image](https://github.com/user-attachments/assets/c7b17992-ef3e-43de-bebb-ea5735bee93e)
+![image](https://github.com/user-attachments/assets/39baa8ee-34fd-4344-9530-e8946fd2165f)
+
 
 ### Запросы
 1) Вывести информацию обо всех артистах.
