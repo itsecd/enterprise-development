@@ -1,31 +1,31 @@
 ﻿namespace BikeRent.Domain;
 /// <summary>
-/// Клиент сервиса
+/// Class that represents service's client
 /// </summary>
 public class Client
 {
     /// <summary>
-    /// Идентификатор клиента
+    /// Client's id
     /// </summary>
     public required  int Id { get; set; }
     /// <summary>
-    /// Имя клиента
+    /// Client's name
     /// </summary>
     public required  string FirstName { get; set; }
     /// <summary>
-    /// Фамилия Клиента
+    /// Client's second name
     /// </summary>
     public required string SecondName { get; set; }
     /// <summary>
-    /// Отчество клиента
+    /// Client's Patronymic
     /// </summary>
     public required string Patronymic { get; set; }
     /// <summary>
-    /// Дата рождения
+    /// Client's birth date
     /// </summary>
     public required DateTime BirthDate { get; set; }
     /// <summary>
-    /// Номер телефона
+    /// Client's phone number
     /// </summary>
     public required string PhoneNumber { get; set; }
 }

@@ -1,23 +1,23 @@
 ﻿namespace BikeRent.Domain;
 /// <summary>
-/// Велосипед
+/// Bike avalible for rent
 /// </summary>
 public class Bike
 {
     /// <summary>
-    /// Идентификатор велосипеда
+    /// Bike's id
     /// </summary>
     public required int Id { get; set; }
     /// <summary>
-    /// Идентификатор типа велосипеда
+    /// Bike's type's id
     /// </summary>
     public required int TypeId { get; set; }
     /// <summary>
-    /// Модель
+    /// Bike's model
     /// </summary>
     public required string Model { get; set; }
     /// <summary>
-    /// Цвет
+    /// Bike's color
     /// </summary>
     public required string Color { get; set; }
 }

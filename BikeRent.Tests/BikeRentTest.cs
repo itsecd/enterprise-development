@@ -5,7 +5,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
     private readonly BikeRentFixture _fixture = fixture;
     [Fact]
     /// <summary>
-    /// Информация обо всех спортивных велосипедах
+    /// Info about all sport bikes
     /// </summary>
     public void TestSelectSportBikes()
     {
@@ -19,7 +19,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal(2, SportBikes.Count);
     }
     /// <summary>
-    /// Упорядоченая по ФИО информация обо всех клиентах, которые брали в аренду горные велосипеды
+    /// Info about all clients who have ever took mountain bike ordered by fullname
     /// </summary>
     [Fact]
     public void TestMountainBikesClients()
@@ -42,7 +42,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal("Arshinov", mountain_clients.First().SecondName);
     }
     /// <summary>
-    /// Суммарное время аренды для велосипеда каждого типа
+    /// Summed rental time for all bike types
     /// </summary>
     [Fact]
     public void TestBikeTimeRents()
@@ -64,7 +64,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal(3, TypeRentTime.Count());
     }
     /// <summary>
-    /// Информация о клиентах , бравших велосипеды на прокат больше всего раз
+    /// Info about clients who have took rent most times
     /// </summary>
     [Fact]
     public void TestClientMaxRents()
@@ -89,7 +89,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal(7, MostRentClients.Count());
     }
     /// <summary>
-    /// Информация о пяти наиболее часто арендуемых велосипедах
+    /// Info about five most rented bikes
     /// </summary>
     [Fact]
     public void TestTopFiveBikes()
@@ -111,7 +111,7 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
         Assert.Equal(4, BikeRent.First().BikeId);
     }
     /// <summary>
-    /// Информация о максимальном, среднем и минимальном времени аренды
+    /// Info about max, min and average rental time
     /// </summary>
     [Fact]
     public void TestRentTime()
