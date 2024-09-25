@@ -1,23 +1,23 @@
 ﻿namespace BikeRent.Domain;
 /// <summary>
-/// Аренда велосипеда
+/// Class that represents specific rental operation
 /// </summary>
 public class Rent
 {
     /// <summary>
-    /// Идентификатор клиента
+    /// Client's id
     /// </summary>
     public required int ClientId { get; set; }
     /// <summary>
-    /// Идентификатор велосипеда
+    /// Bike's id
     /// </summary>
     public required int BikeId { get; set; }
     /// <summary>
-    /// Начало аренды
+    /// Start of the rent
     /// </summary>
     public required DateTime Begin { get; set; }
     /// <summary>
-    /// Конец аренды
+    /// End of the rent
     /// </summary>
     public required DateTime End { get; set; }
 }

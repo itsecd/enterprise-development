@@ -1,19 +1,19 @@
 ﻿namespace BikeRent.Domain;
 /// <summary>
-/// Тип велосипеда
+/// Class that represents specific bike types
 /// </summary>
 public class BikeType
 {
     /// <summary>
-    /// Идентификатор типа велосипеда
+    /// Type's id
     /// </summary>
     required public int Id { get; set; }
     /// <summary>
-    /// Стоимость аренды
+    /// Rental cost
     /// </summary>
     required public double Price { get; set; }
     /// <summary>
-    /// Наименование типа
+    /// Type's name
     /// </summary>
     required public string Name { get; set; }
 }
