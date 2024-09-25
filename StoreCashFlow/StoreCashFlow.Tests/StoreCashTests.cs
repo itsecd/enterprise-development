@@ -1,5 +1,4 @@
 ﻿using StoreCashFlow.Domain;
-using Xunit;
 
 namespace StoreCashFlow.Tests;
 
@@ -50,6 +49,21 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
     [Fact]
     public void ReturnAveragePriceByGroupAndStore()
     {
+        var expectedPrices = new List<object>
+        {
+            new { StoreId = 0, ProductGroupCode = "001", AvgPrice = 35.50 },
+            new { StoreId = 0, ProductGroupCode = "002", AvgPrice = 70.99 },
+            new { StoreId = 1, ProductGroupCode = "003", AvgPrice = 450.99 },
+            new { StoreId = 1, ProductGroupCode = "004", AvgPrice = 120.50 },
+            new { StoreId = 0, ProductGroupCode = "005", AvgPrice = 40.00 },
+            new { StoreId = 0, ProductGroupCode = "006", AvgPrice = 55.99 },
+            new { StoreId = 1, ProductGroupCode = "007", AvgPrice = 90.50 },
+            new { StoreId = 1, ProductGroupCode = "008", AvgPrice = 320.75 },
+            new { StoreId = 0, ProductGroupCode = "009", AvgPrice = 160.20 },
+            new { StoreId = 1, ProductGroupCode = "010", AvgPrice = 20.00 },
+            new { StoreId = 1, ProductGroupCode = "001", AvgPrice = 35.50 }
+        };
+
         var avgPrices = _fixture.ProductAvailabilities
             .GroupBy(pa => new { pa.Store.StoreId, pa.Product.ProductGroupCode })
             .Select(group => new
@@ -60,27 +74,45 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
             })
             .ToList();
 
-        Assert.NotEmpty(avgPrices);
-        Assert.All(avgPrices, item => Assert.True(item.AvgPrice > 0));
+        Assert.Equal(expectedPrices, avgPrices);
     }
 
     [Fact]
     public void ReturnTop5SalesByTotalAmount()
     {
-        var topSales = _fixture.Sales
-                .OrderByDescending(s => s.Product.Price * s.Quantity)
-                .Take(5)
-                .ToList();
+        var expectedSales = new List<object>
+        {
+            new { ProductName = "Масло", TotalAmount = Math.Round(160.20 * 1000, 2) },
+            new { ProductName = "Молоко", TotalAmount = Math.Round(70.99 * 110, 2) },
+            new { ProductName = "Сахар", TotalAmount = Math.Round(55.99 * 20, 2) },
+            new { ProductName = "Яблоки", TotalAmount = Math.Round(120.50 * 5, 2) },   
+            new { ProductName = "Хлеб", TotalAmount = Math.Round(35.50 * 2, 2) }       
+        };
 
-        Assert.NotEmpty(topSales);
-        Assert.True(topSales.Count <= 5);
-        Assert.All(topSales, sale => Assert.True(sale.Quantity > 0));
+        var topSales = _fixture.Sales
+            .GroupBy(s => s.Product.ProductGroupCode)
+            .Select(group => new
+            {
+                ProductName = group.First().Product.Name,
+                TotalAmount = Math.Round(group.Sum(s => s.Product.Price * s.Quantity), 2)
+            })
+            .OrderByDescending(g => g.TotalAmount)
+            .Take(5)
+            .ToList();
+
+        Assert.Equal(expectedSales, topSales);
     }
 
     [Fact]
     public void ReturnExpiredProducts()
     {
-        var today = DateTime.Today;
+        var today = new DateTime(2024, 9, 26);
+
+        var expectedExpiredProducts = new List<object>
+        {
+             new { Product = _fixture.Products[0], Store = _fixture.Stores[0] },
+             new { Product = _fixture.Products[0], Store = _fixture.Stores[1] }
+        };
 
         var expiredProducts = _fixture.ProductAvailabilities
             .Where(pa => pa.Product.ExpirationDate < today)
@@ -91,8 +123,7 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
             })
             .ToList();
 
-        Assert.NotEmpty(expiredProducts);
-        Assert.All(expiredProducts, item => Assert.True(item.Product.ExpirationDate < today));
+        Assert.Equal(expectedExpiredProducts, expiredProducts);
     }
 
     [Fact]
@@ -102,18 +133,22 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
         var monthStart = new DateTime(2024, 8, 1);
         var monthEnd = new DateTime(2024, 8, 31);
 
+        var expectedHighSales = new List<object>
+        {
+            new { StoreId = 1, TotalSales = 169128.70 }
+        };
+
         var storesWithHighSales = _fixture.Sales
             .Where(s => s.SaleDate >= monthStart && s.SaleDate <= monthEnd)
             .GroupBy(s => s.Store.StoreId)
             .Select(group => new
             {
                 StoreId = group.Key,
-                TotalSales = group.Sum(s => s.Quantity * s.Product.Price)
+                TotalSales = Math.Round(group.Sum(s => s.Quantity * s.Product.Price), 2)
             })
             .Where(result => result.TotalSales > threshold)
             .ToList();
 
-        Assert.NotEmpty(storesWithHighSales);
-        Assert.All(storesWithHighSales, store => Assert.True(store.TotalSales > threshold));
+        Assert.Equal(expectedHighSales, storesWithHighSales);
     }
 }

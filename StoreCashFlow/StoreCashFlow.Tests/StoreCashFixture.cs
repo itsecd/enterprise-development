@@ -15,8 +15,8 @@ public class StoreCashFixture
     public List<Customer> Customers =
     [
         new() { CustomerId = 0, CardNumber = "12345", FirstName = "Иван", LastName = "Иванов", Potronimic = "Иванович" },
-        new() { CustomerId = 0, CardNumber = "54321",  FirstName = "Владимир", LastName = "Иванов", Potronimic = "Иванович" },
-        new() { CustomerId = 0, CardNumber = "54321",  FirstName = "Сергей", LastName = "Иванов", Potronimic = "Владимирович" }
+        new() { CustomerId = 1, CardNumber = "54321",  FirstName = "Владимир", LastName = "Иванов", Potronimic = "Иванович" },
+        new() { CustomerId = 2, CardNumber = "54431",  FirstName = "Сергей", LastName = "Иванов", Potronimic = "Владимирович" }
     ];
     public List<ProductType> ProductTypes =
     [
@@ -37,7 +37,7 @@ public class StoreCashFixture
             new() { Barcode = "7777777777", ProductGroupCode = "007", Name = "Мука", Weight = 2.0, ProductType = ProductTypes[0], Price = 90.50, ExpirationDate = new DateTime(2025, 1, 15) },
             new() { Barcode = "8888888888", ProductGroupCode = "008", Name = "Колбаса", Weight = 0.3, ProductType = ProductTypes[1], Price = 320.75, ExpirationDate = new DateTime(2024, 12, 5) },
             new() { Barcode = "9999999999", ProductGroupCode = "009", Name = "Масло", Weight = 0.2, ProductType = ProductTypes[0], Price = 160.20, ExpirationDate = new DateTime(2024, 10, 10) },
-            new() { Barcode = "1010101010", ProductGroupCode = "010", Name = "Яйца", Weight = 0.5, ProductType = ProductTypes[0], Price = 70.00, ExpirationDate = new DateTime(2024, 10, 3) }
+            new() { Barcode = "1010101010", ProductGroupCode = "010", Name = "Яйца", Weight = 0.5, ProductType = ProductTypes[0], Price = 20.00, ExpirationDate = new DateTime(2024, 10, 3) }
         ];
 
         ProductAvailabilities =
@@ -59,10 +59,10 @@ public class StoreCashFixture
         [
             new() { SaleId = 0, Customer = Customers[0], Product = Products[0], Quantity = 2, SaleDate = new DateTime(2024, 9, 25), Store = Stores[0] },
             new() { SaleId = 1, Customer = Customers[1], Product = Products[3], Quantity = 5, SaleDate = new DateTime(2024, 9, 24), Store = Stores[1] },
-            new() { SaleId = 2, Customer = Customers[2], Product = Products[8], Quantity = 2, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] },
-            new() { SaleId = 3, Customer = Customers[0], Product = Products[1], Quantity = 12, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] },
+            new() { SaleId = 2, Customer = Customers[2], Product = Products[8], Quantity = 1000, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] },
+            new() { SaleId = 3, Customer = Customers[0], Product = Products[1], Quantity = 100, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] },
             new() { SaleId = 4, Customer = Customers[0], Product = Products[1], Quantity = 10, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] },
-            new() { SaleId = 5, Customer = Customers[0], Product = Products[5], Quantity = 1, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] }
+            new() { SaleId = 5, Customer = Customers[0], Product = Products[5], Quantity = 20, SaleDate = new DateTime(2024, 8, 24), Store = Stores[1] }
         ];
     }
 }
