@@ -28,19 +28,19 @@ public class Group: Entity
 
     #endregion
 
-    #region Field
+    #region Properties
     /// <summary>
-    /// 
+    /// Номер группы
     /// </summary>
     public string Number { get; set; }
 
     /// <summary>
-    /// 
+    /// Кафедра
     /// </summary>
     public virtual Department Department { get; set; }
 
     /// <summary>
-    /// 
+    /// Специальность
     /// </summary>
     public virtual Speciality Speciality { get; set; }
     #endregion

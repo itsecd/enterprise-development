@@ -16,14 +16,14 @@ public abstract class Entity
     }
     #endregion
 
-    #region Fields
+    #region Properties
     /// <summary>
-    /// 
+    /// Id
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// 
+    /// Version
     /// </summary>
     public DateTime Version { get; set; }
     #endregion

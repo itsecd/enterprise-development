@@ -26,14 +26,14 @@ public class Speciality: EntityWithName
     public Speciality() { }
     #endregion
 
-    #region Fields
+    #region Properties
     /// <summary>
-    /// 
+    /// Код спцеаильности
     /// </summary>
     public string Code { get; set; }
 
     /// <summary>
-    /// 
+    /// Группы
     /// </summary>
     public virtual ICollection<Group> Groups { get; set; }
     #endregion

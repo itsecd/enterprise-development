@@ -26,14 +26,14 @@ public class Faculty: EntityWithName
     public Faculty() { }
     #endregion
 
-    #region Fields
+    #region Properties
     /// <summary>
-    /// 
+    /// Институт
     /// </summary>
     public virtual Institution Institution { get; set; }
 
     /// <summary>
-    /// 
+    /// Кафедры
     /// </summary>
     public virtual ICollection<Department> Departments { get; set; }
     #endregion

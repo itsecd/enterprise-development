@@ -25,14 +25,14 @@ public class Department: EntityWithName
     public Department() { }
     #endregion
 
-    #region Fields
+    #region Properties
     /// <summary>
-    /// 
+    /// Факультет
     /// </summary>
     public Faculty Faculty { get; set; }
 
     /// <summary>
-    /// 
+    /// Группы
     /// </summary>
     public ICollection<Group> Groups { get; set; }
     #endregion

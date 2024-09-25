@@ -31,19 +31,19 @@ public class Rector: Entity
     public Rector() { }
     #endregion
 
-    #region Field
+    #region Properties
     /// <summary>
-    /// 
+    /// ФИО
     /// </summary>
     public string FullName { get; set; }
 
     /// <summary>
-    /// 
+    /// Научная степень
     /// </summary>
     public ScientificDegree Degree { get; set; }
 
     /// <summary>
-    /// 
+    /// Звание
     /// </summary>
     public AcademicRank Rank { get; set; }
     #endregion

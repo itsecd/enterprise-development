@@ -27,19 +27,19 @@ public abstract class EntityWithName
     }
     #endregion
 
-    #region Fields
+    #region Properties
     /// <summary>
-    /// 
+    /// Id
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// 
+    /// Version
     /// </summary>
     public DateTime Version { get; set; }
     
     /// <summary>
-    /// 
+    /// Name
     /// </summary>
     public string Name { get; set; }
     #endregion

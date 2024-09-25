@@ -68,7 +68,7 @@ public abstract class BaseEntity<TEntity> where TEntity: class
     }
 
     /// <summary>
-    /// 
+    /// Repository
     /// </summary>
     public ICollection<TEntity> Repository { get; set; }
 }

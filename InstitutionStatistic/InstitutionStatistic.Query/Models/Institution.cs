@@ -43,34 +43,34 @@ public class Institution: EntityWithName
     public Institution() { }
     #endregion
 
-    #region Fields
+    #region Properties
     /// <summary>
-    /// 
+    /// Регистрационный номер
     /// </summary>
     public string RegistrationNumber { get; set; }
 
     /// <summary>
-    /// 
+    /// Адрес
     /// </summary>
     public string Address { get; set; } //адрес можно сделать отдельной сущностью, но для лабы это перебор
 
     /// <summary>
-    /// 
+    /// Ректор
     /// </summary>
     public virtual Rector Rector { get; set; }
     
     /// <summary>
-    /// 
+    /// Факультеты
     /// </summary>
     public virtual ICollection<Faculty> Faculties { get; set; }
 
     /// <summary>
-    /// 
+    /// Собственность зданий
     /// </summary>
     public BuildingOwnership BuildingOwnership { get; set; }
 
     /// <summary>
-    /// 
+    /// Собственность учреждения
     /// </summary>
     public InstitutionOwnership InstitutionOwnership { get; set; }
     #endregion
