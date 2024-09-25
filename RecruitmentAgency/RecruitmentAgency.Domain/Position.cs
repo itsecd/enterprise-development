@@ -2,7 +2,7 @@
 /// <summary>
 /// Должность
 /// </summary>
-internal class Position
+public class Position
 {
     /// <summary>
     /// Идентификатор должности

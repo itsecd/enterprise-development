@@ -1,11 +1,11 @@
-﻿namespace RecruitmentAgency;
+﻿namespace RecruitmentAgency.Domain;
 /// <summary>
-/// Заявка работадателя
+/// Заявка работодателя
 /// </summary>
-internal class EmployerApplication
+public class EmployerApplication
 {
     /// <summary>
-    /// Идентификатор заявки работадателя
+    /// Идентификатор заявки работодателя
     /// </summary>
     public required int Id { get; set; }
     /// <summary>
@@ -13,7 +13,7 @@ internal class EmployerApplication
     /// </summary>
     public required DateTime SubmissionDate { get; set; }
     /// <summary>
-    /// Работадатель
+    /// Работодатель
     /// </summary>
     public required Employer Employer { get; set; }
     /// <summary>
@@ -23,7 +23,7 @@ internal class EmployerApplication
     /// <summary>
     /// Требование 
     /// </summary>
-    public required string Requirements { get; set; }
+    public required int Requirements { get; set; }
     /// <summary>
     /// Предлагаемый уровень зарплаты
     /// </summary>

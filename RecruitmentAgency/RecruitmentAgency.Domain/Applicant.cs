@@ -19,7 +19,7 @@ public class Applicant
     /// <summary>
     /// Опыт работы
     /// </summary>
-    public required float Experience { get; set; }
+    public required double Experience { get; set; }
     /// <summary>
     /// Образование
     /// </summary>

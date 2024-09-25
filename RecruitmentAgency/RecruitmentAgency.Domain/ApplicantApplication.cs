@@ -1,8 +1,8 @@
-﻿namespace RecruitmentAgency;
+﻿namespace RecruitmentAgency.Domain;
 /// <summary>
 /// Заявка соискателя
 /// </summary>
-internal class ApplicantApplication
+public class ApplicantApplication
 {
     /// <summary>
     /// Индентификатор заявки соискателя

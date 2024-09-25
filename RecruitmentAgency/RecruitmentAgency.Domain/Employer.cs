@@ -1,8 +1,10 @@
-﻿namespace RecruitmentAgency.Domain;
+﻿using System;
+
+namespace RecruitmentAgency.Domain;
 ///<summary>
-///Работадатель
+///Работодатель
 ///</summary>
-internal class Employer
+public class Employer
 {
     /// <summary>
     /// Индентификатор работадателя
@@ -13,7 +15,11 @@ internal class Employer
     /// </summary>
     public required string CompanyName { get; set; }
     /// <summary>
-    /// Телефон работадателя
+    /// ФИО контактного лица
+    /// </summary>
+    public required string ContactPersonName { get; set; }
+    /// <summary>
+    /// Телефон работодателя
     /// </summary>
     public required string CompanyNumber { get; set; }
 }
