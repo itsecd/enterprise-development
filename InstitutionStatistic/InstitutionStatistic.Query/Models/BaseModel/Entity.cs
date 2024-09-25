@@ -17,10 +17,10 @@ public abstract class Entity
     /// <summary>
     /// Id
     /// </summary>
-    public Guid Id { get; set; }
+    required public Guid Id { get; set; }
 
     /// <summary>
     /// Version
     /// </summary>
-    public DateTime Version { get; set; }
+    required public DateTime Version { get; set; }
 }

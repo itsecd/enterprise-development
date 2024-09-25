@@ -19,18 +19,13 @@ public class Department: EntityWithName
     }
 
     /// <summary>
-    /// ctor
-    /// </summary>
-    public Department() { }
-
-    /// <summary>
     /// Факультет
     /// </summary>
-    public Faculty Faculty { get; set; }
+    required public Faculty Faculty { get; set; }
 
     /// <summary>
     /// Группы
     /// </summary>
-    public ICollection<Group> Groups { get; set; }
+    required public ICollection<Group> Groups { get; set; }
 
 }

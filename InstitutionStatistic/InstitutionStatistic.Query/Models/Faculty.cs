@@ -19,19 +19,15 @@ public class Faculty: EntityWithName
         Departments = departments;
     }
 
-    /// <summary>
-    /// ctor
-    /// </summary>
-    public Faculty() { }
 
     /// <summary>
     /// Институт
     /// </summary>
-    public virtual Institution Institution { get; set; }
+    required public virtual Institution Institution { get; set; }
 
     /// <summary>
     /// Кафедры
     /// </summary>
-    public virtual ICollection<Department> Departments { get; set; }
+    required public virtual ICollection<Department> Departments { get; set; }
 
 }

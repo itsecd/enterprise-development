@@ -3,40 +3,19 @@
 /// <summary>
 /// Базовый класс для сущности с именем
 /// </summary>
-public abstract class EntityWithName
+public abstract class EntityWithName: Entity
 {
     /// <summary>
     /// ctor
     /// </summary>
     /// <param name="name"></param>
-    public EntityWithName(string name) 
+    public EntityWithName(string name): base()
     {
         Name = name;
-        Id = Guid.NewGuid();
-        Version = DateTime.Now;
     }
-
-    /// <summary>
-    /// ctor
-    /// </summary>
-    public EntityWithName()
-    { 
-        Id = Guid.NewGuid();
-        Version = DateTime.Now;
-    }
-
-    /// <summary>
-    /// Id
-    /// </summary>
-    public Guid Id { get; set; }
-
-    /// <summary>
-    /// Version
-    /// </summary>
-    public DateTime Version { get; set; }
     
     /// <summary>
     /// Name
     /// </summary>
-    public string Name { get; set; }
+    required public string Name { get; set; }
 }

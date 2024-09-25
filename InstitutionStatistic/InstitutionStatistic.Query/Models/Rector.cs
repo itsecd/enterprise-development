@@ -17,31 +17,27 @@ public class Rector: Entity
     public Rector(
         string fullName,
         ScientificDegree scientificDegree,
-        AcademicRank academicRank)
+        AcademicRank academicRank): base()
     {
         FullName = fullName;
         Degree = scientificDegree;
         Rank = academicRank;
     }
 
-    /// <summary>
-    /// ctor
-    /// </summary>
-    public Rector() { }
 
     /// <summary>
     /// ФИО
     /// </summary>
-    public string FullName { get; set; }
+    required public string FullName { get; set; }
 
     /// <summary>
     /// Научная степень
     /// </summary>
-    public ScientificDegree Degree { get; set; }
+    required public ScientificDegree Degree { get; set; }
 
     /// <summary>
     /// Звание
     /// </summary>
-    public AcademicRank Rank { get; set; }
+    required public AcademicRank Rank { get; set; }
 
 }
