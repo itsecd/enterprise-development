@@ -20,17 +20,12 @@ public class Speciality: EntityWithName
     }
 
     /// <summary>
-    /// ctor
-    /// </summary>
-    public Speciality() { }
-
-    /// <summary>
     /// Код спцеаильности
     /// </summary>
-    public string Code { get; set; }
+    required public string Code { get; set; }
 
     /// <summary>
     /// Группы
     /// </summary>
-    public virtual ICollection<Group> Groups { get; set; }
+    required public virtual ICollection<Group> Groups { get; set; }
 }

@@ -13,31 +13,26 @@ public class Group: Entity
     /// <param name="number"></param>
     /// <param name="department"></param>
     /// <param name="speciality"></param>
-    public Group(string number, Department department, Speciality speciality ) 
+    public Group(string number, Department department, Speciality speciality ): base()
     {
         Number = number;
         Department = department;
         Speciality = speciality;
     }
-    
-    /// <summary>
-    /// ctor
-    /// </summary>
-    public Group() { }
 
     /// <summary>
     /// Номер группы
     /// </summary>
-    public string Number { get; set; }
+    required public string Number { get; set; }
 
     /// <summary>
     /// Кафедра
     /// </summary>
-    public virtual Department Department { get; set; }
+    required public virtual Department Department { get; set; }
 
     /// <summary>
     /// Специальность
     /// </summary>
-    public virtual Speciality Speciality { get; set; }
+    required public virtual Speciality Speciality { get; set; }
 
 }

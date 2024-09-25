@@ -27,7 +27,6 @@ public class Institution: EntityWithName
         BuildingOwnership buildingOwnership,
         InstitutionOwnership institutionOwnership): base(name)
     {
-        Name = name;
         RegistrationNumber = registrationNumber;
         Address = address;
         Rector = rector;
@@ -37,38 +36,33 @@ public class Institution: EntityWithName
     }
 
     /// <summary>
-    /// ctor
-    /// </summary>
-    public Institution() { }
-
-    /// <summary>
     /// Регистрационный номер
     /// </summary>
-    public string RegistrationNumber { get; set; }
+    required public string RegistrationNumber { get; set; }
 
     /// <summary>
     /// Адрес
     /// </summary>
-    public string Address { get; set; } //адрес можно сделать отдельной сущностью, но для лабы это перебор
+    required public string Address { get; set; } //адрес можно сделать отдельной сущностью, но для лабы это перебор
 
     /// <summary>
     /// Ректор
     /// </summary>
-    public virtual Rector Rector { get; set; }
-    
+    required public virtual Rector Rector { get; set; }
+
     /// <summary>
     /// Факультеты
     /// </summary>
-    public virtual ICollection<Faculty> Faculties { get; set; }
+    required public virtual ICollection<Faculty> Faculties { get; set; }
 
     /// <summary>
     /// Собственность зданий
     /// </summary>
-    public BuildingOwnership BuildingOwnership { get; set; }
+    required public BuildingOwnership BuildingOwnership { get; set; }
 
     /// <summary>
     /// Собственность учреждения
     /// </summary>
-    public InstitutionOwnership InstitutionOwnership { get; set; }
+    required public InstitutionOwnership InstitutionOwnership { get; set; }
 
 }
