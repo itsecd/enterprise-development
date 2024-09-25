@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RecruitmentAgency.Domain;
+﻿namespace RecruitmentAgency.Domain;
 ///<summary>
 ///Работодатель
 ///</summary>
