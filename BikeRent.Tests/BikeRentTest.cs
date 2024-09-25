@@ -3,10 +3,10 @@ namespace BikeRent.Tests;
 public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixture>
 {
     private readonly BikeRentFixture _fixture = fixture;
-    /// <summary>
-    /// информация обо всех спортивных велосипедах
-    /// </summary>
     [Fact]
+    /// <summary>
+    /// Информация обо всех спортивных велосипедах
+    /// </summary>
     public void TestSelectSportBikes()
     {
         var Bikes = _fixture.Bikes;
