@@ -6,7 +6,6 @@ namespace InstitutionStatistic.Query.Models;
 /// </summary>
 public class Department: EntityWithName
 {
-    #region ctors
     /// <summary>
     /// ctor
     /// </summary>
@@ -23,9 +22,7 @@ public class Department: EntityWithName
     /// ctor
     /// </summary>
     public Department() { }
-    #endregion
 
-    #region Properties
     /// <summary>
     /// Факультет
     /// </summary>
@@ -35,6 +32,5 @@ public class Department: EntityWithName
     /// Группы
     /// </summary>
     public ICollection<Group> Groups { get; set; }
-    #endregion
 
 }

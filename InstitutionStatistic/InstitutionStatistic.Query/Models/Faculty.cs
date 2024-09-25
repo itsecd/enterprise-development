@@ -7,7 +7,6 @@ namespace InstitutionStatistic.Query.Models;
 /// </summary>
 public class Faculty: EntityWithName
 {
-    #region ctors
     /// <summary>
     /// ctor
     /// </summary>
@@ -24,9 +23,7 @@ public class Faculty: EntityWithName
     /// ctor
     /// </summary>
     public Faculty() { }
-    #endregion
 
-    #region Properties
     /// <summary>
     /// Институт
     /// </summary>
@@ -36,6 +33,5 @@ public class Faculty: EntityWithName
     /// Кафедры
     /// </summary>
     public virtual ICollection<Department> Departments { get; set; }
-    #endregion
 
 }

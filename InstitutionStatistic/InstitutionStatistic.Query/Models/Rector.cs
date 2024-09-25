@@ -8,7 +8,6 @@ namespace InstitutionStatistic.Query.Models;
 /// </summary>
 public class Rector: Entity
 {
-    #region ctors
     /// <summary>
     /// ctor
     /// </summary>
@@ -29,9 +28,7 @@ public class Rector: Entity
     /// ctor
     /// </summary>
     public Rector() { }
-    #endregion
 
-    #region Properties
     /// <summary>
     /// ФИО
     /// </summary>
@@ -46,6 +43,5 @@ public class Rector: Entity
     /// Звание
     /// </summary>
     public AcademicRank Rank { get; set; }
-    #endregion
 
 }

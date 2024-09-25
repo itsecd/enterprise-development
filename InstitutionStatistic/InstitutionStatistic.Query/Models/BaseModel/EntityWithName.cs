@@ -5,7 +5,6 @@
 /// </summary>
 public abstract class EntityWithName
 {
-    #region ctors
     /// <summary>
     /// ctor
     /// </summary>
@@ -25,9 +24,7 @@ public abstract class EntityWithName
         Id = Guid.NewGuid();
         Version = DateTime.Now;
     }
-    #endregion
 
-    #region Properties
     /// <summary>
     /// Id
     /// </summary>
@@ -42,5 +39,4 @@ public abstract class EntityWithName
     /// Name
     /// </summary>
     public string Name { get; set; }
-    #endregion
 }

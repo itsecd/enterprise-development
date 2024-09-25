@@ -8,7 +8,6 @@ namespace InstitutionStatistic.Query.Models;
 /// </summary>
 public class Institution: EntityWithName
 {
-    #region ctors
     /// <summary>
     /// ctor
     /// </summary>
@@ -41,9 +40,7 @@ public class Institution: EntityWithName
     /// ctor
     /// </summary>
     public Institution() { }
-    #endregion
 
-    #region Properties
     /// <summary>
     /// Регистрационный номер
     /// </summary>
@@ -73,6 +70,5 @@ public class Institution: EntityWithName
     /// Собственность учреждения
     /// </summary>
     public InstitutionOwnership InstitutionOwnership { get; set; }
-    #endregion
 
 }

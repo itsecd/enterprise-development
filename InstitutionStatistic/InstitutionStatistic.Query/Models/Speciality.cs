@@ -7,7 +7,6 @@ namespace InstitutionStatistic.Query.Models;
 /// </summary>
 public class Speciality: EntityWithName
 {
-    #region ctors
     /// <summary>
     /// ctor
     /// </summary>
@@ -24,9 +23,7 @@ public class Speciality: EntityWithName
     /// ctor
     /// </summary>
     public Speciality() { }
-    #endregion
 
-    #region Properties
     /// <summary>
     /// Код спцеаильности
     /// </summary>
@@ -36,5 +33,4 @@ public class Speciality: EntityWithName
     /// Группы
     /// </summary>
     public virtual ICollection<Group> Groups { get; set; }
-    #endregion
 }
