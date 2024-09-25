@@ -1,0 +1,15 @@
+1, "Agricultural Holdings", "12 Farm Rd, Springfield", "+7-900-123-1111", 200, 5000, AgriculturalIndustry, Private
+2, "Global Logistics", "45 Cargo St, Shelbyville", "+7-900-234-2222", 300, 8000, Logistics, JointStock
+3, "Heavy Construction Ltd.", "89 Build Ave, Capital City", "+7-900-345-3333", 500, 12000, Construction, LimitedLiabilityPartnership
+4, "City Transport", "123 Transit Rd, Ogdenville", "+7-900-456-4444", 1000, 20000, Transport, MunicipalCity
+5, "Sunrise Farms", "34 Harvest St, North Haverbrook", "+7-900-567-5555", 150, 4000, AgriculturalIndustry, Private
+6, "Metro Logistics", "67 Distribution Rd, Westbrook", "+7-900-678-6666", 400, 10000, Logistics, StateFederal
+7, "Northern Lights Industries", "15 Industrial Park, Springfield", "+7-900-789-7777", 600, 15000, LightHeavyIndustry, JointStock
+8, "Urban Builders", "89 Construction Blvd, Shelbyville", "+7-900-890-8888", 350, 9000, Construction, MunicipalCity
+9, "Fast Transport Co.", "56 Speed Rd, Capital City", "+7-900-901-9999", 700, 18000, Transport, Private
+10, "East Coast Logistics", "74 Trade St, Ogdenville", "+7-900-012-0000", 250, 6000, Logistics, LimitedLiabilityPartnership
+11, "Green Valley Agriculture", "90 Crop St, North Haverbrook", "+7-900-123-1010", 100, 3500, AgriculturalIndustry, Private
+12, "Steel Works Inc.", "45 Forge Rd, Westbrook", "+7-900-234-2020", 800, 17000, LightHeavyIndustry, JointStock
+13, "Skyline Builders", "123 Tower Ave, Springfield", "+7-900-345-3030", 400, 9500, Construction, StateFederal
+14, "River Transport Ltd.", "67 Harbor Rd, Shelbyville", "+7-900-456-4040", 900, 19000, Transport, LimitedLiabilityPartnership
+15, "Westbridge Farms", "34 Barn Rd, Capital City", "+7-900-567-5050", 200, 5500, AgriculturalIndustry, Private
