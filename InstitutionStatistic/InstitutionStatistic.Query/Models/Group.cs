@@ -5,21 +5,8 @@ namespace InstitutionStatistic.Query.Models;
 /// <summary>
 /// Реализация сущности группа
 /// </summary>
-public class Group: Entity
+public class Group(Department department, Speciality speciality) : Entity
 {
-    /// <summary>
-    /// ctor
-    /// </summary>
-    /// <param name="number"></param>
-    /// <param name="department"></param>
-    /// <param name="speciality"></param>
-    public Group(string number, Department department, Speciality speciality ): base()
-    {
-        Number = number;
-        Department = department;
-        Speciality = speciality;
-    }
-
     /// <summary>
     /// Номер группы
     /// </summary>
@@ -28,11 +15,11 @@ public class Group: Entity
     /// <summary>
     /// Кафедра
     /// </summary>
-    required public virtual Department Department { get; set; }
+    public virtual Department? Department { get; set; } = department;
 
     /// <summary>
     /// Специальность
     /// </summary>
-    required public virtual Speciality Speciality { get; set; }
+    public virtual Speciality Speciality { get; set; } = speciality;
 
 }

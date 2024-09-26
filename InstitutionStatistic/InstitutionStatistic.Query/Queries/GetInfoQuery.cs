@@ -18,7 +18,7 @@ public abstract class GetInfoQuery<TEntity>: BaseEntity<TEntity> where TEntity :
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public TEntity GetById(Guid id)
+    public TEntity? GetById(Guid id)
     {
         return Repository.Where(x => x.Id == id).FirstOrDefault();
     }
@@ -27,7 +27,7 @@ public abstract class GetInfoQuery<TEntity>: BaseEntity<TEntity> where TEntity :
     /// Получить сущность по имени
     /// </summary>
     /// <param name="name"></param>
-    public TEntity GetByName(string name)
+    public TEntity? GetByName(string name)
     {
         return Repository.Where(x => x.Name == name).FirstOrDefault();
     }
@@ -50,7 +50,7 @@ public abstract class GetSimpleInfoQuery<TEntity>: BaseEntity<TEntity> where TEn
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public TEntity GetById(Guid id)
+    public TEntity? GetById(Guid id)
     {
         return Repository.Where(x => x.Id == id).FirstOrDefault();
     }

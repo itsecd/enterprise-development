@@ -6,35 +6,11 @@ namespace InstitutionStatistic.Query.Models;
 /// <summary>
 /// Реализация сущности институт
 /// </summary>
-public class Institution: EntityWithName
-{
-    /// <summary>
-    /// ctor
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="registrationNumber"></param>
-    /// <param name="address"></param>
-    /// <param name="rector"></param>
-    /// <param name="faculties"></param>
-    /// <param name="buildingOwnership"></param>
-    /// <param name="institutionOwnership"></param>
-    public Institution(
-        string name,
-        string registrationNumber,
-        string address,
+public class Institution(
         Rector rector,
-        ICollection<Faculty> faculties,
         BuildingOwnership buildingOwnership,
-        InstitutionOwnership institutionOwnership): base(name)
-    {
-        RegistrationNumber = registrationNumber;
-        Address = address;
-        Rector = rector;
-        Faculties = faculties;
-        BuildingOwnership = buildingOwnership;
-        InstitutionOwnership = institutionOwnership;
-    }
-
+        InstitutionOwnership institutionOwnership) : EntityWithName
+{
     /// <summary>
     /// Регистрационный номер
     /// </summary>
@@ -48,21 +24,20 @@ public class Institution: EntityWithName
     /// <summary>
     /// Ректор
     /// </summary>
-    required public virtual Rector Rector { get; set; }
+    public virtual Rector? Rector { get; set; } = rector;
 
     /// <summary>
     /// Факультеты
     /// </summary>
-    required public virtual ICollection<Faculty> Faculties { get; set; }
+    public virtual ICollection<Faculty> Faculties { get; set; } = [];
 
     /// <summary>
     /// Собственность зданий
     /// </summary>
-    required public BuildingOwnership BuildingOwnership { get; set; }
+    public BuildingOwnership? BuildingOwnership { get; set; } = buildingOwnership;
 
     /// <summary>
     /// Собственность учреждения
     /// </summary>
-    required public InstitutionOwnership InstitutionOwnership { get; set; }
-
+    public InstitutionOwnership? InstitutionOwnership { get; set; } = institutionOwnership;
 }

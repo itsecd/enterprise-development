@@ -1,30 +1,16 @@
 ﻿using InstitutionStatistic.Query.Enums;
 using InstitutionStatistic.Query.Models.BaseModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InstitutionStatistic.Query.Models;
 
 /// <summary>
 /// Реализация ректора
 /// </summary>
-public class Rector: Entity
-{
-    /// <summary>
-    /// ctor
-    /// </summary>
-    /// <param name="fullName"></param>
-    /// <param name="scientificDegree"></param>
-    /// <param name="academicRank"></param>
-    public Rector(
-        string fullName,
+public class Rector(
         ScientificDegree scientificDegree,
-        AcademicRank academicRank): base()
-    {
-        FullName = fullName;
-        Degree = scientificDegree;
-        Rank = academicRank;
-    }
-
-
+        AcademicRank academicRank) : Entity
+{
     /// <summary>
     /// ФИО
     /// </summary>
@@ -33,11 +19,11 @@ public class Rector: Entity
     /// <summary>
     /// Научная степень
     /// </summary>
-    required public ScientificDegree Degree { get; set; }
+    public ScientificDegree? Degree { get; set; } = scientificDegree;
 
     /// <summary>
     /// Звание
     /// </summary>
-    required public AcademicRank Rank { get; set; }
+    public AcademicRank? Rank { get; set; } = academicRank;
 
 }

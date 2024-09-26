@@ -3,19 +3,10 @@
 /// <summary>
 /// Базовый класс для сущности с именем
 /// </summary>
-public abstract class EntityWithName: Entity
-{
-    /// <summary>
-    /// ctor
-    /// </summary>
-    /// <param name="name"></param>
-    public EntityWithName(string name): base()
-    {
-        Name = name;
-    }
-    
+public abstract class EntityWithName : Entity
+{ 
     /// <summary>
     /// Name
     /// </summary>
-    required public string Name { get; set; }
+    required public string Name { get; init; }
 }

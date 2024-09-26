@@ -25,7 +25,7 @@ public class InstitutionQueriesTests : TestBase
 
         Assert.Equal(_institutinQuery.GetByName(ssau), Institutions[0]);
         Assert.Equal(_institutinQuery.GetByName(pguty), Institutions[2]);
-        Assert.Equal(_institutinQuery.GetByName(notExisted), null);
+        Assert.Null(_institutinQuery.GetByName(notExisted));
     }
     #endregion
 

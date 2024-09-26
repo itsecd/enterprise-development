@@ -24,7 +24,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     public List<Faculty> GetInstitutionFaculties<T>(Func<Institution, T> selector, T value)
     {
         return Repository
-            .Where(x => selector(x).Equals(value))
+            .Where(x => selector(x)?.Equals(value) == true)
             .SelectMany(x => x.Faculties)
             .ToList();
     }
@@ -39,7 +39,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     public List<Department> GetInstitutionDepartments<T>(Func<Institution, T> selector, T value)
     {
         return Repository
-            .Where(x => selector(x).Equals(value))
+            .Where(x => selector(x)?.Equals(value) == true)
             .SelectMany(x => x.Faculties)
             .SelectMany(x => x.Departments)
             .ToList();
@@ -55,7 +55,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     public List<Speciality> GetInstitutionSpecialities<T>(Func<Institution, T> selector, T value)
     {
         return Repository
-            .Where(x => selector(x).Equals(value))
+            .Where(x => selector(x)?.Equals(value) == true)
             .SelectMany(x => x.Faculties)
             .SelectMany(x => x.Departments)
             .SelectMany(x => x.Groups)
