@@ -111,7 +111,7 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
                     .OrderByDescending(g => g.AlbumCount)
                     .FirstOrDefault();
 
-        Assert.Equal(2, query.ArtistId);
+        Assert.Equal(2, query!.ArtistId);
         Assert.Equal(3, query.AlbumCount);
     }
 

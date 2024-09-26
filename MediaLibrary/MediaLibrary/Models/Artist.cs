@@ -19,7 +19,7 @@ public class Artist
     /// Artist's Description
     /// </summary>
     /// <example>Нукоторые говорят, что он знает только два факта об утках. И оба неправильные...</example>
-    public string Description { get; set; }
+    public required string Description { get; set; }
     /// <summary>
     /// Artist's Album Ids
     /// </summary>
