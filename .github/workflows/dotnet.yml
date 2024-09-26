@@ -23,6 +23,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet build --configuration Release --no-restore
+    - name: Tests
+      run: dotnet test ./HotelBookingDetails.Tests/HotelBookingDetails.Tests.csproj --configuration Release --verbosity normal
