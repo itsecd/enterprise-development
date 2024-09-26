@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./HotelBookingDetails/HotelBookingDetails.sln
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build ./HotelBookingDetails/HotelBookingDetails.sln --no-restore
     - name: Tests
-      run: dotnet test ./HotelBookingDetails.Tests/HotelBookingDetails.Tests.csproj --configuration Release --verbosity normal
+      run: dotnet test ./HotelBookingDetails/HotelBookingDetails.sln --no-build --verbosity normal
