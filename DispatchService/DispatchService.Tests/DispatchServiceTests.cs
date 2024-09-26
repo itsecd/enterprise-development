@@ -1,4 +1,3 @@
-using DispatchService.Model;
 namespace DispatchService.Tests;
 
 public class DispatchServiceTests(DispatchFixture fixture) : IClassFixture<DispatchFixture>
@@ -33,13 +32,13 @@ public class DispatchServiceTests(DispatchFixture fixture) : IClassFixture<Dispa
     [Fact]
     public void TestTotalTripTimesByTransport()
     {
-        var totalTripTimes = _fixture.TestData.Routes 
+        var totalTripTimes = _fixture.TestData.Routes
             .GroupBy(r => new { r.AssignedTransport.Type, r.AssignedTransport.ModelName })
             .Select(g => new
             {
-                TransportType = g.Key.Type,     
-                Model = g.Key.ModelName,        
-                TotalTime = g.Sum(r => (r.EndTime - r.StartTime).TotalHours) 
+                TransportType = g.Key.Type,
+                Model = g.Key.ModelName,
+                TotalTime = g.Sum(r => (r.EndTime - r.StartTime).TotalHours)
             })
             .ToList();
 

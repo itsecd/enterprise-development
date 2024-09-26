@@ -16,9 +16,9 @@ public class Transport
     }
 
     /// <summary>
-    /// Идентификатор транспорта
+    /// Индентификатор транспорта
     /// </summary>
-    public int Id { get; set; }
+    public int ID { get; set; }
 
     /// <summary>
     /// Госномер автомобиля
@@ -28,15 +28,20 @@ public class Transport
     /// <summary>
     /// Вид транспорта
     /// </summary>
-    public VehicleType Type { get; set; }
-
+    private VehicleType type;
+    public VehicleType Type
+    {
+        get { return type; }
+        set { type = value; }
+    }
+    
     /// <summary>
     /// Название модели транспорта
     /// </summary>
     public string ModelName { get; set; }
 
     /// <summary>
-    /// Тип транспорта (низкопольный / высокопольный) 
+    /// Тип транспорта (низкопольный / ненизкопльный) 
     /// </summary>
     public bool? IsLowFloor { get; set; }
 
@@ -49,6 +54,24 @@ public class Transport
     /// Год выпуска транспорта
     /// </summary>
     public int? YearOfManufacture { get; set; }
+
+    public string TypeDescription
+    {
+        get
+        {
+            switch (type)
+            {
+                case VehicleType.Bus:
+                    return "Автобус";
+                case VehicleType.Tram:
+                    return "Трамвай";
+                case VehicleType.Trolleybus:
+                    return "Троллейбус";
+                default:
+                    return null;
+            }
+        }
+    }
 
     public Transport(int _ID, string licensePlate, VehicleType _Type, string modelName, bool isLowFloor, int maxCapacity, int yearOfManufacture)
     {
