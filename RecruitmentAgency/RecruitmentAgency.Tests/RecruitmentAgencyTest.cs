@@ -32,7 +32,7 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
         var endDate = new DateTime(2024, 4, 28);
         var expectedData = new List<Applicant>
         {
-            _fixture.Applicants[1], 
+            _fixture.Applicants[1],
             _fixture.Applicants[2],
             _fixture.Applicants[3],
             _fixture.Applicants[4]
@@ -50,19 +50,19 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
     public void ReturnApplicantsForEmployerApplication()
     {
         var employerApplicationId = 4;
-        var expectedData = new List<Applicant>
+        var expectedData = new List<object>
         {
-            _fixture.Applicants[5] 
+            new { Applicant = _fixture.Applicants[5], EmployerApp = _fixture.EmployerApplications.First(e => e.Id == employerApplicationId) }
         };
 
         var applicantsForEmployer = _fixture.ApplicantApplications
             .Join(_fixture.EmployerApplications,
                   applicantApp => applicantApp.Position,
                   employerApp => employerApp.Position,
-                  (applicantApp, employerApp) => new { applicantApp, employerApp })
-            .Where(a => a.employerApp.Id == employerApplicationId) 
-            .Where(a => a.applicantApp.Applicant.Salaries <= a.employerApp.OfferedSalary) 
-            .Select(a => a.applicantApp.Applicant)
+                  (applicantApp, employerApp) => new { ApplicantApp = applicantApp, EmployerApp = employerApp })
+            .Where(a => a.EmployerApp.Id == employerApplicationId &&
+                        a.ApplicantApp.Applicant.Salaries <= a.EmployerApp.OfferedSalary)
+            .Select(a => new { a.ApplicantApp.Applicant, a.EmployerApp })
             .ToList();
 
         Assert.Equal(expectedData, applicantsForEmployer);
@@ -86,23 +86,22 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
             new {Section = "IT", PositionName = "Excel", Count = 2},
         };
 
-        var applicationCountBySectionAndPosition = _fixture.Positions
-            .GroupJoin(_fixture.ApplicantApplications,
-                position => position.Id,
-                app => app.Position.Id,
-                (position, apps) => new { Position = position, ApplicantCount = apps.Count() })
-            .GroupJoin(_fixture.EmployerApplications,
-                positionWithApplicant => positionWithApplicant.Position.Id,
-                employerApp => employerApp.Position.Id,
-                (positionWithApplicant, employerApps) => new
-                {
-                    positionWithApplicant.Position.Section,
-                    positionWithApplicant.Position.PositionName,
-                    Count = positionWithApplicant.ApplicantCount + employerApps.Count()
-                })
+        var applicationCountBySectionAndPosition = (
+            from position in _fixture.Positions
+            join applicantApp in _fixture.ApplicantApplications
+                on position.Id equals applicantApp.Position.Id into applicantsGroup
+            join employerApp in _fixture.EmployerApplications
+                on position.Id equals employerApp.Position.Id into employersGroup
+            select new
+            {
+                position.Section,
+                position.PositionName,
+                Count = applicantsGroup.Count() + employersGroup.Count()
+            })
             .ToList();
 
-        Assert.Equal(expectedData.OrderBy(x => x.Section).ThenBy(x => x.PositionName),
+        Assert.Equal(
+            expectedData.OrderBy(x => x.Section).ThenBy(x => x.PositionName),
             applicationCountBySectionAndPosition
                 .OrderBy(x => x.Section)
                 .ThenBy(x => x.PositionName)
@@ -137,11 +136,12 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
     [Fact]
     public void ReturnEmployersWithMaxSalaryApplications()
     {
-        var maxSalary = _fixture.EmployerApplications.Max(e => e.OfferedSalary);
         var expectedData = new List<Employer>
         {
             _fixture.Employers[4]
         };
+
+        var maxSalary = _fixture.EmployerApplications.Max(e => e.OfferedSalary);
 
         var employersWithMaxSalary = _fixture.EmployerApplications
             .Where(e => e.OfferedSalary == maxSalary)
