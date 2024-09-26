@@ -1,15 +1,17 @@
+using System.Globalization;
+
 namespace HotelBookingSystem.Domain.Test;
 
 /// <summary>
-/// “есты
+/// Tests
 /// </summary>
 public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
 {
 
     private readonly TestData _testData = testData;
-    
+
     /// <summary>
-    /// »нформаци€ о всех отел€х
+    /// Information about all hotels
     /// </summary>
     [Fact]
     public void InfoAllHotels()
@@ -26,7 +28,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     }
 
     /// <summary>
-    /// ¬се клиенты в указанном отеле, упор€дочить по ‘»ќ
+    /// All clients in the specified hotel, sorted by name
     /// </summary>
     [Fact]
     public void InfoClientsInHotels()
@@ -49,7 +51,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     }
 
     /// <summary>
-    /// “оп 5 отелей с большим числом бронировани€
+    /// Top 5 Hotels with the most bookings
     /// </summary>
     [Fact]
     public void TopHotels()
@@ -72,8 +74,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     }
 
     /// <summary>
-    /// ¬ывести информацию о свободных номерах во всех отел€х выбранного города 
-    /// (сколько типов номеров свободно и сколько всего свободно номеров)
+    /// Display information about available rooms in all hotels of the selected city
     /// </summary>
     [Fact]
     public void FreeRoomsInCity()
@@ -89,24 +90,24 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
                     .Select(group => new
                     {
                         RoomType = group.Key,
-                        TotalRooms = group.Sum(r => r.Number), // все номера
-                        BookedRooms = group.Sum(r => r.BookedRooms.Count), // забронированные
-                        AvailableRooms = group.Sum(r => r.Number) - group.Sum(r => r.BookedRooms.Count) // свободные
+                        TotalRooms = group.Sum(r => r.Number), 
+                        BookedRooms = group.Sum(r => r.BookedRooms.Count), 
+                        AvailableRooms = group.Sum(r => r.Number) - group.Sum(r => r.BookedRooms.Count) 
                     })
-                    .Where(r => r.AvailableRooms > 0) // фильтраци€ если есть свободные
+                    .Where(r => r.AvailableRooms > 0) 
                     .ToList()
             })
             .ToList();
 
         Assert.True(freeRooms.Any());
         Assert.Equal("Alpha", freeRooms[0].HotelName);
-        Assert.Equal(2, freeRooms[0].Rooms.Count()); // типы свободных номеров
+        Assert.Equal(2, freeRooms[0].Rooms.Count()); 
         var availableRooms = freeRooms[0].Rooms.Select(r => r.AvailableRooms).ToList();
-        Assert.Equal(15, availableRooms.Sum()); //количество свободных
+        Assert.Equal(15, availableRooms.Sum()); 
     }
 
     /// <summary>
-    /// ¬ывести информацию о клиентах, арендовавших номера на наибольшее количество дней
+    /// Display information about customers who rented rooms for the greatest number of days
     /// </summary>
     [Fact]
     public void ClientsLongestRentalPeriod()
@@ -130,7 +131,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
     }
 
     /// <summary>
-    /// ¬ывести информацию о минимальной, средней и максимальной стоимости номера в каждом отеле
+    /// Display information about the minimum, average and maximum room rates for each hotel
     /// </summary>
     [Fact]
     public void RoomPriceStatistics()

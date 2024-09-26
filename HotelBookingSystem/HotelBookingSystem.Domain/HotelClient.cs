@@ -1,12 +1,12 @@
 ﻿namespace HotelBookingSystem.Domain;
 
 /// <summary>
-/// Клиенты
+/// Hotel clients
 /// </summary>
 public class HotelClient
 {
     /// <summary>
-    /// Идентификатор клиента
+    /// Client ID
     /// </summary>
     public required int Id { get; set; }
 
@@ -16,27 +16,27 @@ public class HotelClient
     public required int Passport { get; set; }
 
     /// <summary>
-    /// Имя
+    /// Client's name
     /// </summary>
     public required string Name { get; set; }
 
     /// <summary>
-    /// Фамилия
+    /// Client's surname
     /// </summary>
     public required string Surname { get; set; }
 
     /// <summary>
-    /// Отчество
+    /// Client's patronymic
     /// </summary>
     public string? Patronymic { get; set; }
 
     /// <summary>
-    /// Дата рождения
+    /// Client's date of birth
     /// </summary>
     public required DateOnly Birthdate { get; set; }
 
     /// <summary>
-    /// Забронированные клиентом номера
+    /// Rooms booked by the client
     /// </summary>
     public List<BookedRoom> Brooms { get; set; } = [];
 }

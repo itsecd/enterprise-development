@@ -1,37 +1,37 @@
 ﻿namespace HotelBookingSystem.Domain;
 
 /// <summary>
-/// Номер в отеле
+/// Hotel room
 /// </summary>
 public class Room
 {
     /// <summary>
-    /// Идентификатор номера
+    /// Hotel room ID
     /// </summary>
     public required int Id { get; set; }
 
     /// <summary>
-    /// Тип номера
+    /// Hotel room type
     /// </summary>
     public required string TypeRoom { get; set; }
 
     /// <summary>
-    /// Количество номеров такого типа
+    /// Number of rooms of this type
     /// </summary>
     public required int Number { get; set; }
 
     /// <summary>
-    /// Cтоимость за ночь
+    /// Cost per night
     /// </summary>
     public required int Price { get; set; }
 
     /// <summary>
-    /// Идентификатор отеля
+    /// Hotel ID
     /// </summary>
     public required int HotelID { get; set; }
 
     /// <summary>
-    /// Бронь этого номера 
+    /// Book this room
     /// </summary>
     public List<BookedRoom> BookedRooms { get; set; } = [];
 }

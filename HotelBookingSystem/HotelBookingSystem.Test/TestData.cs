@@ -1,7 +1,7 @@
 ﻿namespace HotelBookingSystem.Domain.Test;
 
 /// <summary>
-/// Отвечает за предоставление тестовых данных
+/// Responsible for providing test data
 /// </summary>
 public class TestData
 {
