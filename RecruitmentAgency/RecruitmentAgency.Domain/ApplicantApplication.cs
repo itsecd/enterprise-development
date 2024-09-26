@@ -5,7 +5,7 @@
 public class ApplicantApplication
 {
     /// <summary>
-    /// Индентификатор заявки соискателя
+    /// Идентификатор заявки соискателя
     /// </summary>
     public required int Id { get; set; }
     /// <summary>

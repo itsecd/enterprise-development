@@ -23,7 +23,7 @@ public class EmployerApplication
     /// <summary>
     /// Требование 
     /// </summary>
-    public required int Requirements { get; set; }
+    public required string Requirements { get; set; }
     /// <summary>
     /// Предлагаемый уровень зарплаты
     /// </summary>

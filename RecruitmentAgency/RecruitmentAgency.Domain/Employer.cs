@@ -5,7 +5,7 @@
 public class Employer
 {
     /// <summary>
-    /// Индентификатор работадателя
+    /// Идентификатор работадателя
     /// </summary>
     public required int Id { get; set; }
     /// <summary>
