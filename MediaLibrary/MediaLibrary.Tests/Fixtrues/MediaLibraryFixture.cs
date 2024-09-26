@@ -8,31 +8,31 @@ public class MediaLibraryFixture
     {
         new() { ArtistId = 1, Name = "Jon Bon Jovi",
                 Description = "У него есть кожаная куртка с дюжиной застежек",
-                AlbumIds = [ 1, 2 ], GenreIds = new List<int> { 1, 2 } },
+                AlbumIds = [ 1, 2 ], GenreIds = [ 1, 2 ] },
 
         new() { ArtistId = 2, Name = "Bob Seger",
                 Description = "Его не заткнуть, а его смех похож на скрежет бетономешалки",
-                AlbumIds = [ 3, 4 ], GenreIds = new List<int> { 3 } },
+                AlbumIds = [ 3, 4 ], GenreIds = [ 3 ] },
 
         new() { ArtistId = 3, Name = "Jay Kay",
                 Description = "Он как-то говорил, что не смог бы стать раллийным гонщиком",
-                AlbumIds = [5], GenreIds = new List<int> { 4 } },
+                AlbumIds = [5], GenreIds = [ 4 ] },
 
         new() { ArtistId = 4, Name = "Roger Daltrey",
                 Description = "Самый быстрый человек с билетом на автобус",
-                AlbumIds = [6, 7], GenreIds = new List<int> { 3 } },
+                AlbumIds = [6, 7], GenreIds = [ 3 ] },
 
         new() { ArtistId = 5, Name = "Lionel Richie",
                 Description = "Он часто оказывался на обочине и пытался открыть правую дверь",
-                AlbumIds = [8], GenreIds = new List<int> { 4 } },
+                AlbumIds = [8], GenreIds = [ 4 ] },
 
         new() { ArtistId = 6, Name = "Cliff Richard",
                 Description = "Его усилия разогнаться иссякли на 130 километрах в час",
-                AlbumIds = [9, 10], GenreIds = new List<int> { 4, 5 } },
+                AlbumIds = [9, 10], GenreIds = [ 4, 5 ] },
 
         new() { ArtistId = 7, Name = "James Blunt",
                 Description = "Оденажды он спел о чем-то там в море",
-                AlbumIds = [11, 12], GenreIds = new List<int> { 3, 5 } }
+                AlbumIds = [11, 12], GenreIds = [ 3, 5 ] }
     };
 
     public List<Song> Songs = new()
