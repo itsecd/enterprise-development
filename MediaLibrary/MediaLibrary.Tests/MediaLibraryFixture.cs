@@ -5,32 +5,32 @@ namespace MediaLibrary.Tests;
 /// <summary>
 /// Класс для тестовых данных
 /// </summary>
-internal class MediaLibraryFixture
+public class MediaLibraryFixture
 {
     /// <summary>
     /// Список исполнителей 
     /// </summary>
-    private List<Actor>? _actors { get; }
+    private readonly List<Actor>? _actors;
 
     /// <summary>
     /// Список сущностей Исполнитель-Жанр
     /// </summary>
-    private List<ActorGenre>? _actorGenres { get; }
+    private readonly List<ActorGenre>? _actorGenres;
 
     /// <summary>
     /// Список жанров
     /// </summary>
-    private List<Genre>? _genres { get; }
+    private readonly List<Genre>? _genres;
 
     /// <summary>
     /// Список треков
     /// </summary>
-    private List<Track>? _tracks { get; }
+    private readonly List<Track>? _tracks;
 
     /// <summary>
     /// Список альбомов
     /// </summary>
-    private List<Album>? _albums { get; }
+    private readonly List<Album>? _albums;
 
     /// <summary>
     /// Инициализация тестовых данных 
@@ -211,4 +211,34 @@ internal class MediaLibraryFixture
                 AlbumId = 9, Time = TimeSpan.FromSeconds(229) },
         };
     }
+
+    /// <summary>
+    /// Получить список альбомов
+    /// </summary>
+    /// <returns>Список альбомов</returns>
+    public List<Album> GetAlbums() { return _albums!; }
+    
+    /// <summary>
+    /// Получить список артистов
+    /// </summary>
+    /// <returns>Список артистов</returns>
+    public List<Actor> GetActors() { return _actors!; }
+
+    /// <summary>
+    /// Получить список жанров 
+    /// </summary>
+    /// <returns>Список жанров</returns>
+    public List<Genre> GetGenres() { return _genres!; }
+
+    /// <summary>
+    /// Получить список треков
+    /// </summary>
+    /// <returns>Список треков</returns>
+    public List<Track> GetTracks() { return _tracks!; }
+
+    /// <summary>
+    /// Получить список Исполнитель-Жанр
+    /// </summary>
+    /// <returns>Список Исполнитель-Жанр</returns>
+    public List<ActorGenre> GetActorGenres() { return _actorGenres!; }
 }
