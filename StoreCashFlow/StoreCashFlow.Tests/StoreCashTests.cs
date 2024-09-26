@@ -49,7 +49,7 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
     [Fact]
     public void ReturnAveragePriceByGroupAndStore()
     {
-        var expectedPrices = new List<object>
+        var expectedPrices = new[]
         {
             new { StoreId = 0, ProductGroupCode = "001", AvgPrice = 35.50 },
             new { StoreId = 0, ProductGroupCode = "002", AvgPrice = 70.99 },
@@ -68,8 +68,8 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
             .GroupBy(pa => new { pa.Store.StoreId, pa.Product.ProductGroupCode })
             .Select(group => new
             {
-                StoreId = group.Key.StoreId,
-                ProductGroupCode = group.Key.ProductGroupCode,
+                group.Key.StoreId,
+                group.Key.ProductGroupCode,
                 AvgPrice = group.Average(pa => pa.Product.Price)
             })
             .ToList();
@@ -80,7 +80,7 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
     [Fact]
     public void ReturnTop5SalesByTotalAmount()
     {
-        var expectedSales = new List<object>
+        var expectedSales = new[]
         {
             new { ProductName = "Масло", TotalAmount = Math.Round(160.20 * 1000, 2) },
             new { ProductName = "Молоко", TotalAmount = Math.Round(70.99 * 110, 2) },
@@ -108,7 +108,7 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
     {
         var today = new DateTime(2024, 9, 26);
 
-        var expectedExpiredProducts = new List<object>
+        var expectedExpiredProducts = new[]
         {
              new { Product = _fixture.Products[0], Store = _fixture.Stores[0] },
              new { Product = _fixture.Products[0], Store = _fixture.Stores[1] }
@@ -133,7 +133,7 @@ public class StoreCashTests(StoreCashFixture fixture) : IClassFixture<StoreCashF
         var monthStart = new DateTime(2024, 8, 1);
         var monthEnd = new DateTime(2024, 8, 31);
 
-        var expectedHighSales = new List<object>
+        var expectedHighSales = new[]
         {
             new { StoreId = 1, TotalSales = 169128.70 }
         };
