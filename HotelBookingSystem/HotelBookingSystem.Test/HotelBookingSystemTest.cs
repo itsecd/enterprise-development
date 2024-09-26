@@ -36,14 +36,14 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
         var hotelId = _testData.Hotels.FirstOrDefault(hotel => hotel.Name == "Alpha")?.Id;
 
         var hotelClients = _testData.HotelClients
-            .Where(client => client.Brooms
-                .Any(broom => _testData.Rooms
-                    .Where(room => room.Id == broom.RoomId && room.HotelID == hotelId)
-                    .Any()))
-            .OrderBy(client => client.Surname)
-            .ThenBy(client => client.Name)
-            .ThenBy(client => client.Patronymic)
-            .ToList();
+        .Where(client => client.BookedRooms
+            .Join(_testData.Rooms, broom => broom.RoomId, room => room.Id, (broom, room) => new { broom, room })
+            //rooms corresponding to the client's booked rooms
+            .Any(clientRooms => clientRooms.room.HotelID == hotelId))
+        .OrderBy(client => client.Surname)
+        .ThenBy(client => client.Name)
+        .ThenBy(client => client.Patronymic)
+        .ToList();
 
         Assert.True(hotelClients.Any());
         Assert.Equal("Shcherbakova", hotelClients[0].Surname);
@@ -101,7 +101,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
 
         Assert.True(freeRooms.Any());
         Assert.Equal("Alpha", freeRooms[0].HotelName);
-        Assert.Equal(2, freeRooms[0].Rooms.Count()); 
+        Assert.Equal(2, freeRooms[0].Rooms.Count); 
         var availableRooms = freeRooms[0].Rooms.Select(r => r.AvailableRooms).ToList();
         Assert.Equal(15, availableRooms.Sum()); 
     }

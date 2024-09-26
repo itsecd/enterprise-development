@@ -65,12 +65,12 @@ public class TestData
                 DepartureDate = new DateOnly(2024, 06, 03), BookingPeriod = new TimeSpan(2, 0, 0, 0) },
         ];
 
-        HotelClients[0].Brooms = [BookedRooms[0]];
-        HotelClients[1].Brooms = [BookedRooms[1], BookedRooms[6]];
-        HotelClients[2].Brooms = [BookedRooms[2]];
-        HotelClients[3].Brooms = [BookedRooms[3], BookedRooms[7]];
-        HotelClients[4].Brooms = [BookedRooms[4]];
-        HotelClients[5].Brooms = [BookedRooms[5]];
+        HotelClients[0].BookedRooms = [BookedRooms[0]];
+        HotelClients[1].BookedRooms = [BookedRooms[1], BookedRooms[6]];
+        HotelClients[2].BookedRooms = [BookedRooms[2]];
+        HotelClients[3].BookedRooms = [BookedRooms[3], BookedRooms[7]];
+        HotelClients[4].BookedRooms = [BookedRooms[4]];
+        HotelClients[5].BookedRooms = [BookedRooms[5]];
 
         Rooms[0].BookedRooms = [BookedRooms[0]];
         Rooms[1].BookedRooms = [BookedRooms[1]];

@@ -38,5 +38,5 @@ public class HotelClient
     /// <summary>
     /// Rooms booked by the client
     /// </summary>
-    public List<BookedRoom> Brooms { get; set; } = [];
+    public List<BookedRoom> BookedRooms { get; set; } = [];
 }
