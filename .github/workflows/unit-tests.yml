@@ -26,4 +26,4 @@ jobs:
       run: dotnet build ./HotelBookingSystem/HotelBookingSystem.sln --configuration Release --no-restore
 
     - name: Tests
-      run: dotnet test ./HotelBookingSystem/HotelBookingSystem.Test/HotelBookingSystem.Test.csproj --configuration Release --verbosity normal
+      run: dotnet test ./HotelBookingSystem/HotelBookingSystem.Domain.Test/HotelBookingSystem.Domain.Test.csproj --configuration Release --verbosity normal
