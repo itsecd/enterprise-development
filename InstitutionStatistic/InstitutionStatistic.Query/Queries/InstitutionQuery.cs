@@ -80,7 +80,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     }
 
     /// <summary>
-    /// Получить институты с заданной собстввенностью учреждения и количество групп
+    /// Получить институты с заданной собственностью учреждения и количество групп
     /// </summary>
     /// <param name="institutionOwnership"></param>
     /// <param name="groupsCount"></param>
@@ -94,7 +94,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     }
 
     /// <summary>
-    /// Получить кол-во факультетов по каждому типу собственности учреждения и собиственности здания
+    /// Получить кол-во факультетов по каждому типу собственности учреждения и собственности здания
     /// </summary>
     /// <param name="institutionOwnership"></param>
     /// <param name="buildingOwnership"></param>
@@ -110,7 +110,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     }
 
     /// <summary>
-    /// Получить кол-во кафедр по каждому типу собственности учреждения и собиственности здания
+    /// Получить кол-во кафедр по каждому типу собственности учреждения и собственности здания
     /// </summary>
     /// <param name="institutionOwnership"></param>
     /// <param name="buildingOwnership"></param>
@@ -126,7 +126,7 @@ public class InstitutinQuery: GetInfoQuery<Institution>
     }
 
     /// <summary>
-    /// Получить кол-во специальностей по каждому типу собственности учреждения и собиственности здания
+    /// Получить кол-во специальностей по каждому типу собственности учреждения и собственности здания
     /// </summary>
     /// <param name="institutionOwnership"></param>
     /// <param name="buildingOwnership"></param>

@@ -5,7 +5,7 @@ namespace InstitutionStatistic.Query.Queries;
 /// <summary>
 /// Универсальный класс запросов сущнсотей, наследуемых от EntityWithName
 /// </summary>
-public abstract class GetInfoQuery<TEntity>: BaseEntity<TEntity> where TEntity : EntityWithName
+public abstract class GetInfoQuery<TEntity>: GetSimpleInfoQuery<TEntity> where TEntity : EntityWithName
 {
     /// <summary>
     /// ctor
@@ -35,15 +35,24 @@ public abstract class GetInfoQuery<TEntity>: BaseEntity<TEntity> where TEntity :
 }
 
 /// <summary>
-/// Универсальный класс запросов сущнсотей, наследуемых от Entity
+/// Универсальный класс запросов сущностей, наследуемых от Entity
 /// </summary>
-public abstract class GetSimpleInfoQuery<TEntity>: BaseEntity<TEntity> where TEntity: Entity
+public abstract class GetSimpleInfoQuery<TEntity> where TEntity: Entity
 {
+    /// <summary>
+    /// Repository
+    /// </summary>
+    public ICollection<TEntity> Repository { get; set; }
+
     /// <summary>
     /// ctor
     /// </summary>
     /// <param name="repository"></param>
-    public GetSimpleInfoQuery(ICollection<TEntity> repository) : base(repository) { }
+    public GetSimpleInfoQuery(ICollection<TEntity> repository)
+    {
+        Repository = repository;
+    }
+
 
     /// <summary>
     /// Получить сущность по id
@@ -54,21 +63,4 @@ public abstract class GetSimpleInfoQuery<TEntity>: BaseEntity<TEntity> where TEn
     {
         return Repository.Where(x => x.Id == id).FirstOrDefault();
     }
-}
-
-public abstract class BaseEntity<TEntity> where TEntity: class
-{
-    /// <summary>
-    /// ctor
-    /// </summary>
-    /// <param name="repository"></param>
-    public BaseEntity(ICollection<TEntity> repository)
-    {
-        Repository = repository;
-    }
-
-    /// <summary>
-    /// Repository
-    /// </summary>
-    public ICollection<TEntity> Repository { get; set; }
 }
