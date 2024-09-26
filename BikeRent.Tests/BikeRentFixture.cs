@@ -1,4 +1,5 @@
 ﻿using BikeRent.Domain;
+
 namespace BikeRent.Tests;
 public class BikeRentFixture
 {

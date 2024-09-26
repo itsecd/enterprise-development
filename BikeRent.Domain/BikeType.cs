@@ -7,13 +7,13 @@ public class BikeType
     /// <summary>
     /// Type's id
     /// </summary>
-    required public int Id { get; set; }
+    public required int Id { get; set; }
     /// <summary>
     /// Rental cost
     /// </summary>
-    required public double Price { get; set; }
+    public required double Price { get; set; }
     /// <summary>
     /// Type's name
     /// </summary>
-    required public string Name { get; set; }
+    public required string Name { get; set; }
 }

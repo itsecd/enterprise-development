@@ -1,22 +1,22 @@
-using Xunit.Sdk;
+
 namespace BikeRent.Tests;
 public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixture>
 {
     private readonly BikeRentFixture _fixture = fixture;
-    [Fact]
     /// <summary>
     /// Info about all sport bikes
     /// </summary>
+    [Fact]
     public void TestSelectSportBikes()
     {
-        var Bikes = _fixture.Bikes;
-        var Types = _fixture.Types;
-        var SportBikes =
-        (from Type in Types
-         where Type.Name == "Sport"
-         join Bike in Bikes on Type.Id equals Bike.TypeId
-         select Bike).ToList();
-        Assert.Equal(2, SportBikes.Count);
+        var bikes = _fixture.Bikes;
+        var types = _fixture.Types;
+        var sportBikes =
+            (from type in types
+            where type.Name == "Sport"
+            join bike in bikes on type.Id equals bike.TypeId
+            select bike).ToList();
+        Assert.Equal(2, sportBikes.Count);
     }
     /// <summary>
     /// Info about all clients who have ever took mountain bike ordered by fullname
@@ -24,21 +24,19 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
     [Fact]
     public void TestMountainBikesClients()
     {
-        var Bikes = _fixture.Bikes;
-        var Types = _fixture.Types;
-        var Rents = _fixture.Rents;
-        var Clients = _fixture.Clients;
+        var bikes = _fixture.Bikes;
+        var types = _fixture.Types;
+        var rents = _fixture.Rents;
+        var clients = _fixture.Clients;
         var mountain_clients = 
-            (from type in Types
+            (from type in types
              where type.Name == "Mountain"
-             join bike in Bikes on type.Id equals bike.TypeId
-             join rent in Rents on bike.TypeId equals rent.BikeId
-             join Client in Clients on rent.ClientId equals Client.Id
-             orderby Client.Patronymic
-             orderby Client.FirstName
-             orderby Client.SecondName
-             select Client).Distinct().ToList();
-        Assert.Equal(4, mountain_clients.Count());
+             join bike in bikes on type.Id equals bike.TypeId
+             join rent in rents on bike.Id equals rent.BikeId
+             join client in clients on rent.ClientId equals client.Id
+             orderby client.SecondName, client.FirstName, client.Patronymic
+             select client).Distinct().ToList();
+        Assert.Equal(7, mountain_clients.Count);
         Assert.Equal("Arshinov", mountain_clients.First().SecondName);
     }
     /// <summary>
@@ -47,21 +45,20 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
     [Fact]
     public void TestBikeTimeRents()
     {
-        var Bikes = _fixture.Bikes;
-        var Types = _fixture.Types;
-        var Rents = _fixture.Rents;
-        var TypeRentTime =
-            (from Type in Types
-             join Bike in Bikes on Type.Id equals Bike.TypeId
-             join Rent in Rents on Bike.Id equals Rent.BikeId
-             group new {Rent, Type} by Type.Id into NewRents
-             from Rnt in NewRents
+        var bikes = _fixture.Bikes;
+        var types = _fixture.Types;
+        var rents = _fixture.Rents;
+        var typeRentTime =
+            (from type in types
+             join bike in bikes on type.Id equals bike.TypeId
+             join rent in rents on bike.Id equals rent.BikeId
+             group new {rent, type} by type.Id into newRents
              select new
              {
-                 Rnt.Type.Id,
-                 Time = TimeSpan.FromSeconds(NewRents.Sum(rn => rn.Rent.End.Subtract(rn.Rent.Begin).TotalSeconds))
-             }).Distinct().ToList();
-        Assert.Equal(3, TypeRentTime.Count());
+                 newRents.Key,
+                 Time = TimeSpan.FromSeconds(newRents.Sum(rn => rn.rent.End.Subtract(rn.rent.Begin).TotalSeconds))
+             }).ToList();
+        Assert.Equal(20340, typeRentTime.First().Time.TotalSeconds, tolerance: 10);
     }
     /// <summary>
     /// Info about clients who have took rent most times
@@ -69,24 +66,28 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
     [Fact]
     public void TestClientMaxRents()
     {
-        var Rents = _fixture.Rents;
-        var Clients = _fixture.Clients;
-        var MostRentClients =
-            (from Rent in Rents
-             group Rent by Rent.ClientId into NewRents
-             from Rent in NewRents
-             join Client in Clients on Rent.ClientId equals Client.Id
+        var rents = _fixture.Rents;
+        var clients = _fixture.Clients;
+        var rentCountedClients =
+            (from rent in rents
+             group rent by rent.ClientId into newRents
+             from rent in newRents
+             join client in clients on rent.ClientId equals client.Id
              select new
              {
-                 Client.Id,
-                 Client.FirstName,
-                 Client.SecondName,
-                 Client.Patronymic,
-                 Client.PhoneNumber,
-                 Client.BirthDate,
-                 times = NewRents.Count()
+                 client.Id,
+                 client.FirstName,
+                 client.SecondName,
+                 client.Patronymic,
+                 client.PhoneNumber,
+                 client.BirthDate,
+                 times = newRents.Count()
              }).Distinct().ToList();
-        Assert.Equal(7, MostRentClients.Count());
+        var mostRentClients = 
+            (from client in rentCountedClients
+             where client.times == rentCountedClients.Max(rt => rt.times)
+             select client).ToList();
+        Assert.Equal(6, rentCountedClients.First().times);
     }
     /// <summary>
     /// Info about five most rented bikes
@@ -94,21 +95,21 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
     [Fact]
     public void TestTopFiveBikes()
     {
-        var Rents = _fixture.Rents;
-        var Bikes = _fixture.Bikes;
-        var BikeRent =
-            (from Rent in Rents
-             join Bike in Bikes on Rent.BikeId equals Bike.Id
-             group new {Rent, Bike} by new {Rent.BikeId, Bike.Model, Bike.Color} into NewRents
-             orderby NewRents.Count() descending
+        var rents = _fixture.Rents;
+        var bikes = _fixture.Bikes;
+        var bikeRent =
+            (from rent in rents
+             join bike in bikes on rent.BikeId equals bike.Id
+             group new {rent, bike} by new {rent.BikeId, bike.Model, bike.Color} into newRents
+             orderby newRents.Count() descending
              select new
              {
-                 NewRents.Key.BikeId,
-                 NewRents.Key.Model,
-                 NewRents.Key.Color,
-                 Count = NewRents.Count(),
+                 newRents.Key.BikeId,
+                 newRents.Key.Model,
+                 newRents.Key.Color,
+                 Count = newRents.Count(),
              }).Take(5).ToList();
-        Assert.Equal(4, BikeRent.First().BikeId);
+        Assert.Equal(4, bikeRent.First().BikeId);
     }
     /// <summary>
     /// Info about max, min and average rental time
@@ -116,12 +117,12 @@ public class BikeRentTest(BikeRentFixture fixture) : IClassFixture<BikeRentFixtu
     [Fact]
     public void TestRentTime()
     {
-        var Rents = _fixture.Rents;
-        var Max = Rents.Max(r => r.End - r.Begin).TotalSeconds;
-        var Min = Rents.Min(r => r.End - r.Begin).TotalSeconds;
-        var Avg = Rents.Average(r => (r.End - r.Begin).TotalSeconds);
-        Assert.True(Max > 7200);
-        Assert.True(Min < 3600);
-        Assert.True(Avg > 3600);
+        var rents = _fixture.Rents;
+        var max = rents.Max(r => r.End - r.Begin).TotalSeconds;
+        var min = rents.Min(r => r.End - r.Begin).TotalSeconds;
+        var avg = rents.Average(r => (r.End - r.Begin).TotalSeconds);
+        Assert.Equal(11100, max, tolerance: 1);
+        Assert.Equal(1740, min, tolerance: 1);
+        Assert.Equal(6091, avg, tolerance: 1);
     }
 }
