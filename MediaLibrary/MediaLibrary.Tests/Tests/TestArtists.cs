@@ -18,7 +18,7 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
     {
         var query = _fixture.Artists.ToList();
 
-        Assert.Equivalent(7, query.Count);
+        Assert.Equal(7, query.Count);
 
         Assert.Equal(new () { "Jon Bon Jovi", "Bob Seger", "Jay Kay",
             "Roger Daltrey", "Lionel Richie", "Cliff Richard", "James Blunt" },
@@ -72,7 +72,7 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
     {
         var query = _fixture.Albums.Where(q => q.ReleaseDate == 1980).ToList();
 
-        Assert.Equivalent(2, query.Count());
+        Assert.Equal(2, query.Count);
 
         Assert.Equal(new () { "Against The Wind", "Nine Tonight" },
             query.Select(q => q.Title).ToList());
@@ -81,7 +81,7 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
             query.Select(q => q.ArtistId).ToList());
 
         Assert.Equal(new () { 4, 4 },
-            query.Select(q => q.SongIds.Count()).ToList());
+            query.Select(q => q.SongIds.Count).ToList());
     }
 
     /// <summary>
@@ -111,8 +111,8 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
                     .OrderByDescending(g => g.AlbumCount)
                     .FirstOrDefault();
 
-        Assert.Equivalent(2, query.ArtistId);
-        Assert.Equivalent(3, query.AlbumCount);
+        Assert.Equal(2, query.ArtistId);
+        Assert.Equal(3, query.AlbumCount);
     }
 
     /// <summary>
@@ -130,8 +130,8 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
         var maxDuration = 723;
         var AvgDuration = 545.75;
 
-        Assert.Equivalent(maxDuration, query.Max(a => a.TotalDuration));
-        Assert.Equivalent(minDuration, query.Min(a => a.TotalDuration));
-        Assert.Equivalent(AvgDuration, query.Average(a => a.TotalDuration));
+        Assert.Equal(maxDuration, query.Max(a => a.TotalDuration));
+        Assert.Equal(minDuration, query.Min(a => a.TotalDuration));
+        Assert.Equal(AvgDuration, query.Average(a => a.TotalDuration));
     }
 }
