@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AirlineCompany.Domain;
-internal class Passenegr
+public class Passeneger
 {
     /// <summary>
     /// Класс описывает информацию о пассажире
@@ -15,10 +15,10 @@ internal class Passenegr
     public required string Passport { get; set; }
 
     public required bool registration = false;
-    public required string ticketnumber = null!; // ~ TicketNumber
+    public required string ticketNumber = null!; // ~ TicketNumber
     public required string seatNumber = null!;
     public required float baggageWeight = 0;
-    public required ushort codeFlight = 0; // поле для связи пассажира и рейса
+    public required string codeFlight = ""; // поле для связи пассажира и рейса
 
     public bool Registration
     {
@@ -28,8 +28,8 @@ internal class Passenegr
 
     public string TicketNumber
     {
-        get { return ticketnumber; }
-        set { ticketnumber = value; }
+        get { return ticketNumber; }
+        set { ticketNumber = value; }
     }
     public string SeatNumber
     {
@@ -43,7 +43,7 @@ internal class Passenegr
         set { baggageWeight = value; }
     }
 
-    public ushort сodeFlight
+    public string сodeFlight
     {
         get { return codeFlight; }
         set { codeFlight = value; }

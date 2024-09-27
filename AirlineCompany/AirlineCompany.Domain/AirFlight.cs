@@ -12,7 +12,7 @@ public class AirFlight
     public required string ArrivalPoint { get; set; } //*прибытие*
     public required DateTime Departure { get; set; }
     public required DateTime Arrive { get; set; }
-    public required double FlyingTime { get; set; }
+    public required TimeOnly FlyingTime { get; set; }
     public required string PlaneType { get; set; }
 }
 

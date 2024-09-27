@@ -10,8 +10,8 @@ def planes():
     max_passenger = ['165', '170', '180', '190', '200', '210']
 
 
-    with open ('planes.csv', 'w', newline='\n') as csvfile:
-        writer = csv.writer(csvfile, delimiter = ';')
+    with open ('planes.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter = ';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['Model', 'LoadCapacity', 'Efficinty', 'PassengerMax'])
         
         arr = ['0']*4
@@ -21,6 +21,7 @@ def planes():
             arr[2] = '\"' + efficiencies[random.randint(0, len(efficiencies) - 1)] + '\"'
             arr[3] = '\"' + max_passenger[random.randint(0, len(max_passenger) - 1)] + '\"'
             
+            print(arr)
             writer.writerow(arr)
         
 def passenger():  
@@ -38,8 +39,8 @@ def passenger():
     seats = ['A', 'B', 'C', 'D', 'E', 'F']
     
 
-    with open ('passengers.csv', 'w', newline='\n') as csvfile:
-        writer = csv.writer(csvfile, delimiter = ';')
+    with open ('passengers.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter = ';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['FIO', 'Passport', 'Registration', 'Ticketnumber', 'SeatNumber', 'BaggageWeight', 'CodeFlight'])
         arr = ['0']*7
         
@@ -47,7 +48,7 @@ def passenger():
             fio = FIOs[random.randint(0, len(FIOs) - 1)]
             arr[0] = '\"' + fio + '\"'
             arr[1] = '\"' + pass_info[fio] + '\"'
-            arr[2] = "\"1\""
+            arr[2] = "\"true\""
             arr[3] = '\"' + f"{random.randint(10000, 100000)}" + '\"'
             arr[4] = '\"' + f"{seats[random.randint(0, len(seats) - 1)]}" + f"{random.randint(1, 20)}" + '\"'
             arr[5] = '\"' + f"{random.randint(10, 100)/10}" + '\"'
@@ -65,8 +66,8 @@ def airflying():
     arrive_points = ['St. Petersburg', 'Washington', 'Dublin', 'Amsterdam', 'Vienna']
     
 
-    with open ('airflyights.csv', 'w', newline='\n') as csvfile:
-        writer = csv.writer(csvfile, delimiter = ';')
+    with open ('airflyights.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter = ';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['CodeNumber', 'DeparturePoint', 'ArrivalPoint', 'Departure', 'Arrive', 'FlyingTime', 'PlaneType'])
         arr = ['0']*7
         
@@ -76,7 +77,7 @@ def airflying():
             arr[2] = '\"' + arrive_points[random.randint(0, len(arrive_points) - 1)] + '\"'
             
             depar = dt.datetime(year=2024, month=random.randint(1, 12), day=random.randint(1, 29), 
-                                hour=random.randint(0, 24), minute=random.randint(0, 59))
+                                hour=random.randint(0, 23), minute=random.randint(0, 59))
             arrive = depar + dt.timedelta(hours=random.randint(1, 12), minutes=random.randint(1, 59))
             arr[3] = '\"' + f"{depar}" + '\"'
             arr[4] = '\"' + f"{arrive}" + '\"'
@@ -84,6 +85,6 @@ def airflying():
             arr[6] = '\"' + plane_models[random.randint(0, len(plane_models) - 1)] + '\"'
             
             writer.writerow(arr)
-planes()    
+#planes()    
 passenger()
-airflying()
+#airflying()
