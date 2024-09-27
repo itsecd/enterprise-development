@@ -8,17 +8,17 @@ public class Route
     /// <summary>
     /// Номер маршрута
     /// </summary>
-    public string RouteNumber { get; set; }
+    public required string RouteNumber { get; set; }
 
     /// <summary>
     /// Назначенный транспорт
     /// </summary>
-    public Transport AssignedTransport { get; set; }
+    public required Transport AssignedTransport { get; set; }
 
     /// <summary>
     /// Назначенный водитель
     /// </summary>
-    public Driver AssignedDriver { get; set; }
+    public required Driver AssignedDriver { get; set; }
 
     /// <summary>
     /// Время начала маршрута 

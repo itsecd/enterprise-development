@@ -42,7 +42,6 @@ public class DispatchServiceTests(DispatchFixture fixture) : IClassFixture<Dispa
             })
             .ToList();
 
-        // Проверка, что список не пуст
         Assert.NotEmpty(totalTripTimes);
     }
 

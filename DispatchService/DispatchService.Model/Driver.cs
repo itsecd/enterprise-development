@@ -6,24 +6,24 @@
 public class Driver
 {
     /// <summary>
-    /// Индетификатор водителя
+    /// Идетификатор водителя
     /// </summary>
-    public int ID { get; set; }
+    public required int Id { get; set; }
 
     /// <summary>
     /// ФИО
     /// </summary>
-    public string FullName { get; set; }
+    public required string FullName { get; set; }
 
     /// <summary>
     /// Паспорт
     /// </summary>
-    public string Passport { get; set; }
+    public required string Passport { get; set; }
 
     /// <summary>
     /// Номер лицензии водителя
     /// </summary>
-    public string DriverLicense { get; set; }
+    public required string DriverLicense { get; set; }
 
     /// <summary>
     /// Адрес
@@ -35,13 +35,13 @@ public class Driver
     /// </summary>
     public string? PhoneNumber { get; set; }
 
-    public Driver(int _ID, string fullName, string passport, string driverLicense, string address, string phoneNumber)
-    {
-        ID = _ID;
-        FullName = fullName;
-        Passport = passport;
-        DriverLicense = driverLicense;
-        Address = address;
-        PhoneNumber = phoneNumber;
-    }
+    //public Driver(int _ID, string fullName, string passport, string driverLicense, string address, string phoneNumber)
+    //{
+    //    Id = _ID;
+    //    FullName = fullName;
+    //    Passport = passport;
+    //    DriverLicense = driverLicense;
+    //    Address = address;
+    //    PhoneNumber = phoneNumber;
+    //}
 }

@@ -6,7 +6,7 @@
 public class Transport
 {
     /// <summary>
-    /// Список видов транспорта
+    /// Виды транспорта
     /// </summary>
     public enum VehicleType
     {
@@ -16,32 +16,27 @@ public class Transport
     }
 
     /// <summary>
-    /// Индентификатор транспорта
+    /// Идентификатор транспорта
     /// </summary>
-    public int ID { get; set; }
+    public required int Id { get; set; }
 
     /// <summary>
     /// Госномер автомобиля
     /// </summary>
-    public string LicensePlate { get; set; }
+    public required string LicensePlate { get; set; }
 
     /// <summary>
     /// Вид транспорта
     /// </summary>
-    private VehicleType type;
-    public VehicleType Type
-    {
-        get { return type; }
-        set { type = value; }
-    }
+    public required VehicleType Type { get; set; }
     
     /// <summary>
     /// Название модели транспорта
     /// </summary>
-    public string ModelName { get; set; }
+    public required string ModelName { get; set; }
 
     /// <summary>
-    /// Тип транспорта (низкопольный / ненизкопльный) 
+    /// Тип транспорта (низкопольный / высокопольный) 
     /// </summary>
     public bool? IsLowFloor { get; set; }
 
@@ -55,32 +50,14 @@ public class Transport
     /// </summary>
     public int? YearOfManufacture { get; set; }
 
-    public string TypeDescription
-    {
-        get
-        {
-            switch (type)
-            {
-                case VehicleType.Bus:
-                    return "Автобус";
-                case VehicleType.Tram:
-                    return "Трамвай";
-                case VehicleType.Trolleybus:
-                    return "Троллейбус";
-                default:
-                    return null;
-            }
-        }
-    }
-
-    public Transport(int _ID, string licensePlate, VehicleType _Type, string modelName, bool isLowFloor, int maxCapacity, int yearOfManufacture)
-    {
-        ID = _ID;
-        LicensePlate = licensePlate;
-        Type = _Type;
-        ModelName = modelName;
-        IsLowFloor = isLowFloor;
-        MaxCapacity = maxCapacity;
-        YearOfManufacture = yearOfManufacture;
-    }
+    //public Transport(int _ID, string licensePlate, VehicleType _Type, string modelName, bool isLowFloor, int maxCapacity, int yearOfManufacture)
+    //{
+    //    Id = _ID;
+    //    LicensePlate = licensePlate;
+    //    Type = _Type;
+    //    ModelName = modelName;
+    //    IsLowFloor = isLowFloor;
+    //    MaxCapacity = maxCapacity;
+    //    YearOfManufacture = yearOfManufacture;
+    //}
 }
