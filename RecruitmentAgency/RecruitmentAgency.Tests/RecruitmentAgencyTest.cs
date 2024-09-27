@@ -105,7 +105,6 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
             applicationCountBySectionAndPosition
                 .OrderBy(x => x.Section)
                 .ThenBy(x => x.PositionName)
-                .Select(x => new { x.Section, x.PositionName, x.Count })
         );
     }
 
@@ -129,8 +128,7 @@ public class RecruitmentAgencyTest(RecruitmentAgencyFixture fixture) : IClassFix
             .ToList();
 
         Assert.Equal(expectedData.OrderBy(e => e.Employer.Id).Select(e => new { e.Employer, e.ApplicationCount }),
-            topEmployers.OrderBy(e => e.Employer.Id).Select(e => new { e.Employer, e.ApplicationCount })
-        );
+            topEmployers.OrderBy(e => e.Employer.Id).Select(e => new { e.Employer, e.ApplicationCount }));
     }
 
     [Fact]
