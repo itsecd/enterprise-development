@@ -6,6 +6,11 @@
 public class Route
 {
     /// <summary>
+    /// Идентификатор маршрута
+    /// </summary>
+    public required int Id { get; set; }
+
+    /// <summary>
     /// Номер маршрута
     /// </summary>
     public required string RouteNumber { get; set; }

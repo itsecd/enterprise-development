@@ -29,7 +29,7 @@ public class Transport
     /// Вид транспорта
     /// </summary>
     public required VehicleType Type { get; set; }
-    
+
     /// <summary>
     /// Название модели транспорта
     /// </summary>
@@ -49,15 +49,4 @@ public class Transport
     /// Год выпуска транспорта
     /// </summary>
     public int? YearOfManufacture { get; set; }
-
-    //public Transport(int _ID, string licensePlate, VehicleType _Type, string modelName, bool isLowFloor, int maxCapacity, int yearOfManufacture)
-    //{
-    //    Id = _ID;
-    //    LicensePlate = licensePlate;
-    //    Type = _Type;
-    //    ModelName = modelName;
-    //    IsLowFloor = isLowFloor;
-    //    MaxCapacity = maxCapacity;
-    //    YearOfManufacture = yearOfManufacture;
-    //}
 }

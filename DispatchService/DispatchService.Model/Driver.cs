@@ -6,7 +6,7 @@
 public class Driver
 {
     /// <summary>
-    /// Идетификатор водителя
+    /// Идентификатор водителя
     /// </summary>
     public required int Id { get; set; }
 
@@ -34,14 +34,4 @@ public class Driver
     /// Номер телефона
     /// </summary>
     public string? PhoneNumber { get; set; }
-
-    //public Driver(int _ID, string fullName, string passport, string driverLicense, string address, string phoneNumber)
-    //{
-    //    Id = _ID;
-    //    FullName = fullName;
-    //    Passport = passport;
-    //    DriverLicense = driverLicense;
-    //    Address = address;
-    //    PhoneNumber = phoneNumber;
-    //}
 }

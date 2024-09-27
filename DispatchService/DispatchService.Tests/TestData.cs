@@ -1,4 +1,5 @@
 ﻿using DispatchService.Model;
+
 namespace DispatchService.Tests;
 
 public class TestData
