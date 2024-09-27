@@ -39,7 +39,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
         .Where(client => client.BookedRooms
             .Join(_testData.Rooms, broom => broom.RoomId, room => room.Id, (broom, room) => new { broom, room })
             //rooms corresponding to the client's booked rooms
-            .Any(clientRooms => clientRooms.room.HotelID == hotelId))
+            .Any(clientRooms => clientRooms.room.HotelId == hotelId))
         .OrderBy(client => client.Surname)
         .ThenBy(client => client.Name)
         .ThenBy(client => client.Patronymic)
@@ -61,7 +61,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
             {
                 Hotel = hotel,
                 BookingCount = _testData.Rooms
-                    .Where(room => room.HotelID == hotel.Id)
+                    .Where(room => room.HotelId == hotel.Id)
                     .SelectMany(room => room.BookedRooms)
                     .Count()
             })
@@ -85,7 +85,7 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
             {
                 HotelName = hotel.Name,
                 Rooms = _testData.Rooms
-                    .Where(room => room.HotelID == hotel.Id)
+                    .Where(room => room.HotelId == hotel.Id)
                     .GroupBy(room => room.TypeRoom)
                     .Select(group => new
                     {
@@ -141,13 +141,13 @@ public class HotelBookingSystemTest(TestData testData) : IClassFixture<TestData>
             {
                 HotelName = hotel.Name,
                 MinPrice = _testData.Rooms
-                    .Where(room => room.HotelID == hotel.Id)
+                    .Where(room => room.HotelId == hotel.Id)
                     .Min(room => room.Price), 
                 AvgPrice = _testData.Rooms
-                    .Where(room => room.HotelID == hotel.Id)
+                    .Where(room => room.HotelId == hotel.Id)
                     .Average(room => room.Price), 
                 MaxPrice = _testData.Rooms
-                    .Where(room => room.HotelID == hotel.Id)
+                    .Where(room => room.HotelId == hotel.Id)
                     .Max(room => room.Price) 
             })
             .ToList();

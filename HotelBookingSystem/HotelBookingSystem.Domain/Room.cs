@@ -28,7 +28,7 @@ public class Room
     /// <summary>
     /// Hotel ID
     /// </summary>
-    public required int HotelID { get; set; }
+    public required int HotelId { get; set; }
 
     /// <summary>
     /// Book this room

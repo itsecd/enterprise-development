@@ -18,17 +18,17 @@ public class TestData
 
     public List<Room> Rooms =
     [
-        new(){ Id = 0, TypeRoom = "standard", Number = 10, Price = 1000, HotelID = 1 },
-        new(){ Id = 1, TypeRoom = "superior", Number = 5, Price = 1700, HotelID = 2 },
-        new(){ Id = 2, TypeRoom = "standard", Number = 2, Price = 1200, HotelID = 3 },
-        new(){ Id = 3, TypeRoom = "superior", Number = 7, Price = 1900, HotelID = 1 },
-        new(){ Id = 4, TypeRoom = "suite", Number = 3, Price = 2500, HotelID = 4 },
-        new(){ Id = 5, TypeRoom = "standard", Number = 6, Price = 1300, HotelID = 2 },
-        new(){ Id = 6, TypeRoom = "suite", Number = 2, Price = 2700, HotelID = 5 },
-        new(){ Id = 7, TypeRoom = "superior", Number = 10, Price = 1800, HotelID = 6 },
-        new(){ Id = 8, TypeRoom = "standard", Number = 8, Price = 1000, HotelID = 7 },
-        new(){ Id = 9, TypeRoom = "suite", Number = 4, Price = 2600, HotelID = 5 },
-        new(){ Id = 10, TypeRoom = "standard", Number = 3, Price = 1150, HotelID = 7 },
+        new(){ Id = 0, TypeRoom = "standard", Number = 10, Price = 1000, HotelId = 1 },
+        new(){ Id = 1, TypeRoom = "superior", Number = 5, Price = 1700, HotelId = 2 },
+        new(){ Id = 2, TypeRoom = "standard", Number = 2, Price = 1200, HotelId = 3 },
+        new(){ Id = 3, TypeRoom = "superior", Number = 7, Price = 1900, HotelId = 1 },
+        new(){ Id = 4, TypeRoom = "suite", Number = 3, Price = 2500, HotelId = 4 },
+        new(){ Id = 5, TypeRoom = "standard", Number = 6, Price = 1300, HotelId = 2 },
+        new(){ Id = 6, TypeRoom = "suite", Number = 2, Price = 2700, HotelId = 5 },
+        new(){ Id = 7, TypeRoom = "superior", Number = 10, Price = 1800, HotelId = 6 },
+        new(){ Id = 8, TypeRoom = "standard", Number = 8, Price = 1000, HotelId = 7 },
+        new(){ Id = 9, TypeRoom = "suite", Number = 4, Price = 2600, HotelId = 5 },
+        new(){ Id = 10, TypeRoom = "standard", Number = 3, Price = 1150, HotelId = 7 },
     ]; 
 
     public List<HotelClient> HotelClients =
@@ -47,21 +47,21 @@ public class TestData
     {
         BookedRooms =
         [
-            new(){ Id = 0, ClientId = 0, RoomId = 0, EntryDate = new DateOnly(2024, 01, 01), 
+            new BookedRoom { Id = 0, ClientId = 0, RoomId = 0, EntryDate = new DateOnly(2024, 01, 01), 
                 DepartureDate = new DateOnly(2024, 01, 03), BookingPeriod = new TimeSpan(2, 0, 0, 0) },
-            new(){ Id = 1, ClientId = 1, RoomId = 1, EntryDate = new DateOnly(2024, 02, 05), 
+            new BookedRoom { Id = 1, ClientId = 1, RoomId = 1, EntryDate = new DateOnly(2024, 02, 05), 
                 DepartureDate = new DateOnly(2024, 02, 10), BookingPeriod = new TimeSpan(5, 0, 0, 0) },
-            new(){ Id = 2, ClientId = 2, RoomId = 2, EntryDate = new DateOnly(2024, 03, 15), 
+            new BookedRoom { Id = 2, ClientId = 2, RoomId = 2, EntryDate = new DateOnly(2024, 03, 15), 
                 DepartureDate = new DateOnly(2024, 03, 20), BookingPeriod = new TimeSpan(5, 0, 0, 0) },
-            new(){ Id = 3, ClientId = 3, RoomId = 3, EntryDate = new DateOnly(2024, 04, 01),
+            new BookedRoom { Id = 3, ClientId = 3, RoomId = 3, EntryDate = new DateOnly(2024, 04, 01),
                 DepartureDate = new DateOnly(2024, 04, 05), BookingPeriod = new TimeSpan(4, 0, 0, 0) },
-            new(){ Id = 4, ClientId = 4, RoomId = 4, EntryDate = new DateOnly(2024, 05, 10), 
+            new BookedRoom { Id = 4, ClientId = 4, RoomId = 4, EntryDate = new DateOnly(2024, 05, 10), 
                 DepartureDate = new DateOnly(2024, 05, 15), BookingPeriod = new TimeSpan(5, 0, 0, 0) },
-            new(){ Id = 5, ClientId = 5, RoomId = 5, EntryDate = new DateOnly(2024, 06, 01), 
+            new BookedRoom { Id = 5, ClientId = 5, RoomId = 5, EntryDate = new DateOnly(2024, 06, 01), 
                 DepartureDate = new DateOnly(2024, 06, 03), BookingPeriod = new TimeSpan(2, 0, 0, 0) },
-            new(){ Id = 6, ClientId = 1, RoomId = 6, EntryDate = new DateOnly(2024, 06, 01),
+            new BookedRoom { Id = 6, ClientId = 1, RoomId = 6, EntryDate = new DateOnly(2024, 06, 01),
                 DepartureDate = new DateOnly(2024, 06, 03), BookingPeriod = new TimeSpan(2, 0, 0, 0) },
-            new(){ Id = 7, ClientId = 3, RoomId = 7, EntryDate = new DateOnly(2024, 06, 01),
+            new BookedRoom { Id = 7, ClientId = 3, RoomId = 7, EntryDate = new DateOnly(2024, 06, 01),
                 DepartureDate = new DateOnly(2024, 06, 03), BookingPeriod = new TimeSpan(2, 0, 0, 0) },
         ];
 
