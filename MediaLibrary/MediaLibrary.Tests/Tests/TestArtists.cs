@@ -20,22 +20,28 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
 
         Assert.Equal(7, query.Count);
 
-        Assert.Equal(new () { "Jon Bon Jovi", "Bob Seger", "Jay Kay",
-            "Roger Daltrey", "Lionel Richie", "Cliff Richard", "James Blunt" },
+        Assert.Equal(
+            [
+                "Jon Bon Jovi", "Bob Seger", "Jay Kay",
+                "Roger Daltrey", "Lionel Richie", "Cliff Richard", "James Blunt" 
+            ],
             query.Select(q => q.Name).ToList());
 
-        Assert.Equal(new () { "У него есть кожаная куртка с дюжиной застежек", "Его не заткнуть, а его смех похож на скрежет бетономешалки",
-            "Он как-то говорил, что не смог бы стать раллийным гонщиком", "Самый быстрый человек с билетом на автобус",
-            "Он часто оказывался на обочине и пытался открыть правую дверь", "Его усилия разогнаться иссякли на 130 километрах в час",
-            "Оденажды он спел о чем-то там в море" },
+        Assert.Equal(
+            [
+                "У него есть кожаная куртка с дюжиной застежек", "Его не заткнуть, а его смех похож на скрежет бетономешалки",
+                "Он как-то говорил, что не смог бы стать раллийным гонщиком", "Самый быстрый человек с билетом на автобус",
+                "Он часто оказывался на обочине и пытался открыть правую дверь", "Его усилия разогнаться иссякли на 130 километрах в час",
+                "Оденажды он спел о чем-то там в море" 
+            ],
             query.Select(q => q.Description).ToList());
 
-        Assert.Equal(new () { new(){ 1, 2 }, new(){ 3, 4 }, new() { 5 },
-            new() { 6, 7 }, new() { 8 }, new() { 9, 10 }, new() { 11, 12 } },
+        Assert.Equal([ [ 1, 2 ], [ 3, 4 ], [ 5 ],
+            [ 6, 7 ], [ 8 ], [ 9, 10 ], [ 11, 12 ] ],
             query.Select(q => q.AlbumIds).ToList());
 
-        Assert.Equal(new () { new(){ 1, 2 }, new(){ 3 }, new() { 4 },
-            new() { 3 }, new() { 4 }, new() { 4, 5 }, new() { 3, 5 } },
+        Assert.Equal([ [ 1, 2 ], [ 3 ], [ 4 ],
+            [ 3 ], [ 4 ], [ 4, 5 ], [ 3, 5 ] ],
             query.Select(q => q.GenreIds).ToList());
 
     }
@@ -50,16 +56,16 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
 
         Assert.Equal(6, query.Count);
 
-        Assert.Equal(new () { "Stronger Than That", "Who's In Love", "The Best Of Me",
-            "Clear Blue Skies", "Lean On You", "Keep Me Warm"},
+        Assert.Equal([ "Stronger Than That", "Who's In Love", "The Best Of Me",
+            "Clear Blue Skies", "Lean On You", "Keep Me Warm" ],
             query.Select(q => q.Name).ToList());
 
-        Assert.Equal(new () {TimeSpan.FromSeconds(281), TimeSpan.FromSeconds(270),
+        Assert.Equal([ TimeSpan.FromSeconds(281), TimeSpan.FromSeconds(270),
             TimeSpan.FromSeconds(250), TimeSpan.FromSeconds(174),
-            TimeSpan.FromSeconds(302), TimeSpan.FromSeconds(264)},
+            TimeSpan.FromSeconds(302), TimeSpan.FromSeconds(264) ],
             query.Select(q => q.Duration).ToList());
 
-        Assert.Equal(new () { 1, 2, 3, 4, 5, 6 },
+        Assert.Equal([ 1, 2, 3, 4, 5, 6 ],
             query.Select(q => q.NumberInAlbum).ToList());
 
     }
@@ -74,13 +80,13 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
 
         Assert.Equal(2, query.Count);
 
-        Assert.Equal(new () { "Against The Wind", "Nine Tonight" },
+        Assert.Equal([ "Against The Wind", "Nine Tonight" ],
             query.Select(q => q.Title).ToList());
 
-        Assert.Equal(new () { 2, 3 },
+        Assert.Equal([ 2, 3 ],
             query.Select(q => q.ArtistId).ToList());
 
-        Assert.Equal(new () { 4, 4 },
+        Assert.Equal([ 4, 4 ],
             query.Select(q => q.SongIds.Count).ToList());
     }
 
@@ -94,9 +100,9 @@ public class TestArtists(MediaLibraryFixture fixture) : IClassFixture<MediaLibra
             .Select(a => new { AlbumName = a.Key, TotalDuration = a.Aggregate(TimeSpan.Zero, (total, song) => total + song.Duration) })
             .OrderByDescending(d => d.TotalDuration).Take(5).ToList();
 
-        Assert.Equal(new () {TimeSpan.FromSeconds(108), TimeSpan.FromSeconds(107),
-                                        TimeSpan.FromSeconds(106), TimeSpan.FromSeconds(105),
-                                        TimeSpan.FromSeconds(104) },
+        Assert.Equal([ TimeSpan.FromSeconds(108), TimeSpan.FromSeconds(107),
+                       TimeSpan.FromSeconds(106), TimeSpan.FromSeconds(105),
+                       TimeSpan.FromSeconds(104) ],
                      query.Select(d => d.TotalDuration).ToList());
     }
 
