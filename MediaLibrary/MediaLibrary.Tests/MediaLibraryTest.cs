@@ -82,4 +82,39 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
             Assert.Equal(expectedValues[i][1], albumsInfo[i].tracksCount);
         }
     }
+
+    /// <summary>
+    /// Проверка вывода топ 5 альбомов по продолжительности 
+    /// </summary>
+    [Fact]
+    public void TopAlbums()
+    {
+        var topAlbums =
+            (from Album in fixture.GetAlbums()
+             join Track in fixture.GetTracks()
+             on Album.Id equals Track.AlbumId into albumTracks
+             let totalTracksTime = albumTracks.Sum(t => t.Time.TotalSeconds)
+             orderby totalTracksTime descending
+             select new
+             {
+                album = Album,
+                totalTime = totalTracksTime
+             })
+             .Take(5)
+             .ToList();
+        Assert.NotNull(topAlbums);
+        var expectedValues = new Dictionary<int, List<int>>
+        {
+            {0, [2, 1404]},
+            {1, [8, 1222]},
+            {2, [4, 1101]},
+            {3, [9, 1007]},
+            {4, [1, 979]}
+        };
+        for (var i = 0; i < topAlbums.Count; i++)
+        {
+            Assert.Equal(expectedValues[i][0], topAlbums[i].album.Id);
+            Assert.Equal(expectedValues[i][1], topAlbums[i].totalTime);
+        }
+    }
 }
