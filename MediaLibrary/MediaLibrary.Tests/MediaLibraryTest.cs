@@ -148,4 +148,25 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
             Assert.Contains(actor.actor.Name, expectedValues);
         }
     }
+
+    /// <summary>
+    /// Проверка вывода информации о минимальной, средней и максимальной
+    /// продолжительности альбомов
+    /// </summary>
+    [Fact]
+    public void TimeAlbumInfo()
+    {
+        var albumsDurations =
+            (from track in fixture.GetTracks()
+            group track by track.AlbumId into trackGroup
+            select trackGroup.Sum(t => t.Time.TotalSeconds))
+            .ToList();
+        Assert.NotNull(albumsDurations); 
+        var minTime = albumsDurations.Min();
+        var maxTime = albumsDurations.Max();
+        var averageTime = albumsDurations.Average();
+        Assert.Equal(1404, maxTime);
+        Assert.Equal(709, minTime);
+        Assert.Equal(1022.6, averageTime, 1);
+    }
 }
