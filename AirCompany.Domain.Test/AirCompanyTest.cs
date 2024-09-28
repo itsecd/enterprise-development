@@ -50,7 +50,7 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
     /// Вывести топ 5 авиарейсов по количеству перевезённых пассажиров.
     /// </summary>
     [Fact]
-    public void Top5FlightsByPassengerCount()
+    public void TestTop5FlightsByPassengerCount()
     {
         var top5Flights = _testDataProvider.flights
             .GroupBy(f => f)
@@ -70,7 +70,7 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
     /// Вывести список рейсов с минимальным временем в пути.
     /// </summary>
     [Fact]
-    public void FlightsWithMinimumFlightDuration()
+    public void TestFlightsWithMinimumFlightDuration()
     {
         var minDuration = _testDataProvider.flights.Min(f => f.Duration);
         var flightsWithMinDuration = _testDataProvider.flights
@@ -85,7 +85,7 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
     /// Проверка вывода средней и максимальной загрузки рейсов из указанного пункта отправления.
     /// </summary>
     [Fact]
-    public void AverageAndMaxLoadFromDeparturePoint()
+    public void TestAverageAndMaxLoadFromDeparturePoint()
     {
         string departurePoint = "New York";
 
