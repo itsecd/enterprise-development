@@ -396,3 +396,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+.gradle
+.studio
+*.ipr
+*.iml
+*.iws
+build/*
+deploy/*
+modules/*/build/*
+.idea/*
+out
+test-run
+.vs/*
+.idea1
