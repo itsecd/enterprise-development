@@ -1,6 +1,6 @@
 FIO;Passport;Registration;Ticketnumber;SeatNumber;BaggageWeight;CodeFlight
 
-"Belyackova Veronicka Sergeevna";"3678678903";"true";"35999";"A18";"9.7";"5000"
+"Belyackova Veronicka Sergeevna";"3678678903";"true";"35999";"A18";"0";"5000"
 
 "Nenashev Ivan Nickolayevich";"5678359284";"true";"78112";"E6";"8.6";"1000"
 
@@ -16,7 +16,7 @@ FIO;Passport;Registration;Ticketnumber;SeatNumber;BaggageWeight;CodeFlight
 
 "Belyackova Veronicka Sergeevna";"3678678903";"true";"52424";"E11";"6.6";"7000"
 
-"Nenashev Ivan Nickolayevich";"5678359284";"true";"71384";"D13";"1.2";"5000"
+"Nenashev Ivan Nickolayevich";"5678359284";"true";"71384";"D13";"0";"5000"
 
 "Nenashev Ivan Nickolayevich";"5678359284";"true";"57713";"E16";"4.0";"7000"
 

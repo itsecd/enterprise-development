@@ -51,7 +51,7 @@ def passenger():
             arr[2] = "\"true\""
             arr[3] = '\"' + f"{random.randint(10000, 100000)}" + '\"'
             arr[4] = '\"' + f"{seats[random.randint(0, len(seats) - 1)]}" + f"{random.randint(1, 20)}" + '\"'
-            arr[5] = '\"' + f"{random.randint(10, 100)/10}" + '\"'
+            arr[5] = '\"' + f"{random.randint(0, 100)/10}" + '\"'
             x = random.randint(0, len(flying_number) - 1)
             while flying_number[x] in pass_flies.get(fio):
                 if len(pass_flies.get(fio)) == len(flying_number): break
