@@ -117,4 +117,35 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
             Assert.Equal(expectedValues[i][1], topAlbums[i].totalTime);
         }
     }
+
+    /// <summary>
+    /// Проверка вывода артистов с максимальным количеством альбомов
+    /// </summary>
+    [Fact]
+    public void MaxAlbumsActors()
+    {
+        var topActors =
+            (from Album in fixture.GetAlbums()
+             group Album by Album.ActorId into albumGroup
+             let albumCount = albumGroup.Count()
+             let maxAlbumCount = 
+                        (from al in fixture.GetAlbums()
+                         group al by al.ActorId into alGroup
+                         select alGroup.Count()).Max()
+             where albumCount == maxAlbumCount
+             join Actor in fixture.GetActors()
+             on albumGroup.Key equals Actor.Id
+             select new
+             {
+                 actor = Actor,
+                 albumsCount = albumCount,
+             })
+            .ToList();
+        Assert.NotNull(topActors);
+        var expectedValues = new List<string> { "Ed Sheeran", "The Weeknd", "Drake", "Coldplay" };
+        foreach (var actor in topActors)
+        {
+            Assert.Contains(actor.actor.Name, expectedValues);
+        }
+    }
 }
