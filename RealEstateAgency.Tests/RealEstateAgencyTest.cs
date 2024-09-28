@@ -4,7 +4,6 @@ public class RealEstateAgencyQueryTests
 {
     private List<Client> _testClients = TestData.GetTestClients();
 
-    // Тест 1: Клиенты, ищущие недвижимость заданного типа, упорядочить по ФИО
     [Fact]
     public void GetClientsSearchingForSpecificRealEstateType_ShouldReturnOrderedByFullName()
     {
@@ -19,7 +18,6 @@ public class RealEstateAgencyQueryTests
         Assert.Equal("Chukarev Michail", clients[0].FirstAndLastName);
     }
 
-    // Тест 2: Продавцы, оставившие заявки за заданный период
     [Fact]
     public void GetSellersWithinPeriod_ShouldReturnCorrectSellers()
     {
@@ -35,7 +33,6 @@ public class RealEstateAgencyQueryTests
         Assert.Contains(sellers, s => s.FirstAndLastName == "Stepanov Dima");
     }
 
-    // Тест 3: Продавцы и объекты недвижимости, соответствующие заявке покупателя
     [Fact]
     public void GetSellersForBuyerOrder_ShouldReturnSellersWithMatchingRealEstate()
     {
@@ -51,7 +48,6 @@ public class RealEstateAgencyQueryTests
         Assert.Equal("Stepanov Dima", sellers[0].FirstAndLastName);
     }
 
-    // Тест 4: Количество заявок по каждому типу недвижимости
     [Fact]
     public void GetOrderCountByRealEstateType_ShouldReturnCorrectCounts()
     {
@@ -73,7 +69,6 @@ public class RealEstateAgencyQueryTests
         Assert.Equal(1, commercialCount.OrderCount);
     }
 
-    // Тест 5: Топ 5 клиентов по количеству заявок
     [Fact]
     public void GetTop5ClientsByOrderCount_ShouldReturnTop5Clients()
     {
@@ -87,7 +82,6 @@ public class RealEstateAgencyQueryTests
         Assert.Equal("Chukarev Michail", topClients[0].FirstAndLastName);
     }
 
-    // Тест 6: Клиенты с минимальной стоимостью заявки
     [Fact]
     public void GetClientsWithMinOrderPrice_ShouldReturnClientsWithMinPrice()
     {
