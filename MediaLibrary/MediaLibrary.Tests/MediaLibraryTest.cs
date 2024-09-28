@@ -1,16 +1,16 @@
-using MediaLibrary.Domain;
+п»їusing MediaLibrary.Domain;
 using System.Diagnostics;
 
 namespace MediaLibrary.Tests;
 
 /// <summary>
-/// Класс для тестирования запросов
+/// РљР»Р°СЃСЃ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ Р·Р°РїСЂРѕСЃРѕРІ
 /// </summary>
-/// <param name="fixture">Данные для тестирования</param>
+/// <param name="fixture">Р”Р°РЅРЅС‹Рµ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ</param>
 public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<MediaLibraryFixture>
 {
     /// <summary>
-    /// Проверка вывода всех исполнителей
+    /// РџСЂРѕРІРµСЂРєР° РІС‹РІРѕРґР° РІСЃРµС… РёСЃРїРѕР»РЅРёС‚РµР»РµР№
     /// </summary>
     [Fact]
     public void AllActors()
@@ -24,7 +24,7 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     }
 
     /// <summary>
-    /// Проверка вывода всех треков в альбоме, упорядоченных по номеру
+    /// РџСЂРѕРІРµСЂРєР° РІС‹РІРѕРґР° РІСЃРµС… С‚СЂРµРєРѕРІ РІ Р°Р»СЊР±РѕРјРµ, СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹С… РїРѕ РЅРѕРјРµСЂСѓ
     /// </summary>
     [Fact]
     public void TracksInAlbum()
@@ -55,7 +55,7 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     }
 
     /// <summary>
-    /// Проверка вывода всех альбомов в указанный год с количеством треков в альбоме
+    /// РџСЂРѕРІРµСЂРєР° РІС‹РІРѕРґР° РІСЃРµС… Р°Р»СЊР±РѕРјРѕРІ РІ СѓРєР°Р·Р°РЅРЅС‹Р№ РіРѕРґ СЃ РєРѕР»РёС‡РµСЃС‚РІРѕРј С‚СЂРµРєРѕРІ РІ Р°Р»СЊР±РѕРјРµ
     /// </summary>
     [Fact]
     public void AlbumsInfo()
@@ -84,7 +84,7 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     }
 
     /// <summary>
-    /// Проверка вывода топ 5 альбомов по продолжительности 
+    /// РџСЂРѕРІРµСЂРєР° РІС‹РІРѕРґР° С‚РѕРї 5 Р°Р»СЊР±РѕРјРѕРІ РїРѕ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚Рё 
     /// </summary>
     [Fact]
     public void TopAlbums()
@@ -119,7 +119,7 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     }
 
     /// <summary>
-    /// Проверка вывода артистов с максимальным количеством альбомов
+    /// РџСЂРѕРІРµСЂРєР° РІС‹РІРѕРґР° Р°СЂС‚РёСЃС‚РѕРІ СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј РєРѕР»РёС‡РµСЃС‚РІРѕРј Р°Р»СЊР±РѕРјРѕРІ
     /// </summary>
     [Fact]
     public void MaxAlbumsActors()
@@ -150,8 +150,8 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     }
 
     /// <summary>
-    /// Проверка вывода информации о минимальной, средней и максимальной
-    /// продолжительности альбомов
+    /// РџСЂРѕРІРµСЂРєР° РІС‹РІРѕРґР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ РјРёРЅРёРјР°Р»СЊРЅРѕР№, СЃСЂРµРґРЅРµР№ Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕР№
+    /// РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚Рё Р°Р»СЊР±РѕРјРѕРІ
     /// </summary>
     [Fact]
     public void TimeAlbumInfo()
