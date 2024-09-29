@@ -16,15 +16,14 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightDA()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
+        var flyFixture = new AirlineCompanyFixture();
         var flyightDA =
-            (from fly in flyFixture
+            (from fly in flyFixture.GetFlights()
              where fly.DeparturePoint == "Tokio" && fly.ArrivalPoint == "Dublin"
             select fly).ToList();
 
         Assert.True(flyightDA.Any());
-        Assert.Equal(flyFixture[0], flyightDA[0]);
+        Assert.Equal(flyFixture.GetFlights()[0], flyightDA[0]);
     }
 
 
@@ -35,16 +34,15 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestPassWF()
     {
-        var fixture = new AirlineCompanyFixture();
-        var passFixture = fixture.GetPassenegers();
+        var passFixture = new AirlineCompanyFixture();
 
         var passWF =
-            (from pass in passFixture
+            (from pass in passFixture.GetPassenegers()
              orderby pass.FIO descending
              where pass.ñodeFlight == "5000" && pass.baggageWeight == 0
              select pass).ToList();
 
-        var res = new List<Passeneger>() { passFixture[8], passFixture[0]};
+        var res = new List<Passeneger>() { passFixture.GetPassenegers()[8], passFixture.GetPassenegers()[0]};
 
         Assert.True(passWF.Any());
         Assert.Equal(res, passWF);
@@ -58,18 +56,17 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightPT()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
+        var flyFixture = new AirlineCompanyFixture();
 
         var flyightPT =
-            from fly in flyFixture
+            from fly in flyFixture.GetFlights()
             where fly.PlaneType == "Panda 202208" &&
             fly.Departure >= DateTime.Parse("2024-09-01") &&
             fly.Departure <= DateTime.Parse("2024-11-30")
             select fly;
 
-        var res = new List<AirFlight>() { flyFixture[1], flyFixture[2] };
-        Assert.True(flyFixture.Any());
+        var res = new List<AirFlight>() { flyFixture.GetFlights()[1], flyFixture.GetFlights()[2] };
+        Assert.True(flyightPT.Any());
         Assert.Equal(res, flyightPT);
     }
 
@@ -80,23 +77,22 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightTop()
     {
-        var fixture = new AirlineCompanyFixture();
-        var passFixture = fixture.GetPassenegers();
-        var flyFixture = fixture.GetFlights();
+        var passFixture = new AirlineCompanyFixture();
+        var flyFixture = new AirlineCompanyFixture();
 
         var flyightTop =
-            (from fly in flyFixture
-             let c = passFixture.Count(pass => pass.codeFlight == fly.CodeNumber)
+            (from fly in flyFixture.GetFlights()
+             let c = passFixture.GetPassenegers().Count(pass => pass.codeFlight == fly.CodeNumber)
              orderby c descending
              select new { fly, c }).ToList();
 
         var res = new List<(AirFlight, int)>()
         {
-            (flyFixture[0], 3),
-            (flyFixture[2], 3),
-            (flyFixture[4], 3),
-            (flyFixture[6], 3),
-            (flyFixture[8], 3),
+            (flyFixture.GetFlights()[0], 3),
+            (flyFixture.GetFlights()[2], 3),
+            (flyFixture.GetFlights()[4], 3),
+            (flyFixture.GetFlights()[6], 3),
+            (flyFixture.GetFlights()[8], 3),
         };
 
         Assert.True(flyightTop.Any());
@@ -114,17 +110,16 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightTime()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
+        var flyFixture = new AirlineCompanyFixture();
 
         var flyightTime =
-            (from fly in flyFixture
-            let minTime = flyFixture.Min(pass => pass.FlyingTime)
+            (from fly in flyFixture.GetFlights()
+             let minTime = flyFixture.GetFlights().Min(pass => pass.FlyingTime)
             where fly.FlyingTime == minTime
             select fly).ToList();
 
         Assert.True(flyightTime.Any());
-        Assert.Equal(flyFixture[4], flyightTime[0]);
+        Assert.Equal(flyFixture.GetFlights()[4], flyightTime[0]);
     }
 
 
@@ -135,13 +130,12 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightWeight() 
     {
-        var fixture = new AirlineCompanyFixture();
-        var passFixture = fixture.GetPassenegers();
-        var flyFixture = fixture.GetFlights();
+        var passFixture = new AirlineCompanyFixture();
+        var flyFixture = new AirlineCompanyFixture();
 
         var flyightWeight =
-            from fly in flyFixture
-            join pass in passFixture on fly.CodeNumber equals pass.codeFlight
+            from fly in flyFixture.GetFlights()
+            join pass in passFixture.GetPassenegers() on fly.CodeNumber equals pass.codeFlight
             where fly.DeparturePoint == "Rome"
             select new
             {
