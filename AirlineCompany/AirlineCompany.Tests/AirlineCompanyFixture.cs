@@ -2,9 +2,15 @@
 using System.Globalization;
 
 namespace AirlineCompany.Tests;
-
+/// <summary>
+/// Класс предоставляет доступ к тестовым данным
+/// </summary>
 public class AirlineCompanyFixture
 {
+    /// <summary>
+    /// Предоставление данных о полетах
+    /// </summary>
+    /// <returns>List<AirFlight></returns>
     public List<AirFlight> GetFlights()
     {
         var airReader = File.ReadAllLines("airflyights.csv");
@@ -40,6 +46,10 @@ public class AirlineCompanyFixture
         return airFlights;
     }
 
+    /// <summary>
+    /// Предоставление данных о пассажирах
+    /// </summary>
+    /// <returns>List<Passeneger></returns>
     public List<Passeneger> GetPassenegers()
     {
         var passengerReader = File.ReadAllLines("passengers.csv");
@@ -75,6 +85,10 @@ public class AirlineCompanyFixture
         return passengers;
     }
 
+    /// <summary>
+    /// Предоставление данных о самолетах
+    /// </summary>
+    /// <returns>List<Plane></returns>
     public List<Plane> GetPlanes()
     {
         var planeReader = File.ReadAllLines("planes.csv");

@@ -1,7 +1,10 @@
 using AirlineCompany.Domain;
-using System.Globalization;
 
 namespace AirlineCompany.Tests;
+/// <summary>
+/// Класс для тестирования запросов
+/// </summary>
+/// <param name="fixture"></param>
 public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<AirlineCompanyFixture>
 {
     private AirlineCompanyFixture _fixture = fixture;
