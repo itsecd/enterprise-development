@@ -25,8 +25,8 @@ public class AirlineCompanyFixture
     {
         if (_passengers != null) return _passengers;
 
-        using var readerFlight = new FileRreader("passengers.csv");
-        _passengers = readerFlight.ReadPassengers();
+        using var readerPassenger = new FileRreader("passengers.csv");
+        _passengers = readerPassenger.ReadPassengers();
         return _passengers;
     }
 
@@ -35,8 +35,8 @@ public class AirlineCompanyFixture
     {
         if (_planes != null) return _planes;
 
-        using var readerFlight = new FileRreader("planes.csv");
-        _planes = readerFlight.ReadPlanes();
+        using var readerPlane = new FileRreader("planes.csv");
+        _planes = readerPlane.ReadPlanes();
         return _planes;
     }
 }
