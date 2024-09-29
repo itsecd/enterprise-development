@@ -8,7 +8,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirlineCompany", "AirlineCo
 		{0EFFFD03-718C-45A7-AF85-5B2E30589EA2} = {0EFFFD03-718C-45A7-AF85-5B2E30589EA2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirlineCompany.Domain", "AirlineCompany.Domain\AirlineCompany.Domain.csproj", "{0EFFFD03-718C-45A7-AF85-5B2E30589EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirlineCompany.Domain", "AirlineCompany.Domain\AirlineCompany.Domain.csproj", "{0EFFFD03-718C-45A7-AF85-5B2E30589EA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirlineCompany.Tests", "AirlineCompany.Tests\AirlineCompany.Tests.csproj", "{9DEFAAE7-EFA7-4BBA-BD3A-04DAF2208109}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,10 @@ Global
 		{0EFFFD03-718C-45A7-AF85-5B2E30589EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EFFFD03-718C-45A7-AF85-5B2E30589EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EFFFD03-718C-45A7-AF85-5B2E30589EA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DEFAAE7-EFA7-4BBA-BD3A-04DAF2208109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DEFAAE7-EFA7-4BBA-BD3A-04DAF2208109}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DEFAAE7-EFA7-4BBA-BD3A-04DAF2208109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DEFAAE7-EFA7-4BBA-BD3A-04DAF2208109}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
