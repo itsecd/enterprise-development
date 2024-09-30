@@ -8,7 +8,7 @@ public class DispatchFixture
 
     public DispatchFixture()
     {
-        var Drivers = new List<Driver>
+        var drivers = new List<Driver>
         {
             new ()
             {
@@ -59,32 +59,32 @@ public class DispatchFixture
             {
                 Id = 6,
                 FullName = "Смирнова Елена Ивановна",
-                Passport= "7890 345678",
+                Passport = "7890 345678",
                 DriverLicense = "KL3456789",
                 Address = "Новосибирск, ул. Ленина, д. 10",
-                PhoneNumber= "+7 (913) 345-67-89"
+                PhoneNumber = "+7 (913) 345-67-89"
             },
             new ()
             {
                 Id = 7,
-                FullName ="Федоров Максим Сергеевич",
-                Passport ="8901 456789",
-                DriverLicense="MN4567890",
-                Address="Екатеринбург, ул. Чапаева, д. 20",
-                PhoneNumber="+7 (922) 456-78-90"
+                FullName = "Федоров Максим Сергеевич",
+                Passport = "8901 456789",
+                DriverLicense = "MN4567890",
+                Address = "Екатеринбург, ул. Чапаева, д. 20",
+                PhoneNumber = "+7 (922) 456-78-90"
             },
             new ()
             {
                 Id = 8,
-                FullName="Александрова Мария Петровна",
-                Passport= "9012 567890",
-                DriverLicense= "OP5678901",
-                Address= "Казань, ул. Кремлевская, д. 5",
-                PhoneNumber= "+7 (917) 567-89-01"
+                FullName = "Александрова Мария Петровна",
+                Passport = "9012 567890",
+                DriverLicense = "OP5678901",
+                Address = "Казань, ул. Кремлевская, д. 5",
+                PhoneNumber = "+7 (917) 567-89-01"
             }
         };
 
-        var Transports = new List<Transport>
+        var transports = new List<Transport>
         {
             new ()
             {
@@ -168,14 +168,14 @@ public class DispatchFixture
             }
         };
 
-        var Routes = new List<Route>
+        var routes = new List<Route>
         {
             new ()
             {
                 Id = 1,
                 RouteNumber = "1",
-                AssignedTransport = Transports[0],
-                AssignedDriver = Drivers[0],
+                AssignedTransport = transports[0],
+                AssignedDriver = drivers[0],
                 StartTime = new DateTime(2024, 9, 14, 8, 0, 0),
                 EndTime = new DateTime(2024, 9, 14, 10, 0, 0)
             },
@@ -183,8 +183,8 @@ public class DispatchFixture
             {
                 Id = 2,
                 RouteNumber = "2",
-                AssignedTransport = Transports[1],
-                AssignedDriver = Drivers[1],
+                AssignedTransport = transports[1],
+                AssignedDriver = drivers[1],
                 StartTime = new DateTime(2024, 9, 11, 9, 0, 0),
                 EndTime = new DateTime(2024, 9, 11, 11, 0, 0)
             },
@@ -192,8 +192,8 @@ public class DispatchFixture
             {
                 Id = 3,
                 RouteNumber = "3",
-                AssignedTransport = Transports[2],
-                AssignedDriver = Drivers[2],
+                AssignedTransport = transports[2],
+                AssignedDriver = drivers[2],
                 StartTime = new DateTime(2024, 9, 14, 10, 0, 0),
                 EndTime = new DateTime(2024, 9, 14, 12, 0, 0)
             },
@@ -201,8 +201,8 @@ public class DispatchFixture
             {
                 Id = 4,
                 RouteNumber = "4",
-                AssignedTransport = Transports[3],
-                AssignedDriver = Drivers[3],
+                AssignedTransport = transports[3],
+                AssignedDriver = drivers[3],
                 StartTime = new DateTime(2024, 9, 13, 11, 0, 0),
                 EndTime = new DateTime(2024, 9, 13, 13, 0, 0)
             },
@@ -210,8 +210,8 @@ public class DispatchFixture
             {
                 Id = 5,
                 RouteNumber = "5",
-                AssignedTransport = Transports[4],
-                AssignedDriver = Drivers[4],
+                AssignedTransport = transports[4],
+                AssignedDriver = drivers[4],
                 StartTime = new DateTime(2024, 9, 15, 8, 0, 0),
                 EndTime = new DateTime(2024, 9, 15, 12, 0, 0)
             },
@@ -219,8 +219,8 @@ public class DispatchFixture
             {
                 Id = 6,
                 RouteNumber = "6",
-                AssignedTransport = Transports[5],
-                AssignedDriver = Drivers[5],
+                AssignedTransport = transports[5],
+                AssignedDriver = drivers[5],
                 StartTime = new DateTime(2024, 9, 16, 9, 0, 0),
                 EndTime = new DateTime(2024, 9, 16, 16, 0, 0)
             },
@@ -228,8 +228,8 @@ public class DispatchFixture
             {
                 Id = 7,
                 RouteNumber = "7",
-                AssignedTransport = Transports[6],
-                AssignedDriver = Drivers[6],
+                AssignedTransport = transports[6],
+                AssignedDriver = drivers[6],
                 StartTime = new DateTime(2024, 9, 12, 16, 0, 0),
                 EndTime = new DateTime(2024, 9, 12, 19, 0, 0)
             },
@@ -237,8 +237,8 @@ public class DispatchFixture
             {
                 Id = 8,
                 RouteNumber = "8",
-                AssignedTransport = Transports[7],
-                AssignedDriver = Drivers[7],
+                AssignedTransport = transports[7],
+                AssignedDriver = drivers[7],
                 StartTime = new DateTime(2024, 9, 17, 11, 0, 0),
                 EndTime = new DateTime(2024, 9, 17, 20, 0, 0)
             },
@@ -246,8 +246,8 @@ public class DispatchFixture
             {
                 Id = 9,
                 RouteNumber = "9",
-                AssignedTransport = Transports[4],
-                AssignedDriver = Drivers[4],
+                AssignedTransport = transports[4],
+                AssignedDriver = drivers[4],
                 StartTime = new DateTime(2024, 9, 15, 17, 0, 0),
                 EndTime = new DateTime(2024, 9, 15, 20, 0, 0)
             },
@@ -255,9 +255,9 @@ public class DispatchFixture
 
         TestData = new TestData
         {
-            Drivers = Drivers,
-            Transports = Transports,
-            Routes = Routes,
+            Drivers = drivers,
+            Transports = transports,
+            Routes = routes,
         };
     }
 
