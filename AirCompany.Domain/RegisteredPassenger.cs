@@ -11,39 +11,39 @@ namespace AirCompany.Domain;
 /// <param name="passenger">Пассажир, зарегистрированный на рейс.</param>
 public class RegisteredPassenger(
     int id,
-    string number,
-    string seatNumber,
-    decimal luggageWeight,
-    Flight flight,
-    Passenger passenger)
+    string? number,
+    string? seatNumber,
+    double? luggageWeight,
+    Flight? flight,
+    Passenger? passenger)
 {
     /// <summary>
     /// Уникальный идентификатор зарегистрированного пассажира.
     /// </summary>
-    public int Id { get; set; } = id;
+    public int? Id { get; set; } = id;
 
     /// <summary>
     /// Номер зарегистрированного пассажира.
     /// </summary>
-    public string Number { get; set; } = number;
+    public string? Number { get; set; } = number;
 
     /// <summary>
     /// Номер места, назначенного пассажиру.
     /// </summary>
-    public string SeatNumber { get; set; } = seatNumber;
+    public string? SeatNumber { get; set; } = seatNumber;
 
     /// <summary>
     /// Вес багажа пассажира.
     /// </summary>
-    public decimal LuggageWeight { get; set; } = luggageWeight;
+    public double? LuggageWeight { get; set; } = luggageWeight;
 
     /// <summary>
     /// Рейс, на который зарегистрирован пассажир.
     /// </summary>
-    public Flight Flight { get; set; } = flight;
+    public Flight? Flight { get; set; } = flight;
 
     /// <summary>
     /// Пассажир, зарегистрированный на рейс.
     /// </summary>
-    public Passenger Passenger { get; set; } = passenger;
+    public Passenger? Passenger { get; set; } = passenger;
 }

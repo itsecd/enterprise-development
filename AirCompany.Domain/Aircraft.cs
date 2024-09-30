@@ -8,30 +8,35 @@ namespace AirCompany.Domain;
 /// <param name="capacity">Вместимость самолета.</param>
 /// <param name="performance">Производительность самолета.</param>
 /// <param name="maxPassengers">Максимальное количество пассажиров.</param>
-public class Aircraft(int id, string model, decimal capacity, decimal performance, int maxPassengers)
+public class Aircraft(
+    int id,
+    string? model,
+    double? capacity,
+    double? performance,
+    int? maxPassengers)
 {
     /// <summary>
     /// Уникальный идентификатор самолета.
     /// </summary>
-    public int Id { get; set; } = id;
+    public int? Id { get; set; } = id;
 
     /// <summary>
     /// Модель самолета.
     /// </summary>
-    public string Model { get; set; } = model;
+    public string? Model { get; set; } = model;
 
     /// <summary>
     /// Вместимость самолета.
     /// </summary>
-    public decimal Capacity { get; set; } = capacity;
+    public double? Capacity { get; set; } = capacity;
 
     /// <summary>
     /// Производительность самолета.
     /// </summary>
-    public decimal Performance { get; set; } = performance;
+    public double? Performance { get; set; } = performance;
 
     /// <summary>
     /// Максимальное количество пассажиров.
     /// </summary>
-    public int MaxPassengers { get; set; } = maxPassengers;
+    public int? MaxPassengers { get; set; } = maxPassengers;
 }
