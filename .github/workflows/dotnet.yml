@@ -22,6 +22,8 @@ jobs:
         dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore ./EnterpriseStatistics/EnterpriseStatistics.sln
+    - name: Copy test data files
+      run: cp EnterpriseStatistics.Test/data.csv ./EnterpriseStatistics.Test/bin/Debug/net8.0/
     - name: Build
       run: dotnet build --no-restore ./EnterpriseStatistics/EnterpriseStatistics.sln
     - name: Test
