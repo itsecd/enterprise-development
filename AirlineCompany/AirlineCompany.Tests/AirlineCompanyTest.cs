@@ -20,7 +20,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
         var flyightDA =
             (from fly in flyFixture.GetFlights()
              where fly.DeparturePoint == "Tokio" && fly.ArrivalPoint == "Dublin"
-            select fly).ToList();
+             select fly).ToList();
 
         Assert.True(flyightDA.Any());
         Assert.Equal(flyFixture.GetFlights()[0], flyightDA[0]);
