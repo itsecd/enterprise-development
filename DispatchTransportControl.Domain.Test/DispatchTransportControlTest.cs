@@ -1,18 +1,24 @@
-﻿namespace DispatchTransportControl.Domain.Test;
+﻿using DispatchTransportControl.Api.Repository.impl;
 
-public class DispatchTransportControlTest(TestDataProvider testDataProvider) : IClassFixture<TestDataProvider>
+namespace DispatchTransportControl.Domain.Test;
+
+public class DispatchTransportControlTest(TestFixture testFixture) : IClassFixture<TestFixture>
 {
+    private readonly DriverRepository _driverRepository = testFixture.DriverRepository;
+
+    private readonly VehicleRepository _vehicleRepository = testFixture.VehicleRepository;
+
     [Fact]
     public void GetInfoAboutVehicleById()
     {
         const int vehicleId = 1;
-        var vehicle = testDataProvider.Vehicles.FirstOrDefault(v => v.Id == vehicleId);
+        var vehicle = _vehicleRepository.GetById(vehicleId);
 
         Assert.NotNull(vehicle);
         Assert.Equal(vehicleId, vehicle.Id);
         Assert.Equal("registrationNumber1", vehicle.RegistrationNumber);
         Assert.Equal(VehicleType.Bus, vehicle.VehicleType);
-        Assert.Equal(testDataProvider.VehicleModels[0], vehicle.VehicleModel);
+        Assert.Equal(testFixture.TestDataProvider.VehicleModels[0], vehicle.VehicleModel);
         Assert.Equal(1993, vehicle.YearOfManufacture);
     }
 
@@ -20,98 +26,65 @@ public class DispatchTransportControlTest(TestDataProvider testDataProvider) : I
     public void GetDriversByPeriod()
     {
         var startDate = new DateTime(2024, 9, 20, 10, 0, 0);
+        startDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc);
         var endDate = new DateTime(2024, 9, 20, 19, 0, 0);
+        endDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
 
-        var drivers = testDataProvider.RouteAssignments
-            .Where(ra => startDate <= ra.StartTime && ra.EndTime <= endDate)
-            .Select(ra => ra.Driver)
-            .Distinct()
-            .OrderBy(d => d.Surname).ThenBy(d => d.Name).ThenBy(d => d.Patronymic)
-            .ToList();
+        var drivers = _driverRepository.GetAllByPeriod(startDate, endDate).ToList();
 
         Assert.Equal(4, drivers.Count);
-        Assert.Equal("driverSurname1", testDataProvider.Drivers[0].Surname);
-        Assert.Equal("driverSurname2", testDataProvider.Drivers[1].Surname);
-        Assert.Equal("driverSurname3", testDataProvider.Drivers[2].Surname);
-        Assert.Equal("driverSurname4", testDataProvider.Drivers[3].Surname);
+        Assert.Equal("driverSurname1", testFixture.TestDataProvider.Drivers[0].Surname);
+        Assert.Equal("driverSurname2", testFixture.TestDataProvider.Drivers[1].Surname);
+        Assert.Equal("driverSurname3", testFixture.TestDataProvider.Drivers[2].Surname);
+        Assert.Equal("driverSurname4", testFixture.TestDataProvider.Drivers[3].Surname);
     }
 
     [Fact]
     public void GetTotalTripTimeByVehicleTypeAndModel()
     {
-        var tripDurationsForVehicleTypeAndModel = testDataProvider.RouteAssignments
-            .GroupBy(ra => new { ra.Vehicle.VehicleType, ra.Vehicle.VehicleModel.Id })
-            .ToDictionary
-            (
-                group => new { group.Key.VehicleType, group.Key.Id },
-                group => group.Sum(ra => (ra.EndTime - ra.StartTime).TotalHours)
-            );
+        var tripDurationsForVehicleTypeAndModel =
+            _vehicleRepository.GetTotalTripTimeForEveryVehicleTypeAndModel();
 
-        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Bus, Id = 1 }]);
-        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Trolley, Id = 2 }]);
-        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Bus, Id = 3 }]);
-        Assert.Equal(3, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Bus, Id = 4 }]);
-        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[new { VehicleType = VehicleType.Tram, Id = 5 }]);
+        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[0])]);
+        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[(VehicleType.Trolley, testFixture.TestDataProvider.VehicleModels[1])]);
+        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[2])]);
+        Assert.Equal(3, tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[3])]);
+        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[(VehicleType.Tram, testFixture.TestDataProvider.VehicleModels[4])]);
     }
 
     [Fact]
     public void GetTop5DriversByTripCount()
     {
-        var topDrivers = testDataProvider.RouteAssignments
-            .GroupBy(ra => ra.Driver)
-            .Select(group => new
-            {
-                Driver = group.Key,
-                TripCount = group.Count()
-            })
-            .OrderByDescending(g => g.TripCount)
-            .Take(5)
-            .ToList();
+        var topDrivers = _driverRepository.GetTop5DriversByTripCount().ToList();
 
         Assert.Equal(5, topDrivers.Count);
-        Assert.Equal(testDataProvider.Drivers[3], topDrivers[0].Driver);
+        Assert.Equal(testFixture.TestDataProvider.Drivers[3], topDrivers[0].Driver);
     }
 
     [Fact]
     public void GetDriverTripStats()
     {
-        var driverStats = testDataProvider.RouteAssignments
-            .GroupBy(ra => ra.Driver)
-            .ToDictionary(
-                group => group.Key,
-                group => new
-                {
-                    TripCount = group.Count(),
-                    AvgTime = group.Average(ra => (ra.EndTime - ra.StartTime).TotalHours),
-                    MaxTime = group.Max(ra => (ra.EndTime - ra.StartTime).TotalHours)
-                }
-            );
+        var driverStats = _driverRepository.GetDriverTripStats().ToList();
 
         Assert.Equal(5, driverStats.Count);
-        Assert.Equal(2, driverStats[testDataProvider.Drivers[3]].TripCount);
-        Assert.Equal(1.5, driverStats[testDataProvider.Drivers[3]].AvgTime);
-        Assert.Equal(2, driverStats[testDataProvider.Drivers[3]].MaxTime);
+        Assert.Equal(2, driverStats[3].Value.TripCount);
+        Assert.Equal(1.5, driverStats[3].Value.AvgTime);
+        Assert.Equal(2, driverStats[3].Value.MaxTime);
     }
 
     [Fact]
     public void GetVehiclesWithMaxTripsForPeriod()
     {
         var startDate = new DateTime(2024, 9, 19, 00, 0, 0);
+        startDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc);
         var endDate = new DateTime(2024, 9, 22, 00, 0, 0);
+        endDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
 
-        var maxTripCount = testDataProvider.RouteAssignments.Where(ra => ra.StartTime >= startDate && ra.EndTime <= endDate)
-            .GroupBy(ra => ra.Vehicle)
-            .Select(group => group.Count())
-            .Max();
-
-        var vehiclesWithMaxTrips = testDataProvider.RouteAssignments.Where(ra => ra.StartTime >= startDate && ra.EndTime <= endDate)
-            .GroupBy(ra => ra.Vehicle)
-            .Select(group => new { Vehicle = group.Key, TripCount = group.Count() })
-            .Where(g => g.TripCount == maxTripCount)
-            .ToList();
+        var vehiclesWithMaxTrips =
+            _vehicleRepository.GetVehiclesWithMaxTripsForPeriod(startDate, endDate).ToList();
 
         Assert.Single(vehiclesWithMaxTrips);
-        Assert.Equal(testDataProvider.Vehicles[4], vehiclesWithMaxTrips[0].Vehicle);
+        Assert.Equal(testFixture.TestDataProvider.Vehicles[4], vehiclesWithMaxTrips[0].Vehicle);
         Assert.Equal(2, vehiclesWithMaxTrips[0].TripCount);
     }
 
