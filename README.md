@@ -8,25 +8,25 @@
 
 ## Классы
 ### Enterprise - предприятие  
-MainStateRegistrationNumber - Идентификатор предприятия - ОГРН 
-Name - Название предприятия  
-Address - Адрес  
-Phone - Телефон  
-EmployeeCount - Количество работников
-TotalArea - Общая площадь
-IndustryType - Тип отрасли
-OwnershipForm - Форма собственности
+MainStateRegistrationNumber - Идентификатор предприятия - ОГРН   
+Name - Название предприятия    
+Address - Адрес    
+Phone - Телефон    
+EmployeeCount - Количество работников  
+TotalArea - Общая площадь  
+IndustryType - Тип отрасли  
+OwnershipForm - Форма собственности  
 ### Supplier - поставщик
-Id - Идентификатор поставщика  
-FullName - Полное имя (ФИО)
-Address - Адрес  
-Phone - Телефон  
+Id - Идентификатор поставщика    
+FullName - Полное имя (ФИО)  
+Address - Адрес    
+Phone - Телефон    
 ### Supply - поставка
-Id - Идентификатор поставки 
+Id - Идентификатор поставки   
 Supplier - Поставщик  
-Enterprise - Предприятие
-Quanity - Количество единиц сырья 
-Date - Дата поставки
+Enterprise - Предприятие  
+Quanity - Количество единиц сырья   
+Date - Дата поставки  
 
 ## Перечисления
 IndustryTypes - Тип отрасли  
