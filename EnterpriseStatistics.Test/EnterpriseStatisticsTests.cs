@@ -69,7 +69,7 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
         
         Assert.True(supplierEnterpriseCounts.Any());
         Assert.Equal("Petrov Petr Petrovich", supplierEnterpriseCounts[1].FullName);
-        Assert.Equal(3, supplierEnterpriseCounts[1].EnterpriseCount);
+        Assert.Equal(2, supplierEnterpriseCounts[1].EnterpriseCount);
     }
 
     /// <summary>

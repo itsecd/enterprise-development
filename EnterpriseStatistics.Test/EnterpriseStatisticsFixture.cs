@@ -18,8 +18,7 @@ public class EnterpriseStatisticsFixture
     public List<Supply> GetData()
     {
         if(_supplyList != null) return _supplyList;
-        string path = Path.Combine(Directory.GetCurrentDirectory(), "EnterpriseStatistics.Test", "data.csv");
-        var suppliesReader = new EnterpriseStatisticsFileReader(path);
+        var suppliesReader = new EnterpriseStatisticsFileReader("data.csv");
         _supplyList = suppliesReader.ReadSupply();
         return _supplyList;
     }
