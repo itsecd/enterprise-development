@@ -7,6 +7,10 @@ public class Hotel
 
 {
     /// <summary>
+    ///     Индентификатор отеля
+    /// </summary>
+    public required int Id { get; set; }
+    /// <summary>
     ///     Название
     /// </summary>
     public required string Name { get; set; }

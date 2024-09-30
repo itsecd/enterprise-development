@@ -23,4 +23,9 @@ public class Room
     ///     Цена
     /// </summary>
     public required int Cost { get; set; }
+
+    /// <summary>
+    ///     Индентификатор отеля
+    /// </summary>
+    public required int HotelId { get; set; }
 }
