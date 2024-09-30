@@ -39,7 +39,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
         var passWF =
             (from pass in passFixture.GetPassenegers()
              orderby pass.FIO descending
-             where pass.ñodeFlight == "5000" && pass.baggageWeight == 0
+             where pass.codeFlight == "5000" && pass.baggageWeight == 0
              select pass).ToList();
 
         var res = new List<Passeneger>() { passFixture.GetPassenegers()[8], passFixture.GetPassenegers()[0]};
