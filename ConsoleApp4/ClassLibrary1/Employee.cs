@@ -1,80 +1,92 @@
 ﻿namespace HRDepartment.Domain;
 
 /// <summary>
-/// Сотрудник
+/// Сотрудник компании
 /// </summary>
 public class Employee(EmployeeData data, Department department, Position position, Union union)
 {
     /// <summary>
-    /// Регистрационный номер
+    /// Уникальный идентификатор сотрудника
     /// </summary>
     public int Id { get; set; } = data.Id;
+
     /// <summary>
-    /// Фамилия
+    /// Фамилия сотрудника
     /// </summary>
     public string Surname { get; set; } = data.Surname;
+
     /// <summary>
-    /// Имя
+    /// Имя сотрудника
     /// </summary>
     public string Name { get; set; } = data.Name;
+
     /// <summary>
-    /// Отчество
+    /// Отчество сотрудника
     /// </summary>
     public string Patronymic { get; set; } = data.Patronymic;
+
     /// <summary>
-    /// Дата рождения
+    /// Дата рождения сотрудника
     /// </summary>
     public DateTime BirthDate { get; set; } = data.BirthDate;
+
     /// <summary>
-    /// Пол
+    /// Пол сотрудника
     /// </summary>
     public string Gender { get; set; } = data.Gender;
+
     /// <summary>
-    /// Дата поступления
+    /// Дата поступления сотрудника на работу
     /// </summary>
     public DateTime HireDate { get; set; } = data.HireDate;
+
     /// <summary>
-    /// Отдел
+    /// Список отделов, в которых работает сотрудник
     /// </summary>
-    public List<Department> Departments { get; set; } = new List<Department> { department };
+    public List<Department> Departments { get; set; } = department != null ? new List<Department> { department } : new List<Department>();
+
     /// <summary>
-    /// Должность
+    /// Должность сотрудника
     /// </summary>
-    public Position Position { get; set; } = position;
+    public Position? Position { get; set; } = position;
+
     /// <summary>
-    /// Домашний адресс
+    /// Домашний адрес сотрудника
     /// </summary>
     public string HomeAddress { get; set; } = data.HomeAddress;
+
     /// <summary>
-    /// Рабочий телефон
+    /// Рабочий телефон сотрудника
     /// </summary>
     public string WorkPhone { get; set; } = data.WorkPhone;
+
     /// <summary>
-    /// Домашний телефон
+    /// Домашний телефон сотрудника
     /// </summary>
     public string HomePhone { get; set; } = data.HomePhone;
+
     /// <summary>
-    /// Семпейное положение
+    /// Семейное положение сотрудника
     /// </summary>
     public string FamilyStatus { get; set; } = data.FamilyStatus;
+
     /// <summary>
-    /// Число человек в семье
+    /// Количество человек в семье сотрудника
     /// </summary>
     public int FamilyMembers { get; set; } = data.FamilyMembers;
+
     /// <summary>
-    /// Количество детей
+    /// Количество детей у сотрудника
     /// </summary>
     public int Children { get; set; } = data.Children;
+
     /// <summary>
-    /// Членство в профсоюзе
+    /// Членство сотрудника в профсоюзе
     /// </summary>
-    public Union Union { get; set; } = union;
+    public Union? Union { get; set; } = union;
+
     /// <summary>
-    /// Фрхив трудовой деятельности
+    /// Архив трудовой деятельности сотрудника
     /// </summary>
     public List<WorkHistory> WorkHistory { get; set; } = new List<WorkHistory>();
-    /// <summary>
-    /// Полное имя сотрудника для удобства
-    /// </summary>
-    public string FullName => $"{Surname} {Name} {Patronymic}";
 }
