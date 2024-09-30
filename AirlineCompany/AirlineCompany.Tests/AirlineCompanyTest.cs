@@ -155,7 +155,8 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
              select new{ maxW, avgW }).Distinct().ToList();
 
         Assert.True(flyightWMA.Any());
-        Assert.Equal("8,4", flyightWMA[0].maxW.ToString());
-        Assert.Equal("5,8857145", flyightWMA[0].avgW.ToString());
+        Assert.True(flyightWMA[0].maxW.Equals((float)8.4));
+        Assert.True(flyightWMA[0].avgW.Equals((float)5.8857145));
+
     }
 }
