@@ -1,8 +1,8 @@
 OGRN,Company Name,Address,Phone,Number of Employees,Total Area,Industry Type,Ownership Form,Supplier ID,Full Name,Supplier Address,Supplier Phone,Delivery ID,Quantity of Raw Material,Delivery Date
 1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1001,200,2024-09-01
 2345678901234,ZAO "BioProducts",Saint Petersburg Sadovaya St. 20,+7 812 234-56-78,75,1100,AgriculturalIndustry,Private,2,Petrov Petr Petrovich,Saint Petersburg Pushechnaya St. 15,+7 812 876-54-32,1002,150,2024-09-02
-3456789012345,LLC "TechLogistics",Kazan Kremlin St. 10,+7 843 234-56-78,100,1200,Logistics,JointStock,3,Sidorov Sidor Sidorovich,Kazan Ulitsa Tsentralnaya 25,+7 843 876-54-32,1003,250,2024-09-03
-4567890123456,ZAO "MetalWorks",Novosibirsk Lenin St. 15,+7 383 234-56-78,80,1300,Heavy Industry,StateFederal,4,Anisimov Sergey Vladimirovich,Novosibirsk Mirova St. 30,+7 383 876-54-32,1004,300,2024-09-04
+3456789012345,LLC "TechLogistics",Kazan Kremlin St. 10,+7 843 234-56-78,100,1200,Logistics,JointStock,3,Sidorov Sidor Sidorovich,Kazan Ulitsa Tsentralnaya 25,+7 843 876-54-32,1003,1650,2024-09-03
+4567890123456,ZAO "MetalWorks",Novosibirsk Lenin St. 15,+7 383 234-56-78,80,1300,LightHeavyIndustry,StateFederal,4,Anisimov Sergey Vladimirovich,Novosibirsk Mirova St. 30,+7 383 876-54-32,1004,300,2024-09-04
 5678901234567,LLC "SmartTransport",Yekaterinburg Malysheva St. 25,+7 343 234-56-78,90,1400,Transport,MunicipalCity,5,Bondar Oleg Ivanovich,Yekaterinburg Tikhoretskaya St. 10,+7 343 876-54-32,1005,180,2024-09-05
 6789012345678,ZAO "EcoLife",Krasnodar Pashkovskaya St. 35,+7 861 234-56-78,60,900,AgriculturalIndustry,Private,6,Fedorov Dmitry Alexandrovich,Krasnodar Dzerzhinskogo St. 8,+7 861 876-54-32,1006,400,2024-09-06
 7890123456789,LLC "BuildFast",Samara Leningradskaya St. 18,+7 846 234-56-78,110,1600,Construction,JointStock,7,Semenov Alexey Petrovich,Samara Krasnoarmeyskaya St. 22,+7 846 876-54-32,1007,220,2024-09-07
@@ -17,11 +17,10 @@ OGRN,Company Name,Address,Phone,Number of Employees,Total Area,Industry Type,Own
 7890123454321,ZAO "EcoConstruction",Rostov-on-Don Rostov St. 7,+7 863 234-56-78,80,1300,Construction,MunicipalCity,16,Bondar Oleg Ivanovich,Rostov-on-Don Ulitsa Severnyy 10,+7 863 876-54-32,1016,300,2024-09-16
 8901234565432,LLC "AgroDevelopment",Moscow Tverskaya St. 45,+7 495 234-56-78,150,1600,AgriculturalIndustry,JointStock,17,Ivanov Ivan Ivanovich,Moscow Shmitovskiy Proyezd 5,+7 495 876-54-32,1017,500,2024-09-17
 9012345676543,ZAO "TransportPlus",Nizhny Novgorod Novaya St. 25,+7 831 234-56-78,100,1400,Logistics,StateFederal,18,Petrov Petr Petrovich,Nizhny Novgorod Rybinskaya St. 10,+7 831 876-54-32,1018,450,2024-09-18
-OGRN,Company Name,Address,Phone,Number of Employees,Total Area,Industry Type,Ownership Form,Supplier ID,Full Name,Supplier Address,Supplier Phone,Delivery ID,Quantity of Raw Material,Delivery Date
 1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1001,200,2024-09-01
 1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1002,300,2024-09-15
 1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1003,150,2024-09-22
-1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1004,250,2024-09-30
+1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1004,1650,2024-09-30
 1234567890123,LLC "AgroTech",Moscow Pushkin St. 1,+7 495 123-45-67,50,1000,AgriculturalIndustry,StateFederal,1,Ivanov Ivan Ivanovich,Moscow Lenin St. 5,+7 495 765-43-21,1005,400,2024-10-05
 9876543210987,ZAO "TransLogistics",St. Petersburg Nevsky Ave. 10,+7 812 123-45-67,100,1500,Logistics,Private,2,Petrov Petr Petrovich,St. Petersburg Sadovaya St. 15,+7 812 765-43-21,2001,500,2024-09-05
 9876543210987,ZAO "TransLogistics",St. Petersburg Nevsky Ave. 10,+7 812 123-45-67,100,1500,Logistics,Private,2,Petrov Petr Petrovich,St. Petersburg Sadovaya St. 15,+7 812 765-43-21,2002,450,2024-09-20
