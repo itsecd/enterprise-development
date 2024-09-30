@@ -9,15 +9,15 @@ public class Supply
     /// </summary>
     public required int Id { get; set; }
     /// <summary>
-    /// Идентификатор поставщика
+    /// Поставщик
     /// </summary>
-    public required int IdSupplier { get; set; }
+    public required Supplier Supplier { get; set; }
     /// <summary>
-    /// Идентификатор предприятия
+    /// Предприятие
     /// </summary>
-    public required int IdEnterprise { get; set; }
+    public required Enterprise Enterprise { get; set; }
     /// <summary>
-    /// Колличество единиц сырья
+    /// Количество единиц сырья
     /// </summary>
     public required int Quanity { get; set; }
     /// <summary>

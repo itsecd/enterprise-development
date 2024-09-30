@@ -1,2 +1,4 @@
-﻿using EnterpriseStatistics.Domain;
-
+﻿int main()
+{
+    return 0;
+}

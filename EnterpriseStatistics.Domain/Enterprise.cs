@@ -8,7 +8,7 @@ public class Enterprise
     /// <summary>
     /// Идентификатор предприятия - ОГРН
     /// </summary>
-    public required int Id { get; set; }
+    public required ulong MainStateRegistrationNumber { get; set; }
     /// <summary>
     /// Название
     /// </summary>
