@@ -1,16 +1,16 @@
-using EnterpriseStatistics.Domain;
+п»їusing EnterpriseStatistics.Domain;
 
 namespace EnterpriseStatistics.Tests;
 
 /// <summary>
-/// Класс для тестирования
+/// РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ
 /// </summary>
 public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): IClassFixture<EnterpriseStatisticsFixture>
 {
     private EnterpriseStatisticsFixture _fixture = fixture;
 
     /// <summary>
-    /// Информация о конкретном предприятии по ОГРН
+    /// Р’СЃРµ СЃРІРµРґРµРЅРёСЏ Рѕ РєРѕРЅРєСЂРµС‚РЅРѕРј РїСЂРµРґРїСЂРёСЏС‚РёРё.
     /// </summary>
     [Fact]
     public void InfoSpecificEnterprise()
@@ -29,9 +29,9 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     }
 
     /// <summary>
-    /// Упорядоченные по ФИО поставщики, сделавшие поставку в конкретный период
+    /// Р’СЃРµ РїРѕСЃС‚Р°РІС‰РёРєРё, РїРѕСЃС‚Р°РІРёРІС€РёРµ СЃС‹СЂСЊРµ Р·Р° Р·Р°РґР°РЅРЅС‹Р№ РїРµСЂРёРѕРґ, СѓРїРѕСЂСЏРґРѕС‡РёС‚СЊ РїРѕ РЅР°Р·РІР°РЅРёСЋ.
     /// </summary>
-    [Fact]
+        [Fact]
     public void InfoSupplierDate()
     {
         DateTime startDate = new DateTime(2024, 9, 1);
@@ -50,7 +50,7 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     }
 
     /// <summary>
-    /// Количество предприятий, с которыми работает каждый поставщик
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРїСЂРёСЏС‚РёР№, СЃ РєРѕС‚РѕСЂС‹РјРё СЂР°Р±РѕС‚Р°РµС‚ РєР°Р¶РґС‹Р№ РїРѕСЃС‚Р°РІС‰РёРє.
     /// </summary>
     [Fact]
     public void CountEnterprise()
@@ -73,9 +73,9 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     }
 
     /// <summary>
-    /// Количество предприятий, с которыми работает каждый поставщик
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕР»РёС‡РµСЃС‚РІРµ РїРѕСЃС‚Р°РІС‰РёРєРѕРІ РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚РёРїР° РѕС‚СЂР°СЃР»Рё Рё С„РѕСЂРјРµ СЃРѕР±СЃС‚РІРµРЅРЅРѕСЃС‚Рё.
     /// </summary>
-    [Fact]
+        [Fact]
     public void SupplierCountIndustryOwnership()
     {
         var result = _fixture.GetData()
@@ -93,11 +93,10 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
         Assert.Equal(4, result[1].SupplierCount);
         Assert.True(result[2].SupplierCount == 3);
         Assert.Equal(IndustryTypes.Logistics, result[11].IndustryType);
-
     }
 
     /// <summary>
-    /// Топ 5 предприятий по количеству поставок
+    /// РўРѕРї 5 РїСЂРµРґРїСЂРёСЏС‚РёР№ РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ РїРѕСЃС‚Р°РІРѕРє.
     /// </summary>
     [Fact]
     public void Top5EnterprisesSupplyCount()
@@ -116,13 +115,12 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
         Assert.Equal("LLC \"AgroTech\"", topEnterprises[0].Enterprise.Name);
         Assert.Equal(5, topEnterprises[3].SupplyCount);
         Assert.Equal(1500, topEnterprises[3].Enterprise.TotalArea);
-
     }
 
     /// <summary>
-    /// Поставщики с максимальным количеством товара за указанный период
+    /// РРЅС„РѕСЂР°С†РёСЏ Рѕ РїРѕСЃС‚Р°РІС‰РёРєР°С…, РїРѕСЃС‚Р°РІРёРІС€РёС… РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕРІР°СЂР° Р·Р° СѓРєР°Р·Р°РЅРЅС‹Р№ РїРµСЂРёРѕРґ.
     /// </summary>
-        [Fact]
+            [Fact]
     public void MaxSupplierPeriod()
     {
         DateTime startDate = new DateTime(2024, 9, 1);
@@ -137,11 +135,9 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
                 TotalQuantity = group.Sum(s => s.Quanity) 
             })
             .ToList(); 
-
-        
+                
         var maxQuantity = supplierQuantities.Max(x => x.TotalQuantity);
-
-        
+                
         var suppliersWithMaxSupply = supplierQuantities
             .Where(x => x.TotalQuantity == maxQuantity)
             .ToList();
@@ -151,8 +147,5 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
         Assert.True(maxQuantity == 2400);
         Assert.Equal(3, suppliersWithMaxSupply[0].Supplier.Id);
         Assert.Equal(4, suppliersWithMaxSupply[1].Supplier.Id);
-
     }
-
-
 }
