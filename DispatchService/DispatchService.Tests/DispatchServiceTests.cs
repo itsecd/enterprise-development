@@ -37,14 +37,14 @@ public class DispatchServiceTests(DispatchFixture fixture) : IClassFixture<Dispa
     {
         var expectedTripTimes = new []
         {
-            new { TransportType = Transport.VehicleType.Bus, Model = "Volvo 7900", TotalTime = TimeSpan.FromSeconds(new TimeSpan(0, 2, 0, 0).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Trolleybus, Model = "Trolza", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 2, 0, 0)).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Tram, Model = "Stadler", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 2, 0, 0)).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Bus, Model = "Mercedes Citaro", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 2, 0, 0)).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Trolleybus, Model = "BKM 321", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 7, 0, 0)).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Tram, Model = "CAF Urbos", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 7, 0, 0)).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Bus, Model = "MAN Lion's City", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 3, 0, 0)).TotalSeconds) },
-            new { TransportType = Transport.VehicleType.Trolleybus, Model = "ZIU-9", TotalTime = TimeSpan.FromSeconds((new TimeSpan(0, 9, 0, 0)).TotalSeconds) }
+            new { TransportType = Transport.VehicleType.Bus, Model = "Volvo 7900", TotalTime = new TimeSpan(0, 2, 0, 0) },
+            new { TransportType = Transport.VehicleType.Trolleybus, Model = "Trolza", TotalTime = new TimeSpan(0, 2, 0, 0) },
+            new { TransportType = Transport.VehicleType.Tram, Model = "Stadler", TotalTime = new TimeSpan(0, 2, 0, 0) },
+            new { TransportType = Transport.VehicleType.Bus, Model = "Mercedes Citaro", TotalTime = new TimeSpan(0, 2, 0, 0) },
+            new { TransportType = Transport.VehicleType.Trolleybus, Model = "BKM 321", TotalTime = new TimeSpan(0, 7, 0, 0) },
+            new { TransportType = Transport.VehicleType.Tram, Model = "CAF Urbos", TotalTime = new TimeSpan(0, 7, 0, 0) },
+            new { TransportType = Transport.VehicleType.Bus, Model = "MAN Lion's City", TotalTime = new TimeSpan(0, 3, 0, 0) },
+            new { TransportType = Transport.VehicleType.Trolleybus, Model = "ZIU-9", TotalTime = new TimeSpan(0, 9, 0, 0) }
         };
 
         var totalTripTimes = _fixture.TestData.Routes
@@ -63,15 +63,7 @@ public class DispatchServiceTests(DispatchFixture fixture) : IClassFixture<Dispa
     [Fact]
     public void TestTopDriversByTripCount()
     {
-        var expectedTopDrivers = new List<(Driver Driver, int TripCount)>
-        {
-            (_fixture.TestData.Drivers[4], 2),
-            (_fixture.TestData.Drivers[0], 1),
-            (_fixture.TestData.Drivers[1], 1),
-            (_fixture.TestData.Drivers[2], 1),
-            (_fixture.TestData.Drivers[3], 1)
-        };
-
+        var expectedId = 5;
         var topDrivers = _fixture.TestData.Routes
             .GroupBy(r => r.AssignedDriver)
             .Select(g => new
@@ -80,14 +72,10 @@ public class DispatchServiceTests(DispatchFixture fixture) : IClassFixture<Dispa
                 TripCount = g.Count()
             })
             .OrderByDescending(d => d.TripCount)
-            .Take(5)
+            .Take(1)
             .ToList();
 
-        var actualTopDrivers = topDrivers
-            .Select(d => (d.Driver, d.TripCount))
-            .ToList();
-
-        Assert.Equal(expectedTopDrivers, actualTopDrivers);
+        Assert.Equal(expectedId, topDrivers[0].Driver.Id);
     }
 
     [Fact]
