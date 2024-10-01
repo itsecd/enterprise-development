@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore EnterpriseStatistics.sln
     - name: Test
-      run: dotnet test --no-restore EnterpriseStatistics.Test/EnterpriseStatistics.Test.csproj
+      run: dotnet test --no-restore EnterpriseStatistics.sln
