@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore ./EnterpriseStatistics/EnterpriseStatistics.sln
     - name: Test
-      run: dotnet test --no-build --verbosity normal ./EnterpriseStatistics/EnterpriseStatistics.sln
+      run: dotnet test --no-build --verbosity normal ./EnterpriseStatistics.Test/EnterpriseStatistics.Test.sln
