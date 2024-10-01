@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore ./EnterpriseStatistics/EnterpriseStatistics.sln
+      run: dotnet restore EnterpriseStatistics.sln
     - name: Build
-      run: dotnet build --no-restore ./EnterpriseStatistics/EnterpriseStatistics.sln
+      run: dotnet build --no-restore EnterpriseStatistics.sln
     - name: Test
       run: dotnet test ./EnterpriseStatistics.Test/EnterpriseStatistics.Test.csproj --configuration Release --verbosity normal
