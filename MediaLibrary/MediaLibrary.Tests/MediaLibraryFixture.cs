@@ -37,8 +37,8 @@ public class MediaLibraryFixture
     /// </summary>
     public MediaLibraryFixture()
     {
-        Actors = new()
-        {
+        Actors = 
+        [ 
             new()
             {
                 Id = 1,
@@ -93,10 +93,10 @@ public class MediaLibraryFixture
                 Name = "Dua Lipa",
                 Description = "British-Albanian singer-songwriter, known for her pop hits 'Don't Start Now' and 'Levitating'"
             }
-        };
+        ];
 
-        Genres = new()
-        {
+        Genres =
+        [
             new()
             {
                 Id = 1,
@@ -122,10 +122,10 @@ public class MediaLibraryFixture
                 Id = 5,
                 Name = "Rock"
             }
-        };
+        ];
 
-        ActorGenres = new()
-        {
+        ActorGenres = 
+        [
             new()
             {
                 ActorId = 1,
@@ -171,10 +171,10 @@ public class MediaLibraryFixture
                 ActorId = 9,
                 GenreId = 1
             }
-        };
+        ];
 
-        Albums = new()
-        {
+        Albums =
+        [
             new()
             {
                 Id = 1,
@@ -294,10 +294,10 @@ public class MediaLibraryFixture
                 Date= new DateTime(2020, 3, 27), 
                 ActorId = 9 
             }
-        };
+        ];
 
-        Tracks = new()
-        {
+        Tracks = 
+        [
             new() 
             { 
                 Id = 1, 
@@ -618,6 +618,6 @@ public class MediaLibraryFixture
                 AlbumId = 9, 
                 Time = TimeSpan.FromSeconds(229) 
             },
-        };
+        ];
     }
 }
