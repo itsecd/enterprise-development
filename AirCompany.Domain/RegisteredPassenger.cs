@@ -20,7 +20,7 @@ public class RegisteredPassenger(
     /// <summary>
     /// Уникальный идентификатор зарегистрированного пассажира.
     /// </summary>
-    public int? Id { get; set; } = id;
+    public required int Id { get; set; } = id;
 
     /// <summary>
     /// Номер зарегистрированного пассажира.

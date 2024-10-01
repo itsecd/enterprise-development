@@ -24,7 +24,7 @@ public class Flight(
     /// <summary>
     /// Уникальный идентификатор рейса.
     /// </summary>
-    public int? Id { get; set; } = id;
+    public required int Id { get; set; } = id;
 
     /// <summary>
     /// Номер рейса.

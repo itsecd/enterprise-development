@@ -18,7 +18,7 @@ public class Aircraft(
     /// <summary>
     /// Уникальный идентификатор самолета.
     /// </summary>
-    public int? Id { get; set; } = id;
+    public required int Id { get; set; } = id;
 
     /// <summary>
     /// Модель самолета.

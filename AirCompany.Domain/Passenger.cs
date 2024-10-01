@@ -14,7 +14,7 @@ public class Passenger(
     /// <summary>
     /// Уникальный идентификатор пассажира.
     /// </summary>
-    public int? Id { get; set; } = id;
+    public required int Id { get; set; } = id;
 
     /// <summary>
     /// Номер паспорта пассажира.
