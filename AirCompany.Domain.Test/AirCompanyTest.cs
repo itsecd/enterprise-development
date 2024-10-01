@@ -19,8 +19,8 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
     {
         var flightId = 1; // ID рейса для поиска
         var passengers = _testDataProvider.registeredPassengers
-            .Where(p => p.Flight.Id == flightId && p.LuggageWeight == 0)
-            .OrderBy(p => p.Passenger.FullName)
+            .Where(p => p.Flight!.Id == flightId && p.LuggageWeight == 0)
+            .OrderBy(p => p.Passenger!.FullName)
             .ToList();
 
         Assert.NotEmpty(passengers);
@@ -38,11 +38,11 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
         DateTime endDate = new DateTime(2023, 10, 15, 18, 0, 0);
 
         var flights = _testDataProvider.flights
-            .Where(f => f.AircraftType.Id == aircraftTypeId && f.DepartureDate >= startDate && f.ArrivalDate <= endDate)
+            .Where(f => f.AircraftType!.Id == aircraftTypeId && f.DepartureDate >= startDate && f.ArrivalDate <= endDate)
             .ToList();
 
         Assert.NotEmpty(flights);
-        Assert.All(flights, f => Assert.Equal(aircraftTypeId, f.AircraftType.Id));
+        Assert.All(flights, f => Assert.Equal(aircraftTypeId, f.AircraftType!.Id));
         Assert.All(flights, f => Assert.True(f.DepartureDate >= startDate && f.DepartureDate <= endDate));
     }
     
@@ -54,7 +54,7 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
     {
         var top5Flights = _testDataProvider.flights
             .GroupBy(f => f)
-            .OrderByDescending(g => g.Sum(f => f.Passengers.Count))
+            .OrderByDescending(g => g.Sum(f => f.Passengers!.Count))
             .Take(5)
             .Select(g => g.Key)
             .ToList();
@@ -93,8 +93,8 @@ public class AirCompanyTest(TestDataProvider testDataProvider) : IClassFixture<T
             .Where(f => f.DeparturePoint == departurePoint)
             .ToList();
 
-        var averageLoad = flightsFromPoint.Average(f => f.Passengers.Count);
-        var maxLoad = flightsFromPoint.Max(f => f.Passengers.Count);
+        var averageLoad = flightsFromPoint.Average(f => f.Passengers!.Count);
+        var maxLoad = flightsFromPoint.Max(f => f.Passengers!.Count);
         
         Assert.Equal(4, averageLoad);
         Assert.Equal(4, maxLoad);
