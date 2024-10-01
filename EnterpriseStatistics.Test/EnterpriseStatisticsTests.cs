@@ -7,7 +7,7 @@ namespace EnterpriseStatistics.Tests;
 /// </summary>
 public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): IClassFixture<EnterpriseStatisticsFixture>
 {
-    private EnterpriseStatisticsFixture _fixture = fixture;
+    private readonly EnterpriseStatisticsFixture _fixture = fixture;
 
     /// <summary>
     /// Все сведения о конкретном предприятии.
@@ -15,9 +15,10 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     [Fact]
     public void InfoSpecificEnterprise()
     {
-        var specificEnterprise = _fixture.GetData()
+        ulong mainStateRegistrationNumber = 1234567890123;
+        var specificEnterprise = _fixture.SupplyList
             .Select(e => e.Enterprise)
-            .Where(e => e.MainStateRegistrationNumber == 1234567890123).ToList();
+            .Where(e => e.MainStateRegistrationNumber == mainStateRegistrationNumber).ToList();
 
         Assert.Equal("LLC \"AgroTech\"", specificEnterprise[0].Name);
         Assert.Equal("Moscow Pushkin St. 1", specificEnterprise[0].Address);
@@ -31,22 +32,23 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     /// <summary>
     /// Все поставщики, поставившие сырье за заданный период, упорядочить по названию.
     /// </summary>
-        [Fact]
+    [Fact]
     public void InfoSupplierDate()
     {
-        DateTime startDate = new DateTime(2024, 9, 1);
-        DateTime endDate = new DateTime(2024, 9, 10);
-       
-        var supplierDate = _fixture.GetData()
-            .Where(supply => supply.Date >= startDate && supply.Date <= endDate)
-            .OrderBy(supply => supply.Supplier.FullName)
-            .GroupBy(supply => supply.Supplier.FullName).ToList();
+        var startDate = new DateTime(2024, 9, 1);
+        var endDate = new DateTime(2024, 9, 10);
 
-        Assert.True(supplierDate.Any());
-        Assert.Equal("Anisimov Sergey Vladimirovich", supplierDate[0].Key);
-        Assert.Equal("Bondar Oleg Ivanovich", supplierDate[1].Key);
-        Assert.Equal("Sidorov Sidor Sidorovich", supplierDate[supplierDate.Count() -1].Key);
-        Assert.True(supplierDate.Count() == 10);
+        var supplierDate = _fixture.SupplyList
+            .Where(supply => supply.Date >= startDate && supply.Date <= endDate)
+            .Select(supply => supply.Supplier)
+            .Distinct()
+            .OrderBy(supplier => supplier.FullName)
+            .ToList();
+
+        Assert.Equal("Anisimov Sergey Vladimirovich", supplierDate[0].FullName);
+        Assert.Equal("Bondar Oleg Ivanovich", supplierDate[1].FullName);
+        Assert.Equal("Sidorov Sidor Sidorovich", supplierDate[^1].FullName);
+        Assert.True(supplierDate.Count == 10);
     }
 
     /// <summary>
@@ -55,19 +57,16 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     [Fact]
     public void CountEnterprise()
     {
-        var supplier = _fixture.GetData()
-            .Select(supply => supply.Supplier).Distinct().ToList();
-
-        var supplierEnterpriseCounts = _fixture.GetData()
+        var supplierEnterpriseCounts = _fixture.SupplyList
             .GroupBy(supply => supply.Supplier).Distinct() 
-            .Select(tmp => new
+            .Select(supplier => new
             {
-                SupplierId = tmp.Key.Id,
-                FullName = tmp.Key.FullName,
-                EnterpriseCount = tmp.Select(s => s.Enterprise.MainStateRegistrationNumber).Distinct().Count()
+                SupplierId = supplier.Key.Id,
+                supplier.Key.FullName,
+                EnterpriseCount = supplier.Select(s => s.Enterprise.MainStateRegistrationNumber).Distinct().Count()
             }).ToList();
         
-        Assert.True(supplierEnterpriseCounts.Any());
+        Assert.True(supplierEnterpriseCounts.Count == 18);
         Assert.Equal("Petrov Petr Petrovich", supplierEnterpriseCounts[1].FullName);
         Assert.Equal(2, supplierEnterpriseCounts[1].EnterpriseCount);
     }
@@ -75,15 +74,15 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     /// <summary>
     /// Информация о количестве поставщиков для каждого типа отрасли и форме собственности.
     /// </summary>
-        [Fact]
+    [Fact]
     public void SupplierCountIndustryOwnership()
     {
-        var result = _fixture.GetData()
+        var result = _fixture.SupplyList
         .GroupBy(supply => new { supply.Enterprise.IndustryType, supply.Enterprise.OwnershipForm })
         .Select(group => new
         {
-            IndustryType = group.Key.IndustryType,
-            OwnershipForm = group.Key.OwnershipForm,
+            group.Key.IndustryType,
+            group.Key.OwnershipForm,
             SupplierCount = group.Select(s => s.Supplier.Id).Distinct().Count()
         })
         .ToList();
@@ -101,7 +100,7 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     [Fact]
     public void Top5EnterprisesSupplyCount()
     {
-        var topEnterprises = _fixture.GetData()
+        var topEnterprises = _fixture.SupplyList
             .GroupBy(supply => supply.Enterprise) 
             .Select(group => new
             {
@@ -109,8 +108,7 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
                 SupplyCount = group.Count() 
             }).OrderByDescending(x => x.SupplyCount).Take(5).ToList();
 
-        Assert.True(topEnterprises.Any());
-        Assert.True(topEnterprises.Count() == 5);
+        Assert.True(topEnterprises.Count == 5);
         Assert.Equal(6, topEnterprises[0].SupplyCount);
         Assert.Equal("LLC \"AgroTech\"", topEnterprises[0].Enterprise.Name);
         Assert.Equal(5, topEnterprises[3].SupplyCount);
@@ -120,13 +118,13 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
     /// <summary>
     /// Инфорация о поставщиках, поставивших максимальное количество товара за указанный период.
     /// </summary>
-            [Fact]
+    [Fact]
     public void MaxSupplierPeriod()
     {
-        DateTime startDate = new DateTime(2024, 9, 1);
-        DateTime endDate = new DateTime(2024, 9, 20);
+        var startDate = new DateTime(2024, 9, 1);
+        var endDate = new DateTime(2024, 9, 20);
 
-        var supplierQuantities = _fixture.GetData()
+        var supplierQuantities = _fixture.SupplyList
             .Where(s => s.Date >= startDate && s.Date <= endDate) 
             .GroupBy(s => s.Supplier) 
             .Select(group => new
@@ -142,8 +140,7 @@ public class EnterpriseStatisticsTests(EnterpriseStatisticsFixture fixture): ICl
             .Where(x => x.TotalQuantity == maxQuantity)
             .ToList();
 
-        Assert.True(suppliersWithMaxSupply.Any());
-        Assert.True(suppliersWithMaxSupply.Count() == 2);
+        Assert.True(suppliersWithMaxSupply.Count == 2);
         Assert.True(maxQuantity == 2400);
         Assert.Equal(3, suppliersWithMaxSupply[0].Supplier.Id);
         Assert.Equal(4, suppliersWithMaxSupply[1].Supplier.Id);

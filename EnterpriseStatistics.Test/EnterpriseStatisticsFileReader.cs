@@ -1,26 +1,23 @@
 ﻿using EnterpriseStatistics.Domain;
 using System.Globalization;
 
-
 namespace EnterpriseStatistics.Tests;
 
-public class EnterpriseStatisticsFileReader(string fileName)
+static class EnterpriseStatisticsFileReader
 {
-    private StreamReader _streamReader = new StreamReader(fileName);
-
     /// <summary>
     /// Чтение данных из csv-файла с последующей записью в объекты классов
     /// </summary>
-    public List<Supply> ReadSupply()
+    public static List<Supply> ReadSupply(string fileName)
     {
+        using StreamReader streamReader = new StreamReader(fileName);
         var supplies = new List<Supply>();
         var enterprises = new Dictionary<ulong, Enterprise>();
         var suppliers = new Dictionary<int, Supplier>();
-
         
-        while (!_streamReader.EndOfStream)
+        while (!streamReader.EndOfStream)
         {
-            var suppliesLine = _streamReader.ReadLine();
+            var suppliesLine = streamReader.ReadLine();
             if (suppliesLine == null || !suppliesLine.Contains('"')) continue;
             var tokens = suppliesLine.Split(',');
 
@@ -67,7 +64,7 @@ public class EnterpriseStatisticsFileReader(string fileName)
             supplies.Add(supply);
             
         }
-        _streamReader.Dispose();
+        streamReader.Dispose();
         return supplies;
     }
 

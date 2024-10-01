@@ -7,20 +7,9 @@ namespace EnterpriseStatistics.Tests;
 /// </summary>
 public class EnterpriseStatisticsFixture
 {
-    /// <summary>
-    /// Список поставок
-    /// </summary>
-    private List<Supply>? _supplyList;
-
-    /// <summary>
-    /// Получение данных для тестов
-    /// </summary>
-    public List<Supply> GetData()
+    public List<Supply>? SupplyList;
+    public EnterpriseStatisticsFixture()
     {
-        if(_supplyList != null) return _supplyList;
-        var suppliesReader = new EnterpriseStatisticsFileReader("data.csv");
-        _supplyList = suppliesReader.ReadSupply();
-        return _supplyList;
+        SupplyList = EnterpriseStatisticsFileReader.ReadSupply(Path.Combine("Data","data.csv"));
     }
-
 }
