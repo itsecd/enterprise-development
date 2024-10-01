@@ -18,6 +18,7 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
             from actor in fixture.Actors
             orderby actor
             select actor;
+
         Assert.NotNull(actorInfo);
         Assert.Equal(9, actorInfo.Count());
     }
@@ -28,20 +29,22 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     [Fact]
     public void TracksInAlbum()
     {
+        var expectedValues = new List<Track>()
+        {
+            fixture.Tracks[0],
+            fixture.Tracks[1],
+            fixture.Tracks[2],
+            fixture.Tracks[3],
+        };
         var albumId = 1;
+        
         var tracksInfo =
             (from album in fixture.Albums
             join track in fixture.Tracks on album.Id equals track.AlbumId
             where album.Id == albumId
             orderby track.Number
             select track).ToList();
-        var expectedValues = new List<Track>()
-        {
-            fixture.Tracks[0],
-            fixture.Tracks[1],
-            fixture.Tracks[2],  
-            fixture.Tracks[3],
-        };
+       
         Assert.NotNull(tracksInfo);
         Assert.Equal(expectedValues, tracksInfo);
     }
@@ -53,21 +56,9 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     public void AlbumsInfo()
     {
         var albumYear = 2022;
-        var albumsInfo =
-            (from album in fixture.Albums
-             where album.Date.Year == albumYear
-             join track in fixture.Tracks
-             on album.Id equals track.AlbumId into albumTracks
-             select new
-             {
-                 Album = album,
-                 TracksCount = albumTracks.Count(),
-             })
-             .ToList();
-        Assert.NotNull(albumsInfo);
-        var expectedValues = new []
+        var expectedValues = new[]
         {
-            new  
+            new
             {
                 Album = fixture.Albums[4],
                 TrackCount = 4
@@ -78,11 +69,21 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
                 TrackCount = 5
             }
         };
-        for (var i = 0; i < albumsInfo.Count; i++)
-        {
-            Assert.Equal(expectedValues[i].Album, albumsInfo[i].Album);
-            Assert.Equal(expectedValues[i].TrackCount, albumsInfo[i].TracksCount);
-        }
+
+        var albumsInfo =
+            (from album in fixture.Albums
+             where album.Date.Year == albumYear
+             join track in fixture.Tracks
+             on album.Id equals track.AlbumId into albumTracks
+             select new
+             {
+                 Album = album,
+                 TrackCount = albumTracks.Count(),
+             })
+             .ToList();
+
+        Assert.NotNull(albumsInfo);
+        Assert.Equal(expectedValues, albumsInfo);
     }
 
     /// <summary>
@@ -91,6 +92,35 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     [Fact]
     public void TopAlbums()
     {
+        var expectedValues = new[]
+         {
+            new
+            {
+                Album = fixture.Albums[1],
+                TotalTime = 1404.0
+            },
+            new
+            {
+                Album = fixture.Albums[7],
+                TotalTime = 1222.0
+            },
+            new
+            {
+                Album = fixture.Albums[3],
+                TotalTime = 1101.0
+            },
+            new
+            {
+                Album = fixture.Albums[8],
+                TotalTime = 1007.0
+            },
+            new
+            {
+                Album = fixture.Albums[0],
+                TotalTime = 979.0
+            },
+        };
+
         var topAlbums =
             (from album in fixture.Albums
              join track in fixture.Tracks
@@ -104,40 +134,9 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
              .OrderByDescending(t => t.TotalTime)
              .Take(5)
              .ToList();
+
         Assert.NotNull(topAlbums);
-        var expectedValues = new []
-        {
-            new
-            {
-                Album = fixture.Albums[1],
-                TotalTime = 1404
-            },
-            new
-            {
-                Album = fixture.Albums[7],
-                TotalTime = 1222
-            },
-            new
-            {
-                Album = fixture.Albums[3],
-                TotalTime = 1101
-            },
-            new
-            {
-                Album = fixture.Albums[8],
-                TotalTime = 1007
-            },
-            new
-            {
-                Album = fixture.Albums[0],
-                TotalTime = 979
-            },
-        };
-        for (var i = 0; i < topAlbums.Count; i++)
-        {
-            Assert.Equal(expectedValues[i].Album, topAlbums[i].Album);
-            Assert.Equal(expectedValues[i].TotalTime, topAlbums[i].TotalTime);
-        }
+        Assert.Equal(expectedValues, topAlbums);
     }
 
     /// <summary>
@@ -146,27 +145,9 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
     [Fact]
     public void MaxAlbumsActors()
     {
-        var topActors =
-            (from album in fixture.Albums
-             group album by album.ActorId into albumGroup
-             let albumCount = albumGroup.Count()
-             let maxAlbumCount =
-                        (from al in fixture.Albums
-                         group al by al.ActorId into alGroup
-                         select alGroup.Count()).Max()
-             where albumCount == maxAlbumCount
-             join actor in fixture.Actors
-             on albumGroup.Key equals actor.Id
-             select new
-             {
-                 Actor = actor,
-                 AlbumsCount = albumCount,
-             })
-            .ToList();
-        Assert.NotNull(topActors);
         var expectedValues = new[]
-        {
-            new 
+         {
+            new
             {
                Actor = fixture.Actors[1],
                AlbumsCount = 3
@@ -187,11 +168,27 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
                AlbumsCount = 3
             },
         };
-        for (var i = 0; i < topActors.Count; i++)
-        {
-            Assert.Equal(expectedValues[i].Actor, topActors[i].Actor);
-            Assert.Equal(expectedValues[i].AlbumsCount, topActors[i].AlbumsCount);
-        }
+
+        var topActors =
+            (from album in fixture.Albums
+             group album by album.ActorId into albumGroup
+             let albumCount = albumGroup.Count()
+             let maxAlbumCount =
+                        (from al in fixture.Albums
+                         group al by al.ActorId into alGroup
+                         select alGroup.Count()).Max()
+             where albumCount == maxAlbumCount
+             join actor in fixture.Actors
+             on albumGroup.Key equals actor.Id
+             select new
+             {
+                 Actor = actor,
+                 AlbumsCount = albumCount,
+             })
+            .ToList();
+        
+        Assert.NotNull(topActors);
+        Assert.Equal(expectedValues, topActors);
     }
 
     /// <summary>
@@ -206,12 +203,14 @@ public class MediaLibraryTest(MediaLibraryFixture fixture) : IClassFixture<Media
              group track by track.AlbumId into trackGroup
              select trackGroup.Sum(t => t.Time.TotalSeconds))
             .ToList();
-        Assert.NotNull(albumsDurations);
+        
         var minTime = albumsDurations.Min();
         var maxTime = albumsDurations.Max();
         var averageTime = albumsDurations.Average();
-        Assert.Equal(1404, maxTime);
-        Assert.Equal(709, minTime);
+
+        Assert.NotNull(albumsDurations);
+        Assert.Equal(1404.0, maxTime);
+        Assert.Equal(709.0, minTime);
         Assert.Equal(1022.6, averageTime, 1);
     }
 }
