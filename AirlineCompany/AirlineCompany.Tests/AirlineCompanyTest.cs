@@ -1,8 +1,8 @@
-using AirlineCompany.Domain;
+п»їusing AirlineCompany.Domain;
 
 namespace AirlineCompany.Tests;
 /// <summary>
-/// Класс для тестирования запросов
+/// РљР»Р°СЃСЃ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ Р·Р°РїСЂРѕСЃРѕРІ
 /// </summary>
 /// <param name="fixture"></param>
 public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<AirlineCompanyFixture>
@@ -10,153 +10,162 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     private AirlineCompanyFixture _fixture = fixture;
 
     /// <summary>
-    ///  1) Вывести сведения о всех авиарейсах, вылетевших из указанного пункта отправления
-    ///  в указанный пункт прибытия.
+    ///  1) Р’С‹РІРµСЃС‚Рё СЃРІРµРґРµРЅРёСЏ Рѕ РІСЃРµС… Р°РІРёР°СЂРµР№СЃР°С…, РІС‹Р»РµС‚РµРІС€РёС… РёР· СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїСѓРЅРєС‚Р° РѕС‚РїСЂР°РІР»РµРЅРёСЏ
+    ///  РІ СѓРєР°Р·Р°РЅРЅС‹Р№ РїСѓРЅРєС‚ РїСЂРёР±С‹С‚РёСЏ.
     /// </summary>
     [Fact]
-    public void TestFlyightDA()
+    public void TestFlyightDepartureArrive()
     {
-        var flyFixture = new AirlineCompanyFixture();
-        var flyightDA =
-            (from fly in flyFixture.GetFlights()
-             where fly.DeparturePoint == "Tokio" && fly.ArrivalPoint == "Dublin"
+        var fixture = new AirlineCompanyFixture();
+        var flyFixture = fixture.GetFlights();
+
+        var departure = "Tokio";
+        var arrive = "Dublin";
+
+        var flyightDepartureArrive =
+            (from fly in flyFixture
+             where fly.DeparturePoint == departure && fly.ArrivalPoint == arrive
              select fly).ToList();
 
-        Assert.True(flyightDA.Any());
-        Assert.Equal(flyFixture.GetFlights()[0], flyightDA[0]);
+        Assert.True(flyightDepartureArrive.Count() != 0);
+        Assert.Equal(flyFixture[0], flyightDepartureArrive[0]);
     }
 
 
     /// <summary>
-    /// 2) Вывести сведения обо всех пассажирах, летящих данным рейсом,
-    /// вес багажа которых равен нулю, упорядочить по ФИО.
+    /// 2) Р’С‹РІРµСЃС‚Рё СЃРІРµРґРµРЅРёСЏ РѕР±Рѕ РІСЃРµС… РїР°СЃСЃР°Р¶РёСЂР°С…, Р»РµС‚СЏС‰РёС… РґР°РЅРЅС‹Рј СЂРµР№СЃРѕРј,
+    /// РІРµСЃ Р±Р°РіР°Р¶Р° РєРѕС‚РѕСЂС‹С… СЂР°РІРµРЅ РЅСѓР»СЋ, СѓРїРѕСЂСЏРґРѕС‡РёС‚СЊ РїРѕ Р¤РРћ.
     /// </summary>
     [Fact]
-    public void TestPassWF()
+    public void TestPassenegersWeightFlight()
     {
-        var passFixture = new AirlineCompanyFixture();
+        var fixture = new AirlineCompanyFixture();
+        var passFixture = fixture.GetPassenegers();
 
-        var passWF =
-            (from pass in passFixture.GetPassenegers()
+        var expected = new List<Passeneger>() { passFixture[8], passFixture[0]};
+        var idFlight = 4;
+
+        var passenegersWeightFlight =
+            (from pass in passFixture
              orderby pass.FullName descending
-             where pass.CodeFlight == "5000" && pass.BaggageWeight == 0
+             where pass.IdFlight == idFlight && pass.BaggageWeight == 0
              select pass).ToList();
 
-        var res = new List<Passeneger>() { passFixture.GetPassenegers()[8], passFixture.GetPassenegers()[0]};
-
-        Assert.True(passWF.Any());
-        Assert.Equal(res, passWF);
+        Assert.True(passenegersWeightFlight.Count() != 0);
+        Assert.Equal(expected, passenegersWeightFlight);
     }
 
 
     /// <summary>
-    /// 3) Вывести сводную информацию обо всех полетах самолетов данного типа
-    /// в указанный период времени.
+    /// 3) Р’С‹РІРµСЃС‚Рё СЃРІРѕРґРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР±Рѕ РІСЃРµС… РїРѕР»РµС‚Р°С… СЃР°РјРѕР»РµС‚РѕРІ РґР°РЅРЅРѕРіРѕ С‚РёРїР°
+    /// РІ СѓРєР°Р·Р°РЅРЅС‹Р№ РїРµСЂРёРѕРґ РІСЂРµРјРµРЅРё.
     /// </summary>
     [Fact]
-    public void TestFlyightPT()
+    public void TestFlyightPassengersDate()
     {
-        var flyFixture = new AirlineCompanyFixture();
+        var fixture = new AirlineCompanyFixture();
+        var flyFixture = fixture.GetFlights();
 
-        var flyightPT =
-            from fly in flyFixture.GetFlights()
-            where fly.PlaneType == "Panda 202208" &&
-            fly.Departure >= DateTime.Parse("2024-09-01") &&
-            fly.Departure <= DateTime.Parse("2024-11-30")
+        var expected = new List<AirFlight>() { flyFixture[1], flyFixture[2] };
+        var planeModel = "Panda 202208";
+        var departure = DateTime.Parse("2024-09-01");
+        var arrive = DateTime.Parse("2024-11-30");
+
+        var flyightPassengersDate =
+            from fly in flyFixture
+            where fly.PlaneType == planeModel &&
+            fly.Departure >= departure &&
+            fly.Departure <= arrive
             select fly;
 
-        var res = new List<AirFlight>() { flyFixture.GetFlights()[1], flyFixture.GetFlights()[2] };
-        Assert.True(flyightPT.Any());
-        Assert.Equal(res, flyightPT);
+        Assert.True(flyightPassengersDate.Count() != 0);
+        Assert.Equal(expected, flyightPassengersDate);
     }
 
 
     /// <summary>
-    /// 4) Вывести топ 5 авиарейсов по количеству перевезённых пассажиров.
+    /// 4) Р’С‹РІРµСЃС‚Рё С‚РѕРї 5 Р°РІРёР°СЂРµР№СЃРѕРІ РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ РїРµСЂРµРІРµР·С‘РЅРЅС‹С… РїР°СЃСЃР°Р¶РёСЂРѕРІ.
     /// </summary>
     [Fact]
-    public void TestFlyightTop()
+    public void TestFlyightTopPassengers()
     {
-        var passFixture = new AirlineCompanyFixture();
-        var flyFixture = new AirlineCompanyFixture();
+        var fixture = new AirlineCompanyFixture();
+        var flyFixture = fixture.GetFlights();
+        var passFixture = fixture.GetPassenegers(); 
 
-        var flyightTop =
-            (from fly in flyFixture.GetFlights()
-             let c = passFixture.GetPassenegers().Count(pass => pass.CodeFlight == fly.CodeNumber)
-             orderby c descending
-             select new { fly, c }).ToList();
-
-        var res = new List<(AirFlight, int)>()
+        var exprcted = new List<(AirFlight, int)>()
         {
-            (flyFixture.GetFlights()[0], 3),
-            (flyFixture.GetFlights()[2], 3),
-            (flyFixture.GetFlights()[4], 3),
-            (flyFixture.GetFlights()[6], 3),
-            (flyFixture.GetFlights()[8], 3),
+            (flyFixture[0], 3),
+            (flyFixture[2], 3),
+            (flyFixture[4], 3),
+            (flyFixture[6], 3),
+            (flyFixture[8], 3),
         };
 
-        Assert.True(flyightTop.Any());
+        var flyightTopPassengers =
+            (from fly in flyFixture
+             let c = passFixture.Count(pass => pass.IdFlight == fly.Idflight)
+             orderby c descending
+             select new { fly, c }).Take(5).ToList();
+
+
+        Assert.True(flyightTopPassengers.Count() != 0);
         for (var i = 0; i < 5; i++)
         {
-            Assert.Equal(res[0], (flyightTop[0].fly, flyightTop[0].c));
+            Assert.Equal(exprcted[0], (flyightTopPassengers[0].fly, flyightTopPassengers[0].c));
         }
        
     }
 
 
     /// <summary>
-    /// 5) Вывести список рейсов с минимальным временем в пути.
+    /// 5) Р’С‹РІРµСЃС‚Рё СЃРїРёСЃРѕРє СЂРµР№СЃРѕРІ СЃ РјРёРЅРёРјР°Р»СЊРЅС‹Рј РІСЂРµРјРµРЅРµРј РІ РїСѓС‚Рё.
     /// </summary>
     [Fact]
-    public void TestFlyightTime()
+    public void TestFlyightMinTime()
     {
-        var flyFixture = new AirlineCompanyFixture();
+        var fixture = new AirlineCompanyFixture();
+        var flyFixture = fixture.GetFlights();
 
-        var flyightTime =
-            (from fly in flyFixture.GetFlights()
-             let minTime = flyFixture.GetFlights().Min(pass => pass.FlyingTime)
+        var flyightMinTime =
+            (from fly in flyFixture
+             let minTime = flyFixture.Min(pass => pass.FlyingTime)
             where fly.FlyingTime == minTime
             select fly).ToList();
 
-        Assert.True(flyightTime.Any());
-        Assert.Equal(flyFixture.GetFlights()[4], flyightTime[0]);
+        Assert.True(flyightMinTime.Count() != 0);
+        Assert.Equal(flyFixture[4], flyightMinTime[0]);
     }
 
 
     /// <summary>
-    /// 6) Вывести информацию о средней и максимальной загрузке авиарейсов
-    /// из заданного пункта отправления.
+    /// 6) Р’С‹РІРµСЃС‚Рё РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃСЂРµРґРЅРµР№ Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ Р·Р°РіСЂСѓР·РєРµ Р°РІРёР°СЂРµР№СЃРѕРІ
+    /// РёР· Р·Р°РґР°РЅРЅРѕРіРѕ РїСѓРЅРєС‚Р° РѕС‚РїСЂР°РІР»РµРЅРёСЏ.
     /// </summary>
     [Fact]
-    public void TestFlyightWeight() 
+    public void TestFlyightMaxAvrWeight() 
     {
-        var passFixture = new AirlineCompanyFixture();
-        var flyFixture = new AirlineCompanyFixture();
+        var fixture = new AirlineCompanyFixture();
+        var flyFixture = fixture.GetFlights();
+        var passFixture = fixture.GetPassenegers();
 
-        var flyightWeight =
-            from fly in flyFixture.GetFlights()
-            join pass in passFixture.GetPassenegers() on fly.CodeNumber equals pass.CodeFlight
-            where fly.DeparturePoint == "Rome"
+        var departure = "Rome";
+
+        var flightWeight =
+            from fly in flyFixture
+            join pass in passFixture on fly.Idflight equals pass.IdFlight
+            where fly.DeparturePoint == departure
             select new
             {
-                id = fly.Idflight,
-                code = fly.CodeNumber,
-                depar = fly.DeparturePoint,
-                arrive = fly.ArrivalPoint,
+                fly,
                 bag = pass.BaggageWeight,
             };
 
-        var flyightWMA =
-            (from fly in flyightWeight
-             let maxW = (from f in flyightWeight
-                         select f.bag).Max()
-             let avgW = (from f in flyightWeight
-                         select f.bag).Average()
-             select new{ maxW, avgW }).Distinct().ToList();
+        var maxW = flightWeight.Max(f => f.bag);
+        var avgW = flightWeight.Average(f => f.bag);
 
-        Assert.True(flyightWMA.Any());
-        Assert.True(flyightWMA[0].maxW.Equals((float)8.4));
-        Assert.True(flyightWMA[0].avgW.Equals((float)5.8857145));
+        Assert.True(maxW.Equals((double)8.4));
+        Assert.True(avgW.Equals((double)5.8857142857142852));
 
     }
 }

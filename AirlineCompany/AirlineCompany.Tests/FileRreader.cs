@@ -70,7 +70,7 @@ internal class FileRreader(string fileName): IDisposable
                 TicketNumber = tokens[3],
                 SeatNumber = tokens[4],
                 BaggageWeight = double.Parse(tokens[5], CultureInfo.InvariantCulture.NumberFormat),
-                CodeFlight = tokens[6]
+                IdFlight = int.Parse(tokens[6])
             };
 
             passengers.Add(passenger);
@@ -103,7 +103,7 @@ internal class FileRreader(string fileName): IDisposable
                 Model = tokens[0],
                 LoadCapacity = double.Parse(tokens[1], CultureInfo.InvariantCulture.NumberFormat),
                 Efficiency = double.Parse(tokens[2], CultureInfo.InvariantCulture.NumberFormat),
-                PassengerMax = ushort.Parse(tokens[3], CultureInfo.InvariantCulture.NumberFormat),
+                PassengerMax = int.Parse(tokens[3], CultureInfo.InvariantCulture.NumberFormat),
             };
 
             planes.Add(plane);

@@ -7,36 +7,36 @@ namespace AirlineCompany.Tests;
 public class AirlineCompanyFixture
 {
 
-    private List<AirFlight>? _airFlights;
-    private List<Passeneger>? _passengers;
-    private List<Plane>? _planes;
+    public List<AirFlight>? AirFlights;
+    public List<Passeneger>? Passengers;
+    public List<Plane>? Planes;
 
     public List<AirFlight> GetFlights()
     {
-        if (_airFlights != null) return _airFlights;
+        if (AirFlights != null) return AirFlights;
 
         using var readerFlight = new FileRreader("airflyights.csv");
-        _airFlights = readerFlight.ReadAirFlights();
-        return _airFlights;
+        AirFlights = readerFlight.ReadAirFlights();
+        return AirFlights;
     }
 
     public List<Passeneger> GetPassenegers()
     {
-        if (_passengers != null) return _passengers;
+        if (Passengers != null) return Passengers;
 
         using var readerPassenger = new FileRreader("passengers.csv");
-        _passengers = readerPassenger.ReadPassengers();
-        return _passengers;
+        Passengers = readerPassenger.ReadPassengers();
+        return Passengers;
     }
 
 
     public List<Plane> GetPlanes()
     {
-        if (_planes != null) return _planes;
+        if (Planes != null) return Planes;
 
         using var readerPlane = new FileRreader("planes.csv");
-        _planes = readerPlane.ReadPlanes();
-        return _planes;
+        Planes = readerPlane.ReadPlanes();
+        return Planes;
     }
 }
 

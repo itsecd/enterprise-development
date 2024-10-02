@@ -42,6 +42,6 @@ public class Passeneger
     /// <summary>
     /// Номер рейса
     /// </summary>
-    public required string CodeFlight { get; set; }
+    public required int IdFlight { get; set; }
 }
 
