@@ -17,20 +17,20 @@
 
 ## Тесты
 
-### GetClientsSearchingForSpecificRealEstateType_ShouldReturnOrderedByFullName
+### GetClientsSearchingForSpecificRealEstateTypeShouldReturnOrderedByFullName
 Вывссти сведения о всех клиснтах, ищущих недвижимость заданного типа, упорядочить по ФИО.
 
-### GetSellersWithinPeriod_ShouldReturnCorrectSellers
+### GetSellersWithinPeriodShouldReturnCorrectSellers
 ﻿﻿﻿Вывести всех продавцов, оставивших заявки за заданный период.
 
-### GetSellersForBuyerOrder_ShouldReturnSellersWithMatchingRealEstate
+### GetSellersForBuyerOrderShouldReturnSellersWithMatchingRealEstate
 Вывести сведения о продавцах и объектах недвижимости, соответствующих определенной заявке покупателя.
 
-### GetOrderCountByRealEstateType_ShouldReturnCorrectCounts
+### GetOrderCountByRealEstateTypeShouldReturnCorrectCounts
 Вывести информацию о количестве заявок по каждому типу недвижимости.
 
-### GetTop5ClientsByOrderCount_ShouldReturnTop5Clients
+### GetTop5ClientsByOrderCountShouldReturnTop5Clients
 ﻿﻿﻿Вывести топ 5 клиентов по количеству заявок (отдельно на покупку и продажу).
 
-### GetClientsWithMinOrderPrice_ShouldReturnClientsWithMinPrice
+### GetClientsWithMinOrderPriceShouldReturnClientsWithMinPrice
 Вывести информацию о клиентах, открывших заявки с минимальной стоимостью.
