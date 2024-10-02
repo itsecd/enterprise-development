@@ -10,7 +10,7 @@ static class EnterpriseStatisticsFileReader
     /// </summary>
     public static List<Supply> ReadSupply(string fileName)
     {
-        using StreamReader streamReader = new StreamReader(fileName);
+        using var streamReader = new StreamReader(fileName);
         var supplies = new List<Supply>();
         var enterprises = new Dictionary<ulong, Enterprise>();
         var suppliers = new Dictionary<int, Supplier>();
@@ -20,7 +20,6 @@ static class EnterpriseStatisticsFileReader
             var suppliesLine = streamReader.ReadLine();
             if (suppliesLine == null || !suppliesLine.Contains('"')) continue;
             var tokens = suppliesLine.Split(',');
-
                 
             ulong enterpriseKey = ulong.Parse(tokens[0]);
             if (!enterprises.TryGetValue(enterpriseKey, out var enterprise))
@@ -61,10 +60,8 @@ static class EnterpriseStatisticsFileReader
                 Date = DateTime.ParseExact(tokens[14], "yyyy-MM-dd", CultureInfo.InvariantCulture),
             };
 
-            supplies.Add(supply);
-            
+            supplies.Add(supply);            
         }
-        streamReader.Dispose();
         return supplies;
     }
 

@@ -7,7 +7,7 @@ namespace EnterpriseStatistics.Tests;
 /// </summary>
 public class EnterpriseStatisticsFixture
 {
-    public List<Supply>? SupplyList;
+    public List<Supply> SupplyList;
     public EnterpriseStatisticsFixture()
     {
         SupplyList = EnterpriseStatisticsFileReader.ReadSupply(Path.Combine("Data","data.csv"));
