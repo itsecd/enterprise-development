@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace DispatchTransportControl.Api.Controller;
 
 /// <summary>
-/// Контроллер для водителей
+///     Контроллер для водителей
 /// </summary>
 [Route("api/driver")]
 [ApiController]
 public class DriverController(IDriverService service) : ControllerBase
 {
     /// <summary>
-    /// Получение всех водителей
+    ///     Получение всех водителей
     /// </summary>
     [HttpGet]
     public ActionResult<IEnumerable<DriverDto>> GetDrivers()
@@ -21,22 +21,19 @@ public class DriverController(IDriverService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение водителя по id
+    ///     Получение водителя по id
     /// </summary>
     [HttpGet("{id:int}")]
     public ActionResult<DriverDto> GetDriver(int id)
     {
         var result = service.GetById(id);
-        if (result == null)
-        {
-            return NotFound();
-        }
+        if (result == null) return NotFound();
 
         return Ok(result);
     }
 
     /// <summary>
-    /// Создание водителя
+    ///     Создание водителя
     /// </summary>
     [HttpPost]
     public ActionResult<DriverDto> CreateDriver(DriverCreateDto driver)
@@ -46,7 +43,7 @@ public class DriverController(IDriverService service) : ControllerBase
     }
 
     /// <summary>
-    /// Изменение существующего водителя
+    ///     Изменение существующего водителя
     /// </summary>
     [HttpPut]
     public ActionResult<DriverDto> UpdateDriver(DriverDto driver)
@@ -55,7 +52,7 @@ public class DriverController(IDriverService service) : ControllerBase
     }
 
     /// <summary>
-    /// Удаление водителя
+    ///     Удаление водителя
     /// </summary>
     [HttpDelete("{id:int}")]
     public IActionResult DeleteDriver(int id)
@@ -65,7 +62,7 @@ public class DriverController(IDriverService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение всех водителей, совершивших поездки за заданный период
+    ///     Получение всех водителей, совершивших поездки за заданный период
     /// </summary>
     [HttpPost("/get-all-by-period")]
     public ActionResult<IEnumerable<DriverDto>> GetDriversByPeriod(TimePeriodDto dto)
@@ -74,7 +71,7 @@ public class DriverController(IDriverService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение топ 5 водителей по совершенному количеству поездок
+    ///     Получение топ 5 водителей по совершенному количеству поездок
     /// </summary>
     [HttpGet("/get-top-5-drivers-by-trip-count")]
     public ActionResult<IEnumerable<DriverTripCountDto>> GetTop5DriversByTripCount()
@@ -83,7 +80,7 @@ public class DriverController(IDriverService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение информации о количестве поездок, среднем времени и максимальном времени поездки для каждого водителя
+    ///     Получение информации о количестве поездок, среднем времени и максимальном времени поездки для каждого водителя
     /// </summary>
     [HttpGet("/get-drivers-trip-stats")]
     public ActionResult<IEnumerable<DriverTripStatsDto>> GetDriverTripStats()

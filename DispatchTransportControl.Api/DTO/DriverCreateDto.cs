@@ -3,48 +3,48 @@
 namespace DispatchTransportControl.Api.DTO;
 
 /// <summary>
-/// DTO для создания водителя
+///     DTO для создания водителя
 /// </summary>
 public class DriverCreateDto
 {
     /// <summary>
-    /// Имя
+    ///     Имя
     /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
     /// <summary>
-    /// Фамилия
+    ///     Фамилия
     /// </summary>
     [JsonPropertyName("surname")]
     public required string Surname { get; set; }
 
     /// <summary>
-    /// Отчество
+    ///     Отчество
     /// </summary>
     [JsonPropertyName("patronymic")]
     public required string Patronymic { get; set; }
 
     /// <summary>
-    /// Паспорт
+    ///     Паспорт
     /// </summary>
     [JsonPropertyName("passport")]
     public required string Passport { get; set; }
 
     /// <summary>
-    /// Водительское удостоверение
+    ///     Водительское удостоверение
     /// </summary>
     [JsonPropertyName("driver_license")]
     public required string DriverLicense { get; set; }
 
     /// <summary>
-    /// Адрес
+    ///     Адрес
     /// </summary>
     [JsonPropertyName("address")]
     public required string Address { get; set; }
 
     /// <summary>
-    /// Телефон
+    ///     Телефон
     /// </summary>
     [JsonPropertyName("phone")]
     public required string Phone { get; set; }

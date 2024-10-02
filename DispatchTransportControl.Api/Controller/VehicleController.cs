@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace DispatchTransportControl.Api.Controller;
 
 /// <summary>
-/// Контроллер для транспортных средств
+///     Контроллер для транспортных средств
 /// </summary>
 [Route("api/vehicle")]
 [ApiController]
 public class VehicleController(IVehicleService service) : ControllerBase
 {
     /// <summary>
-    /// Получение всех транспортных средств
+    ///     Получение всех транспортных средств
     /// </summary>
     [HttpGet]
     public ActionResult<IEnumerable<VehicleDto>> GetVehicles()
@@ -21,22 +21,19 @@ public class VehicleController(IVehicleService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение транспортного средства по id
+    ///     Получение транспортного средства по id
     /// </summary>
     [HttpGet("{id:int}")]
     public ActionResult<VehicleDto> GetVehicle(int id)
     {
         var result = service.GetById(id);
-        if (result == null)
-        {
-            return NotFound();
-        }
+        if (result == null) return NotFound();
 
         return Ok(result);
     }
 
     /// <summary>
-    /// Создание транспортного средства
+    ///     Создание транспортного средства
     /// </summary>
     [HttpPost]
     public ActionResult<VehicleDto> CreateVehicle(VehicleCreateDto vehicle)
@@ -46,7 +43,7 @@ public class VehicleController(IVehicleService service) : ControllerBase
     }
 
     /// <summary>
-    /// Изменение существующего транспортного средства
+    ///     Изменение существующего транспортного средства
     /// </summary>
     [HttpPut]
     public ActionResult<VehicleDto> UpdateVehicle(VehicleUpdateDto vehicle)
@@ -55,7 +52,7 @@ public class VehicleController(IVehicleService service) : ControllerBase
     }
 
     /// <summary>
-    /// Удаление транспортного средства
+    ///     Удаление транспортного средства
     /// </summary>
     [HttpDelete("{id:int}")]
     public IActionResult DeleteVehicle(int id)
@@ -65,7 +62,7 @@ public class VehicleController(IVehicleService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение суммарного времени поездок транспортного средства каждого типа и модели
+    ///     Получение суммарного времени поездок транспортного средства каждого типа и модели
     /// </summary>
     [HttpGet("get-total-trip-time-for-every-vehicle-type-and-model")]
     public ActionResult<IEnumerable<TripTimeForVehicleTypeAndModelDto>> GetTotalTripTimeForEveryVehicleTypeAndModel()
@@ -74,7 +71,7 @@ public class VehicleController(IVehicleService service) : ControllerBase
     }
 
     /// <summary>
-    /// Получение информации о транспортных средствах, совершивших максимальное число поездок за указанный период
+    ///     Получение информации о транспортных средствах, совершивших максимальное число поездок за указанный период
     /// </summary>
     [HttpPost("get-vehicles-with-max-trips-for-period")]
     public ActionResult<IEnumerable<TripTimeForVehicleTypeAndModelDto>>

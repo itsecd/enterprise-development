@@ -1,5 +1,5 @@
-﻿using DispatchTransportControl.Api.Repository.Context;
-using DispatchTransportControl.Api.Repository.impl;
+﻿using DispatchTransportControl.Domain.Context;
+using DispatchTransportControl.Domain.Repository;
 using DotNet.Testcontainers.Builders;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;

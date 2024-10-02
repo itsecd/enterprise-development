@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using DispatchTransportControl.Api.DTO;
-using DispatchTransportControl.Api.Repository;
-using DispatchTransportControl.Domain;
+using DispatchTransportControl.Domain.Entity;
+using DispatchTransportControl.Domain.Repository;
 
-namespace DispatchTransportControl.Api.Service.impl;
+namespace DispatchTransportControl.Api.Service;
 
 public class VehicleModelService(IVehicleModelRepository repository, IMapper mapper) : IVehicleModelService
 {
@@ -25,10 +25,7 @@ public class VehicleModelService(IVehicleModelRepository repository, IMapper map
     public VehicleModelDto Update(VehicleModelDto dto)
     {
         var vehicleModel = repository.GetById(dto.Id);
-        if (vehicleModel == null)
-        {
-            throw new Exception("Vehicle Model not found");
-        }
+        if (vehicleModel == null) throw new Exception("Vehicle Model not found");
 
         vehicleModel.Name = dto.Name;
         vehicleModel.LowFloor = dto.LowFloor;
@@ -40,9 +37,6 @@ public class VehicleModelService(IVehicleModelRepository repository, IMapper map
     public void Delete(int id)
     {
         var driver = repository.GetById(id);
-        if (driver != null)
-        {
-            repository.Delete(driver);
-        }
+        if (driver != null) repository.Delete(driver);
     }
 }

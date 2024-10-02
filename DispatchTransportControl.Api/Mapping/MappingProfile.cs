@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using DispatchTransportControl.Api.DTO;
-using DispatchTransportControl.Domain;
+using DispatchTransportControl.Domain.Entity;
 
 namespace DispatchTransportControl.Api.Mapping;
 
 /// <summary>
-/// Класс предназначен для настройки маппинга энтити в дто
+///     Класс предназначен для настройки маппинга энтити в дто
 /// </summary>
 public class MappingProfile : Profile
 {

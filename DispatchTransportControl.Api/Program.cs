@@ -1,10 +1,8 @@
 using DispatchTransportControl.Api.Controller;
 using DispatchTransportControl.Api.Mapping;
-using DispatchTransportControl.Api.Repository;
-using DispatchTransportControl.Api.Repository.Context;
-using DispatchTransportControl.Api.Repository.impl;
 using DispatchTransportControl.Api.Service;
-using DispatchTransportControl.Api.Service.impl;
+using DispatchTransportControl.Domain.Context;
+using DispatchTransportControl.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

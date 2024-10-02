@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
 using DispatchTransportControl.Api.DTO;
-using DispatchTransportControl.Api.Repository;
-using DispatchTransportControl.Api.Repository.impl;
-using DispatchTransportControl.Domain;
+using DispatchTransportControl.Domain.Entity;
+using DispatchTransportControl.Domain.Repository;
 
-namespace DispatchTransportControl.Api.Service.impl;
+namespace DispatchTransportControl.Api.Service;
 
 public class RouteAssignmentService(
     IRouteAssignmentRepository repository,
     IVehicleRepository vehicleRepository,
     IDriverRepository driverRepository,
     IMapper mapper
-    ) : IRouteAssignmentService
+) : IRouteAssignmentService
 {
     public IEnumerable<RouteAssignmentDto> GetAll()
     {
@@ -26,16 +25,10 @@ public class RouteAssignmentService(
     public RouteAssignmentDto Create(RouteAssignmentCreateDto dto)
     {
         var vehicle = vehicleRepository.GetById(dto.VehicleId);
-        if (vehicle == null)
-        {
-            throw new Exception("Vehicle not found");
-        }
+        if (vehicle == null) throw new Exception("Vehicle not found");
 
         var driver = driverRepository.GetById(dto.DriverId);
-        if (driver == null)
-        {
-            throw new Exception("Driver not found");
-        }
+        if (driver == null) throw new Exception("Driver not found");
 
         var routeAssignment = new RouteAssignment
         {
@@ -52,22 +45,13 @@ public class RouteAssignmentService(
     public RouteAssignmentDto Update(RouteAssignmentUpdateDto dto)
     {
         var routeAssignment = repository.GetById(dto.Id);
-        if (routeAssignment == null)
-        {
-            throw new Exception("Route assignment not found");
-        }
+        if (routeAssignment == null) throw new Exception("Route assignment not found");
 
         var vehicle = vehicleRepository.GetById(dto.VehicleId);
-        if (vehicle == null)
-        {
-            throw new Exception("Vehicle not found");
-        }
+        if (vehicle == null) throw new Exception("Vehicle not found");
 
         var driver = driverRepository.GetById(dto.DriverId);
-        if (driver == null)
-        {
-            throw new Exception("Driver not found");
-        }
+        if (driver == null) throw new Exception("Driver not found");
 
         routeAssignment.Vehicle = vehicle;
         routeAssignment.Driver = driver;
@@ -81,9 +65,6 @@ public class RouteAssignmentService(
     public void Delete(int id)
     {
         var routeAssignment = repository.GetById(id);
-        if (routeAssignment != null)
-        {
-            repository.Delete(routeAssignment);
-        }
+        if (routeAssignment != null) repository.Delete(routeAssignment);
     }
 }

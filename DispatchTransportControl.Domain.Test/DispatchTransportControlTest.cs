@@ -1,4 +1,5 @@
-﻿using DispatchTransportControl.Api.Repository.impl;
+﻿using DispatchTransportControl.Domain.Entity;
+using DispatchTransportControl.Domain.Repository;
 
 namespace DispatchTransportControl.Domain.Test;
 
@@ -45,11 +46,16 @@ public class DispatchTransportControlTest(TestFixture testFixture) : IClassFixtu
         var tripDurationsForVehicleTypeAndModel =
             _vehicleRepository.GetTotalTripTimeForEveryVehicleTypeAndModel();
 
-        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[0])]);
-        Assert.Equal(1, tripDurationsForVehicleTypeAndModel[(VehicleType.Trolley, testFixture.TestDataProvider.VehicleModels[1])]);
-        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[2])]);
-        Assert.Equal(3, tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[3])]);
-        Assert.Equal(2, tripDurationsForVehicleTypeAndModel[(VehicleType.Tram, testFixture.TestDataProvider.VehicleModels[4])]);
+        Assert.Equal(1,
+            tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[0])]);
+        Assert.Equal(1,
+            tripDurationsForVehicleTypeAndModel[(VehicleType.Trolley, testFixture.TestDataProvider.VehicleModels[1])]);
+        Assert.Equal(2,
+            tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[2])]);
+        Assert.Equal(3,
+            tripDurationsForVehicleTypeAndModel[(VehicleType.Bus, testFixture.TestDataProvider.VehicleModels[3])]);
+        Assert.Equal(2,
+            tripDurationsForVehicleTypeAndModel[(VehicleType.Tram, testFixture.TestDataProvider.VehicleModels[4])]);
     }
 
     [Fact]
@@ -87,5 +93,4 @@ public class DispatchTransportControlTest(TestFixture testFixture) : IClassFixtu
         Assert.Equal(testFixture.TestDataProvider.Vehicles[4], vehiclesWithMaxTrips[0].Vehicle);
         Assert.Equal(2, vehiclesWithMaxTrips[0].TripCount);
     }
-
 }

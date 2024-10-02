@@ -4,7 +4,7 @@ using System.Text.Json;
 namespace DispatchTransportControl.Api.Controller;
 
 /// <summary>
-/// Класс для обработки исключений
+///     Класс для обработки исключений
 /// </summary>
 public class ExceptionHandlerMiddleware(RequestDelegate next)
 {

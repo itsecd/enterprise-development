@@ -1,10 +1,10 @@
-﻿using DispatchTransportControl.Domain;
+﻿using DispatchTransportControl.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace DispatchTransportControl.Api.Repository.Context;
+namespace DispatchTransportControl.Domain.Context;
 
 /// <summary>
-/// Класс для доступа к базе данных
+///     Класс для доступа к базе данных
 /// </summary>
 public class TransportDbContext(DbContextOptions<TransportDbContext> options) : DbContext(options)
 {

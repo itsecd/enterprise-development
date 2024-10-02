@@ -1,11 +1,11 @@
-﻿using DispatchTransportControl.Api.Repository.Context;
-using DispatchTransportControl.Domain;
+﻿using DispatchTransportControl.Domain.Context;
+using DispatchTransportControl.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace DispatchTransportControl.Api.Repository.impl;
+namespace DispatchTransportControl.Domain.Repository;
 
 /// <summary>
-/// Класс реализует интерфейс <see cref="IVehicleModelRepository"/>
+///     Класс реализует интерфейс <see cref="IVehicleModelRepository" />
 /// </summary>
 public class VehicleModelRepository(TransportDbContext context) : IVehicleModelRepository
 {

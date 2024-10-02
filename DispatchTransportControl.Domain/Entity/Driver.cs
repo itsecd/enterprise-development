@@ -1,22 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DispatchTransportControl.Domain;
+namespace DispatchTransportControl.Domain.Entity;
 
 /// <summary>
-/// Водитель
+///     Водитель
 /// </summary>
 [Table("driver")]
 public class Driver
 {
     /// <summary>
-    /// Уникальный идентификатор
+    ///     Уникальный идентификатор
     /// </summary>
     [Key]
     public int Id { get; set; }
 
     /// <summary>
-    /// Имя
+    ///     Имя
     /// </summary>
     [Column("name")]
     [MaxLength(50)]
@@ -24,7 +24,7 @@ public class Driver
     public required string Name { get; set; }
 
     /// <summary>
-    /// Фамилия
+    ///     Фамилия
     /// </summary>
     [Column("surname")]
     [MaxLength(50)]
@@ -32,7 +32,7 @@ public class Driver
     public required string Surname { get; set; }
 
     /// <summary>
-    /// Отчество
+    ///     Отчество
     /// </summary>
     [Column("patronymic")]
     [MaxLength(50)]
@@ -40,7 +40,7 @@ public class Driver
     public required string Patronymic { get; set; }
 
     /// <summary>
-    /// Паспорт
+    ///     Паспорт
     /// </summary>
     [Column("passport")]
     [MaxLength(20)]
@@ -48,7 +48,7 @@ public class Driver
     public required string Passport { get; set; }
 
     /// <summary>
-    /// Водительское удостоверение
+    ///     Водительское удостоверение
     /// </summary>
     [Column("driver_license")]
     [MaxLength(20)]
@@ -56,7 +56,7 @@ public class Driver
     public required string DriverLicense { get; set; }
 
     /// <summary>
-    /// Адрес
+    ///     Адрес
     /// </summary>
     [Column("address")]
     [MaxLength(256)]
@@ -64,7 +64,7 @@ public class Driver
     public required string Address { get; set; }
 
     /// <summary>
-    /// Телефон
+    ///     Телефон
     /// </summary>
     [Column("phone")]
     [MaxLength(20)]

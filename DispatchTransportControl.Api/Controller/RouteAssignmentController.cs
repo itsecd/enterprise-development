@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace DispatchTransportControl.Api.Controller;
 
 /// <summary>
-/// Контроллер для назначений водителей и транспортных средств на маршруты
+///     Контроллер для назначений водителей и транспортных средств на маршруты
 /// </summary>
 [Route("api/route-assignment")]
 [ApiController]
 public class RouteAssignmentController(IRouteAssignmentService service) : ControllerBase
 {
     /// <summary>
-    /// Получение всех назначений водителей и транспортных средств на маршруты
+    ///     Получение всех назначений водителей и транспортных средств на маршруты
     /// </summary>
     [HttpGet]
     public ActionResult<IEnumerable<RouteAssignmentDto>> GetRouteAssignments()
@@ -21,22 +21,19 @@ public class RouteAssignmentController(IRouteAssignmentService service) : Contro
     }
 
     /// <summary>
-    /// Получение назначения водителя и транспортного средства на маршрут по id
+    ///     Получение назначения водителя и транспортного средства на маршрут по id
     /// </summary>
     [HttpGet("{id:int}")]
     public ActionResult<RouteAssignmentDto> GetRouteAssignment(int id)
     {
         var result = service.GetById(id);
-        if (result == null)
-        {
-            return NotFound();
-        }
+        if (result == null) return NotFound();
 
         return Ok(result);
     }
 
     /// <summary>
-    /// Создание назначения водителя и транспортного средства на маршрут
+    ///     Создание назначения водителя и транспортного средства на маршрут
     /// </summary>
     [HttpPost]
     public ActionResult<RouteAssignmentDto> CreateRouteAssignment(RouteAssignmentCreateDto vehicle)
@@ -46,7 +43,7 @@ public class RouteAssignmentController(IRouteAssignmentService service) : Contro
     }
 
     /// <summary>
-    /// Изменение существующего назначения водителя и транспортного средства на маршрут
+    ///     Изменение существующего назначения водителя и транспортного средства на маршрут
     /// </summary>
     [HttpPut]
     public ActionResult<RouteAssignmentDto> UpdateRouteAssignment(RouteAssignmentUpdateDto vehicle)
@@ -55,7 +52,7 @@ public class RouteAssignmentController(IRouteAssignmentService service) : Contro
     }
 
     /// <summary>
-    /// Удаление назначения водителя и транспортного средства на маршрут
+    ///     Удаление назначения водителя и транспортного средства на маршрут
     /// </summary>
     [HttpDelete("{id:int}")]
     public IActionResult DeleteRouteAssignment(int id)

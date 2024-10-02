@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using DispatchTransportControl.Api.DTO;
-using DispatchTransportControl.Api.Repository;
-using DispatchTransportControl.Api.Repository.impl;
-using DispatchTransportControl.Domain;
+using DispatchTransportControl.Domain.Entity;
+using DispatchTransportControl.Domain.Repository;
 
-namespace DispatchTransportControl.Api.Service.impl;
+namespace DispatchTransportControl.Api.Service;
 
 public class DriverService(IDriverRepository repository, IMapper mapper) : IDriverService
 {
@@ -26,10 +25,7 @@ public class DriverService(IDriverRepository repository, IMapper mapper) : IDriv
     public DriverDto Update(DriverDto dto)
     {
         var driver = repository.GetById(dto.Id);
-        if (driver == null)
-        {
-            throw new Exception("Driver not found");
-        }
+        if (driver == null) throw new Exception("Driver not found");
 
         driver.Name = dto.Name;
         driver.Surname = dto.Surname;
@@ -45,10 +41,7 @@ public class DriverService(IDriverRepository repository, IMapper mapper) : IDriv
     public void Delete(int id)
     {
         var driver = repository.GetById(id);
-        if (driver != null)
-        {
-            repository.Delete(driver);
-        }
+        if (driver != null) repository.Delete(driver);
     }
 
     public IEnumerable<DriverDto> GetAllByPeriod(TimePeriodDto dto)
@@ -74,7 +67,7 @@ public class DriverService(IDriverRepository repository, IMapper mapper) : IDriv
                 Driver = mapper.Map<DriverDto>(obj.Key),
                 TripCount = obj.Value.TripCount,
                 AvgTime = obj.Value.AvgTime,
-                MaxTime = obj.Value.MaxTime,
+                MaxTime = obj.Value.MaxTime
             });
     }
 }

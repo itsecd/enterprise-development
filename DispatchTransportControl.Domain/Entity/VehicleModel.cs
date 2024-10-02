@@ -1,22 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DispatchTransportControl.Domain;
+namespace DispatchTransportControl.Domain.Entity;
 
 /// <summary>
-/// Модель транспортного средства
+///     Модель транспортного средства
 /// </summary>
 [Table("vehicle_model")]
 public class VehicleModel
 {
     /// <summary>
-    /// Уникальный идентификатор
+    ///     Уникальный идентификатор
     /// </summary>
     [Key]
     public int Id { get; set; }
 
     /// <summary>
-    /// Название модели
+    ///     Название модели
     /// </summary>
     [Column("name")]
     [MaxLength(50)]
@@ -24,14 +24,14 @@ public class VehicleModel
     public required string Name { get; set; }
 
     /// <summary>
-    /// Низкопольная модель или нет
+    ///     Низкопольная модель или нет
     /// </summary>
     [Column("low_floor")]
     [Required]
     public required bool LowFloor { get; set; }
 
     /// <summary>
-    /// Максимальная вместимость
+    ///     Максимальная вместимость
     /// </summary>
     [Column("max_capacity")]
     [Required]

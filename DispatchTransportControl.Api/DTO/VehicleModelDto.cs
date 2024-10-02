@@ -3,30 +3,30 @@
 namespace DispatchTransportControl.Api.DTO;
 
 /// <summary>
-/// DTO для модели транспортного средства
+///     DTO для модели транспортного средства
 /// </summary>
 public class VehicleModelDto
 {
     /// <summary>
-    /// Уникальный идентификатор
+    ///     Уникальный идентификатор
     /// </summary>
     [JsonPropertyName("id")]
     public required int Id { get; set; }
 
     /// <summary>
-    /// Название модели
+    ///     Название модели
     /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
     /// <summary>
-    /// Низкопольная модель или нет
+    ///     Низкопольная модель или нет
     /// </summary>
     [JsonPropertyName("low_floor")]
     public required bool LowFloor { get; set; }
 
     /// <summary>
-    /// Максимальная вместимость
+    ///     Максимальная вместимость
     /// </summary>
     [JsonPropertyName("max_capacity")]
     public required int MaxCapacity { get; set; }

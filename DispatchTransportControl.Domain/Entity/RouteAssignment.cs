@@ -1,36 +1,36 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DispatchTransportControl.Domain;
+namespace DispatchTransportControl.Domain.Entity;
 
 /// <summary>
-/// Назначение водителя и транспортного средства на маршрут
+///     Назначение водителя и транспортного средства на маршрут
 /// </summary>
 [Table("route_assignment")]
 public class RouteAssignment
 {
     /// <summary>
-    /// Уникальный идентификатор
+    ///     Уникальный идентификатор
     /// </summary>
     [Key]
     public int Id { get; set; }
 
     /// <summary>
-    /// Транспортное средство
+    ///     Транспортное средство
     /// </summary>
     [Column("vehicle")]
     [Required]
     public required Vehicle Vehicle { get; set; }
 
     /// <summary>
-    /// Водитель
+    ///     Водитель
     /// </summary>
     [Column("driver")]
     [Required]
     public required Driver Driver { get; set; }
 
     /// <summary>
-    /// Номер маршрута
+    ///     Номер маршрута
     /// </summary>
     [Column("route_number")]
     [MaxLength(20)]
@@ -38,14 +38,14 @@ public class RouteAssignment
     public required string RouteNumber { get; set; }
 
     /// <summary>
-    /// Дата и время выхода на рейс
+    ///     Дата и время выхода на рейс
     /// </summary>
     [Column("start_time")]
     [Required]
     public required DateTime StartTime { get; set; }
 
     /// <summary>
-    /// Дата и время окончания рейса
+    ///     Дата и время окончания рейса
     /// </summary>
     [Column("end_time")]
     [Required]

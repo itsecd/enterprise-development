@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
 using DispatchTransportControl.Api.DTO;
-using DispatchTransportControl.Api.Repository;
-using DispatchTransportControl.Api.Repository.impl;
-using DispatchTransportControl.Domain;
+using DispatchTransportControl.Domain.Entity;
+using DispatchTransportControl.Domain.Repository;
 
-namespace DispatchTransportControl.Api.Service.impl;
+namespace DispatchTransportControl.Api.Service;
 
 public class VehicleService(
     IVehicleRepository repository,
     IVehicleModelRepository vehicleModelRepository,
     IMapper mapper
-    ) : IVehicleService
+) : IVehicleService
 {
     public IEnumerable<VehicleDto> GetAll()
     {
@@ -25,10 +24,7 @@ public class VehicleService(
     public VehicleDto Create(VehicleCreateDto dto)
     {
         var vehicleModel = vehicleModelRepository.GetById(dto.VehicleModelId);
-        if (vehicleModel == null)
-        {
-            throw new Exception("Vehicle Model not found");
-        }
+        if (vehicleModel == null) throw new Exception("Vehicle Model not found");
 
         var vehicle = new Vehicle
         {
@@ -44,15 +40,9 @@ public class VehicleService(
     public VehicleDto Update(VehicleUpdateDto dto)
     {
         var vehicle = repository.GetById(dto.Id);
-        if (vehicle == null)
-        {
-            throw new Exception("Vehicle not found");
-        }
+        if (vehicle == null) throw new Exception("Vehicle not found");
         var vehicleModel = vehicleModelRepository.GetById(dto.VehicleModelId);
-        if (vehicleModel == null)
-        {
-            throw new Exception("Vehicle Model not found");
-        }
+        if (vehicleModel == null) throw new Exception("Vehicle Model not found");
 
         vehicle.RegistrationNumber = dto.RegistrationNumber;
         vehicle.VehicleType = dto.VehicleType;
@@ -65,10 +55,7 @@ public class VehicleService(
     public void Delete(int id)
     {
         var vehicle = repository.GetById(id);
-        if (vehicle != null)
-        {
-            repository.Delete(vehicle);
-        }
+        if (vehicle != null) repository.Delete(vehicle);
     }
 
     public IEnumerable<TripTimeForVehicleTypeAndModelDto> GetTotalTripTimeForEveryVehicleTypeAndModel()

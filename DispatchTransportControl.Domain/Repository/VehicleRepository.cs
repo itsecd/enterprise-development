@@ -1,11 +1,11 @@
-﻿using DispatchTransportControl.Api.Repository.Context;
-using DispatchTransportControl.Domain;
+﻿using DispatchTransportControl.Domain.Context;
+using DispatchTransportControl.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace DispatchTransportControl.Api.Repository.impl;
+namespace DispatchTransportControl.Domain.Repository;
 
 /// <summary>
-/// Класс реализует интерфейс <see cref="IVehicleRepository"/>
+///     Класс реализует интерфейс <see cref="IVehicleRepository" />
 /// </summary>
 public class VehicleRepository(TransportDbContext context) : IVehicleRepository
 {
@@ -56,7 +56,7 @@ public class VehicleRepository(TransportDbContext context) : IVehicleRepository
                 group => (
                     group.Key.VehicleType,
                     group.Select(ra => ra.Vehicle.VehicleModel).First()
-                    ),
+                ),
                 group => group.Sum(ra => (ra.EndTime - ra.StartTime).TotalHours)
             );
     }
@@ -70,10 +70,7 @@ public class VehicleRepository(TransportDbContext context) : IVehicleRepository
             .Select(group => new { Vehicle = group.Key, TripCount = group.Count() })
             .ToList();
 
-        if (vehiclesTripCount.Count == 0)
-        {
-            return new List<(Vehicle, int)>();
-        }
+        if (vehiclesTripCount.Count == 0) return new List<(Vehicle, int)>();
 
         var maxTripCount = vehiclesTripCount.Max(g => g.TripCount);
 

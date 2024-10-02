@@ -1,16 +1,9 @@
-﻿namespace DispatchTransportControl.Domain.Test;
+﻿using DispatchTransportControl.Domain.Entity;
+
+namespace DispatchTransportControl.Domain.Test;
 
 public class TestDataProvider
 {
-    public List<VehicleModel> VehicleModels =
-    [
-        new() { Id = 1, Name = "vehicleName1", LowFloor = true, MaxCapacity = 10 },
-        new() { Id = 2, Name = "vehicleName2", LowFloor = false, MaxCapacity = 20 },
-        new() { Id = 3, Name = "vehicleName3", LowFloor = false, MaxCapacity = 30 },
-        new() { Id = 4, Name = "vehicleName4", LowFloor = true, MaxCapacity = 12 },
-        new() { Id = 5, Name = "vehicleName5", LowFloor = true, MaxCapacity = 15 }
-    ];
-
     public List<Driver> Drivers =
     [
         new()
@@ -70,9 +63,18 @@ public class TestDataProvider
         }
     ];
 
-    public List<Vehicle> Vehicles;
-
     public List<RouteAssignment> RouteAssignments;
+
+    public List<VehicleModel> VehicleModels =
+    [
+        new() { Id = 1, Name = "vehicleName1", LowFloor = true, MaxCapacity = 10 },
+        new() { Id = 2, Name = "vehicleName2", LowFloor = false, MaxCapacity = 20 },
+        new() { Id = 3, Name = "vehicleName3", LowFloor = false, MaxCapacity = 30 },
+        new() { Id = 4, Name = "vehicleName4", LowFloor = true, MaxCapacity = 12 },
+        new() { Id = 5, Name = "vehicleName5", LowFloor = true, MaxCapacity = 15 }
+    ];
+
+    public List<Vehicle> Vehicles;
 
     public TestDataProvider()
     {
