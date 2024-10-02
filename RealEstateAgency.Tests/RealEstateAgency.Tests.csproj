@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\RealEstateAgency.Domain.csproj" />
+    <ProjectReference Include="..\RealEstateAgency.Domain\RealEstateAgency.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

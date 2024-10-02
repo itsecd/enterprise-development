@@ -1,137 +1,156 @@
 ﻿using RealEstateAgency.Domain;
 
+namespace RealEstateAgency.Tests;
+
 public static class TestData
 {
-    public static List<Client> GetTestClients()
+    public static List<Client> Clients { get; private set; }
+    public static List<Order> Orders { get; private set; }
+    public static List<RealEstate> RealEstates { get; private set; }
+
+    static TestData()
     {
-        return new List<Client>
+        RealEstates = new List<RealEstate>
         {
-            new Client(
-                clientId: 1,
-                firstAndLastName: "Chukarev Michail",
-                pasport: "1234 567890",
-                numberPhone: "+7 123 456 7890",
-                address: "123 Lenin St, Samara",
-                email: "misha@gmail.com"
-            )
+            new RealEstate
             {
-                Orders = new List<Order>
-                {
-                    new Order(
-                        id: 1,
-                        time: DateTime.Now.AddMonths(-2),
-                        type: Order.PurchaseOrSale.Purchase,
-                        price: 450000,
-                        item: new RealEstate(
-                            RealEstate.PropertyType.Residential,
-                            "45 Kuybysheva St, Samara",
-                            85.5,
-                            3
-                        )
-                    ),
-                    new Order(
-                        id: 2,
-                        time: DateTime.Now.AddMonths(-1),
-                        type: Order.PurchaseOrSale.Sale,
-                        price: 1200000,
-                        item: new RealEstate(
-                            RealEstate.PropertyType.Uninhabitable,
-                            "12 Sovetskaya St, Samara",
-                            200.0,
-                            5
-                        )
-                    )
-                }
+                Type = RealEstate.PropertyType.Residential,
+                Address = "45 Kuybysheva St, Samara",
+                Square = 85.5,
+                NumberOfRooms = 3
             },
-
-            new Client(
-                clientId: 2,
-                firstAndLastName: "Stepanov Dima",
-                pasport: "4321 987654",
-                numberPhone: "+7 987 654 3210",
-                address: "34 Pushkina St, Samara",
-                email: "dima@gmail.com"
-            )
+            new RealEstate
             {
-                Orders = new List<Order>
-                {
-                    new Order(
-                        id: 3,
-                        time: DateTime.Now.AddMonths(-4),
-                        type: Order.PurchaseOrSale.Sale,
-                        price: 950000,
-                        item: new RealEstate(
-                            RealEstate.PropertyType.Residential,
-                            "99 Gagarina Ave, Samara",
-                            110.0,
-                            4
-                        )
-                    )
-                }
+                Type = RealEstate.PropertyType.Uninhabitable,
+                Address = "12 Sovetskaya St, Samara",
+                Square = 200.0,
+                NumberOfRooms = 5
             },
-
-            new Client(
-                clientId: 3,
-                firstAndLastName: "Ivan Ivanov",
-                pasport: "3456 789012",
-                numberPhone: "+7 654 321 0987",
-                address: "5 Molodogvardeyskaya St, Samara",
-                email: "ivanov@example.com"
-            )
+            new RealEstate
             {
-                Orders = new List<Order>
-                {
-                    new Order(
-                        id: 4,
-                        time: DateTime.Now.AddMonths(-3),
-                        type: Order.PurchaseOrSale.Purchase,
-                        price: 500000,
-                        item: new RealEstate(
-                            RealEstate.PropertyType.Residential,
-                            "67 Sovetskaya St, Samara",
-                            90.0,
-                            3
-                        )
-                    )
-                }
+                Type = RealEstate.PropertyType.Residential,
+                Address = "99 Gagarina Ave, Samara",
+                Square = 110.0,
+                NumberOfRooms = 4
             },
-
-            new Client(
-                clientId: 4,
-                firstAndLastName: "Petr Petrov",
-                pasport: "6789 012345",
-                numberPhone: "+7 321 654 7890",
-                address: "89 Komsomolskaya St, Samara",
-                email: "petrov@example.com"
-            )
+            new RealEstate
             {
-                Orders = new List<Order>
-                {
-                    new Order(
-                        id: 5,
-                        time: DateTime.Now.AddMonths(-5),
-                        type: Order.PurchaseOrSale.Sale,
-                        price: 700000,
-                        item: new RealEstate(
-                            RealEstate.PropertyType.Residential,
-                            "22 Aerodromnaya St, Samara",
-                            120.0,
-                            4
-                        )
-                    ),
-                    new Order(
-                        id: 6,
-                        time: DateTime.Now.AddMonths(-2),
-                        type: Order.PurchaseOrSale.Purchase,
-                        price: 850000,
-                        item: new RealEstate(
-                            RealEstate.PropertyType.Residential,
-                            "13 Krasnoarmeyskaya St, Samara",
-                            100.0,
-                            3
-                        )
-                    )
-                }
+                Type = RealEstate.PropertyType.Residential,
+                Address = "67 Sovetskaya St, Samara",
+                Square = 90.0,
+                NumberOfRooms = 3
+            },
+            new RealEstate
+            {
+                Type = RealEstate.PropertyType.Residential,
+                Address = "22 Aerodromnaya St, Samara",
+                Square = 120.0,
+                NumberOfRooms = 4
+            },
+            new RealEstate
+            {
+                Type = RealEstate.PropertyType.Residential,
+                Address = "13 Krasnoarmeyskaya St, Samara",
+                Square = 100.0,
+                NumberOfRooms = 3
+            }
+        };
+
+        Clients = new List<Client>
+        {
+            new Client
+            {
+                ClientId = 1,
+                FirstAndLastName = "Chukarev Michail",
+                Pasport = "1234 567890",
+                NumberPhone = "+7 123 456 7890",
+                Address = "st. Lenina, 123, Samara",
+                Email = "misha@gmail.com"
+            },
+            new Client
+            {
+                ClientId = 2,
+                FirstAndLastName = "Stepanov Dima",
+                Pasport = "4321 987654",
+                NumberPhone = "+7 987 654 3210",
+                Address = "st. Pushkina, 34, Samara",
+                Email = "dima@gmail.com"
+            },
+            new Client
+            {
+                ClientId = 3,
+                FirstAndLastName = "Ivanov Ivan",
+                Pasport = "3456 789012",
+                NumberPhone = "+7 654 321 0987",
+                Address = "st. Molodogvardeyskaya, 5, Samara",
+                Email = "ivanov@gmail.com"
+            },
+            new Client
+            {
+                ClientId = 4,
+                FirstAndLastName = "Petrov Petr",
+                Pasport = "6789 012345",
+                NumberPhone = "+7 321 654 7890",
+                Address = "st. Komsomolskaya, 89, Samara",
+                Email = "petrov@gmail.com"
+            }
+        };
+
+        Orders = new List<Order>
+        {
+            new Order
+            {
+                Id = 1,
+                Time = DateTime.Now.AddMonths(-2),
+                Type = Order.PurchaseOrSale.Purchase,
+                Price = 950000,
+                Item = RealEstates[0],
+                Client = Clients[0]
+            },
+            new Order
+            {
+                Id = 2,
+                Time = DateTime.Now.AddMonths(-1),
+                Type = Order.PurchaseOrSale.Sale,
+                Price = 1200000,
+                Item = RealEstates[1],
+                Client = Clients[0]
+            },
+            new Order
+            {
+                Id = 3,
+                Time = DateTime.Now.AddMonths(-4),
+                Type = Order.PurchaseOrSale.Sale,
+                Price = 950000,
+                Item = RealEstates[2],
+                Client = Clients[1]
+            },
+            new Order
+            {
+                Id = 4,
+                Time = DateTime.Now.AddMonths(-3),
+                Type = Order.PurchaseOrSale.Purchase,
+                Price = 500000,
+                Item = RealEstates[3],
+                Client = Clients[2]
+            },
+            new Order
+            {
+                Id = 5,
+                Time = DateTime.Now.AddMonths(-5),
+                Type = Order.PurchaseOrSale.Sale,
+                Price = 700000,
+                Item = RealEstates[4],
+                Client = Clients[3]
+            },
+            new Order
+            {
+                Id = 6,
+                Time = DateTime.Now.AddMonths(-2),
+                Type = Order.PurchaseOrSale.Purchase,
+                Price = 850000,
+                Item = RealEstates[5],
+                Client = Clients[3]
             }
         };
     }
