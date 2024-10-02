@@ -11,7 +11,7 @@ public static class TestData
     static TestData()
     {
         RealEstates =
-            [
+        [
             new RealEstate
             {
                 Type = RealEstate.PropertyType.Residential,

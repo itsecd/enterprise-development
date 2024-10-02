@@ -4,8 +4,8 @@ namespace RealEstateAgency.Tests;
 
 public class RealEstateAgencyQueryTests
 {
-    private List<Client> _testClients = TestData.Clients;
-    private List<Order> _testOrders = TestData.Orders;
+    private readonly List<Client> _testClients = TestData.Clients;
+    private readonly List<Order> _testOrders = TestData.Orders;
 
     [Fact]
     public void GetClientsSearchingForSpecificRealEstateTypeShouldReturnOrderedByFullName()
@@ -36,7 +36,6 @@ public class RealEstateAgencyQueryTests
         Assert.Contains(sellers, s => s.FirstAndLastName == "Stepanov Dima");
     }
 
-    //править
     [Fact]
     public void GetSellersForBuyerOrderShouldReturnSellersWithMatchingRealEstate()
     {
