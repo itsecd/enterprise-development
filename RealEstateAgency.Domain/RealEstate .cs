@@ -5,7 +5,11 @@
 /// </summary>
 public class RealEstate
 {
-    public enum PropertyType { Residential, Uninhabitable }
+    public enum PropertyType
+    {
+        Residential,
+        Uninhabitable
+    }
 
     /// <summary>
     /// тип объекта недвижимости (жилое/нежилое)

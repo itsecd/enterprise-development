@@ -10,8 +10,8 @@ public static class TestData
 
     static TestData()
     {
-        RealEstates = new List<RealEstate>
-        {
+        RealEstates =
+            [
             new RealEstate
             {
                 Type = RealEstate.PropertyType.Residential,
@@ -54,10 +54,10 @@ public static class TestData
                 Square = 100.0,
                 NumberOfRooms = 3
             }
-        };
+        ];
 
-        Clients = new List<Client>
-        {
+        Clients =
+        [
             new Client
             {
                 ClientId = 1,
@@ -94,10 +94,10 @@ public static class TestData
                 Address = "st. Komsomolskaya, 89, Samara",
                 Email = "petrov@gmail.com"
             }
-        };
+        ];
 
-        Orders = new List<Order>
-        {
+        Orders =
+        [
             new Order
             {
                 Id = 1,
@@ -152,6 +152,6 @@ public static class TestData
                 Item = RealEstates[5],
                 Client = Clients[3]
             }
-        };
+        ];
     }
 }

@@ -1,22 +1,19 @@
 using RealEstateAgency.Domain;
-using Xunit;
-using System.Linq;
 
 namespace RealEstateAgency.Tests;
 
 public class RealEstateAgencyQueryTests
 {
-    private List<Client> testClients = TestData.Clients;
-    private List<Order> testOrders = TestData.Orders;
-    private List<RealEstate> testRealEstates = TestData.RealEstates;
+    private List<Client> _testClients = TestData.Clients;
+    private List<Order> _testOrders = TestData.Orders;
 
     [Fact]
-    public void GetClientsSearchingForSpecificRealEstateType_ShouldReturnOrderedByFullName()
+    public void GetClientsSearchingForSpecificRealEstateTypeShouldReturnOrderedByFullName()
     {
         var realEstateType = RealEstate.PropertyType.Residential;
 
-        var clients = testClients
-            .Where(c => testOrders.Any(o => o.Client == c && o.Type == Order.PurchaseOrSale.Purchase && o.Item.Type == realEstateType))
+        var clients = _testClients
+            .Where(c => _testOrders.Any(o => o.Client == c && o.Type == Order.PurchaseOrSale.Purchase && o.Item.Type == realEstateType))
             .OrderBy(c => c.FirstAndLastName)
             .ToList();
 
@@ -25,13 +22,13 @@ public class RealEstateAgencyQueryTests
     }
 
     [Fact]
-    public void GetSellersWithinPeriod_ShouldReturnCorrectSellers()
+    public void GetSellersWithinPeriodShouldReturnCorrectSellers()
     {
-        var startDate = new DateTime(2024,1,1);
+        var startDate = new DateTime(2024, 1, 1);
         var endDate = new DateTime(2024, 11, 1);
 
-        var sellers = testClients
-            .Where(c => testOrders.Any(o => o.Client == c && o.Type == Order.PurchaseOrSale.Sale && o.Time >= startDate && o.Time <= endDate))
+        var sellers = _testClients
+            .Where(c => _testOrders.Any(o => o.Client == c && o.Type == Order.PurchaseOrSale.Sale && o.Time >= startDate && o.Time <= endDate))
             .ToList();
 
         Assert.NotEmpty(sellers);
@@ -41,13 +38,13 @@ public class RealEstateAgencyQueryTests
 
     //править
     [Fact]
-    public void GetSellersForBuyerOrder_ShouldReturnSellersWithMatchingRealEstate()
+    public void GetSellersForBuyerOrderShouldReturnSellersWithMatchingRealEstate()
     {
-        var buyerOrder = testOrders
-            .First(o => o.Type == Order.PurchaseOrSale.Purchase && o.Item.Type == RealEstate.PropertyType.Residential );
+        var buyerOrder = _testOrders
+            .First(o => o.Type == Order.PurchaseOrSale.Purchase && o.Item.Type == RealEstate.PropertyType.Residential);
 
-        var sellers = testClients
-            .Join(testOrders.Where(o => o.Type == Order.PurchaseOrSale.Sale && o.Item.Type == buyerOrder.Item.Type && o.Price == buyerOrder.Price),
+        var sellers = _testClients
+            .Join(_testOrders.Where(o => o.Type == Order.PurchaseOrSale.Sale && o.Item.Type == buyerOrder.Item.Type && o.Price == buyerOrder.Price),
                   seller => seller.ClientId,
                   saleOrder => saleOrder.Client.ClientId,
                   (seller, saleOrder) => seller)
@@ -59,9 +56,9 @@ public class RealEstateAgencyQueryTests
     }
 
     [Fact]
-    public void GetOrderCountByRealEstateType_ShouldReturnCorrectCounts()
+    public void GetOrderCountByRealEstateTypeShouldReturnCorrectCounts()
     {
-        var orderCountByType = testOrders
+        var orderCountByType = _testOrders
             .GroupBy(o => o.Item.Type)
             .Select(g => new
             {
@@ -74,20 +71,23 @@ public class RealEstateAgencyQueryTests
         var residentialCount = orderCountByType.FirstOrDefault(t => t.RealEstateType == RealEstate.PropertyType.Residential);
         var commercialCount = orderCountByType.FirstOrDefault(t => t.RealEstateType == RealEstate.PropertyType.Uninhabitable);
 
-        Assert.Equal(5, residentialCount?.OrderCount);
-        Assert.Equal(1, commercialCount?.OrderCount);
+        Assert.NotNull(residentialCount);
+        Assert.NotNull(commercialCount);
+
+        Assert.Equal(5, residentialCount.OrderCount);
+        Assert.Equal(1, commercialCount.OrderCount);
     }
 
     [Fact]
-    public void GetTop5ClientsByOrderCount_ShouldReturnTop5Clients()
+    public void GetTop5ClientsByOrderCountShouldReturnTop5Clients()
     {
-        var purchaseOrders = testClients
-            .OrderByDescending(c => testOrders.Count(o => o.Client == c && o.Type == Order.PurchaseOrSale.Purchase))
+        var purchaseOrders = _testClients
+            .OrderByDescending(c => _testOrders.Count(o => o.Client == c && o.Type == Order.PurchaseOrSale.Purchase))
             .Take(5)
             .ToList();
 
-        var saleOrders = testClients
-            .OrderByDescending(c => testOrders.Count(o => o.Client == c && o.Type == Order.PurchaseOrSale.Sale))
+        var saleOrders = _testClients
+            .OrderByDescending(c => _testOrders.Count(o => o.Client == c && o.Type == Order.PurchaseOrSale.Sale))
             .Take(5)
             .ToList();
 
@@ -101,12 +101,12 @@ public class RealEstateAgencyQueryTests
     }
 
     [Fact]
-    public void GetClientsWithMinOrderPrice_ShouldReturnClientsWithMinPrice()
+    public void GetClientsWithMinOrderPriceShouldReturnClientsWithMinPrice()
     {
-        var minPrice = testOrders.Min(o => o.Price);
+        var minPrice = _testOrders.Min(o => o.Price);
 
-        var clientsWithMinPrice = testClients
-            .Where(c => testOrders.Any(o => o.Client == c && o.Price == minPrice))
+        var clientsWithMinPrice = _testClients
+            .Where(c => _testOrders.Any(o => o.Client == c && o.Price == minPrice))
             .ToList();
 
         Assert.NotEmpty(clientsWithMinPrice);

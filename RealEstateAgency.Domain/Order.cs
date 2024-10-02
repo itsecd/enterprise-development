@@ -33,9 +33,11 @@ public class Order
     /// <summary>
     /// тип заявки
     /// </summary>
-    public enum PurchaseOrSale { 
+    public enum PurchaseOrSale
+    {
         Purchase,
-        Sale }
+        Sale
+    }
 
     public required Client Client { get; set; }
 }
