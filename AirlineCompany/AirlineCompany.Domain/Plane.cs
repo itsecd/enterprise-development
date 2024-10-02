@@ -1,19 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AirlineCompany.Domain;
+﻿namespace AirlineCompany.Domain;
+/// <summary>
+/// Класс описывает одну модель самолета
+/// </summary>
 public class Plane
 {
     /// <summary>
-    /// Класс содержит самолета
+    /// ID самолета
     /// </summary>
-    public required ushort IdPlane { get; set; }
+    public required int IdPlane { get; set; }
+
+    /// <summary>
+    /// Модель
+    /// </summary>
     public required string Model { set; get; }
-    public required float LoadCapacity { set; get; }
-    public required float Efficiency { set; get; }
-    public required ushort PassengerMax { set; get; }
+
+    /// <summary>
+    /// Грузоподъемность
+    /// </summary>
+    public required double LoadCapacity { set; get; }
+
+    /// <summary>
+    /// Производительность
+    /// </summary>
+    public required double Efficiency { set; get; }
+
+    /// <summary>
+    /// Максимальное число пассажиров
+    /// </summary>
+    public required int PassengerMax { set; get; }
 }
 

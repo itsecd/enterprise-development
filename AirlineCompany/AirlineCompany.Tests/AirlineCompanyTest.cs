@@ -38,8 +38,8 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
 
         var passWF =
             (from pass in passFixture.GetPassenegers()
-             orderby pass.FIO descending
-             where pass.codeFlight == "5000" && pass.baggageWeight == 0
+             orderby pass.FullName descending
+             where pass.CodeFlight == "5000" && pass.BaggageWeight == 0
              select pass).ToList();
 
         var res = new List<Passeneger>() { passFixture.GetPassenegers()[8], passFixture.GetPassenegers()[0]};
@@ -82,7 +82,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
 
         var flyightTop =
             (from fly in flyFixture.GetFlights()
-             let c = passFixture.GetPassenegers().Count(pass => pass.codeFlight == fly.CodeNumber)
+             let c = passFixture.GetPassenegers().Count(pass => pass.CodeFlight == fly.CodeNumber)
              orderby c descending
              select new { fly, c }).ToList();
 
@@ -135,7 +135,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
 
         var flyightWeight =
             from fly in flyFixture.GetFlights()
-            join pass in passFixture.GetPassenegers() on fly.CodeNumber equals pass.codeFlight
+            join pass in passFixture.GetPassenegers() on fly.CodeNumber equals pass.CodeFlight
             where fly.DeparturePoint == "Rome"
             select new
             {
@@ -143,7 +143,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
                 code = fly.CodeNumber,
                 depar = fly.DeparturePoint,
                 arrive = fly.ArrivalPoint,
-                bag = pass.baggageWeight,
+                bag = pass.BaggageWeight,
             };
 
         var flyightWMA =

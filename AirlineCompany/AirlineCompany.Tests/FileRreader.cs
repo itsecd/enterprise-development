@@ -64,13 +64,13 @@ internal class FileRreader(string fileName): IDisposable
             var passenger = new Passeneger
             {
                 IdPassenger = passengerId++,
-                FIO = tokens[0],
+                FullName = tokens[0],
                 Passport = tokens[1],
-                registration = bool.Parse(tokens[2]),
-                ticketNumber = tokens[3],
-                seatNumber = tokens[4],
-                baggageWeight = float.Parse(tokens[5], CultureInfo.InvariantCulture.NumberFormat),
-                codeFlight = tokens[6]
+                Registration = bool.Parse(tokens[2]),
+                TicketNumber = tokens[3],
+                SeatNumber = tokens[4],
+                BaggageWeight = double.Parse(tokens[5], CultureInfo.InvariantCulture.NumberFormat),
+                CodeFlight = tokens[6]
             };
 
             passengers.Add(passenger);
@@ -101,8 +101,8 @@ internal class FileRreader(string fileName): IDisposable
             {
                 IdPlane = planeId++,
                 Model = tokens[0],
-                LoadCapacity = float.Parse(tokens[1], CultureInfo.InvariantCulture.NumberFormat),
-                Efficiency = float.Parse(tokens[2], CultureInfo.InvariantCulture.NumberFormat),
+                LoadCapacity = double.Parse(tokens[1], CultureInfo.InvariantCulture.NumberFormat),
+                Efficiency = double.Parse(tokens[2], CultureInfo.InvariantCulture.NumberFormat),
                 PassengerMax = ushort.Parse(tokens[3], CultureInfo.InvariantCulture.NumberFormat),
             };
 

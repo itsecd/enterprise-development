@@ -1,52 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AirlineCompany.Domain;
+﻿namespace AirlineCompany.Domain;
+/// <summary>
+/// Класс описывает информацию о пассажире
+/// </summary>
 public class Passeneger
 {
     /// <summary>
-    /// Класс описывает информацию о пассажире
+    ///  ID ассажира
     /// </summary>
-    public required uint IdPassenger { get; set; }
-    public required string FIO { get; set; }
+    public required int IdPassenger { get; set; }
+
+    /// <summary>
+    /// ФИО пассажира
+    /// </summary>
+    public required string FullName { get; set; }
+
+    /// <summary>
+    /// Номер паспорта
+    /// </summary>
     public required string Passport { get; set; }
 
-    public required bool registration = false;
-    public required string ticketNumber = null!; // ~ TicketNumber
-    public required string seatNumber = null!;
-    public required float baggageWeight = 0;
-    public required string codeFlight = ""; // поле для связи пассажира и рейса
+    /// <summary>
+    /// Флаг регистрации
+    /// </summary>
+    public required bool Registration { get; set; }
 
-    public bool Registration
-    {
-        get { return registration; }
-        set { registration = value; }
-    }
+    /// <summary>
+    /// Номер билета
+    /// </summary>
+    public required string TicketNumber { get; set; }
 
-    public string TicketNumber
-    {
-        get { return ticketNumber; }
-        set { ticketNumber = value; }
-    }
-    public string SeatNumber
-    {
-        get { return seatNumber; }
-        set { seatNumber = value; }
-    }
+    /// <summary>
+    /// Номер места
+    /// </summary>
+    public required string SeatNumber { get; set; }
 
-    public float BaggageWeight
-    {
-        get { return baggageWeight; }
-        set { baggageWeight = value; }
-    }
+    /// <summary>
+    /// Вес багажа
+    /// </summary>
+    public required double BaggageWeight { get; set; }
 
-    public string сodeFlight
-    {
-        get { return codeFlight; }
-        set { codeFlight = value; }
-    }
+    /// <summary>
+    /// Номер рейса
+    /// </summary>
+    public required string CodeFlight { get; set; }
 }
 
