@@ -96,7 +96,7 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
             .Select(c => new {
                 client = c.Key,
                 total = c.Sum(r => r.Period)
-                }).Select(c => c).Max(c => c.total);    
+                }).Max(c => c.total);    
 
         var clientWithLongerPer = _dataProvider.ReservedRooms
             .GroupBy(c => c.Client)
