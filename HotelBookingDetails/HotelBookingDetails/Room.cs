@@ -1,31 +1,31 @@
 ﻿namespace HotelBookingDetails.Domain;
 
 /// <summary>
-///     Комната
+/// Комната
 /// </summary>
 public class Room
 {
     /// <summary>
-    ///     Индентификатор комнаты
+    /// Идентификатор комнаты
     /// </summary>
     public required int Id { get; set; }
     /// <summary>
-    ///     Тип номера
+    /// Тип номера
     /// </summary>
     public required TypeRoom Type { get; set; }
 
     /// <summary>
-    ///     Вместимость
+    /// Вместимость
     /// </summary>
     public required int Capacity { get; set; }
 
     /// <summary>
-    ///     Цена
+    /// Цена
     /// </summary>
     public required int Cost { get; set; }
 
     /// <summary>
-    ///     Индентификатор отеля
+    /// Идентификатор отеля
     /// </summary>
     public required int HotelId { get; set; }
 }

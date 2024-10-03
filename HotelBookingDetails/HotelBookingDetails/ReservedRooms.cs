@@ -1,34 +1,33 @@
 ﻿namespace HotelBookingDetails.Domain;
 
 /// <summary>
-///     Забронированные номера
+/// Забронированные номера
 /// </summary>
 
 public class ReservedRooms
 {
     /// <summary>
-    ///     Клиент  
+    /// Клиент  
     /// </summary>
-    public required Client client {  get; set; }
+    public required Client Client {  get; set; }
 
     /// <summary>
-    ///     Комната
+    /// Комната
     /// </summary
-    public required Room room { get; set; }
+    public required Room Room { get; set; }
 
     /// <summary>
-    ///     Дата въезда
+    /// Дата въезда
     /// </summary>
     public required DateOnly DateArrival { get; set; }
 
     /// <summary>
-    ///     Дата выезда
+    /// Дата выезда
     /// </summary>
     public DateOnly DateDeparture { get; set; }
 
     /// <summary>
-    ///     Период
+    /// Период
     /// </summary>
     public required int Period { get; set; }
-
 }

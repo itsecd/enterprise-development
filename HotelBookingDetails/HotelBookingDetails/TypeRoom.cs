@@ -1,19 +1,17 @@
 ﻿namespace HotelBookingDetails.Domain;
 
 /// <summary>
-///     Типы номеров
+/// Типы номеров
 /// </summary>
 public class TypeRoom
 {
+    /// <summary>
+    /// Идентификатор типа
+    /// </summary>
+    public required int Id { get; set; }
 
     /// <summary>
-    ///     Индентификатор типа
+    /// Название типа
     /// </summary>
-    public required int id { get; set; }
-
-
-    /// <summary>
-    ///     Название типа
-    /// </summary>
-    public required string NameType { get; set; }
+    public required string Name { get; set; }
 }

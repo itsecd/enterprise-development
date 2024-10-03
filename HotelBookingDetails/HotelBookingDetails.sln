@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBookingDetails", "HotelBookingDetails\HotelBookingDetails.csproj", "{BB65E789-B8C5-4D70-80DD-9D3B4A86E3F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelBookingDetails.Domain", "HotelBookingDetails\HotelBookingDetails.Domain.csproj", "{BB65E789-B8C5-4D70-80DD-9D3B4A86E3F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBookingDetails.Tests", "HotelBookingDetails.Tests\HotelBookingDetails.Tests.csproj", "{490ABC60-07A8-42BA-B264-51C0A500FD2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelBookingDetails.Tests", "HotelBookingDetails.Tests\HotelBookingDetails.Tests.csproj", "{490ABC60-07A8-42BA-B264-51C0A500FD2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

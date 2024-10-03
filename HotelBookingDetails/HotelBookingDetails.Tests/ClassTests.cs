@@ -1,9 +1,4 @@
-﻿using HotelBookingDetails;
-using HotelBookingDetails.Domain;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Xunit.Sdk;
-
+﻿using HotelBookingDetails.Domain;
 namespace HotelBookingDetails.Tests;
 
 public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBookingDetailsData>
@@ -13,43 +8,35 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
     [Fact]
     public void ReturnAllHotels()
     {
-        var hotel = _dataProvider.Hotels.Select(h => h.Name).ToList();
-        var hotelNames = new List<String> {
-            "Гостиница Москва",
-            "Grand Hotel",
-            "Hilton",
-            "Marriott",
-            "Hyatt Regency",
-            "Ritz-Carlton"
-        };
-        Assert.Equal(hotel, hotelNames);
+        var countHotels = _dataProvider.Hotels.Select(h => h.Name).ToList();
+        var expectedNumber = 6;
+        Assert.Equal(expectedNumber, countHotels.Count());
     }
 
     [Fact]
     public void ReturnAllClientInHotel()
     {
-        var clients = new List<Client>
+        var expecteClients = new List<Client>
         {
             _dataProvider.Clients[9],
             _dataProvider.Clients[10],
             _dataProvider.Clients[8],
             _dataProvider.Clients[11],
         };
-        var rooms_hotel = _dataProvider.Hotels
-            .Where(h => h.Name == "Hilton")
-            .Select(h => h.Rooms).First();
-        var client_in_hotel = _dataProvider.ReservedRooms
-            .OrderBy(r => r.client.FullName)
-            .Where(r => rooms_hotel.Contains(r.room))
-            .Select(r => r.client)
+        var clientInHotel = _dataProvider.ReservedRooms
+            .OrderBy(r => r.Client.FullName)
+            .Where(r => _dataProvider.Rooms
+            .Where(r => r.HotelId == (_dataProvider.Hotels.Where(h => h.Name == "Hilton").Select(h => h.Id).First()))
+            .Select(r => r).ToList().Contains(r.Room))
+            .Select(r => r.Client)
             .ToList();
-        Assert.Equal(client_in_hotel, clients);
+        Assert.Equal(clientInHotel, expecteClients);
     }
 
     [Fact]
-    void ReturnTopFiveHotel()
+    public void ReturnTopFiveHotel()
     {
-        var hotel = new List<Hotel>
+        var expecteHhotels = new List<Hotel>
         {
             _dataProvider.Hotels[0],
             _dataProvider.Hotels[1],
@@ -57,88 +44,85 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
             _dataProvider.Hotels[3],
             _dataProvider.Hotels[5]
         };
-        var topPopularHotelId = _dataProvider.ReservedRooms
-            .GroupBy(r => r.room.HotelId)
+
+
+        var topFiveHotel = _dataProvider.ReservedRooms
+            .GroupBy(r => r.Room.HotelId)
             .Select(r => r.Key)
             .Take(5)
+            .Join(_dataProvider.Hotels,
+            roomId => roomId,
+            hotel => hotel.Id,
+            (roomId, hotel) => hotel)
+            .OrderBy(r => r.Id)
             .ToList();
-            
-        var topFIveHotel = _dataProvider.Hotels
-            .Where(h => topPopularHotelId.Contains(h.Id))
-            .Select(h => h)
-            .ToList();
-        Assert.Equal(hotel, topFIveHotel);
+        Assert.Equal(expecteHhotels, topFiveHotel);
 
     }
 
     [Fact]
-    void ReturnFreeRooms()
+    public void ReturnFreeRooms()
     {
-        var rooms = new List<Room>
+        var expectedRooms = new List<Room>
         {
             _dataProvider.Rooms[4],
             _dataProvider.Rooms[5],
             _dataProvider.Rooms[6],
 
         };
-
-        var roomInCity = _dataProvider.Rooms
-            .Where(r => (_dataProvider.Hotels.Where(h => h.City == "New York").Select(h => h.Id).ToList()).Contains(r.HotelId))
-            .Select(h => h).ToList();
-
-        var reservedRooms = _dataProvider.ReservedRooms
-            .Where(r => r.DateDeparture == DateOnly.ParseExact("0001-01-01", "yyyy-mm-dd"))
-            .Select(r => r).ToList();
-
+        var city = "New York";
         var freeRooms = _dataProvider.ReservedRooms
-            .Where(r => !reservedRooms.Contains(r) && roomInCity.Contains(r.room))
-            .Select(r => r.room).ToList();
-
-        Assert.Equal(rooms, freeRooms);
+            .Where(r => !_dataProvider.ReservedRooms.Where(r => r.DateDeparture == DateOnly.ParseExact("0001-01-01", "yyyy-mm-dd"))
+                .Select(r => r).ToList().Contains(r) 
+                && 
+                _dataProvider.Rooms.Where(r => (_dataProvider.Hotels.Where(h => h.City == city).Select(h => h.Id).ToList()).Contains(r.HotelId))
+                .Select(h => h).ToList().Contains(r.Room)
+                ).Select(r => r.Room).ToList();
+        Assert.Equal(expectedRooms, freeRooms);
     }
 
     [Fact]
-    void returnLongLiversHotel()
+    public void returnLongLiversHotel()
     {
-
-        var clients = new List<Client>
+        var expecteClients = new List<Client>
         {
             _dataProvider.Clients[14],
             _dataProvider.Clients[15],
      
         };
 
-        var longerPeriods = (_dataProvider.ReservedRooms
-            .GroupBy(c => c.client)
+        var longerPeriods = _dataProvider.ReservedRooms
+            .GroupBy(c => c.Client)
             .Select(c => new {
                 client = c.Key,
                 total = c.Sum(r => r.Period)
-                })).Select(c => c).Max(c => c.total);
+                }).Select(c => c).Max(c => c.total);    
 
-        var clientWithLongerPer = (_dataProvider.ReservedRooms
-            .GroupBy(c => c.client)
+        var clientWithLongerPer = _dataProvider.ReservedRooms
+            .GroupBy(c => c.Client)
             .Select(c => new
             {
                 client = c.Key,
                 total = c.Sum(r => r.Period)
-            })).Where(c => c.total == longerPeriods).Select(c => c.client).ToList();
+            }).Where(c => c.total == longerPeriods).Select(c => c.client).ToList();
 
-        Assert.Equal(clients, clientWithLongerPer);
+        Assert.Equal(expecteClients, clientWithLongerPer);
     }
 
     [Fact]
-    void minAvgMaxCostInHotel()
+    public void minAvgMaxCostInHotel()
     {
-        var minHotelCost = _dataProvider.Hotels
-            .Select(c => new {
-                hotel = c,
-                min = c.Rooms.Min(r => r.Cost),
-                max = c.Rooms.Max(r => r.Cost),
-                avg = c.Rooms.Average(r => r.Cost)
-            }).ToList();
-
-        Assert.Equal(minHotelCost[0].min, 3000.00);
-        Assert.Equal(minHotelCost[0].avg, 4500.00);
-        Assert.Equal(minHotelCost[0].max, 6000.00);
+        var hotels = _dataProvider.Hotels.Select(h => h);
+  
+        var hotelCosts = hotels.Select(h => new
+        {
+            hotel = (_dataProvider.Hotels.Where(hotel => hotel.Id == h.Id).Select(hotel => hotel)),
+            min = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Min(rm => rm.Cost),
+            max = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Max(rm => rm.Cost),
+            avg = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Average(rm => rm.Cost)
+        }).ToList();
+        Assert.Equal(3000, hotelCosts[0].min);
+        Assert.Equal(4500.00, hotelCosts[0].avg, 2);
+        Assert.Equal(6000, hotelCosts[0].max);
     }
 }

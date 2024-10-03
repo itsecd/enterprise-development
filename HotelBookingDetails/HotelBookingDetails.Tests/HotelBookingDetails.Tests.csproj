@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HotelBookingDetails\HotelBookingDetails.csproj" />
+    <ProjectReference Include="..\HotelBookingDetails\HotelBookingDetails.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

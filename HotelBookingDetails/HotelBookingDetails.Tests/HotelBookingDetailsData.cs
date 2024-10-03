@@ -1,5 +1,5 @@
-﻿using HotelBookingDetails;
-using HotelBookingDetails.Domain;
+﻿using HotelBookingDetails.Domain;
+
 
 namespace HotelBookingDetails.Tests;
 
@@ -7,10 +7,10 @@ public class HotelBookingDetailsData
 {
     public List<TypeRoom> TypesRoom =
     [
-        new(){ id = 1,  NameType = "Luxary"},
-        new(){ id = 2,  NameType = "Economy"},
-        new(){ id = 3,  NameType = "Comfort"},
-        new(){ id = 4,  NameType = "Comfort+"},
+        new(){ Id = 1,  Name = "Luxary"},
+        new(){ Id = 2,  Name = "Economy"},
+        new(){ Id = 3,  Name = "Comfort"},
+        new(){ Id = 4,  Name = "Comfort+"},
     ];
 
     public List<Passport> Passports =
@@ -46,129 +46,151 @@ public class HotelBookingDetailsData
     
     public HotelBookingDetailsData()
     {
-        Clients = [
-            new(){
-            id = 1,
-            FullName = "Иванов Иван Иванович",
-            PassportData = Passports[0],
-            Birthday =  DateOnly.ParseExact("2003-01-01", "yyyy-mm-dd")
-                },
-            new(){
-            id = 2,
-            FullName = "Петров Петр Петрович",
-            PassportData = Passports[1],
-            Birthday =  DateOnly.ParseExact("2002-05-15", "yyyy-mm-dd")
+        Clients =
+        [
+            new()
+            {
+                Id = 1,
+                FullName = "Иванов Иван Иванович",
+                PassportData = Passports[0],
+                Birthday =  new DateOnly(2003, 1, 1)
             },
-            new(){
-            id = 3,
-            FullName = "Сидоров Сидор Сидорович",
-            PassportData = Passports[2],
-            Birthday =  DateOnly.ParseExact("2001-09-20", "yyyy-mm-dd")
+            new()
+            {
+                Id = 2,
+                FullName = "Петров Петр Петрович",
+                PassportData = Passports[1],
+                Birthday =  new DateOnly(2002, 5, 15 )
             },
-            new(){
-            id = 4,
-            FullName = "Кузнецов Алексей Владимирович",
-            PassportData = Passports[3],
-            Birthday =  DateOnly.ParseExact("2004-03-10", "yyyy-mm-dd")
+            new()
+            {
+                Id = 3,
+                FullName = "Сидоров Сидор Сидорович",
+                PassportData = Passports[2],
+                Birthday =  new DateOnly(2001, 9, 20 )
             },
-            new(){
-            id = 5,
-            FullName = "Смирнов Дмитрий Александрович",
-            PassportData = Passports[4],
-            Birthday =  DateOnly.ParseExact("2000-08-27", "yyyy-mm-dd")
+            new()
+            {
+                Id = 4,
+                FullName = "Кузнецов Алексей Владимирович",
+                PassportData = Passports[3],
+                Birthday =  new DateOnly(2004, 3, 10)
             },
-            new(){
-            id = 6,
-            FullName = "Козлов Игорь Сергеевич",
-            PassportData = Passports[5],
-            Birthday =  DateOnly.ParseExact("2005-02-18", "yyyy-mm-dd")
+            new()
+            {
+                Id = 5,
+                FullName = "Смирнов Дмитрий Александрович",
+                PassportData = Passports[4],
+                Birthday =  new DateOnly(2000, 8, 27)
             },
-            new(){
-            id = 7,
-            FullName = "Лебедев Владислав Денисович",
-            PassportData = Passports[6],
-            Birthday =  DateOnly.ParseExact("2003-10-05", "yyyy-mm-dd")
+            new()
+            {
+                Id = 6,
+                FullName = "Козлов Игорь Сергеевич",
+                PassportData = Passports[5],
+                Birthday =  new DateOnly(2005, 2, 18)
             },
-            new(){
-            id = 8,
-            FullName = "Никитин Андрей Алексеевич",
-            PassportData = Passports[7],
-            Birthday =  DateOnly.ParseExact("2001-12-30", "yyyy-mm-dd")
+            new()
+            {
+                Id = 7,
+                FullName = "Лебедев Владислав Денисович",
+                PassportData = Passports[6],
+                Birthday =  new DateOnly(2003, 10, 05)
             },
-            new(){
-            id = 9,
-            FullName = "Морозов Кирилл Васильевич",
-            PassportData = Passports[8],
-            Birthday =  DateOnly.ParseExact("2000-04-09", "yyyy-mm-dd")
+            new()
+            {
+                Id = 8,
+                FullName = "Никитин Андрей Алексеевич",
+                PassportData = Passports[7],
+                Birthday =  new DateOnly(2001, 12, 30)
             },
-            new(){
-            id = 10,
-            FullName = "Андреев Евгений Дмитриевич",
-            PassportData = Passports[9],
-            Birthday =  DateOnly.ParseExact("2002-07-14", "yyyy-mm-dd")
+            new()
+            {
+                Id = 9,
+                FullName = "Морозов Кирилл Васильевич",
+                PassportData = Passports[8],
+                Birthday =  new DateOnly(2000, 4, 09)
             },
-            new(){
-            id = 11,
-            FullName = "Богданова Елена Игоревна",
-            PassportData = Passports[10],
-            Birthday =  DateOnly.ParseExact("2004-11-21", "yyyy-mm-dd")
+            new()
+            {
+                Id = 10,
+                FullName = "Андреев Евгений Дмитриевич",
+                PassportData = Passports[9],
+                Birthday =  new DateOnly(2002, 7, 14)
             },
-            new(){
-            id = 12,
-            FullName = "Семенов Максим Павлович",
-            PassportData = Passports[11],
-            Birthday =  DateOnly.ParseExact("2003-06-02", "yyyy-mm-dd")
+            new()
+            {
+                Id = 11,
+                FullName = "Богданова Елена Игоревна",
+                PassportData = Passports[10],
+                Birthday =  new DateOnly(2004, 11, 21)
             },
-            new(){
-            id = 13,
-            FullName = "Козлова Виктория Алексеевна",
-            PassportData = Passports[12],
-            Birthday =  DateOnly.ParseExact("2000-12-15", "yyyy-mm-dd")
+            new()
+            {
+                Id = 12,
+                FullName = "Семенов Максим Павлович",
+                PassportData = Passports[11],
+                Birthday =  new DateOnly(2003, 6, 2)
             },
-            new(){
-            id = 14,
-            FullName = "Новикова Анастасия Сергеевна",
-            PassportData = Passports[13],
-            Birthday =  DateOnly.ParseExact("2001-03-25", "yyyy-mm-dd")
+            new()
+            {
+                Id = 13,
+                FullName = "Козлова Виктория Алексеевна",
+                PassportData = Passports[12],
+                Birthday =  new DateOnly(2000, 12, 15)
             },
-            new(){
-            id = 15,
-            FullName = "Гаврилова Ольга Владимировна",
-            PassportData = Passports[14],
-            Birthday =  DateOnly.ParseExact("2002-09-12", "yyyy-mm-dd")
+            new()
+            {
+                Id = 14,
+                FullName = "Новикова Анастасия Сергеевна",
+                PassportData = Passports[13],
+                Birthday =  new DateOnly(2001, 3, 25)
             },
-            new(){
-            id = 16,
-            FullName = "Белякова Светлана Ивановна",
-            PassportData = Passports[15],
-            Birthday =  DateOnly.ParseExact("2004-07-03", "yyyy-mm-dd")
+            new()
+            {
+                Id = 15,
+                FullName = "Гаврилова Ольга Владимировна",
+                PassportData = Passports[14],
+                Birthday =  new DateOnly(2002, 9, 12)
             },
-            new(){
-            id = 17,
-            FullName = "Федорова Екатерина Дмитриевна",
-            PassportData = Passports[16],
-            Birthday =  DateOnly.ParseExact("2003-04-28", "yyyy-mm-dd")
+            new()
+            {
+                Id = 16,
+                FullName = "Белякова Светлана Ивановна",
+                PassportData = Passports[15],
+                Birthday =  new DateOnly(2004, 7, 3)
             },
-            new(){
-            id = 18,
-            FullName = "Алексеева Ирина Александровна",
-            PassportData = Passports[17],
-            Birthday =  DateOnly.ParseExact("2001-10-17", "yyyy-mm-dd")
+            new()
+            {
+                Id = 17,
+                FullName = "Федорова Екатерина Дмитриевна",
+                PassportData = Passports[16],
+                Birthday =  new DateOnly(2003, 4, 28)
             },
-            new(){
-            id = 19,
-            FullName = "Тихонова Татьяна Васильевна",
-            PassportData = Passports[18],
-            Birthday =  DateOnly.ParseExact("2001-10-17", "yyyy-mm-dd")
+            new()
+            {
+                Id = 18,
+                FullName = "Алексеева Ирина Александровна",
+                PassportData = Passports[17],
+                Birthday =  new DateOnly(2001, 10, 17)
             },
-            new(){
-            id = 19,
-            FullName = "Жмурова Мелания Максимова",
-            PassportData = Passports[19],
-            Birthday =  DateOnly.ParseExact("2002-02-17", "yyyy-mm-dd")
+            new()
+            {
+                Id = 19,
+                FullName = "Тихонова Татьяна Васильевна",
+                PassportData = Passports[18],
+                Birthday =  new DateOnly(2001, 10, 17)
+            },
+            new()
+            {
+                Id = 19,
+                FullName = "Жмурова Мелания Максимова",
+                PassportData = Passports[19],
+                Birthday =  new DateOnly(2002, 02, 17)
             }
-            ];
-        Rooms = [
+        ];
+        Rooms =
+        [
             new(){Id = 1, Capacity = 2, Cost = 3000, Type = TypesRoom[0], HotelId = 0},
             new(){Id = 2, Capacity = 1, Cost = 4000, Type = TypesRoom[1], HotelId = 0},
             new(){Id = 3, Capacity = 3, Cost = 5000, Type = TypesRoom[2], HotelId = 0},
@@ -190,36 +212,38 @@ public class HotelBookingDetailsData
             new(){Id = 19, Capacity = 2, Cost = 21000, Type = TypesRoom[2], HotelId = 4},
             new(){Id = 20, Capacity = 1, Cost = 22000, Type = TypesRoom[3], HotelId = 4},
             new(){Id = 21, Capacity = 5, Cost = 23000, Type = TypesRoom[0], HotelId = 5},
-            ];
+        ];
 
-        Hotels = [
-            new(){Id = 0, Name = "Гостиница Москва", Address = "Новосадовая 34Э", City = "Вашингтон", Rooms = Rooms.Slice(0, 4)},
-            new(){Id = 1, Name = "Grand Hotel", Address = "Park Avenue 123", City = "New York", Rooms = Rooms.Slice(4, 4)},
-            new(){Id = 2, Name = "Hilton", Address = "Main Street 55", City = "Chicago", Rooms = Rooms.Slice(8, 4)},
-            new(){Id = 3, Name = "Marriott", Address = "Sunset Boulevard 87", City = "Los Angeles", Rooms = Rooms.Slice(12, 4)},
-            new(){Id = 4, Name = "Hyatt Regency", Address = "Lake Shore Drive 100", City = "Chicago", Rooms = Rooms.Slice(16, 4)},
-            new(){Id = 5, Name = "Ritz-Carlton", Address = "Michigan Avenue 160", City = "Chicago", Rooms = Rooms.Slice(20, 1)},
-            ];
-        ReservedRooms = [
-            new(){ client = Clients[0], DateArrival = DateOnly.ParseExact("2024-04-28", "yyyy-mm-dd"), Period = 10, room = Rooms[0]},
-            new(){ client = Clients[11], DateArrival= DateOnly.ParseExact("2024-04-28", "yyyy-mm-dd"), Period= 10, room= Rooms[11]},
-            new(){ client = Clients[1], DateArrival= DateOnly.ParseExact("2024-05-05", "yyyy-mm-dd"), Period= 5, room= Rooms[1]},
-            new(){ client = Clients[2], DateArrival= DateOnly.ParseExact("2024-05-15", "yyyy-mm-dd"), Period= 7, room= Rooms[2], DateDeparture =  DateOnly.ParseExact("2024-05-22", "yyyy-mm-dd")},
-            new(){ client = Clients[3], DateArrival= DateOnly.ParseExact("2024-06-01", "yyyy-mm-dd"), Period= 3, room= Rooms[3], DateDeparture =  DateOnly.ParseExact("2024-06-04", "yyyy-mm-dd")},
-            new(){ client = Clients[4], DateArrival= DateOnly.ParseExact("2024-06-10", "yyyy-mm-dd"), Period= 14, room= Rooms[4], DateDeparture =  DateOnly.ParseExact("2024-06-24", "yyyy-mm-dd")},
-            new(){ client = Clients[5], DateArrival= DateOnly.ParseExact("2024-06-20", "yyyy-mm-dd"), Period= 9, room= Rooms[5], DateDeparture =  DateOnly.ParseExact("2024-06-29", "yyyy-mm-dd")},
-            new(){ client = Clients[6], DateArrival= DateOnly.ParseExact("2024-07-01", "yyyy-mm-dd"), Period= 6, room= Rooms[6], DateDeparture =  DateOnly.ParseExact("2024-07-07", "yyyy-mm-dd")},
-            new(){ client = Clients[7], DateArrival= DateOnly.ParseExact("2024-07-10", "yyyy-mm-dd"), Period= 11, room= Rooms[7]},
-            new(){ client = Clients[8], DateArrival= DateOnly.ParseExact("2024-07-20", "yyyy-mm-dd"), Period= 8, room= Rooms[8]},
-            new(){ client = Clients[9], DateArrival= DateOnly.ParseExact("2024-08-01", "yyyy-mm-dd"), Period= 4, room= Rooms[9]},
-            new(){ client = Clients[10], DateArrival= DateOnly.ParseExact("2024-08-10", "yyyy-mm-dd"), Period= 12, room= Rooms[10]},
-            new(){ client = Clients[11], DateArrival= DateOnly.ParseExact("2024-05-15", "yyyy-mm-dd"), Period= 7, room= Rooms[3]},
-            new(){ client = Clients[12], DateArrival= DateOnly.ParseExact("2024-06-01", "yyyy-mm-dd"), Period= 3, room= Rooms[14]},
-            new(){ client = Clients[13], DateArrival= DateOnly.ParseExact("2024-06-10", "yyyy-mm-dd"), Period= 14, room= Rooms[15]},
-            new(){ client = Clients[14], DateArrival= DateOnly.ParseExact("2024-06-20", "yyyy-mm-dd"), Period= 9, room= Rooms[20], DateDeparture =  DateOnly.ParseExact("2024-06-26", "yyyy-mm-dd")},
-            new(){ client = Clients[14], DateArrival= DateOnly.ParseExact("2024-06-27", "yyyy-mm-dd"), Period= 9, room= Rooms[20]},
-            new(){ client = Clients[15], DateArrival= DateOnly.ParseExact("2024-07-01", "yyyy-mm-dd"), Period= 6, room= Rooms[16],  DateDeparture =  DateOnly.ParseExact("2024-07-07", "yyyy-mm-dd")},
-            new(){ client = Clients[15], DateArrival= DateOnly.ParseExact("2024-07-08", "yyyy-mm-dd"), Period= 12, room= Rooms[16]},
-            ];
+        Hotels = 
+        [
+            new(){Id = 0, Name = "Гостиница Москва", Address = "Новосадовая 34Э", City = "Вашингтон"},
+            new(){Id = 1, Name = "Grand Hotel", Address = "Park Avenue 123", City = "New York"},
+            new(){Id = 2, Name = "Hilton", Address = "Main Street 55", City = "Chicago"},
+            new(){Id = 3, Name = "Marriott", Address = "Sunset Boulevard 87", City = "Los Angeles"},
+            new(){Id = 4, Name = "Hyatt Regency", Address = "Lake Shore Drive 100", City = "Chicago"},
+            new(){Id = 5, Name = "Ritz-Carlton", Address = "Michigan Avenue 160", City = "Chicago"},
+        ];
+        ReservedRooms =
+        [
+            new(){ Client = Clients[0], DateArrival = new DateOnly(2024, 4, 28), Period = 10, Room = Rooms[0]},
+            new(){ Client = Clients[11], DateArrival= new DateOnly(2024, 4, 28), Period= 10, Room= Rooms[11]},
+            new(){ Client = Clients[1], DateArrival= new DateOnly(2024, 5, 5), Period= 5, Room= Rooms[1]},
+            new(){ Client = Clients[2], DateArrival= new DateOnly(2024, 5, 15), Period= 7, Room= Rooms[2], DateDeparture =  new DateOnly(2024, 5, 22)},
+            new(){ Client = Clients[3], DateArrival= new DateOnly(2024, 6, 1), Period= 3, Room= Rooms[3], DateDeparture =  new DateOnly(2024, 6, 4)},
+            new(){ Client = Clients[4], DateArrival= new DateOnly(2024, 6, 10), Period= 14, Room= Rooms[4], DateDeparture =  new DateOnly(2024, 6, 24)},
+            new(){ Client = Clients[5], DateArrival= new DateOnly(2024, 6, 20), Period= 9, Room= Rooms[5], DateDeparture =  new DateOnly(2024, 6, 29)},
+            new(){ Client = Clients[6], DateArrival= new DateOnly(2024, 7, 1), Period= 6, Room= Rooms[6], DateDeparture =  new DateOnly(2024, 7, 7)},
+            new(){ Client = Clients[7], DateArrival= new DateOnly(2024, 7, 10), Period= 11, Room= Rooms[7]},
+            new(){ Client = Clients[8], DateArrival= new DateOnly(2024, 7, 20), Period= 8, Room= Rooms[8]},
+            new(){ Client = Clients[9], DateArrival= new DateOnly(2024, 8, 1), Period= 4, Room= Rooms[9]},
+            new(){ Client = Clients[10], DateArrival= new DateOnly(2024, 8, 10), Period= 12, Room= Rooms[10]},
+            new(){ Client = Clients[11], DateArrival= new DateOnly(2024, 5, 15), Period= 7, Room= Rooms[3]},
+            new(){ Client = Clients[12], DateArrival= new DateOnly(2024, 6, 1), Period= 3, Room= Rooms[14]},
+            new(){ Client = Clients[13], DateArrival= new DateOnly(2024, 6 ,10), Period= 14, Room= Rooms[15]},
+            new(){ Client = Clients[14], DateArrival= new DateOnly(2024, 6, 20), Period= 9, Room= Rooms[20], DateDeparture =  new DateOnly(2024, 6, 26)},
+            new(){ Client = Clients[14], DateArrival= new DateOnly(2024 ,6, 27), Period= 9, Room= Rooms[20]},
+            new(){ Client = Clients[15], DateArrival= new DateOnly(2024 ,7, 1), Period= 6, Room= Rooms[16],  DateDeparture =  new DateOnly(2024, 7, 7)},
+            new(){ Client = Clients[15], DateArrival= new DateOnly(2024 ,7, 8), Period= 12, Room= Rooms[16]},
+        ];
     }
 }

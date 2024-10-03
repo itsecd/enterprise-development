@@ -1,32 +1,27 @@
 ﻿namespace HotelBookingDetails.Domain;
 
 /// <summary>
-///     Отель
+/// Отель
 /// </summary>
 public class Hotel
-
 {
     /// <summary>
-    ///     Индентификатор отеля
+    /// Идентификатор отеля
     /// </summary>
     public required int Id { get; set; }
     /// <summary>
-    ///     Название
+    /// Название
     /// </summary>
     public required string Name { get; set; }
 
     /// <summary>
-    ///     Адрес
+    /// Адрес
     /// </summary>
     public required string Address { get; set; }
 
     /// <summary>
-    ///    Город
+    /// Город
     /// </summary>
     public required string City { get; set; }
 
-    /// <summary>
-    ///     Список комнат
-    /// </summary>
-    public List<Room> Rooms { get; set; } = [];
 }

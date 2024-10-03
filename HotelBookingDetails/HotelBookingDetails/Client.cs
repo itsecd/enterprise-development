@@ -1,29 +1,26 @@
 ﻿namespace HotelBookingDetails.Domain;
 
 /// <summary>
-///     Клиент
+/// Клиент
 /// </summary>
 public class Client
 {
     /// <summary>
-    ///     Индентификатор клиента
+    /// Идентификатор клиента
     /// </summary>
-    public required int id { get; set; }
+    public required int Id { get; set; }
     /// <summary>
-    ///     Имя
+    /// Имя
     /// </summary>
     public required string FullName { get; set; }
 
     /// <summary>
-    ///     Пасспортные данные
+    /// Пасспортные данные
     /// </summary>
     public required Passport PassportData { get; set; }
 
     /// <summary>
-    ///     День рождения
+    /// День рождения
     /// </summary>
     public required DateOnly Birthday { get; set; }
 }
-
-
-

@@ -1,22 +1,22 @@
 ﻿namespace HotelBookingDetails.Domain;
 
 /// <summary>
-///     Паспорт
+/// Паспорт
 /// </summary>
 public struct Passport
 {
     /// <summary>
-    ///     Индентификатор паспорта
+    /// Идентификатор паспорта
     /// </summary>
     public required int Id { get; set; }
 
     /// <summary>
-    ///     Номер паспорта
+    /// Номер паспорта
     /// </summary>
     public required int Number { get; set; }
 
     /// <summary>
-    ///     Серия паспорта
+    /// Серия паспорта
     /// </summary>
     public required int Series { get; set; }
 }
