@@ -13,11 +13,11 @@ public class AirlineCompanyFixture
 
     public AirlineCompanyFixture()
     {
-        AirFlights = FileRreader.ReadAirFlights("Data\\airflyights.csv");
+        AirFlights = FileRreader.ReadAirFlights("Data/airflyights.csv");
 
-        Passengers = FileRreader.ReadPassengers("Data\\passengers.csv");
+        Passengers = FileRreader.ReadPassengers("Data/passengers.csv");
 
-        Planes = FileRreader.ReadPlanes("Data\\planes.csv");
+        Planes = FileRreader.ReadPlanes("Data/planes.csv");
     }
 }
 
