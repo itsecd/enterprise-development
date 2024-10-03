@@ -7,7 +7,7 @@ namespace AirlineCompany.Tests;
 /// <param name="fixture"></param>
 public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<AirlineCompanyFixture>
 {
-    private AirlineCompanyFixture _fixture = fixture;
+    private readonly AirlineCompanyFixture _fixture = fixture;
 
     /// <summary>
     ///  1) Вывести сведения о всех авиарейсах, вылетевших из указанного пункта отправления
@@ -16,8 +16,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightDepartureArrive()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
+        var flyFixture = _fixture.AirFlights;
 
         var departure = "Tokio";
         var arrive = "Dublin";
@@ -39,8 +38,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestPassenegersWeightFlight()
     {
-        var fixture = new AirlineCompanyFixture();
-        var passFixture = fixture.GetPassenegers();
+        var passFixture = _fixture.Passengers;
 
         var expected = new List<Passeneger>() { passFixture[8], passFixture[0]};
         var idFlight = 4;
@@ -63,13 +61,12 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightPassengersDate()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
+        var flyFixture = _fixture.AirFlights;
 
         var expected = new List<AirFlight>() { flyFixture[1], flyFixture[2] };
         var planeModel = "Panda 202208";
-        var departure = DateTime.Parse("2024-09-01");
-        var arrive = DateTime.Parse("2024-11-30");
+        var departure = new DateTime(2024, 9, 1);
+        var arrive = new DateTime(2024, 11, 30);
 
         var flyightPassengersDate =
             from fly in flyFixture
@@ -89,32 +86,32 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightTopPassengers()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
-        var passFixture = fixture.GetPassenegers(); 
+        var flyFixture = _fixture.AirFlights;
+        var passFixture = _fixture.Passengers;
 
-        var exprcted = new List<(AirFlight, int)>()
+        var expected = new[]
         {
-            (flyFixture[0], 3),
-            (flyFixture[2], 3),
-            (flyFixture[4], 3),
-            (flyFixture[6], 3),
-            (flyFixture[8], 3),
+            new { Fly = flyFixture[0], Count = 3 },
+            new { Fly = flyFixture[2], Count = 3 },
+            new { Fly = flyFixture[4], Count = 3 },
+            new { Fly = flyFixture[6], Count = 3 },
+            new { Fly = flyFixture[8], Count = 3 },
         };
 
         var flyightTopPassengers =
             (from fly in flyFixture
              let c = passFixture.Count(pass => pass.IdFlight == fly.Idflight)
              orderby c descending
-             select new { fly, c }).Take(5).ToList();
+             select new 
+             { 
+                 Fly = fly, 
+                 Count = c 
+             
+             }).Take(5).ToList();
 
 
         Assert.True(flyightTopPassengers.Count() != 0);
-        for (var i = 0; i < 5; i++)
-        {
-            Assert.Equal(exprcted[0], (flyightTopPassengers[0].fly, flyightTopPassengers[0].c));
-        }
-       
+        Assert.Equal(expected, flyightTopPassengers);
     }
 
 
@@ -124,8 +121,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightMinTime()
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
+        var flyFixture = _fixture.AirFlights;
 
         var flyightMinTime =
             (from fly in flyFixture
@@ -145,9 +141,8 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     [Fact]
     public void TestFlyightMaxAvrWeight() 
     {
-        var fixture = new AirlineCompanyFixture();
-        var flyFixture = fixture.GetFlights();
-        var passFixture = fixture.GetPassenegers();
+        var flyFixture = _fixture.AirFlights;
+        var passFixture = _fixture.Passengers;
 
         var departure = "Rome";
 
@@ -157,15 +152,15 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
             where fly.DeparturePoint == departure
             select new
             {
-                fly,
-                bag = pass.BaggageWeight,
+                Fly = fly,
+                Bag = pass.BaggageWeight,
             };
 
-        var maxW = flightWeight.Max(f => f.bag);
-        var avgW = flightWeight.Average(f => f.bag);
+        var maxW = flightWeight.Max(f => f.Bag);
+        var avgW = flightWeight.Average(f => f.Bag);
 
-        Assert.True(maxW.Equals((double)8.4));
-        Assert.True(avgW.Equals((double)5.8857142857142852));
+        Assert.Equal(8.4, maxW, 1e4);
+        Assert.Equal(5.8857, avgW, 1e4);
 
     }
 }

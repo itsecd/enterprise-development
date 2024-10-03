@@ -7,25 +7,22 @@ namespace AirlineCompany.Tests;
 /// Читает данные из файлов
 /// </summary>
 /// <param name="fileName"></param>
-internal class FileRreader(string fileName): IDisposable
+static class FileRreader
 {
-    private StreamReader _reader = new(fileName);
-    public List<AirFlight> ReadAirFlights()
+    public static List<AirFlight> ReadAirFlights(string filename)
     {
+        using var reader = new StreamReader(filename);
         var airFlights = new List<AirFlight>();
         ushort flyId = 0;
 
-        while(!_reader.EndOfStream)
+        while(!reader.EndOfStream)
         {
-            var airLine = _reader.ReadLine();
+            var airLine = reader.ReadLine();
             if (airLine == null || !airLine.Contains('"')) continue;
 
             var tokens = airLine.Split(';');
 
-            for (var i = 0; i < tokens.Length; i++)
-            {
-                tokens[i] = tokens[i].Trim('"');
-            }
+            tokens = tokens.Select(token => token.Trim('"')).ToArray();
 
             var flight = new AirFlight
             {
@@ -44,22 +41,20 @@ internal class FileRreader(string fileName): IDisposable
         return airFlights;
     }
 
-    public List<Passeneger> ReadPassengers()
+    public static List<Passeneger> ReadPassengers(string filename)
     {
+        using var reader = new StreamReader(filename);
         var passengers = new List<Passeneger>();
         ushort passengerId = 0;
 
-        while (!_reader.EndOfStream)
+        while (!reader.EndOfStream)
         {
-            var passengerline = _reader.ReadLine();
+            var passengerline = reader.ReadLine();
             if (passengerline == null || !passengerline.Contains('"')) continue;
 
             var tokens = passengerline.Split(';');
 
-            for (var i = 0; i < tokens.Length; i++)
-            {
-                tokens[i] = tokens[i].Trim('"');
-            }
+            tokens = tokens.Select(token => token.Trim('"')).ToArray();
 
             var passenger = new Passeneger
             {
@@ -79,23 +74,20 @@ internal class FileRreader(string fileName): IDisposable
         return passengers;
     }
 
-    //
-    public List<Plane> ReadPlanes()
+    public static List<Plane> ReadPlanes(string filename)
     {
+        using var reader = new StreamReader(filename);
         var planes = new List<Plane>();
         ushort planeId = 0;
 
-        while (!_reader.EndOfStream)
+        while (!reader.EndOfStream)
         {
-            var planeline = _reader.ReadLine();
+            var planeline = reader.ReadLine();
             if (planeline == null || !planeline.Contains('"')) continue;
 
             var tokens = planeline.Split(';');
 
-            for (var i = 0; i < tokens.Length; i++)
-            {
-                tokens[i] = tokens[i].Trim('"');
-            }
+            tokens = tokens.Select(token => token.Trim('"')).ToArray();
 
             var plane = new Plane
             {
@@ -110,10 +102,5 @@ internal class FileRreader(string fileName): IDisposable
         }
 
         return planes;
-    }
-
-    public void Dispose()
-    {
-        _reader.Dispose();
     }
 }
