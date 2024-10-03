@@ -6,7 +6,6 @@ namespace AirlineCompany.Tests;
 /// </summary>
 public class AirlineCompanyFixture
 {
-
     public List<AirFlight> AirFlights;
     public List<Passeneger> Passengers;
     public List<Plane> Planes;
@@ -20,4 +19,3 @@ public class AirlineCompanyFixture
         Planes = FileRreader.ReadPlanes("Data/planes.csv");
     }
 }
-

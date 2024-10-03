@@ -13,7 +13,7 @@ static class FileRreader
     {
         using var reader = new StreamReader(filename);
         var airFlights = new List<AirFlight>();
-        ushort flyId = 0;
+        var flyId = 0;
 
         while(!reader.EndOfStream)
         {
@@ -45,7 +45,7 @@ static class FileRreader
     {
         using var reader = new StreamReader(filename);
         var passengers = new List<Passeneger>();
-        ushort passengerId = 0;
+        var passengerId = 0;
 
         while (!reader.EndOfStream)
         {
@@ -78,7 +78,7 @@ static class FileRreader
     {
         using var reader = new StreamReader(filename);
         var planes = new List<Plane>();
-        ushort planeId = 0;
+        var planeId = 0;
 
         while (!reader.EndOfStream)
         {

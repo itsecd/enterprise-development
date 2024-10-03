@@ -26,7 +26,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
              where fly.DeparturePoint == departure && fly.ArrivalPoint == arrive
              select fly).ToList();
 
-        Assert.True(flyightDepartureArrive.Count() != 0);
+        Assert.True(flyightDepartureArrive.Count != 0);
         Assert.Equal(flyFixture[0], flyightDepartureArrive[0]);
     }
 
@@ -49,7 +49,7 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
              where pass.IdFlight == idFlight && pass.BaggageWeight == 0
              select pass).ToList();
 
-        Assert.True(passenegersWeightFlight.Count() != 0);
+        Assert.True(passenegersWeightFlight.Count != 0);
         Assert.Equal(expected, passenegersWeightFlight);
     }
 
@@ -63,19 +63,19 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
     {
         var flyFixture = _fixture.AirFlights;
 
-        var expected = new List<AirFlight>() { flyFixture[1], flyFixture[2] };
+        var expected = new List<AirFlight> { flyFixture[1], flyFixture[2] };
         var planeModel = "Panda 202208";
         var departure = new DateTime(2024, 9, 1);
         var arrive = new DateTime(2024, 11, 30);
 
         var flyightPassengersDate =
-            from fly in flyFixture
+            (from fly in flyFixture
             where fly.PlaneType == planeModel &&
             fly.Departure >= departure &&
             fly.Departure <= arrive
-            select fly;
+            select fly).ToList();
 
-        Assert.True(flyightPassengersDate.Count() != 0);
+        Assert.True(flyightPassengersDate.Count != 0);
         Assert.Equal(expected, flyightPassengersDate);
     }
 
@@ -106,11 +106,10 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
              { 
                  Fly = fly, 
                  Count = c 
-             
              }).Take(5).ToList();
 
 
-        Assert.True(flyightTopPassengers.Count() != 0);
+        Assert.True(flyightTopPassengers.Count != 0);
         Assert.Equal(expected, flyightTopPassengers);
     }
 
@@ -126,10 +125,10 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
         var flyightMinTime =
             (from fly in flyFixture
              let minTime = flyFixture.Min(pass => pass.FlyingTime)
-            where fly.FlyingTime == minTime
-            select fly).ToList();
+             where fly.FlyingTime == minTime
+             select fly).ToList();
 
-        Assert.True(flyightMinTime.Count() != 0);
+        Assert.True(flyightMinTime.Count != 0);
         Assert.Equal(flyFixture[4], flyightMinTime[0]);
     }
 
@@ -161,6 +160,5 @@ public class AirlineCompanyTest(AirlineCompanyFixture fixture): IClassFixture<Ai
 
         Assert.Equal(8.4, maxW, 1e4);
         Assert.Equal(5.8857, avgW, 1e4);
-
     }
 }
