@@ -10,7 +10,7 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
     {
         var countHotels = _dataProvider.Hotels.Select(h => h.Name).ToList();
         var expectedNumber = 6;
-        Assert.Equal(expectedNumber, countHotels.Count());
+        Assert.Equal(expectedNumber, countHotels.Count);
     }
 
     [Fact]
@@ -23,10 +23,11 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
             _dataProvider.Clients[8],
             _dataProvider.Clients[11],
         };
+        var hotelId = _dataProvider.Hotels.Where(h => h.Name == "Hilton").Select(h => h.Id).First();
         var clientInHotel = _dataProvider.ReservedRooms
             .OrderBy(r => r.Client.FullName)
             .Where(r => _dataProvider.Rooms
-            .Where(r => r.HotelId == (_dataProvider.Hotels.Where(h => h.Name == "Hilton").Select(h => h.Id).First()))
+            .Where(r => r.HotelId == hotelId)
             .Select(r => r).ToList().Contains(r.Room))
             .Select(r => r.Client)
             .ToList();
@@ -82,7 +83,7 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
     }
 
     [Fact]
-    public void returnLongLiversHotel()
+    public void ReturnLongLiversHotel()
     {
         var expecteClients = new List<Client>
         {
@@ -93,36 +94,37 @@ public class Test(HotelBookingDetailsData dataProvider) : IClassFixture<HotelBoo
 
         var longerPeriods = _dataProvider.ReservedRooms
             .GroupBy(c => c.Client)
-            .Select(c => new {
-                client = c.Key,
-                total = c.Sum(r => r.Period)
-                }).Max(c => c.total);    
+            .Select(c => new
+            {
+                Client = c.Key,
+                Total = c.Sum(r => r.Period)
+            }).Max(c => c.Total);    
 
         var clientWithLongerPer = _dataProvider.ReservedRooms
             .GroupBy(c => c.Client)
             .Select(c => new
             {
-                client = c.Key,
-                total = c.Sum(r => r.Period)
-            }).Where(c => c.total == longerPeriods).Select(c => c.client).ToList();
+                Client = c.Key,
+                Total = c.Sum(r => r.Period)
+            }).Where(c => c.Total == longerPeriods).Select(c => c.Client).ToList();
 
         Assert.Equal(expecteClients, clientWithLongerPer);
     }
 
     [Fact]
-    public void minAvgMaxCostInHotel()
+    public void MinAvgMaxCostInHotel()
     {
         var hotels = _dataProvider.Hotels.Select(h => h);
   
         var hotelCosts = hotels.Select(h => new
         {
-            hotel = (_dataProvider.Hotels.Where(hotel => hotel.Id == h.Id).Select(hotel => hotel)),
-            min = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Min(rm => rm.Cost),
-            max = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Max(rm => rm.Cost),
-            avg = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Average(rm => rm.Cost)
+            Hotel = (_dataProvider.Hotels.Where(hotel => hotel.Id == h.Id).Select(hotel => hotel)),
+            Min = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Min(rm => rm.Cost),
+            Max = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Max(rm => rm.Cost),
+            Avg = _dataProvider.Rooms.Where(r => r.HotelId == h.Id).Select(r => r).ToList().Average(rm => rm.Cost)
         }).ToList();
-        Assert.Equal(3000, hotelCosts[0].min);
-        Assert.Equal(4500.00, hotelCosts[0].avg, 2);
-        Assert.Equal(6000, hotelCosts[0].max);
+        Assert.Equal(3000, hotelCosts[0].Min);
+        Assert.Equal(4500.00, hotelCosts[0].Avg, 2);
+        Assert.Equal(6000, hotelCosts[0].Max);
     }
 }
