@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiCompany.Domain", "TaxiCompany.Domain\TaxiCompany.Domain.csproj", "{D588E771-8099-4E1E-AFE3-EAC589A97E94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiCompany.Tests", "TaxiCompany.Tests\TaxiCompany.Tests.csproj", "{30B23755-AD1A-4256-8C3A-6F14FDA2CD1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D588E771-8099-4E1E-AFE3-EAC589A97E94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D588E771-8099-4E1E-AFE3-EAC589A97E94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D588E771-8099-4E1E-AFE3-EAC589A97E94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B23755-AD1A-4256-8C3A-6F14FDA2CD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B23755-AD1A-4256-8C3A-6F14FDA2CD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B23755-AD1A-4256-8C3A-6F14FDA2CD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B23755-AD1A-4256-8C3A-6F14FDA2CD1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

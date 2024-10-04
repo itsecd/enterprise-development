@@ -16,5 +16,5 @@ public class Trip
 
     public required int AssignedClientId { get; set; }
 
-    public required int AssignedCardtId { get; set; }
+    public required int AssignedCarId { get; set; }
 }

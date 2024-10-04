@@ -1,6 +1,6 @@
 ﻿namespace TaxiCompany.Domain;
 
-internal class Car
+public class Car
 {
     public required int Id { get; set; }
 

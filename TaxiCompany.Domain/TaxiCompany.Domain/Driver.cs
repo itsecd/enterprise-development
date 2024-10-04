@@ -12,5 +12,5 @@ public class Driver
 
     public required string Address { get; set; }
 
-    public required int AssignedCard { get; set; }
+    public required int AssignedCarId { get; set; }
 }
