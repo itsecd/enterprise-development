@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build InstitutionStatistic/ --no-restore
     - name: Test
-      run: dotnet test InstitutionStatistic/InstitutionStatistic.Query.Test/InstitutionStatistic.Query.Test.csproj --no-build --verbosity normal
+      run: dotnet test InstitutionStatistic/InstitutionStatistic.Domain.Test/InstitutionStatistic.Domain.Test.csproj --no-build --verbosity normal

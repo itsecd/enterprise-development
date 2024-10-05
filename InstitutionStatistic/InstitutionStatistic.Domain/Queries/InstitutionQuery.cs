@@ -1,8 +1,8 @@
-﻿using InstitutionStatistic.Query.Enums;
-using InstitutionStatistic.Query.Models;
+﻿using InstitutionStatistic.Domain.Enums;
+using InstitutionStatistic.Domain.Models;
 
 
-namespace InstitutionStatistic.Query.Queries;
+namespace InstitutionStatistic.Domain.Queries;
 /// <summary>
 /// Запросы об университетах
 /// </summary>

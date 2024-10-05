@@ -1,6 +1,6 @@
-﻿using InstitutionStatistic.Query.Models;
+﻿using InstitutionStatistic.Domain.Models;
 
-namespace InstitutionStatistic.Query.Queries;
+namespace InstitutionStatistic.Domain.Queries;
 
 
 /// <summary>
@@ -18,11 +18,6 @@ public class SpecialityQuery : GetInfoQuery<Speciality>
     /// Получить топ 5 специальностей
     /// </summary>
     /// <returns></returns>
-    public List<Speciality> GetTopFiveSpecialities()
-    {
-        return Repository
-            .OrderByDescending(x => x.Groups.Count)
-            .Take(5)
-            .ToList();
-    }
+    public List<Speciality> GetTopFiveSpecialities() =>Repository.OrderByDescending(x => x.Groups.Count).Take(5).ToList();
+    
 }

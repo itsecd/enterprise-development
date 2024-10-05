@@ -1,8 +1,7 @@
-﻿using InstitutionStatistic.Query.Enums;
-using InstitutionStatistic.Query.Models.BaseModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using InstitutionStatistic.Domain.Enums;
+using InstitutionStatistic.Domain.Models.BaseModel;
 
-namespace InstitutionStatistic.Query.Models;
+namespace InstitutionStatistic.Domain.Models;
 
 /// <summary>
 /// Реализация ректора

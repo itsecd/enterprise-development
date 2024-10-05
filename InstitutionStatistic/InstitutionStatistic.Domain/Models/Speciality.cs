@@ -1,6 +1,6 @@
-﻿using InstitutionStatistic.Query.Models.BaseModel;
+﻿using InstitutionStatistic.Domain.Models.BaseModel;
 
-namespace InstitutionStatistic.Query.Models;
+namespace InstitutionStatistic.Domain.Models;
 
 /// <summary>
 /// Реализация сущности специальность

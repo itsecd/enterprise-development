@@ -1,17 +1,16 @@
-﻿using InstitutionStatistic.Query.Enums;
-using InstitutionStatistic.Query.Models;
-using System.Xml.Linq;
+﻿using InstitutionStatistic.Domain.Enums;
+using InstitutionStatistic.Domain.Models;
 
-namespace InstitutionStatistic.Query.Test;
+namespace InstitutionStatistic.Domain.Test;
 
 /// <summary>
 /// Базовый класс для тестов
 /// </summary>
 public class TestBase
 {
-    protected List<Institution> Institutions = new List<Institution>();
+    public List<Institution> Institutions = new List<Institution>();
 
-    protected List<Speciality> Specialities = new List<Speciality>();
+    public List<Speciality> Specialities = new List<Speciality>();
 
     /// <summary>
     /// ctor
@@ -20,9 +19,9 @@ public class TestBase
     {
 
         #region Rectors
-        var rector1 = new Rector(ScientificDegree.Candidate, AcademicRank.Docent) { Id = Guid.NewGuid(), Version = DateTime.Now, FullName = "Иванов A.Ю" };
+        var rector1 = new Rector(ScientificDegree.Candidate, AcademicRank.AssociateProfessor) { Id = Guid.NewGuid(), Version = DateTime.Now, FullName = "Иванов A.Ю" };
         var rector2 = new Rector(ScientificDegree.Doctor, AcademicRank.Professor) { Id = Guid.NewGuid(), Version = DateTime.Now, FullName = "Петров В.А" };
-        var rector3 = new Rector(ScientificDegree.Candidate, AcademicRank.Docent) { Id = Guid.NewGuid(), Version = DateTime.Now, FullName = "Сидоров Н.П" };
+        var rector3 = new Rector(ScientificDegree.Candidate, AcademicRank.AssociateProfessor) { Id = Guid.NewGuid(), Version = DateTime.Now, FullName = "Сидоров Н.П" };
         var rector4 = new Rector(ScientificDegree.Doctor, AcademicRank.Professor) { Id = Guid.NewGuid(), Version = DateTime.Now, FullName = "Бобров А.М" };
         #endregion
 
@@ -117,6 +116,7 @@ public class TestBase
         department1.Faculty = faclt1;
         department2.Faculty = faclt2;
 
+       
         department1.Groups.Add(group1);
         department2.Groups.Add(group2);
         department2.Groups.Add(group3);
@@ -189,16 +189,8 @@ public class TestBase
         speciality4.Groups.Add(group16);
         speciality5.Groups.Add(group17);
         //Добавляем институты и специальности...
-        Institutions.Add(inst1);
-        Institutions.Add(inst2);
-        Institutions.Add(inst3);
-        Institutions.Add(inst4);
-        Specialities.Add(speciality1);
-        Specialities.Add(speciality2);
-        Specialities.Add(speciality3);
-        Specialities.Add(speciality4);
-        Specialities.Add(speciality5);
-        Specialities.Add(speciality6);
+        Institutions.AddRange([inst1, inst2, inst3, inst4]);
+        Specialities.AddRange([speciality1, speciality2, speciality3, speciality4, speciality5, speciality6]);
         #endregion
     }
 }

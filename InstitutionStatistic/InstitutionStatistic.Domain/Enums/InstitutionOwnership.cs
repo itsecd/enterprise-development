@@ -1,4 +1,4 @@
-﻿namespace InstitutionStatistic.Query.Enums;
+﻿namespace InstitutionStatistic.Domain.Enums;
 
 /// <summary>
 /// Собственность учреждения

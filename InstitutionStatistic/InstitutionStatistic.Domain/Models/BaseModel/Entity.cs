@@ -1,4 +1,4 @@
-﻿namespace InstitutionStatistic.Query.Models.BaseModel;
+﻿namespace InstitutionStatistic.Domain.Models.BaseModel;
 
 /// <summary>
 /// Базовый класс для сущности

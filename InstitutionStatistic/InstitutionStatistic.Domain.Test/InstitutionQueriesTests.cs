@@ -1,19 +1,16 @@
-﻿using InstitutionStatistic.Query.Enums;
-using InstitutionStatistic.Query.Queries;
+﻿using InstitutionStatistic.Domain.Enums;
+using InstitutionStatistic.Domain.Models;
+using InstitutionStatistic.Domain.Queries;
 
-namespace InstitutionStatistic.Query.Test;
+namespace InstitutionStatistic.Domain.Test;
 
 /// <summary>
 /// тесты для проверки запросов об институтах
 /// </summary>
-public class InstitutionQueriesTests : TestBase
+public class InstitutionQueriesTests(TestBase testBase) : IClassFixture<TestBase>
 {
-    private InstitutinQuery _institutinQuery;
-
-    public InstitutionQueriesTests()
-    {
-        _institutinQuery = new InstitutinQuery(Institutions);
-    }
+    private InstitutinQuery _institutinQuery = new InstitutinQuery(testBase.Institutions);
+    private TestBase _testBase = testBase;
 
     #region Вывести информацию о выбранном вузе
     [Fact]
@@ -23,8 +20,8 @@ public class InstitutionQueriesTests : TestBase
         var pguty = "ПГУТИ";
         var notExisted = "notExisted";
 
-        Assert.Equal(_institutinQuery.GetByName(ssau), Institutions[0]);
-        Assert.Equal(_institutinQuery.GetByName(pguty), Institutions[2]);
+        Assert.Equal(_institutinQuery.GetByName(ssau), _testBase.Institutions[0]);
+        Assert.Equal(_institutinQuery.GetByName(pguty), _testBase.Institutions[2]);
         Assert.Null(_institutinQuery.GetByName(notExisted));
     }
     #endregion

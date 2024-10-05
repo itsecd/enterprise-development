@@ -1,20 +1,14 @@
-﻿using InstitutionStatistic.Query.Queries;
+﻿using InstitutionStatistic.Domain.Queries;
 
-namespace InstitutionStatistic.Query.Test;
+namespace InstitutionStatistic.Domain.Test;
 
 /// <summary>
 /// тесты для проверки запросов о специальностях
 /// </summary>
 
-public class SpecialityInfoTests: TestBase
+public class SpecialityInfoTests(TestBase testBase): IClassFixture<TestBase>
 {
-    private SpecialityQuery _specialitiesQuery;
-
-    public SpecialityInfoTests()
-    {
-        _specialitiesQuery = new SpecialityQuery(Specialities);
-    }
-
+    private SpecialityQuery _specialitiesQuery = new SpecialityQuery(testBase.Specialities);
 
     #region Вывести информацию о топ 5 популярных специальностях
     [Fact]

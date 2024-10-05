@@ -1,4 +1,4 @@
-﻿namespace InstitutionStatistic.Query.Enums;
+﻿namespace InstitutionStatistic.Domain.Enums;
 
 /// <summary>
 /// Ученое звание
@@ -8,7 +8,7 @@ public enum AcademicRank
     /// <summary>
     /// Доцент
     /// </summary>
-    Docent = 1,
+    AssociateProfessor = 1,
 
     /// <summary>
     /// Профессор
