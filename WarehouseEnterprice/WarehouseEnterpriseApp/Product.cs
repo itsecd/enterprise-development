@@ -5,23 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WarehouseEnterpriseApp
-{
-    /// <summary>
-    /// Ячейка склада
-    /// </summary>
-    public class Cell
+{/// <summary>
+ /// Товар
+ /// </summary>
+    public class Product
     {
         /// <summary>
-        /// Идентификатор ячейки
+        /// Идентификатор
         /// </summary>
         public required int Id { get; set; }
         /// <summary>
-        /// Товар
+        /// Код товара
         /// </summary>
-        public Product? Product { get; set; }
+        public required int Code { get; set; }
         /// <summary>
-        /// Количество товара в ячейке
+        /// Название
         /// </summary>
-        public required int Quantity { get; set; }
+        public required string Name { get; set; }
     }
 }
