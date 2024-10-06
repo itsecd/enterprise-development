@@ -1,4 +1,4 @@
-﻿namespace WarehouseEnterpriseApp
+﻿namespace WarehouseEnterpriceApp
 {
     /// <summary>
     /// Организация
