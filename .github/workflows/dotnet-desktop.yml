@@ -26,4 +26,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Tests
-      run: dotnet test ./TESTS/EnterpriseWarehouse.Tests.csproj --configuration Release --verbosity normal
+      run: dotnet test ./EnterpriseWarehouse.Tests/EnterpriseWarehouse.Tests.csproj --configuration Release --verbosity normal
