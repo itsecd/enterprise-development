@@ -51,7 +51,7 @@ public class TaxiCompanyFixture
         new() {Id = 6, Departure = "Komsomolskaya Street", Destination = "Pobedy Avenue", Date = new DateTime(2024, 2, 15), DrivingTime = new TimeOnly(0, 35, 22), Cost = 250, AssignedClientId = 6, AssignedCarId = 6},
         new() {Id = 7, Departure = "Central Park", Destination = "Railway Station", Date = new DateTime(2024, 12, 20), DrivingTime = new TimeOnly(0, 20, 2), Cost = 170, AssignedClientId = 7, AssignedCarId = 7},
         new() {Id = 8, Departure = "Kirova Street", Destination = "Pushkina Street", Date = new DateTime(2024, 10, 23), DrivingTime = new TimeOnly(0, 23, 13), Cost = 234, AssignedClientId = 1, AssignedCarId = 5},
-        new() {Id = 9, Departure = "Lenina Street", Destination = "Pushkina Street", Date = new DateTime(2024, 5, 23), DrivingTime = new TimeOnly(0, 13, 13), Cost = 223, AssignedClientId = 11, AssignedCarId = 7},
+        new() {Id = 9, Departure = "Lenina Street", Destination = "Pushkina Street", Date = new DateTime(2024, 5, 23), DrivingTime = new TimeOnly(0, 13, 13), Cost = 223, AssignedClientId = 11, AssignedCarId = 2},
         new() {Id = 10, Departure = "Airport Road", Destination = "City Center", Date = new DateTime(2024, 12, 02), DrivingTime = new TimeOnly(1, 55, 1), Cost = 350, AssignedClientId = 10, AssignedCarId = 3},
         new() {Id = 11, Departure = "Main Street", Destination = "City Hall", Date = new DateTime(2024, 1, 29), DrivingTime = new TimeOnly(1, 28, 28), Cost = 798, AssignedClientId = 11, AssignedCarId = 4},
         new() {Id = 12, Departure = "Shopping Mall", Destination = "Train Station", Date = new DateTime(2024, 11, 22), DrivingTime = new TimeOnly(0, 40, 45), Cost = 567, AssignedClientId = 4, AssignedCarId = 2},
