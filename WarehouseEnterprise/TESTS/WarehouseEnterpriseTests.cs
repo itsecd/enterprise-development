@@ -1,10 +1,10 @@
-﻿using WarehouseEnterpriceApp;
+﻿using WarehouseEnterpriseApp;
 
-namespace TESTS;
+namespace WarehouseEnterprise.Tests;
 
-public class EnterpriseWarehouseTest(WarehouseEnterpriceFixture fixture) : IClassFixture<WarehouseEnterpriceFixture>
+public class EnterpriseWarehouseTest(WarehouseEnterpriseFixture fixture) : IClassFixture<WarehouseEnterpriseFixture>
 {
-    private readonly WarehouseEnterpriceFixture _fixture = fixture;
+    private readonly WarehouseEnterpriseFixture _fixture = fixture;
 
     [Fact]
     public void ReturnAllProductsSortedByName()
