@@ -15,7 +15,7 @@ namespace ShopSalesManagement.Tests
         public ShopSalesManagementFixture()
         {
             /// <summary>
-            // »нициализаци€ тестовых данных дл€ товаров
+            // Initialization of test data for goods
             /// </summary>
             Products = new List<Product>
             {
@@ -24,7 +24,7 @@ namespace ShopSalesManagement.Tests
                 new Product { Id = 3, Barcode = "345678901234", ProductGroupId = 2, Name = "Eggs", Weight = 0.2m, Type = "piece", Price = 1.5m, ExpirationDate = DateTime.Today.AddDays(3) }
             };
             /// <summary>
-            // »нициализаци€ тестовых данных дл€ магазинов
+            // Initialization of test data for stores
             /// </summary>
             Stores = new List<Store>
             {
@@ -32,7 +32,7 @@ namespace ShopSalesManagement.Tests
                 new Store { Id = 2, Name = "MegaMarket", Address = "456 High St" }
             };
             /// <summary>
-            // »нициализаци€ тестовых данных дл€ покупателей
+            // Initialization of test data for customers
             /// </summary>
             Customers = new List<Customer>
             {
@@ -40,7 +40,7 @@ namespace ShopSalesManagement.Tests
                 new Customer { Id = 2, CardNumber = "123456789", FullName = "John Smith" }
             };
             /// <summary>
-            // »нициализаци€ тестовых данных дл€ продаж
+            // Initialization of test data for sales
             /// </summary>
             Sales = new List<Sale>
             {
@@ -48,7 +48,7 @@ namespace ShopSalesManagement.Tests
                 new Sale { Id = 2, SaleDate = DateTime.Today.AddDays(-2), CustomerId = 2, StoreId = 2, TotalAmount = 15.0m }
             };
             /// <summary>
-            // »нициализаци€ тестовых данных дл€ покупок
+            // Initialization of test data for purchases
             /// </summary>
             Purchases = new List<Purchase>
             {
