@@ -11,7 +11,6 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         _fixture = fixture;
     }
 
-
     [Fact]
     public void VinylRecordsInfoTest()
     {
@@ -22,13 +21,12 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         Assert.Equal(2, request);
     }
 
-
     [Fact]
     public void ProductBySeller()
     {
         var fixtureProduct = _fixture.FixtureProducts.ToList();
         var request = (from product in fixtureProduct
-                       where (product.Seller != null && product.Seller.ShopName == "StopRobot")
+                       where product.Seller is { ShopName: "StopRobot" }
                        orderby product.Price
                        select product).Count();
         Assert.Equal(3, request);

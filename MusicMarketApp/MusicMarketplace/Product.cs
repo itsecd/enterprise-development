@@ -1,6 +1,4 @@
-﻿
-
-namespace MusicMarket;
+﻿namespace MusicMarket;
 
 /// <summary>
 /// Товар.

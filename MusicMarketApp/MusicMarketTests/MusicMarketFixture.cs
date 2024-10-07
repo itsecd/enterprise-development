@@ -1,5 +1,4 @@
-﻿
-namespace MusicMarketplace.Tests;
+﻿namespace MusicMarketplace.Tests;
 
 using MusicMarket;
 using System;
