@@ -1,7 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET
+name: .NET Core Desktop
 
 on:
   push:
@@ -15,14 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
     - name: Restore dependencies
-      run: dotnet restore ./MusicMarketplace/MusicMarketplace.sln
+      run: dotnet restore ./MusicMarketApp/MusicMarketTests/MusicMarketplace.Tests.csproj
     - name: Build
-      run: dotnet build --no-restore ./MusicMarketplace/MusicMarketplace.sln
-    - name: Test
-      run: dotnet test --no-build --verbosity normal ./MusicMarketplace/MusicMarketplace.sln
+      run: dotnet build ./MusicMarketApp/MusicMarketTests/MusicMarketplace.Tests.csproj --configuration Release --no-restore
+
+    - name: Tests
+      run: dotnet test ./MusicMarketApp/MusicMarketTests/MusicMarketplace.Tests.csproj --configuration Release --verbosity normal
