@@ -1,5 +1,5 @@
 ﻿
-namespace TEST;
+namespace MusicMarketplace.Tests;
 
 using MusicMarket;
 using System;

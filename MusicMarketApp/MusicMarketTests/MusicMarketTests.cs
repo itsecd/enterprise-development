@@ -1,5 +1,4 @@
-﻿
-namespace TEST;
+﻿namespace MusicMarketplace.Tests;
 
 using System.Linq;
 
