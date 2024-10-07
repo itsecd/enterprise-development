@@ -21,9 +21,9 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ./WarehouseEnterprise/TESTS/WarehouseEnterprise.Tests.csproj
+      run: dotnet restore ./WarehouseEnterprise/WarehouseEnterprise.Tests/WarehouseEnterprise.Tests.csproj
     - name: Build
-      run: dotnet build ./WarehouseEnterprise/TESTS/WarehouseEnterprise.Tests.csproj --configuration Release --no-restore
+      run: dotnet build ./WarehouseEnterprise/WarehouseEnterprise.Tests/WarehouseEnterprise.Tests.csproj --configuration Release --no-restore
 
     - name: Tests
-      run: dotnet test ./WarehouseEnterprise/TESTS/WarehouseEnterprise.Tests.csproj --configuration Release --verbosity normal
+      run: dotnet test ./WarehouseEnterprise/WarehouseEnterprise.Tests/WarehouseEnterprise.Tests.csproj --configuration Release --verbosity normal
