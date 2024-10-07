@@ -220,11 +220,14 @@ public class MusicMarketFixture
             purchase3.Products.Add(products[5]);
             purchase4.Products.Add(products[6]);
 
-            purchase0.Date = DateTime.Parse("2023/03/12");
-            purchase1.Date = DateTime.Parse("2023/03/14");
-            purchase2.Date = DateTime.Parse("2023/03/12");
-            purchase3.Date = DateTime.Parse("2023/01/10");
-            purchase4.Date = DateTime.Parse("2023/03/11");
+            purchase0.Date = new DateTime(2023, 3, 12);
+            purchase1.Date = new DateTime(2023, 3, 14);
+            purchase2.Date = new DateTime(2023, 3, 12);
+            purchase0.Date = new DateTime(2023, 01, 10);
+            purchase0.Date = new DateTime(2023, 3, 11);
+
+
+
 
             purchases.Add(purchase0);
             purchases.Add(purchase1);
