@@ -1,4 +1,4 @@
-﻿namespace MusicMarket;
+﻿namespace MusicMarketplace;
 
 /// <summary>
 /// Покупатель.
@@ -23,21 +23,21 @@ public class Сustomer
     /// <summary>
     /// Адрес.
     /// </summary>
-    public string Adress { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
 
     /// <summary>
     /// История заказов. 
     /// </summary>
-    public List<Purchase> Purchases = new();
+    public List<Purchase> Purchases = [];
 
     public Сustomer() { }
 
-    public Сustomer(int id, string name, string country, string adress, List<Purchase> purchases)
+    public Сustomer(int id, string name, string country, string address, List<Purchase> purchases)
     {
         Id = id;
         Name = name;
         Country = country;
-        Adress = adress;
+        Address = address;
         Purchases = purchases;
     }
 }

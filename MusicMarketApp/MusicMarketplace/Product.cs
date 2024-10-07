@@ -1,4 +1,4 @@
-﻿namespace MusicMarket;
+﻿namespace MusicMarketplace;
 
 /// <summary>
 /// Товар.
@@ -11,14 +11,14 @@ public class Product
     public int Id;
 
     /// <summary>
-    /// Тип аудионосителя: диск|кассета|виниловая пластинка.
+    /// Тип аудионосителя.
     /// </summary>
-    public string TypeOfCarrier { get; set; } = string.Empty;
+    public CarrierType TypeOfCarrier { get; set; }
 
     /// <summary>
     /// Тип издания: альбом|сингл.
     /// </summary>
-    public string PublicationType { get; set; } = string.Empty;
+    public PublicationType PublicationType { get; set; }
 
     /// <summary>
     /// Исполнитель
@@ -36,14 +36,14 @@ public class Product
     public string MadeIn { get; set; } = string.Empty;
 
     /// <summary>
-    /// Cостояние аудионосителя: новое || отличное || хорошее || удовлетворительное || плохое.
+    /// Cостояние аудионосителя.
     /// </summary>
-    public string MediaStatus { get; set; } = string.Empty;
+    public MediaStatus MediaStatus { get; set; }
 
     /// <summary>
-    /// Cостояние упаковки: новое || отличное || хорошее || удовлетворительное || плохое.
+    /// Cостояние упаковки.
     /// </summary>
-    public string PackagingCondition { get; set; } = string.Empty;
+    public PackagingStatus PackagingCondition { get; set; }
 
     /// <summary>
     /// Цена
@@ -53,7 +53,7 @@ public class Product
     /// <summary>
     /// Cтатус: в продаже || продан. 
     /// </summary>
-    public string Status { get; set; } = string.Empty;
+    public ProductStatus Status { get; set; }
 
     /// <summary>
     /// Продавец
@@ -63,8 +63,8 @@ public class Product
 
     public Product() { }
 
-    public Product(int id, string typeOfCarrier, string publicationType, string creator, string name, string madeIn,
-        string mediaStatus, string packagingCondition, double price, string status, Seller seller)
+    public Product(int id, CarrierType typeOfCarrier, PublicationType publicationType, string creator, string name, string madeIn,
+        MediaStatus mediaStatus, PackagingStatus packagingCondition, double price, ProductStatus status, Seller seller)
     {
         Id = id;
         TypeOfCarrier = typeOfCarrier;
@@ -79,3 +79,56 @@ public class Product
         Seller = seller;
     }
 }
+
+/// <summary>
+/// Тип аудионосителя.
+/// </summary>
+public enum CarrierType
+{
+    Cassette,
+    Disc,
+    VinylRecord
+}
+
+/// <summary>
+/// Тип издания.
+/// </summary>
+public enum PublicationType
+{
+    Album,
+    Single
+}
+
+/// <summary>
+/// Статус товара.
+/// </summary>
+public enum ProductStatus
+{
+    Sale,
+    Sold
+}
+
+/// <summary>
+/// Состояние.
+/// </summary>
+public enum MediaStatus
+{
+    New,
+    Excellent,
+    Good,
+    Satisfactory,
+    Bad
+}
+
+/// <summary>
+/// Состояние.
+/// </summary>
+public enum PackagingStatus
+{
+    New,
+    Excellent,
+    Good,
+    Satisfactory,
+    Bad
+}
+

@@ -1,4 +1,4 @@
-﻿namespace MusicMarket;
+﻿namespace MusicMarketplace;
 
 /// <summary>
 /// Продавец.

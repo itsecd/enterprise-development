@@ -16,10 +16,11 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
     {
         var fixtureProduct = _fixture.FixtureProducts.ToList();
         var request = (from product in fixtureProduct
-                       where (product.TypeOfCarrier == "vinyl record") && (product.Status == "sold")
+                       where (product.TypeOfCarrier == CarrierType.VinylRecord) && (product.Status == ProductStatus.Sold)
                        select product).Count();
         Assert.Equal(2, request);
     }
+
 
     [Fact]
     public void ProductBySeller()
@@ -38,8 +39,9 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
     {
         var fixtureProduct = _fixture.FixtureProducts.ToList();
         var request = (from product in fixtureProduct
-                       where (product.TypeOfCarrier == "disc") && (product.Status == "sale") && (product.PublicationType == "album")
-                       && (product.Creator == "Monetochka") && (product.MediaStatus == "new" || product.MediaStatus == "excellent" || product.MediaStatus == "good")
+                       where (product.TypeOfCarrier == CarrierType.Disc) && (product.Status == ProductStatus.Sale)
+                       && (product.PublicationType == PublicationType.Album) && (product.Creator == "Monetochka")
+                       && (product.MediaStatus == MediaStatus.New || product.MediaStatus == MediaStatus.Excellent || product.MediaStatus == MediaStatus.Good)
                        select product).Count();
 
 
@@ -49,20 +51,20 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
 
 
     [Fact]
-    public void AidioCarriersInfo()
+    public void AudioCarriersInfo()
     {
         var fixtureProduct = _fixture.FixtureProducts.ToList();
 
         var request0 = (from product in fixtureProduct
-                        where (product.TypeOfCarrier == "disc") && (product.Status == "sold")
+                        where (product.TypeOfCarrier == CarrierType.Disc) && (product.Status == ProductStatus.Sold)
                         select product).Count();
 
         var request1 = (from product in fixtureProduct
-                        where (product.TypeOfCarrier == "cassette") && (product.Status == "sold")
+                        where (product.TypeOfCarrier == CarrierType.Cassette) && (product.Status == ProductStatus.Sold)
                         select product).Count();
 
         var request2 = (from product in fixtureProduct
-                        where (product.TypeOfCarrier == "vinyl record") && (product.Status == "sold")
+                        where (product.TypeOfCarrier == CarrierType.VinylRecord) && (product.Status == ProductStatus.Sold)
                         select product).Count();
 
         Assert.Equal(2, request0);
@@ -101,13 +103,10 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         Assert.Equal(7240, max);
     }
 
-
-
     [Fact]
-    public void SoldProducsInTwoWeeks()
+    public void SoldProductsInTwoWeeks()
     {
-        var now = DateTime.Now;
-
+        var now = new DateTime(2023, 3, 15);
 
         var purchases = _fixture.FixturePurchases.ToList();
 
