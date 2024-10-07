@@ -161,7 +161,7 @@ public class TaxiCompanyTests(TaxiCompanyFixture fixture) : IClassFixture<TaxiCo
         }
     }
     /// <summary>
-    /// Выводит информацию о пассажирах, совершивших максимальное число поездок за указанный период.
+    /// Выводит информацию о пассажирах, совершивших максимальное число поездок за указанный период
     /// </summary>
     [Fact]
     public void GetClientsMaxTrips()
