@@ -26,7 +26,7 @@ public class Seller
     public double Price { get; set; }
 
     /// <summary>
-    /// Список товаррв.
+    /// Список товаров.
     /// </summary>
     public List<Product> Products = new();
 

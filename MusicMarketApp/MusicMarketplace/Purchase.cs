@@ -22,7 +22,7 @@ public class Purchase
 
     public Purchase() { }
 
-    public Purchase(int id, List<Product> products, DateTime date, string customerName)
+    public Purchase(int id, List<Product> products, DateTime date)
     {
         Id = id;
         Products = products;
