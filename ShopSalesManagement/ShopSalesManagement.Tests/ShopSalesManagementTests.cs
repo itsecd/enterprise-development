@@ -1,91 +1,61 @@
-using System;
 using ShopSalesManagement.Domain;
+using System.Linq;
 using Xunit;
 
 namespace ShopSalesManagement.Tests
 {
-    public class ShopSalesManagementTests
+    public class ShopSalesManagementTests : IClassFixture<ShopSalesManagementFixture>
     {
-        [Fact]
-        public void CanCreateCustomer()
-        {
-            // Arrange
-            var customer = new Customer
-            {
-                Id = 1,
-                CardNumber = "123456789",
-                FullName = "John Doe"
-            };
+        private readonly ShopSalesManagementFixture _fixture;
 
-            // Assert
-            Assert.Equal(1, customer.Id);
-            Assert.Equal("123456789", customer.CardNumber);
-            Assert.Equal("John Doe", customer.FullName);
+        public ShopSalesManagementTests(ShopSalesManagementFixture fixture)
+        {
+            _fixture = fixture;
         }
 
         [Fact]
-        public void CanCreateProduct()
+        public void CanRetrieveAveragePriceByProductGroupForEachStore()
         {
-            // Arrange
-            var product = new Product
-            {
-                Id = 1,
-                Barcode = "0012345678905",
-                ProductGroupId = 1,
-                Name = "Milk",
-                Weight = 1.0m,
-                Type = "piece",
-                Price = 2.99m,
-                ExpirationDate = DateTime.Today.AddDays(10)
-            };
-
-            // Assert
-            Assert.Equal(1, product.Id);
-            Assert.Equal("0012345678905", product.Barcode);
-            Assert.Equal(1, product.ProductGroupId);
-            Assert.Equal("Milk", product.Name);
-            Assert.Equal(1.0m, product.Weight);
-            Assert.Equal("piece", product.Type);
-            Assert.Equal(2.99m, product.Price);
-            Assert.Equal(DateTime.Today.AddDays(10), product.ExpirationDate);
+            var averagePriceByGroup = _fixture.Products
+                .GroupBy(p => p.ProductGroupId)
+                .Select(g => new
+                {
+                    ProductGroupId = g.Key,
+                    AveragePrice = g.Average(p => p.Price)
+                })
+                .ToList();
+            Assert.Equal(2.75m, averagePriceByGroup.First(g => g.ProductGroupId == 1).AveragePrice);
+            Assert.Equal(1.5m, averagePriceByGroup.First(g => g.ProductGroupId == 2).AveragePrice);
         }
 
         [Fact]
-        public void CanCreateSale()
+        public void CanRetrieveProductsInStore()
         {
-            // Arrange
-            var sale = new Sale
-            {
-                Id = 1,
-                SaleDate = DateTime.Today,
-                CustomerId = 1,
-                StoreId = 1,
-                TotalAmount = 59.99m
-            };
-
-            // Assert
-            Assert.Equal(1, sale.Id);
-            Assert.Equal(DateTime.Today, sale.SaleDate);
-            Assert.Equal(1, sale.CustomerId);
-            Assert.Equal(1, sale.StoreId);
-            Assert.Equal(59.99m, sale.TotalAmount);
+            var storeProducts = _fixture.Products.Where(p => _fixture.Stores.Any(s => s.Id == 1)).ToList();
+            Assert.NotEmpty(storeProducts);
         }
 
         [Fact]
-        public void CanCreateStore()
+        public void CanRetrieveStoresWithTotalSalesAboveThreshold()
         {
-            // Arrange
-            var store = new Store
-            {
-                Id = 1,
-                Name = "MegaMart",
-                Address = "123 Main Street"
-            };
+            decimal threshold = 15.0m;
+            var storesAboveThreshold = _fixture.Sales
+                .GroupBy(s => s.StoreId)
+                .Where(g => g.Sum(s => s.TotalAmount) > threshold)
+                .Select(g => g.Key)
+                .ToList();
+            Assert.Contains(1, storesAboveThreshold);
+        }
 
-            // Assert
-            Assert.Equal(1, store.Id);
-            Assert.Equal("MegaMart", store.Name);
-            Assert.Equal("123 Main Street", store.Address);
+        [Fact]
+        public void CanRetrieveTop5Sales()
+        {
+            var topSales = _fixture.Sales
+                .OrderByDescending(s => s.TotalAmount)
+                .Take(5)
+                .ToList();
+            Assert.NotEmpty(topSales);
+            Assert.Equal(20.0m, topSales.First().TotalAmount);
         }
     }
 }
