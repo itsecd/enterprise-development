@@ -1,4 +1,4 @@
-﻿namespace MusicMarketplace;
+﻿namespace MusicMarketplace.Domain;
 
 /// <summary>
 /// Покупка.
@@ -13,7 +13,7 @@ public class Purchase
     /// <summary>
     /// Список товаров.
     /// </summary>
-    public List<Product> Products = new();
+    public List<Product> Products = [];
 
     /// <summary>
     /// Дата совершения покупки.
@@ -29,5 +29,4 @@ public class Purchase
         Date = date;
 
     }
-
 }

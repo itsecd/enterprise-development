@@ -1,8 +1,8 @@
-﻿namespace MusicMarketplace.Tests;
-
-using MusicMarketplace;
+﻿using MusicMarketplace.Domain;
 using System;
 using System.Collections.Generic;
+
+namespace MusicMarketplace.Tests;
 
 public class MusicMarketFixture
 {
@@ -114,16 +114,6 @@ public class MusicMarketFixture
             product6.Status = ProductStatus.Sold;
             product7.Status = ProductStatus.Sold;
 
-
-            //product0.Seller = "Muzzona";
-            //product1.Seller = "Muzzona";
-            //product2.Seller = "Muzzona";
-            //product3.Seller = "Muzzona";
-            //product4.Seller = "Skifmusic";
-            //product5.Seller = "StopRobot";
-            //product6.Seller = "StopRobot";
-            //product7.Seller = "StopRobot";
-
             product0.Seller = new Seller(0, "Muzzona", "Russia", 300);
             product1.Seller = new Seller(1, "Muzzona", "Russia", 300);
             product2.Seller = new Seller(2, "Muzzona", "Russia", 300);
@@ -182,7 +172,6 @@ public class MusicMarketFixture
             seller2.Products.Add(products[6]);
             seller2.Products.Add(products[7]);
 
-
             sellers.Add(seller0);
             sellers.Add(seller1);
             sellers.Add(seller2);
@@ -205,13 +194,11 @@ public class MusicMarketFixture
             var purchase4 = new Purchase();
             var purchase3 = new Purchase();
 
-
             purchase0.Id = 0;
             purchase1.Id = 1;
             purchase2.Id = 2;
             purchase3.Id = 3;
             purchase4.Id = 4;
-
 
             purchase0.Products.Add(products[7]);
             purchase1.Products.Add(products[3]);
@@ -225,9 +212,6 @@ public class MusicMarketFixture
             purchase0.Date = new DateTime(2023, 01, 10);
             purchase0.Date = new DateTime(2023, 3, 11);
 
-
-
-
             purchases.Add(purchase0);
             purchases.Add(purchase1);
             purchases.Add(purchase2);
@@ -236,7 +220,6 @@ public class MusicMarketFixture
             return purchases;
         }
     }
-
 
     public List<Сustomer> FixtureCustomers
     {
@@ -255,7 +238,6 @@ public class MusicMarketFixture
             customer2.Id = 2;
             customer3.Id = 3;
             customer4.Id = 4;
-
 
             customer0.Name = "Tikhonov Mark Sergeevich";
             customer1.Name = "Klimova Sofya Dmitrievna";

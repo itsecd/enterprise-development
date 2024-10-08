@@ -1,4 +1,4 @@
-﻿namespace MusicMarketplace;
+﻿namespace MusicMarketplace.Domain;
 
 /// <summary>
 /// Покупатель.

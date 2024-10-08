@@ -1,6 +1,6 @@
-﻿namespace MusicMarketplace.Tests;
+﻿using System.Linq;
 
-using System.Linq;
+namespace MusicMarketplace.Tests;
 
 public class MusicMarketTest : IClassFixture<MusicMarketFixture>
 {
@@ -21,7 +21,6 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         Assert.Equal(2, request);
     }
 
-
     [Fact]
     public void ProductBySeller()
     {
@@ -33,7 +32,6 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         Assert.Equal(3, request);
     }
 
-
     [Fact]
     public void GoodDisksInfo()
     {
@@ -41,14 +39,11 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         var request = (from product in fixtureProduct
                        where (product.TypeOfCarrier == CarrierType.Disc) && (product.Status == ProductStatus.Sale)
                        && (product.PublicationType == PublicationType.Album) && (product.Creator == "Monetochka")
-                       && (product.MediaStatus == MediaStatus.New || product.MediaStatus == MediaStatus.Excellent || product.MediaStatus == MediaStatus.Good)
+                       && product.MediaStatus is MediaStatus.New or MediaStatus.Excellent or MediaStatus.Good
                        select product).Count();
-
 
         Assert.Equal(1, request);
     }
-
-
 
     [Fact]
     public void AudioCarriersInfo()
@@ -72,7 +67,6 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         Assert.Equal(2, request2);
     }
 
-
     [Fact]
     public void TopFiveTest()
     {
@@ -88,7 +82,7 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
             select new
             {
                 customer.Id,
-                PurchaseCost = purchase.Products.Sum(product => product.Price + product.Seller?.Price)
+                PurchaseCost = purchase.Products.Sum(p => p.Price + p.Seller?.Price)
             };
         var customerAvgPurchases =
             from customerPurchase in customerPurchases
@@ -118,7 +112,6 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
                            count = purchase.Products.Count
                        }).ToList();
 
-
         var selCount = (from sel in request
                         group sel by sel.seller.ShopName into g
                         select new
@@ -130,6 +123,4 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
         Assert.Equal(1, selCount[0].count);
         Assert.Equal(1, selCount[1].count);
     }
-
-
 }
