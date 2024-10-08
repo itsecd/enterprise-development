@@ -1,7 +1,7 @@
 ﻿namespace MusicMarketplace.Domain;
 
 /// <summary>
-/// Товар.
+/// Товар. 
 /// </summary>
 public class Product
 {
