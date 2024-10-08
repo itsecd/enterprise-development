@@ -1,4 +1,4 @@
-﻿namespace WarehouseEnterpriseApp;
+﻿namespace WarehouseEnterprise.Domain;
 
 /// <summary>
 /// Ячейка склада

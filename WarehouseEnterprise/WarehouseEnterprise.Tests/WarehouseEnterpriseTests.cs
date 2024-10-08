@@ -1,4 +1,4 @@
-﻿using WarehouseEnterpriseApp;
+﻿using WarehouseEnterprise.Domain;
 
 namespace WarehouseEnterprise.Tests;
 

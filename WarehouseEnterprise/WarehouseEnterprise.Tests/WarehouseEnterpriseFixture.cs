@@ -1,4 +1,5 @@
-﻿using WarehouseEnterpriseApp;
+﻿
+using WarehouseEnterprise.Domain;
 
 namespace WarehouseEnterprise.Tests;
 
@@ -39,34 +40,34 @@ public class WarehouseEnterpriseFixture
     public List<Supply> Supplies { get; set; }
     public WarehouseEnterpriseFixture()
     {
-        Cells = new List<Cell>
-        {
-            new() { Id = 0, Product = Products[0], Quantity = 8 },
-            new() { Id = 1, Product = Products[1], Quantity = 6 },
-            new() { Id = 2, Product = Products[2], Quantity = 2 },
-            new() { Id = 3, Product = Products[3], Quantity = 15 },
-            new() { Id = 4, Product = Products[4], Quantity = 3 },
-            new() { Id = 5, Product = Products[5], Quantity = 7 },
-            new() { Id = 6, Product = Products[6], Quantity = 10 },
-            new() { Id = 7, Product = Products[7], Quantity = 20 },
-            new() { Id = 8, Product = Products[8], Quantity = 13 },
-            new() { Id = 9, Product = Products[9], Quantity = 1 },
-            new() { Id = 10, Product = Products[10], Quantity = 20 }
-        };
+        Cells =
+        [
+            new Cell { Id = 0, Product = Products[0], Quantity = 8 },
+            new Cell { Id = 1, Product = Products[1], Quantity = 6 },
+            new Cell { Id = 2, Product = Products[2], Quantity = 2 },
+            new Cell { Id = 3, Product = Products[3], Quantity = 15 },
+            new Cell { Id = 4, Product = Products[4], Quantity = 3 },
+            new Cell { Id = 5, Product = Products[5], Quantity = 7 },
+            new Cell { Id = 6, Product = Products[6], Quantity = 10 },
+            new Cell { Id = 7, Product = Products[7], Quantity = 20 },
+            new Cell { Id = 8, Product = Products[8], Quantity = 13 },
+            new Cell { Id = 9, Product = Products[9], Quantity = 1 },
+            new Cell { Id = 10, Product = Products[10], Quantity = 20 }
+        ];
 
-        Supplies = new List<Supply>
-        {
-            new() { Id = 0, Product = Products[0], Organization = Organizations[8], Quantity = 10, SupplyDate = new DateTime(2021, 5, 10) },
-            new() { Id = 1, Product = Products[1], Organization = Organizations[2], Quantity = 20, SupplyDate = new DateTime(2022, 12, 1) },
-            new() { Id = 2, Product = Products[2], Organization = Organizations[7], Quantity = 15, SupplyDate = new DateTime(2020, 8, 15) },
-            new() { Id = 3, Product = Products[3], Organization = Organizations[1], Quantity = 5, SupplyDate = new DateTime(2021, 6, 12) },
-            new() { Id = 4, Product = Products[4], Organization = Organizations[4], Quantity = 30, SupplyDate = new DateTime(2021, 10, 9) },
-            new() { Id = 5, Product = Products[5], Organization = Organizations[7], Quantity = 25, SupplyDate = new DateTime(2019, 3, 28) },
-            new() { Id = 6, Product = Products[6], Organization = Organizations[9], Quantity = 12, SupplyDate = new DateTime(2020, 4, 5) },
-            new() { Id = 7, Product = Products[7], Organization = Organizations[2], Quantity = 8, SupplyDate = new DateTime(2019, 11, 14) },
-            new() { Id = 8, Product = Products[8], Organization = Organizations[10], Quantity = 18, SupplyDate = new DateTime(2021, 7, 22) },
-            new() { Id = 9, Product = Products[9], Organization = Organizations[6], Quantity = 14, SupplyDate = new DateTime(2022, 1, 30) },
-            new() { Id = 10, Product = Products[10], Organization = Organizations[3], Quantity = 50, SupplyDate = new DateTime(2023, 3, 15) }
-        };
+        Supplies =
+        [
+            new Supply { Id = 0, Product = Products[0], Organization = Organizations[8], Quantity = 10, SupplyDate = new DateTime(2021, 5, 10) },
+            new Supply { Id = 1, Product = Products[1], Organization = Organizations[2], Quantity = 20, SupplyDate = new DateTime(2022, 12, 1) },
+            new Supply { Id = 2, Product = Products[2], Organization = Organizations[7], Quantity = 15, SupplyDate = new DateTime(2020, 8, 15) },
+            new Supply { Id = 3, Product = Products[3], Organization = Organizations[1], Quantity = 5, SupplyDate = new DateTime(2021, 6, 12) },
+            new Supply { Id = 4, Product = Products[4], Organization = Organizations[4], Quantity = 30, SupplyDate = new DateTime(2021, 10, 9) },
+            new Supply { Id = 5, Product = Products[5], Organization = Organizations[7], Quantity = 25, SupplyDate = new DateTime(2019, 3, 28) },
+            new Supply { Id = 6, Product = Products[6], Organization = Organizations[9], Quantity = 12, SupplyDate = new DateTime(2020, 4, 5) },
+            new Supply { Id = 7, Product = Products[7], Organization = Organizations[2], Quantity = 8, SupplyDate = new DateTime(2019, 11, 14) },
+            new Supply { Id = 8, Product = Products[8], Organization = Organizations[10], Quantity = 18, SupplyDate = new DateTime(2021, 7, 22) },
+            new Supply { Id = 9, Product = Products[9], Organization = Organizations[6], Quantity = 14, SupplyDate = new DateTime(2022, 1, 30) },
+            new Supply { Id = 10, Product = Products[10], Organization = Organizations[3], Quantity = 50, SupplyDate = new DateTime(2023, 3, 15) }
+        ];
     }
 }
