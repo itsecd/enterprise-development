@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicMarketplace.Tests", "MusicMarketTests\MusicMarketplace.Tests.csproj", "{5514C235-3D3F-4A31-92B4-99C1253B0A9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicMarketplace.Domain", "MusicMarketplace\MusicMarketplace.Domain.csproj", "{0F4EF031-E777-4535-AB7C-412136C9CD2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicMarketplace", "MusicMarketplace\MusicMarketplace.csproj", "{0F4EF031-E777-4535-AB7C-412136C9CD2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
