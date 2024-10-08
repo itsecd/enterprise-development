@@ -4,7 +4,7 @@
 /// Покупка.
 /// </summary>
 public class Purchase
-{
+{ 
     /// <summary>
     /// ID Покупки.
     /// </summary>
