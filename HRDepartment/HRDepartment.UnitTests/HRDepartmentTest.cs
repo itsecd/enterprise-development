@@ -1,4 +1,4 @@
-using HRDepartment.Domain;
+п»їusing HRDepartment.Domain;
 using Xunit;
 
 namespace HRDepartment.UnitTests;
@@ -12,7 +12,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 1. Тестирует вывод всех сотрудников выбранного отдела
+    /// 1. РўРµСЃС‚РёСЂСѓРµС‚ РІС‹РІРѕРґ РІСЃРµС… СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕС‚РґРµР»Р°
     /// </summary>
     [Fact]
     public void TestDisplayAllEmployees()
@@ -27,7 +27,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 2. Тестирует вывод сотрудников, работающих в нескольких отделах, упорядоченных по ФИО
+    /// 2. РўРµСЃС‚РёСЂСѓРµС‚ РІС‹РІРѕРґ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ, СЂР°Р±РѕС‚Р°СЋС‰РёС… РІ РЅРµСЃРєРѕР»СЊРєРёС… РѕС‚РґРµР»Р°С…, СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹С… РїРѕ Р¤РРћ
     /// </summary>
     [Fact]
     public void TestEmployeesInMultipleDepartments()
@@ -43,7 +43,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 3. Тестирует вывод архива об увольнениях, включающего регистрационный номер, ФИО, дату рождения, отдел, занимаемую должность
+    /// 3. РўРµСЃС‚РёСЂСѓРµС‚ РІС‹РІРѕРґ Р°СЂС…РёРІР° РѕР± СѓРІРѕР»СЊРЅРµРЅРёСЏС…, РІРєР»СЋС‡Р°СЋС‰РµРіРѕ СЂРµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ, Р¤РРћ, РґР°С‚Сѓ СЂРѕР¶РґРµРЅРёСЏ, РѕС‚РґРµР», Р·Р°РЅРёРјР°РµРјСѓСЋ РґРѕР»Р¶РЅРѕСЃС‚СЊ
     /// </summary>
     [Fact]
     public void TestArchiveOutputOnDismissals()
@@ -71,7 +71,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 4. Тестирует вывод среднего возраста сотрудников в каждом отделе
+    /// 4. РўРµСЃС‚РёСЂСѓРµС‚ РІС‹РІРѕРґ СЃСЂРµРґРЅРµРіРѕ РІРѕР·СЂР°СЃС‚Р° СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ РІ РєР°Р¶РґРѕРј РѕС‚РґРµР»Рµ
     /// </summary>
     [Fact]
     public void TestMiddleAgeConclusion()
@@ -100,7 +100,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 5. Тестирует вывод сведений о сотрудниках, получавших в прошлом году льготные профсоюзные путевки (с запросом вида путевки)
+    /// 5. РўРµСЃС‚РёСЂСѓРµС‚ РІС‹РІРѕРґ СЃРІРµРґРµРЅРёР№ Рѕ СЃРѕС‚СЂСѓРґРЅРёРєР°С…, РїРѕР»СѓС‡Р°РІС€РёС… РІ РїСЂРѕС€Р»РѕРј РіРѕРґСѓ Р»СЊРіРѕС‚РЅС‹Рµ РїСЂРѕС„СЃРѕСЋР·РЅС‹Рµ РїСѓС‚РµРІРєРё (СЃ Р·Р°РїСЂРѕСЃРѕРј РІРёРґР° РїСѓС‚РµРІРєРё)
     /// </summary>
     [Fact]
     public void TestEmployeesWithBenefits()
@@ -123,7 +123,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 6. Тестирует вывод топ 5 сотрудников, имеющих наибольших стаж работы на предприятии
+    /// 6. РўРµСЃС‚РёСЂСѓРµС‚ РІС‹РІРѕРґ С‚РѕРї 5 СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ, РёРјРµСЋС‰РёС… РЅР°РёР±РѕР»СЊС€РёС… СЃС‚Р°Р¶ СЂР°Р±РѕС‚С‹ РЅР° РїСЂРµРґРїСЂРёСЏС‚РёРё
     /// </summary>
     [Fact]
     public void TestSixthQuery()
