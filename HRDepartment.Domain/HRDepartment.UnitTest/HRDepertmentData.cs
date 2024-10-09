@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +10,7 @@ namespace HRDepartment.UnitTest;
 public class HRDepartmentData
 {
     /// <summary>
-    /// Список цехов
+    /// РЎРїРёСЃРѕРє С†РµС…РѕРІ
     /// </summary>
     public List<Workshop> Workshop
     {
@@ -20,36 +20,36 @@ public class HRDepartmentData
             {
                 new Workshop
                 {
-                    Name = "Цех 1",
+                    Name = "Р¦РµС… 1",
                     Id = 1,
                     Employees = new List<Employee>()
                 },
                 new Workshop
                 {
-                    Name = "Цех 2",
+                    Name = "Р¦РµС… 2",
                     Id = 2,
                     Employees = new List<Employee>()
                 },
                 new Workshop {
-                    Name = "Цех 3",
+                    Name = "Р¦РµС… 3",
                     Id = 3,
                     Employees = new List<Employee>()
                 },
                 new Workshop
                 {
-                    Name = "Цех 4",
+                    Name = "Р¦РµС… 4",
                     Id = 4,
                     Employees = new List<Employee>()
                 },
                 new Workshop
                 {
-                    Name = "Цех 5",
+                    Name = "Р¦РµС… 5",
                     Id = 5,
                     Employees = new List<Employee>()
                 },
                 new Workshop
                 {
-                    Name = "Цех 6",
+                    Name = "Р¦РµС… 6",
                     Id = 6,
                     Employees = new List<Employee>()
                 }
@@ -57,7 +57,7 @@ public class HRDepartmentData
         }
     }
     /// <summary>
-    /// Список отделов
+    /// РЎРїРёСЃРѕРє РѕС‚РґРµР»РѕРІ
     /// </summary>
     public List<Department> Department
     {
@@ -67,59 +67,59 @@ public class HRDepartmentData
             {
                 new Department
                 {
-                    Name = "Отдел 1",
+                    Name = "РћС‚РґРµР» 1",
                     Id = 1
                 },
                 new Department
                 {
-                    Name = "Отдел 2",
+                    Name = "РћС‚РґРµР» 2",
                     Id = 2
                 },
                 new Department
                 {
-                    Name = "Отдел 3",
+                    Name = "РћС‚РґРµР» 3",
                     Id = 3
                 },
                 new Department
                 {
-                    Name = "Отдел 4",
+                    Name = "РћС‚РґРµР» 4",
                     Id = 4
                 },
                 new Department
                 {
-                    Name = "Отдел 5",
+                    Name = "РћС‚РґРµР» 5",
                     Id = 5
                 },
                 new Department
                 {
-                    Name = "Отдел 6",
+                    Name = "РћС‚РґРµР» 6",
                     Id = 6
                 },
                 new Department
                 {
-                    Name = "Отдел 7",
+                    Name = "РћС‚РґРµР» 7",
                     Id = 7
                 },
                 new Department
                 {
-                    Name = "Отдел 8",
+                    Name = "РћС‚РґРµР» 8",
                     Id = 8
                 },
                 new Department
                 {
-                    Name = "Отдел 9",
+                    Name = "РћС‚РґРµР» 9",
                     Id = 9
                 },
                 new Department
                 {
-                    Name = "Отдел 10",
+                    Name = "РћС‚РґРµР» 10",
                     Id = 10
                 }
             };
         }
     }
     /// <summary>
-    /// Список должностей
+    /// РЎРїРёСЃРѕРє РґРѕР»Р¶РЅРѕСЃС‚РµР№
     /// </summary>
     public List<Position> Position
     {
@@ -129,7 +129,7 @@ public class HRDepartmentData
         {
             new Position
             {
-                Name = "Аналитик данных",
+                Name = "РђРЅР°Р»РёС‚РёРє РґР°РЅРЅС‹С…",
                 Id = 1,
                 DepartmentId = 1,
                 Department = null,
@@ -137,7 +137,7 @@ public class HRDepartmentData
             },
             new Position
             {
-                Name = "Фронтенд-разработчик",
+                Name = "Р¤СЂРѕРЅС‚РµРЅРґ-СЂР°Р·СЂР°Р±РѕС‚С‡РёРє",
                 Id = 2,
                 DepartmentId = 1,
                 Department = null,
@@ -145,7 +145,7 @@ public class HRDepartmentData
             },
             new Position
             {
-                Name = "Тестировщик",
+                Name = "РўРµСЃС‚РёСЂРѕРІС‰РёРє",
                 Id = 3,
                 DepartmentId = 2,
                 Department = null,
@@ -153,7 +153,7 @@ public class HRDepartmentData
             },
             new Position
             {
-                Name = "1С разработчик",
+                Name = "1РЎ СЂР°Р·СЂР°Р±РѕС‚С‡РёРє",
                 Id = 4,
                 DepartmentId = 2,
                 Department = null,
@@ -161,7 +161,7 @@ public class HRDepartmentData
             },
             new Position
             {
-                Name = "Аналитик 1С",
+                Name = "РђРЅР°Р»РёС‚РёРє 1РЎ",
                 Id = 5,
                 DepartmentId = 3,
                 Department = null,
@@ -171,7 +171,7 @@ public class HRDepartmentData
         }
     }
     /// <summary>
-    /// Список типов льгот с пустыми списками отпускных льгот
+    /// РЎРїРёСЃРѕРє С‚РёРїРѕРІ Р»СЊРіРѕС‚ СЃ РїСѓСЃС‚С‹РјРё СЃРїРёСЃРєР°РјРё РѕС‚РїСѓСЃРєРЅС‹С… Р»СЊРіРѕС‚
     /// </summary>
     public List<BenefitType> BenefitType
     {
@@ -182,26 +182,26 @@ public class HRDepartmentData
             new BenefitType
             {
                 Id = 1,
-                Name = "Льгота 1",
+                Name = "Р›СЊРіРѕС‚Р° 1",
                 EmployeeBenefits = new List<EmployeeBenefit>()
             },
             new BenefitType
             {
                 Id = 2,
-                Name = "Льгота 2",
+                Name = "Р›СЊРіРѕС‚Р° 2",
                 EmployeeBenefits = new List<EmployeeBenefit>()
             },
             new BenefitType
             {
                 Id = 3,
-                Name = "Льгота 3",
+                Name = "Р›СЊРіРѕС‚Р° 3",
                 EmployeeBenefits = new List<EmployeeBenefit>()
             }
         };
         }
     }
     /// <summary>
-    /// Список сотрудников с заполненными цехами
+    /// РЎРїРёСЃРѕРє СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ СЃ Р·Р°РїРѕР»РЅРµРЅРЅС‹РјРё С†РµС…Р°РјРё
     /// </summary>
     public List<Employee> EmployeeOnlyWorkshopFilledFixture
     {
@@ -214,18 +214,18 @@ public class HRDepartmentData
                 {
                     Id = 0,
                     RegNumber = "1234",
-                    FirstName = "Иванов",
-                    LastName = "Иван",
-                    Patronymic = "Иванович",
+                    FirstName = "РРІР°РЅРѕРІ",
+                    LastName = "РРІР°РЅ",
+                    Patronymic = "РРІР°РЅРѕРІРёС‡",
                     BirthDate = new DateTime(1978, 3, 22),
                     WorkshopId = 1,
                     Workshop = null,
                     WorkPhoneNumber = "1234567890",
                     PersonalPhoneNumber = "0987654321",
-                    Address = "г.Самара, ул.Льва Толстого д.35",
+                    Address = "Рі.РЎР°РјР°СЂР°, СѓР».Р›СЊРІР° РўРѕР»СЃС‚РѕРіРѕ Рґ.35",
                     FamilyMembersCount = 4,
                     ChildrenCount = 2,
-                    MaritalStatus = "женат",
+                    MaritalStatus = "Р¶РµРЅР°С‚",
                     EmployeePositions = new List<EmployeePosition>(),
                     EmployeeBenefits = new List<EmployeeBenefit>()
                 },
@@ -233,18 +233,18 @@ public class HRDepartmentData
                 {
                     Id = 1,
                     RegNumber = "1324",
-                    FirstName = "Петров",
-                    LastName = "Петр",
-                    Patronymic = "Пертович",
+                    FirstName = "РџРµС‚СЂРѕРІ",
+                    LastName = "РџРµС‚СЂ",
+                    Patronymic = "РџРµСЂС‚РѕРІРёС‡",
                     BirthDate = new DateTime(2000, 1, 23),
                     WorkshopId = 2,
                     Workshop = null,
                     WorkPhoneNumber = "0987654321",
                     PersonalPhoneNumber = "1234567890",
-                    Address = "г.Самара, ул.Ленина, д.47",
+                    Address = "Рі.РЎР°РјР°СЂР°, СѓР».Р›РµРЅРёРЅР°, Рґ.47",
                     FamilyMembersCount = 3,
                     ChildrenCount = 0,
-                    MaritalStatus = "холост",
+                    MaritalStatus = "С…РѕР»РѕСЃС‚",
                     EmployeePositions = new List<EmployeePosition>(),
                     EmployeeBenefits = new List<EmployeeBenefit>()
                 },
@@ -252,18 +252,18 @@ public class HRDepartmentData
                 {
                     Id = 2,
                     RegNumber = "1423",
-                    FirstName = "Воронова",
-                    LastName = "Анна",
-                    Patronymic = "Андреевна",
+                    FirstName = "Р’РѕСЂРѕРЅРѕРІР°",
+                    LastName = "РђРЅРЅР°",
+                    Patronymic = "РђРЅРґСЂРµРµРІРЅР°",
                     BirthDate = new DateTime(1978, 8, 6),
                     WorkshopId = 3,
                     Workshop = null,
                     WorkPhoneNumber = "1234567890",
                     PersonalPhoneNumber = "0987654321",
-                    Address = "г.Самара Московское шоссе, д.65",
+                    Address = "Рі.РЎР°РјР°СЂР° РњРѕСЃРєРѕРІСЃРєРѕРµ С€РѕСЃСЃРµ, Рґ.65",
                     FamilyMembersCount = 5,
                     ChildrenCount = 3,
-                    MaritalStatus = "замужем",
+                    MaritalStatus = "Р·Р°РјСѓР¶РµРј",
                     EmployeePositions = new List<EmployeePosition>(),
                     EmployeeBenefits = new List<EmployeeBenefit>()
                 },
@@ -271,18 +271,18 @@ public class HRDepartmentData
                 {
                     Id = 3,
                     RegNumber = "1243",
-                    FirstName = "Кошмал",
-                    LastName = "Светлана",
-                    Patronymic = "Игоревна",
+                    FirstName = "РљРѕС€РјР°Р»",
+                    LastName = "РЎРІРµС‚Р»Р°РЅР°",
+                    Patronymic = "РРіРѕСЂРµРІРЅР°",
                     BirthDate = new DateTime(1980, 10, 10),
                     WorkshopId = 4,
                     Workshop = null,
                     WorkPhoneNumber = "1234567890",
                     PersonalPhoneNumber = "0987654321",
-                    Address = "г. Самара, ул.Запорожская д.43А",
+                    Address = "Рі. РЎР°РјР°СЂР°, СѓР».Р—Р°РїРѕСЂРѕР¶СЃРєР°СЏ Рґ.43Рђ",
                     FamilyMembersCount = 3,
                     ChildrenCount = 1,
-                    MaritalStatus = "замужем",
+                    MaritalStatus = "Р·Р°РјСѓР¶РµРј",
                     EmployeePositions = new List<EmployeePosition>(),
                     EmployeeBenefits = new List<EmployeeBenefit>()
                 },
@@ -290,18 +290,18 @@ public class HRDepartmentData
                 {
                     Id = 4,
                     RegNumber = "1425",
-                    FirstName = "Сидоров",
-                    LastName = "Олег",
-                    Patronymic = "Евгеньевич",
+                    FirstName = "РЎРёРґРѕСЂРѕРІ",
+                    LastName = "РћР»РµРі",
+                    Patronymic = "Р•РІРіРµРЅСЊРµРІРёС‡",
                     BirthDate = new DateTime(1988, 10, 9),
                     WorkshopId = 5,
                     Workshop = null,
                     WorkPhoneNumber = "1234567890",
                     PersonalPhoneNumber = "0987654321",
-                    Address = "г. Самара, ул.Вольская д.43",
+                    Address = "Рі. РЎР°РјР°СЂР°, СѓР».Р’РѕР»СЊСЃРєР°СЏ Рґ.43",
                     FamilyMembersCount = 3,
                     ChildrenCount = 1,
-                    MaritalStatus = "женат",
+                    MaritalStatus = "Р¶РµРЅР°С‚",
                     EmployeePositions = new List<EmployeePosition>(),
                     EmployeeBenefits = new List<EmployeeBenefit>()
                 }
@@ -320,7 +320,7 @@ public class HRDepartmentData
         }
     }
     /// <summary>
-    /// Cоздает список сотрудников и позиций, а затем связывает их друг с другом
+    /// CРѕР·РґР°РµС‚ СЃРїРёСЃРѕРє СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ Рё РїРѕР·РёС†РёР№, Р° Р·Р°С‚РµРј СЃРІСЏР·С‹РІР°РµС‚ РёС… РґСЂСѓРі СЃ РґСЂСѓРіРѕРј
     /// </summary>
     public List<EmployeePosition> EmployeePosition
     {
@@ -492,7 +492,7 @@ public class HRDepartmentData
         }
     }
     /// <summary>
-    /// Список отпускных с заполненным типом льгот
+    /// РЎРїРёСЃРѕРє РѕС‚РїСѓСЃРєРЅС‹С… СЃ Р·Р°РїРѕР»РЅРµРЅРЅС‹Рј С‚РёРїРѕРј Р»СЊРіРѕС‚
     /// </summary>
     public List<EmployeeBenefit> EmployeeBenefit
     {
@@ -540,7 +540,7 @@ public class HRDepartmentData
         }
     }
     /// <summary>
-    /// Список льгот сотрудников с заполненными льготами сотрудников и отпусков
+    /// РЎРїРёСЃРѕРє Р»СЊРіРѕС‚ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ СЃ Р·Р°РїРѕР»РЅРµРЅРЅС‹РјРё Р»СЊРіРѕС‚Р°РјРё СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ Рё РѕС‚РїСѓСЃРєРѕРІ
     /// </summary>
     public List<EmployeeBenefit> EmployeeBenefitList
     {
