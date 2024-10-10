@@ -10,7 +10,7 @@ namespace HRDepartment.Domain.UnitTest;
 public class HRDepartmentData
 {
     /// <summary>
-    /// Список цехов
+    /// Список цехов.
     /// </summary>
     public List<Workshop> Workshop
     {
