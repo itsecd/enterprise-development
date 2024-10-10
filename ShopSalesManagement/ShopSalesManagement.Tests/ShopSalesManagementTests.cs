@@ -1,4 +1,5 @@
 using ShopSalesManagement.Domain;
+using Xunit;
 
 namespace ShopSalesManagement.Tests;
 
@@ -23,7 +24,7 @@ public class ShopSalesManagementTests : IClassFixture<ShopSalesManagementFixture
             })
             .ToList();
         Assert.Equal(2.75m, averagePriceByGroup.First(g => g.ProductGroupId == 1).AveragePrice);
-        Assert.Equal(3.25m, averagePriceByGroup.First(g => g.ProductGroupId == 2).AveragePrice);  
+        Assert.Equal(3.25m, averagePriceByGroup.First(g => g.ProductGroupId == 2).AveragePrice);
     }
 
     [Fact]
@@ -63,7 +64,7 @@ public class ShopSalesManagementTests : IClassFixture<ShopSalesManagementFixture
     [Fact]
     public void CanRetrieveStoresWithProductInStock()
     {
-        int productId = 1;  
+        int productId = 1;
         var storesWithProduct = _fixture.Stocks
             .Where(stock => stock.ProductId == productId && stock.Quantity > 0)
             .Join(_fixture.Stores, stock => stock.StoreId, store => store.Id, (stock, store) => store)

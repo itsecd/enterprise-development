@@ -18,7 +18,7 @@ public class ShopSalesManagementFixture
             new Product { Id = 1, Barcode = "123456789012", ProductGroupId = 1, Name = "Bread", Weight = 0.5m, Type = "piece", Price = 2.5m, ExpirationDate = DateTime.Today.AddDays(5) },
             new Product { Id = 2, Barcode = "234567890123", ProductGroupId = 1, Name = "Milk", Weight = 1.0m, Type = "piece", Price = 3.0m, ExpirationDate = DateTime.Today.AddDays(7) },
             new Product { Id = 3, Barcode = "345678901234", ProductGroupId = 2, Name = "Eggs", Weight = 0.2m, Type = "piece", Price = 1.5m, ExpirationDate = DateTime.Today.AddDays(3) },
-            new Product { Id = 4, Barcode = "456789012345", ProductGroupId = 2, Name = "Cheese", Weight = 0.5m, Type = "piece", Price = 5.0m, ExpirationDate = DateTime.Today.AddDays(-1) } 
+            new Product { Id = 4, Barcode = "456789012345", ProductGroupId = 2, Name = "Cheese", Weight = 0.5m, Type = "piece", Price = 5.0m, ExpirationDate = DateTime.Today.AddDays(-1) }
         };
         Stores = new List<Store>
         {
@@ -42,10 +42,10 @@ public class ShopSalesManagementFixture
         };
         Stocks = new List<Stock>
         {
-            new Stock { Id = 1, ProductId = 1, StoreId = 1, Quantity = 10 }, 
-            new Stock { Id = 2, ProductId = 2, StoreId = 1, Quantity = 0 },  
-            new Stock { Id = 3, ProductId = 3, StoreId = 2, Quantity = 5 },  
-            new Stock { Id = 4, ProductId = 4, StoreId = 1, Quantity = 3 }  
+            new Stock { Id = 1, ProductId = 1, StoreId = 1, Quantity = 10 },
+            new Stock { Id = 2, ProductId = 2, StoreId = 1, Quantity = 0 },
+            new Stock { Id = 3, ProductId = 3, StoreId = 2, Quantity = 5 },
+            new Stock { Id = 4, ProductId = 4, StoreId = 1, Quantity = 3 }
         };
     }
 }
