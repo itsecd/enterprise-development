@@ -25,4 +25,12 @@ public class Sale
     /// Общая сумма продажи.
     /// </summary>
     public decimal TotalAmount { get; set; }
+
+    public Sale(DateTime saleDate, int customerId, int storeId, decimal totalAmount)
+    {
+        SaleDate = saleDate;
+        CustomerId = customerId;
+        StoreId = storeId;
+        TotalAmount = totalAmount;
+    }
 }
