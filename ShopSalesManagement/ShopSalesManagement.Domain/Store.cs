@@ -12,9 +12,9 @@ public class Store
     /// <summary>
     /// Название магазина.
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
     /// <summary>
     /// Адрес магазина.
     /// </summary>
-    public required string Address { get; set; }
+    public string Address { get; set; }
 }

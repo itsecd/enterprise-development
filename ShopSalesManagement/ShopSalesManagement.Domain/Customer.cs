@@ -12,9 +12,15 @@ public class Customer
     /// <summary>
     /// Номер карты покупателя.
     /// </summary>
-    public required string CardNumber { get; set; }
+    public string CardNumber { get; set; }
     /// <summary>
     /// Полное имя покупателя.
     /// </summary>
-    public required string FullName { get; set; }
+    public string FullName { get; set; }
+   
+    public Customer(string cardNumber, string fullName)
+    {
+        CardNumber = cardNumber;
+        FullName = fullName;
+    }
 }

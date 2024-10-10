@@ -12,7 +12,7 @@ public class Product
     /// <summary>
     /// Штрих-код товара.
     /// </summary>
-    public required string Barcode { get; set; }
+    public string Barcode { get; set; }
     /// <summary>
     /// Идентификатор товарной группы.
     /// </summary>
@@ -20,7 +20,7 @@ public class Product
     /// <summary>
     /// Наименование товара.
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
     /// <summary>
     /// Вес упаковки товара.
     /// </summary>
@@ -28,7 +28,7 @@ public class Product
     /// <summary>
     /// Тип товара (штучный или развесной).
     /// </summary>
-    public required string Type { get; set; }
+    public string Type { get; set; }
     /// <summary>
     /// Цена товара.
     /// </summary>
