@@ -20,12 +20,12 @@ public class Speciality
     /// <summary>
     /// Name of the speciality.
     /// </summary>
-    /// <example>ИБАС</example>
+    /// <example>ISAS</example>
     public required string Name { get; set; }
 
     /// <summary>
     /// The faculty or department that offers this speciality.
     /// </summary>
-    /// <example>ИИК</example>
-    public required string Facility { get; set; }
+    /// <example>IIC</example>
+    public required string Faculity { get; set; }
 }

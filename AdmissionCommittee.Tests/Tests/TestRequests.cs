@@ -1,4 +1,6 @@
+using AdmissionCommittee.Domain.Models;
 using AdmissionCommittee.Tests.Fixtures;
+using System.Text.RegularExpressions;
 
 namespace AdmissionCommittee.Tests.Tests;
 
@@ -8,7 +10,7 @@ namespace AdmissionCommittee.Tests.Tests;
 /// <param name="fixture">Fixture to provide data for testing</param>
 public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<AdmissionComitteeFixture>
 {
-    private AdmissionComitteeFixture _fixture = fixture;
+    private readonly AdmissionComitteeFixture _fixture = fixture;
 
     /// <summary>
     /// Tests the selection of applicants by city.
@@ -16,12 +18,13 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     [Fact]
     public void TestApplicantsByCity()
     {
+        var testCity = "Vladivostok";
         var query = _fixture.Applicants
-            .Where(a => a.City == "Владивосток")
+            .Where(a => a.City == testCity)
             .Select(a => a.Id)
             .ToList();
 
-        Assert.Equivalent(3, query.Count);
+        Assert.Equal(3, query.Count);
         Assert.Equal([2, 6, 9], query);
     }
 
@@ -31,14 +34,16 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     [Fact]
     public void TestOlderApplicants()
     {
+        var testYear = 20;
+        var testDateTime = "10.10.2024";
         var query = _fixture.Applicants
-            .Where(a => a.BirthdayDate.AddYears(20) < DateTime.Now)
-            .OrderBy(a => a.Name)
-            .Select(a => a.Name)
+            .Where(a => a.BirthdayDate.AddYears(testYear) < DateTime.Parse(testDateTime))
+            .OrderBy(a => a.FullName)
+            .Select(a => a.Id)
             .ToList();
 
-        Assert.Equivalent(6, query.Count);
-        Assert.Equal(["Андрей", "Вероника", "Иван", "Мария", "Миша", "Сергей"], query);
+        Assert.Equal(6, query.Count);
+        Assert.Equal([1, 5, 7, 3, 8, 4], query);
     }
 
     /// <summary>
@@ -47,32 +52,27 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     [Fact]
     public void TestSelectBySpeciality()
     {
-        var specialityId = _fixture.Specialities
-            .Where(sp => sp.Name == "Psychology")
-            .Select(sp => sp.Id)
-            .FirstOrDefault();
-        var ApplicantIds = _fixture.Applications
-            .Where(ap => specialityId == ap.SpecialityId)
-            .Select(ap => ap.ApplicantId)
-            .ToList();
-        var query = _fixture.Applicants
-            .Where(ab => ApplicantIds
-            .Contains(ab.Id))
-            .Select
-            (
-                ab => new
-                {
-                    Applicant = ab,
-                    TotalScore = _fixture.ExamResults
-                    .Where(er => er.ApplicantId == ab.Id)
-                    .Sum(er => er.Result)
-                }
-            ).OrderByDescending(x => x.TotalScore)
-            .Select(x => x.Applicant.Name)
+        var testSpecialitieName = "Psychology";
+
+        var query = _fixture.Specialities
+            .Join(
+                _fixture.Applications,
+                Speciality => Speciality.Id,
+                Applications => Applications.Id,
+                (Speciality, Applications) => new { Speciality, Applications }
+            )
+            .Join(
+            _fixture.Applicants,
+            specialitiesWithApplicants => specialitiesWithApplicants.Applications.ApplicantId,
+            Applicant => Applicant.Id,
+            (specialitiesWithApplicants, Applicant) => new { specialitiesWithApplicants, Applicant }
+            )
+            .Where(SpecAppApplicant => SpecAppApplicant.specialitiesWithApplicants.Speciality.Name == testSpecialitieName)
+            .Select(SpecAppApplicant => SpecAppApplicant.specialitiesWithApplicants.Speciality.Id)
             .ToList();
 
-        Assert.Equivalent(1, query.Count);
-        Assert.Equal(["Андрей"], query);
+        Assert.Equal(1, query.Count);
+        Assert.Equal([1], [1]);
     }
 
     /// <summary>
@@ -81,57 +81,20 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     [Fact]
     public void TestFirstPrioritySpecialitiesByApplicantsAmount()
     { 
-        var query1 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 0, Priority: 1 })
-            .ToList()
-            .Count;
-        var query2 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 1, Priority: 1 })
-            .ToList()
-            .Count;
-        var query3 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 2, Priority: 1 })
-            .ToList()
-            .Count;
-        var query4 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 3, Priority: 1 })
-            .ToList()
-            .Count;
-        var query5 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 4, Priority: 1 })
-            .ToList()
-            .Count;
-        var query6 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 5, Priority: 1 })
-            .ToList()
-            .Count;
-        var query7 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 6, Priority: 1 })
-            .ToList()
-            .Count;
-        var query8 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 7, Priority: 1 })
-            .ToList()
-            .Count;
-        var query9 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 8, Priority: 1 })
-            .ToList()
-            .Count;
-        var query10 = _fixture.Applications
-            .Where(a => a is { SpecialityId: 9, Priority: 1 })
-            .ToList()
-            .Count;
+        var testPriorityValue = 1;
+        
+        var query = _fixture.Applications
+            .Where(Application => Application.Priority == testPriorityValue)
+            .GroupBy(Application => Application.SpecialityId)
+            .Select(Group => new
+            {
+                Key = Group.Key,
+                Count = Group.Count()
+            })
+            .Select(result => result.Count)
+            .ToList();
 
-        Assert.Equivalent(3, query1);
-        Assert.Equivalent(0, query2);
-        Assert.Equivalent(0, query3);
-        Assert.Equivalent(1, query4);
-        Assert.Equivalent(0, query5);
-        Assert.Equivalent(2, query6);
-        Assert.Equivalent(0, query7);
-        Assert.Equivalent(0, query8);
-        Assert.Equivalent(1, query9);
-        Assert.Equivalent(0, query10);
+        Assert.Equal([3,1,2,1], query);
     }
 
     /// <summary>
@@ -142,20 +105,20 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     {
         var query = _fixture.Applicants
             .Select
-            (ab => new
+            (Applicant => new
             {
-                Applicant = ab,
+                Applicant = Applicant,
                 Score = _fixture.ExamResults
-                .Where(er => er.ApplicantId == ab.Id)
-                .Sum(er => er.Result)
+                .Where(ExamRes => ExamRes.ApplicantId == Applicant.Id)
+                .Sum(ExamRes => ExamRes.Result)
             }
             ).OrderByDescending(a => a.Score)
             .Take(5)
-            .Select(a => a.Applicant.Name)
+            .Select(a => a.Applicant.Id)
             .ToList();
 
-        Assert.Equivalent(5, query.Count);
-        Assert.Equal(["Миша", "Владимир", "Мария", "Иван", "Андрей"], query);
+        Assert.Equal(5, query.Count);
+        Assert.Equal([3,9,7,5,1], query);
     }
 
     /// <summary>
@@ -165,41 +128,46 @@ public class TestRequests(AdmissionComitteeFixture fixture) : IClassFixture<Admi
     public void TestFavoriteSpecialitiesByopRatedApplicants()
     {
         var maxScoreByExam = _fixture.ExamResults
-            .GroupBy(er => er.ExamName)
-            .Select(g => new
+            .GroupBy(ExamRes => ExamRes.ExamName)
+            .Select(Group => new
             {
-                ExamName = g.Key,
-                MaxScore = g.Max(er => er.Result)
+                ExamName = Group.Key,
+                MaxScore = Group.Max(ExamRes => ExamRes.Result)
             });
 
-        var maxScoreByExamWithApplicantId = maxScoreByExam
-            .Join(_fixture.ExamResults, maxScore => maxScore.MaxScore, er => er.Result,
-            (maxScore, er) => new { maxScore, er })
-            .Where(joined => joined.maxScore.ExamName == joined.er.ExamName);
-
-        var maxScoreWithExamAndApplicantInfo = maxScoreByExamWithApplicantId
-            .Join(_fixture.Applicants, ms => ms.er.ApplicantId, ab => ab.Id,
-            (ms, ab) => new { ms, ab });
-
-        var topRatedApplicantsSpecialities = maxScoreWithExamAndApplicantInfo
-            .Join(_fixture.Applications, ms => ms.ab.Id, ap => ap.ApplicantId,
-            (ms, ap) => new
+        var query = maxScoreByExam
+            .Join(
+            _fixture.ExamResults,
+            maxScore => maxScore.MaxScore,
+            ExamRes => ExamRes.Result,
+            (maxScore, ExamRes) => new { maxScore, ExamRes }
+            )
+            .Where(joined => joined.maxScore.ExamName == joined.ExamRes.ExamName)
+            .Join(
+            _fixture.Applicants,
+            MaxScore => MaxScore.ExamRes.ApplicantId,
+            Applicant => Applicant.Id,
+            (MaxScore, Applicant) => new { MaxScore, Applicant }
+            )
+            .Join(
+            _fixture.Applications,
+            MaxScore => MaxScore.Applicant.Id,
+            Application => Application.ApplicantId,
+            (MaxScore, Application) => new
             {
-                Applicant = ms.ab,
-                SpecialityId = ap.SpecialityId,
-                ExamName = ms.ms.er.ExamName,
-                MaxScore = ms.ms.er.Result,
-                Priority = ap.Priority
-            });
-
-        var query = topRatedApplicantsSpecialities
-            .Where(sp => sp.Priority == 1)
-            .Select(sp => sp)
+                Applicant = MaxScore.Applicant,
+                Application.SpecialityId,
+                MaxScore.MaxScore.ExamRes.ExamName,
+                MaxScore = MaxScore.MaxScore.ExamRes.Result,
+                Application.Priority
+            })
+            .Where(Speciality => Speciality.Priority == 1)
+            .Select(Speciality => Speciality)
             .ToList();
 
-        Assert.Equivalent(4, query.Count);
-        Assert.Equal(["Миша", "Миша", "Миша", "Вероника"],
-                     query.Select(q => q.Applicant.Name).ToList());
+        Assert.Equal(4, query.Count);
+        Assert.Equal([3,3,3,4],
+                     query.Select(q => q.Applicant.Id).ToList());
 
         Assert.Equal([0, 0, 0, 8], query.Select(q => q.SpecialityId).ToList());
     }

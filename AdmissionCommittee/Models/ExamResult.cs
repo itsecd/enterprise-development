@@ -11,14 +11,14 @@ public class ExamResult
     /// <example>1</example>
     public required int Id { get; set; }
     /// <summary>
-    /// Id of an фpplicant
+    /// Id of an Applicant
     /// </summary>
     /// <example>1</example>
     public required int ApplicantId { get; set; }
     /// <summary>
     /// Name of an exam
     /// </summary>
-    /// <example>Математика</example>
+    /// <example>Math</example>
     public required string ExamName { get; set; }
     /// <summary>
     /// Applicant's result by an exam

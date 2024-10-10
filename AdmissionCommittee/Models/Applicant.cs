@@ -10,10 +10,10 @@ public class Applicant
     /// <example>1</example>
     public required int Id { get; set; }
     /// <summary>
-    /// Applicant's name
+    /// Applicant's full name
     /// </summary>
-    /// <example>Андрей</example>
-    public required string Name { get; set; }
+    /// <example>Ivanov Ivan</example>
+    public required string FullName { get; set; }
     /// <summary>
     /// Birthday date of an applicant
     /// </summary>
@@ -22,11 +22,11 @@ public class Applicant
     /// <summary>
     /// Applicant's home country
     /// </summary>
-    /// <example>Россия</example>
+    /// <example>Russia</example>
     public required string Country { get; set; }
     /// <summary>
     /// Applicant's home city
     /// </summary>
-    /// <example>Москва</example>
+    /// <example>Moscow</example>
     public required string City { get; set; }
 }
