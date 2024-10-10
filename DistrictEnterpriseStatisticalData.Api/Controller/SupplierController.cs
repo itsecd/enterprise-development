@@ -24,7 +24,7 @@ public class SupplierController(SupplierService service): ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<SupplierDto> Post(SupplierDto supplierDto)
+    public ActionResult<SupplierDto> Post(SupplierCreateDto supplierDto)
     {
         return Ok(service.Create(supplierDto));
     }

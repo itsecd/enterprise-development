@@ -1,4 +1,4 @@
-using AutoMapper;
+using DistrictEnterpriseStatisticalData.Api;
 using DistrictEnterpriseStatisticalData.Api.Service;
 using DistrictEnterpriseStatisticalData.Domain;
 using DistrictEnterpriseStatisticalData.Domain.Repository;
@@ -11,10 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAutoMapper(typeof(Mapper));
+
 builder.Services.AddDbContext<DistrictDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddAutoMapper(typeof(Mapper));
 
 builder.Services.AddControllers();
 

@@ -24,7 +24,7 @@ public class FormOfOwnershipController(FormOfOwnershipService service): Controll
     }
 
     [HttpPost]
-    public ActionResult<FormOfOwnershipDto> Post(FormOfOwnershipDto formOfOwnershipDto)
+    public ActionResult<FormOfOwnershipDto> Post(FormOfOwnershipCreateDto formOfOwnershipDto)
     {
         return Ok(service.Create(formOfOwnershipDto));
     }

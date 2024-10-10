@@ -17,7 +17,7 @@ public class SupplierService(SupplierRepository repository, IMapper mapper)
         return mapper.Map<SupplierDto>(repository.GetById(id));
     }
 
-    public SupplierDto Create(SupplierDto enterprise)
+    public SupplierDto Create(SupplierCreateDto enterprise)
     {
         return mapper.Map<SupplierDto>(repository.Create(mapper.Map<Supplier>(enterprise)));
     }

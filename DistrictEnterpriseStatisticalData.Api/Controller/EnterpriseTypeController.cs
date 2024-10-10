@@ -24,7 +24,7 @@ public class EnterpriseTypeController(EnterpriseTypeService service): Controller
     }
 
     [HttpPost]
-    public ActionResult<EnterpriseTypeDto> Post(EnterpriseTypeDto enterpriseTypeDto)
+    public ActionResult<EnterpriseTypeDto> Post(EnterpriseTypeCreateDto enterpriseTypeDto)
     {
         return Ok(service.Create(enterpriseTypeDto));
     }

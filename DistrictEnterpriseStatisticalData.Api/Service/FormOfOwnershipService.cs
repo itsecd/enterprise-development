@@ -17,7 +17,7 @@ public class FormOfOwnershipService(FormOfOwnershipRepository repository, IMappe
         return mapper.Map<FormOfOwnershipDto>(repository.GetById(id));
     }
 
-    public FormOfOwnershipDto Create(FormOfOwnershipDto enterprise)
+    public FormOfOwnershipDto Create(FormOfOwnershipCreateDto enterprise)
     {
         return mapper.Map<FormOfOwnershipDto>(repository.Create(mapper.Map<FormOfOwnership>(enterprise)));
     }

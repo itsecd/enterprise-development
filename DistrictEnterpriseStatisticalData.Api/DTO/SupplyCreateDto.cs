@@ -2,14 +2,8 @@
 
 namespace DistrictEnterpriseStatisticalData.Api.DTO;
 
-public class SupplyDto
+public class SupplyCreateDto
 {
-    /// <summary>
-    ///     Идентификатор поставки
-    /// </summary>
-    [JsonPropertyName("supply_id")]
-    public int SupplyId { get; set; }
-
     /// <summary>
     ///     Количество поставляемого сырья
     /// </summary>
@@ -26,11 +20,11 @@ public class SupplyDto
     ///     Предприятие, которому осуществлялась поставка
     /// </summary>
     [JsonPropertyName("enterprise_registration_number")]
-    public virtual required EnterpriseDto Enterprise { get; set; }
+    public required int EnterpriseId { get; set; }
 
     /// <summary>
     ///     Поставщик
     /// </summary>
     [JsonPropertyName("supplier_id")]
-    public virtual required SupplierDto Supplier { get; set; }
+    public required int SupplierId { get; set; }
 }

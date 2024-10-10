@@ -17,7 +17,7 @@ public class EnterpriseService(EnterpriseRepository repository, IMapper mapper)
         return mapper.Map<EnterpriseDto>(repository.GetById(id));
     }
 
-    public EnterpriseDto Create(EnterpriseDto enterprise)
+    public EnterpriseDto Create(EnterpriseCreateDto enterprise)
     {
         return mapper.Map<EnterpriseDto>(repository.Create(mapper.Map<Enterprise>(enterprise)));
     }
