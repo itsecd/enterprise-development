@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MusicMarketplace.Domain;
+﻿using MusicMarketplace.Domain;
 
 namespace MusicMarketplace.Tests;
 
@@ -72,9 +71,6 @@ public class MusicMarketTest : IClassFixture<MusicMarketFixture>
     public void TopFiveTest()
     {
         var customers = _fixture.FixtureCustomers.ToList();
-        var purchases = _fixture.FixturePurchases.ToList();
-        var products = _fixture.FixtureProducts.ToList();
-        var sellers = _fixture.FixtureSellers.ToList();
 
         var customerPurchases =
             from customer in customers
