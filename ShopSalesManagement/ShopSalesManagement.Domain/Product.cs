@@ -37,4 +37,13 @@ public class Product
     /// Предельная дата хранения товара.
     /// </summary>
     public DateTime ExpirationDate { get; set; }
+
+    public Product(string barcode, string name, string type, decimal price, DateTime expirationDate)
+    {
+        Barcode = barcode;
+        Name = name;
+        Type = type;
+        Price = price;
+        ExpirationDate = expirationDate;
+    }
 }

@@ -17,4 +17,10 @@ public class Store
     /// Адрес магазина.
     /// </summary>
     public string Address { get; set; }
+    
+    public Store(string name, string address)
+    {
+        Name = name;
+        Address = address;
+    }
 }

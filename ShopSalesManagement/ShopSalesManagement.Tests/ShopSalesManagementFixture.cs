@@ -15,25 +15,25 @@ public class ShopSalesManagementFixture
     {
         Products = new List<Product>
         {
-            new Product { Id = 1, Barcode = "123456789012", ProductGroupId = 1, Name = "Bread", Weight = 0.5m, Type = "piece", Price = 2.5m, ExpirationDate = DateTime.Today.AddDays(5) },
-            new Product { Id = 2, Barcode = "234567890123", ProductGroupId = 1, Name = "Milk", Weight = 1.0m, Type = "piece", Price = 3.0m, ExpirationDate = DateTime.Today.AddDays(7) },
-            new Product { Id = 3, Barcode = "345678901234", ProductGroupId = 2, Name = "Eggs", Weight = 0.2m, Type = "piece", Price = 1.5m, ExpirationDate = DateTime.Today.AddDays(3) },
-            new Product { Id = 4, Barcode = "456789012345", ProductGroupId = 2, Name = "Cheese", Weight = 0.5m, Type = "piece", Price = 5.0m, ExpirationDate = DateTime.Today.AddDays(-1) }
+            new Product("123456789012", "Bread", "piece", 2.5m, DateTime.Today.AddDays(5)) { Id = 1, ProductGroupId = 1, Weight = 0.5m },
+            new Product("234567890123", "Milk", "piece", 3.0m, DateTime.Today.AddDays(7)) { Id = 2, ProductGroupId = 1, Weight = 1.0m },
+            new Product("345678901234", "Eggs", "piece", 1.5m, DateTime.Today.AddDays(3)) { Id = 3, ProductGroupId = 2, Weight = 0.2m },
+            new Product("456789012345", "Cheese", "piece", 5.0m, DateTime.Today.AddDays(-1)) { Id = 4, ProductGroupId = 2, Weight = 0.5m }
         };
         Stores = new List<Store>
         {
-            new Store { Id = 1, Name = "MiniMarket", Address = "123 Main St" },
-            new Store { Id = 2, Name = "MegaMarket", Address = "456 High St" }
+            new Store("MiniMarket", "123 Main St") { Id = 1 },
+            new Store("MegaMarket", "456 High St") { Id = 2 }
         };
         Customers = new List<Customer>
         {
-            new Customer { Id = 1, CardNumber = "987654321", FullName = "Jane Doe" },
-            new Customer { Id = 2, CardNumber = "123456789", FullName = "John Smith" }
+            new Customer("987654321", "Jane Doe") { Id = 1 },
+            new Customer("123456789", "John Smith") { Id = 2 }
         };
         Sales = new List<Sale>
         {
-            new Sale { Id = 1, SaleDate = DateTime.Today.AddDays(-1), CustomerId = 1, StoreId = 1, TotalAmount = 20.0m },
-            new Sale { Id = 2, SaleDate = DateTime.Today.AddDays(-2), CustomerId = 2, StoreId = 2, TotalAmount = 15.0m }
+            new Sale(DateTime.Today.AddDays(-1), 1, 1, 20.0m) { Id = 1 },
+            new Sale(DateTime.Today.AddDays(-2), 2, 2, 15.0m) { Id = 2 }
         };
         Purchases = new List<Purchase>
         {

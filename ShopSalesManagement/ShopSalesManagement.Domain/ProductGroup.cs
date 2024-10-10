@@ -13,4 +13,9 @@ public class ProductGroup
     /// Наименование товарной группы.
     /// </summary>
     public string Name { get; set; }
+
+    public ProductGroup(string name)
+    {
+        Name = name;
+    }
 }
