@@ -1,82 +1,72 @@
-﻿namespace DistrictEnterpriseStatisticalData.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DistrictEnterpriseStatisticalData.Domain.Entity;
 
 /// <summary>
 ///     Предприятие
 /// </summary>
+[Table("enterprise")]
 public class Enterprise
 {
     /// <summary>
     ///     Регистрационный номер
     /// </summary>
-    public required int RegistrationNumber { get; set; }
+    [Key]
+    public int RegistrationNumber { get; set; }
 
     /// <summary>
     ///     Тип отрасли
     /// </summary>
-    public required EnterpriseType Type { get; set; }
+    [Column("enterprise_type_id")]
+    public int EnterpriseTypeId { get; set; }
+
+    public virtual EnterpriseType Type { get; set; } = null!;
 
     /// <summary>
     ///     Наименование
     /// </summary>
+    [Column("name")]
+    [MaxLength(50)]
     public required string Name { get; set; }
 
     /// <summary>
     ///     Адрес
     /// </summary>
+    [Column("address")]
+    [MaxLength(50)]
     public required string Address { get; set; }
 
     /// <summary>
     ///     Телефон
     /// </summary>
+    [Column("phone_number")]
+    [MaxLength(11)]
     public required string PhoneNumber { get; set; }
 
     /// <summary>
     ///     Форма собственности
     /// </summary>
-    public required FormOfOwnership Form { get; set; }
+    [Column("form")]
+    public int FormId { get; set; }
+
+    public virtual FormOfOwnership Form { get; set; } = null!;
 
     /// <summary>
     ///     Количество работающих
     /// </summary>
+    [Column("employees_number")]
     public required int EmployeesNumber { get; set; }
 
     /// <summary>
     ///     Общая площадь
     /// </summary>
+    [Column("total_area")]
     public required int TotalArea { get; set; }
-
-    /// <summary>
-    ///     Поставщики
-    /// </summary>
-    public List<Supplier> Suppliers { get; set; } = [];
 
     /// <summary>
     ///     Поставки
     /// </summary>
-    public List<Supply> Supplies { get; set; } = [];
-}
-
-/// <summary>
-///     Типы предприятий
-/// </summary>
-public enum EnterpriseType
-{
-    Agriculture,
-    Transport,
-    LightIndustry,
-    HeavyIndustry,
-    Building,
-    MaterialAndTechnicalSupply
-}
-
-/// <summary>
-///     Формы собственности
-/// </summary>
-public enum FormOfOwnership
-{
-    StateFederal,
-    MunicipalUrban,
-    TOO,
-    Private,
-    JointStock
+    [Column("supplies")]
+    public virtual List<Supply> Supplies { get; set; } = [];
 }

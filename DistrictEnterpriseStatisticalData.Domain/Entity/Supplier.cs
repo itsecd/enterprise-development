@@ -1,27 +1,29 @@
-﻿namespace DistrictEnterpriseStatisticalData.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DistrictEnterpriseStatisticalData.Domain.Entity;
 
 /// <summary>
 ///     Поставщик
 /// </summary>
+[Table("supplier")]
 public class Supplier
 {
     /// <summary>
     ///     Идентификатор поставщика
     /// </summary>
-    public required int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
     /// <summary>
     ///     Имя поставщика
     /// </summary>
+    [Column("name")]
+    [MaxLength(50)]
     public required string Name { get; set; }
-
-    /// <summary>
-    ///     Список предприятий, которым осуществляется поставка
-    /// </summary>
-    public List<Enterprise> Enterprises { get; set; } = [];
 
     /// <summary>
     ///     Список поставок
     /// </summary>
-    public List<Supply> Supplies { get; set; } = [];
+    public virtual List<Supply> Supplies { get; set; } = [];
 }
