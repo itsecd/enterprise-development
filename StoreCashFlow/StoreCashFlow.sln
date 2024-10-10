@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCashFlow.Domain", "Sto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCashFlow.Tests", "StoreCashFlow.Tests\StoreCashFlow.Tests.csproj", "{8634784B-03F6-4EFA-8D21-369F22056D67}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCashFlow.Api", "StoreCashFlow.Api\StoreCashFlow.Api.csproj", "{D8DA7F50-2519-4A07-91E6-14ED320DF1CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreCashFlow.Memory", "StoreCashFlow.Memory\StoreCashFlow.Memory.csproj", "{4907FC40-A4A0-40FE-BDA8-2BD598D7F167}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{8634784B-03F6-4EFA-8D21-369F22056D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8634784B-03F6-4EFA-8D21-369F22056D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8634784B-03F6-4EFA-8D21-369F22056D67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8DA7F50-2519-4A07-91E6-14ED320DF1CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DA7F50-2519-4A07-91E6-14ED320DF1CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DA7F50-2519-4A07-91E6-14ED320DF1CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DA7F50-2519-4A07-91E6-14ED320DF1CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4907FC40-A4A0-40FE-BDA8-2BD598D7F167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4907FC40-A4A0-40FE-BDA8-2BD598D7F167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4907FC40-A4A0-40FE-BDA8-2BD598D7F167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4907FC40-A4A0-40FE-BDA8-2BD598D7F167}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
