@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DistrictEnterpriseStatisticalData.Domain;
 
+/// <summary>
+/// Контекст базы данных
+/// </summary>
+/// <param name="options">Опции для подключения к базе данных</param>
 public class DistrictDbContext(DbContextOptions<DistrictDbContext> options) : DbContext(options)
 {
     public DbSet<Enterprise> Enterprise { get; set; }

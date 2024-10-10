@@ -2,6 +2,9 @@
 
 namespace DistrictEnterpriseStatisticalData.Api.DTO;
 
+/// <summary>
+/// DTO предприятия
+/// </summary>
 public class EnterpriseDto
 {
     /// <summary>

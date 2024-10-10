@@ -3,18 +3,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DistrictEnterpriseStatisticalData.Domain.Repository;
 
+/// <summary>
+/// Класс для осуществления запросов к базе данных к таблице поставщиков
+/// </summary>
 public class SupplierRepository(DistrictDbContext districtDbContext)
 {
+    /// <summary>
+    /// Получение всех поставщиков
+    /// </summary>
     public IEnumerable<Supplier> GetAll()
     {
         return districtDbContext.Supplier;
     }
 
+    /// <summary>
+    /// Получение поставщика по идентификатору
+    /// </summary>
     public Supplier? GetById(int id)
     {
         return districtDbContext.Supplier.Find(id);
     }
 
+    /// <summary>
+    /// Создание поставщика
+    /// </summary>
     public Supplier Create(Supplier supplier)
     {
         var newSupplier = districtDbContext.Supplier.Add(supplier);
@@ -22,6 +34,9 @@ public class SupplierRepository(DistrictDbContext districtDbContext)
         return newSupplier.Entity;
     }
 
+    /// <summary>
+    /// Обновление информации о поставщике
+    /// </summary>
     public Supplier Update(Supplier supplier)
     {
         var newSupplier = districtDbContext.Supplier.Entry(supplier).Entity;
@@ -29,12 +44,18 @@ public class SupplierRepository(DistrictDbContext districtDbContext)
         return newSupplier;
     }
 
+    /// <summary>
+    /// Удаление поставщика
+    /// </summary>
     public void Delete(Supplier supplier)
     {
         districtDbContext.Supplier.Remove(supplier);
         districtDbContext.SaveChanges();
     }
 
+    /// <summary>
+    /// Получение информации о всех поставщиках, поставивших сырье за заданных период, упорядоченных по названию
+    /// </summary>
     public IEnumerable<Supplier> ReturnSupplyBetweenDates(DateOnly startDate, DateOnly endDate)
     {
         var suppliers = districtDbContext.Supplier
@@ -43,6 +64,9 @@ public class SupplierRepository(DistrictDbContext districtDbContext)
         return suppliers;
     }
 
+    /// <summary>
+    /// Получение информации о количестве предприятий, с которым работает каждый поставщик
+    /// </summary>
     public IEnumerable<(Supplier supplier, int enterprisesCount)> ReturnEnterprisesCountForEachSupplier()
     {
         return districtDbContext.Supply
@@ -56,6 +80,9 @@ public class SupplierRepository(DistrictDbContext districtDbContext)
             .Select(supplier => (supplier.supplier, supplier.enterpriseCount));
     }
     
+    /// <summary>
+    /// Получение информации о количестве поставщиков для каждого типа отрасли и форме собственности
+    /// </summary>
     public IEnumerable<(FormOfOwnership form, EnterpriseType type, int supplierCount)> ReturnSuppliersCountForTypeAndForm()
     {
         return districtDbContext.Enterprise
@@ -83,6 +110,9 @@ public class SupplierRepository(DistrictDbContext districtDbContext)
             .Select(s => (s.Form, s.Type, s.SupplierCount)).ToList();
     }
 
+    /// <summary>
+    /// Получение информации о поставщиках, поставивших максимальное количество товара за указанный период
+    /// </summary>
     public IEnumerable<Supplier> MaxProvidedSuppliers(DateOnly startDate, DateOnly endDate)
     {
         return districtDbContext.Supplier

@@ -9,9 +9,15 @@ namespace DistrictEnterpriseStatisticalData.Domain.Entity;
 [Table("enterprise_type")]
 public class EnterpriseType
 {
+    /// <summary>
+    /// Идентификатор
+    /// </summary>
     [Key] 
     public int Id { get; set; }
     
+    /// <summary>
+    /// Тип предприятия
+    /// </summary>
     [Column("type")]
     [MaxLength(50)]
     public required string Type { get; set; }

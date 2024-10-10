@@ -2,6 +2,9 @@
 
 namespace DistrictEnterpriseStatisticalData.Api.DTO;
 
+/// <summary>
+/// DTO для создания поставки
+/// </summary>
 public class SupplyCreateDto
 {
     /// <summary>
