@@ -15,7 +15,7 @@ jobs:
        env:
           TITLE: ${{ github.event.pull_request.title }}
        run: |
-        SUB='–õ–∞–±.'
+        SUB='À‡·.'
         for VAR in 1 2 3 4
         do
             if (echo $TITLE | grep -iqF "$SUB$VAR" )|| (echo $TITLE | grep -iqF "$SUB $VAR"); then
@@ -30,7 +30,6 @@ jobs:
                 break
             fi      
         done
-
      - name: Checking your lab number
        run: |
         if [[ $LABEL == '' ]]; then
@@ -38,7 +37,6 @@ jobs:
             exit 1
         fi
         echo Your number was parsed correctly - ${{ env.LABEL }}
-
      - name: Checking your group number
        run: |
         if [[ $GROUP == '' ]]; then
@@ -60,18 +58,17 @@ jobs:
        with:
           reviewers: "danlla"
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
      - name: Setting reviewer
        if: env.GROUP == '6412' 
        uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
        with:
           reviewers: "alxmcs" 
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
      - name: Setting reviewer
        if: env.GROUP == '6413' 
        uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
        with:
           reviewers: "kolyanch" 
           token: ${{ secrets.GITHUB_TOKEN }}
-          

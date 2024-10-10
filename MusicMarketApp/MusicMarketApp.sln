@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicMarketplace.Tests", "MusicMarketTests\MusicMarketplace.Tests.csproj", "{5514C235-3D3F-4A31-92B4-99C1253B0A9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicMarketplace.Domain", "MusicMarketplace.Domain\MusicMarketplace.Domain.csproj", "{4E931F5B-860F-4F7E-90AF-991B6D5A048D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5514C235-3D3F-4A31-92B4-99C1253B0A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5514C235-3D3F-4A31-92B4-99C1253B0A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5514C235-3D3F-4A31-92B4-99C1253B0A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5514C235-3D3F-4A31-92B4-99C1253B0A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E931F5B-860F-4F7E-90AF-991B6D5A048D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E931F5B-860F-4F7E-90AF-991B6D5A048D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E931F5B-860F-4F7E-90AF-991B6D5A048D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E931F5B-860F-4F7E-90AF-991B6D5A048D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {947E4176-373B-42EC-A34F-28279AD45661}
+	EndGlobalSection
+EndGlobal
