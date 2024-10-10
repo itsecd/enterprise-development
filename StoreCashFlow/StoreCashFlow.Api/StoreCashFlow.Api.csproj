@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StoreCashFlow.Domain\StoreCashFlow.Domain.csproj" />
-    <ProjectReference Include="..\StoreCashFlow.Memory\StoreCashFlow.Memory.csproj" />
   </ItemGroup>
 
 </Project>

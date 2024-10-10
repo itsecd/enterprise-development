@@ -14,7 +14,7 @@ public class CustomerController(CustomerService customerService) : ControllerBas
     /// Получить всех покупателей
     /// </summary>
     [HttpGet]
-    public IActionResult GetCustomers()
+    public ActionResult<IEnumerable<Customer>> GetCustomers()
     {
         return Ok(customerService.GetCustomers());
     }
@@ -23,7 +23,7 @@ public class CustomerController(CustomerService customerService) : ControllerBas
     /// Получить покупателя по идентификатору
     /// </summary>
     [HttpGet("{id}")]
-    public IActionResult GetCustomer(int id)
+    public ActionResult<Customer> GetCustomer(int id)
     {
         return Ok(customerService.GetCustomerById(id));
     }
@@ -32,7 +32,7 @@ public class CustomerController(CustomerService customerService) : ControllerBas
     /// Добавить покупателя
     /// </summary>
     [HttpPost]
-    public ActionResult AddCustomer(Customer newCustomer)
+    public ActionResult<Customer> AddCustomer(Customer newCustomer)
     {
         return Ok(customerService.AddCustomer(newCustomer));
     }
