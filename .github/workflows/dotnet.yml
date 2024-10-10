@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test HRDepartment.Domain/HRDepartment.Domain.UnitTest.csproj --no-build --verbosity normal
+      run: dotnet test HRDepartment.Domain/HRDepartment.Domain.UnitTest/HRDepartment.Domain.UnitTest.csproj --no-build --verbosity normal
