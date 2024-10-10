@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistrictEnterpriseStatistic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistrictEnterpriseStatisticalData.Domain.Test", "DistrictEnterpriseStatisticalData.Domain.Test\DistrictEnterpriseStatisticalData.Domain.Test.csproj", "{6888D7FB-DDDC-40DB-AD2C-4BC7D6162E87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistrictEnterpriseStatisticalData.Api", "DistrictEnterpriseStatisticalData.Api\DistrictEnterpriseStatisticalData.Api.csproj", "{8C10DED9-2FF0-4923-AB00-7AA18541E6D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6888D7FB-DDDC-40DB-AD2C-4BC7D6162E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6888D7FB-DDDC-40DB-AD2C-4BC7D6162E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6888D7FB-DDDC-40DB-AD2C-4BC7D6162E87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C10DED9-2FF0-4923-AB00-7AA18541E6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C10DED9-2FF0-4923-AB00-7AA18541E6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C10DED9-2FF0-4923-AB00-7AA18541E6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C10DED9-2FF0-4923-AB00-7AA18541E6D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
