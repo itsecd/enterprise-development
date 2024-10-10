@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopSalesManagement", "ShopSalesManagement\ShopSalesManagement.csproj", "{221C4409-7497-48F8-AB1F-22155D3DEF2D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopSalesManagement.Tests", "ShopSalesManagement.Tests\ShopSalesManagement.Tests.csproj", "{13622DF9-EE52-4BE7-9DDE-C219DA2F1484}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopSalesManagement.Domain", "ShopSalesManagement.Domain\ShopSalesManagement.Domain.csproj", "{448EDBA9-228E-4C24-82E9-261EE4F54ECE}"

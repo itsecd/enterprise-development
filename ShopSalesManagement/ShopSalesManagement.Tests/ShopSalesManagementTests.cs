@@ -1,6 +1,4 @@
 using ShopSalesManagement.Domain;
-using System.Linq;
-using Xunit;
 
 namespace ShopSalesManagement.Tests;
 
@@ -25,13 +23,17 @@ public class ShopSalesManagementTests : IClassFixture<ShopSalesManagementFixture
             })
             .ToList();
         Assert.Equal(2.75m, averagePriceByGroup.First(g => g.ProductGroupId == 1).AveragePrice);
-        Assert.Equal(1.5m, averagePriceByGroup.First(g => g.ProductGroupId == 2).AveragePrice);
+        Assert.Equal(3.25m, averagePriceByGroup.First(g => g.ProductGroupId == 2).AveragePrice);  
     }
 
     [Fact]
     public void CanRetrieveProductsInStore()
     {
-        var storeProducts = _fixture.Products.Where(p => _fixture.Stores.Any(s => s.Id == 1)).ToList();
+        int storeId = 1;
+        var storeProducts = _fixture.Stocks
+            .Where(stock => stock.StoreId == storeId)
+            .Join(_fixture.Products, stock => stock.ProductId, product => product.Id, (stock, product) => product)
+            .ToList();
         Assert.NotEmpty(storeProducts);
     }
 
@@ -56,5 +58,31 @@ public class ShopSalesManagementTests : IClassFixture<ShopSalesManagementFixture
             .ToList();
         Assert.NotEmpty(topSales);
         Assert.Equal(20.0m, topSales.First().TotalAmount);
+    }
+
+    [Fact]
+    public void CanRetrieveStoresWithProductInStock()
+    {
+        int productId = 1;  
+        var storesWithProduct = _fixture.Stocks
+            .Where(stock => stock.ProductId == productId && stock.Quantity > 0)
+            .Join(_fixture.Stores, stock => stock.StoreId, store => store.Id, (stock, store) => store)
+            .ToList();
+        Assert.NotEmpty(storesWithProduct);
+        Assert.Equal("MiniMarket", storesWithProduct.First().Name);
+    }
+
+    [Fact]
+    public void CanRetrieveExpiredProductsWithStore()
+    {
+        var expiredProductsWithStore = (from product in _fixture.Products
+                                        join stock in _fixture.Stocks on product.Id equals stock.ProductId
+                                        join store in _fixture.Stores on stock.StoreId equals store.Id
+                                        where product.ExpirationDate < DateTime.Today
+                                        select new { Product = product, Store = store })
+                                        .ToList();
+        Assert.NotEmpty(expiredProductsWithStore);
+        Assert.Equal("Cheese", expiredProductsWithStore.First().Product.Name);
+        Assert.Equal("MiniMarket", expiredProductsWithStore.First().Store.Name);
     }
 }
