@@ -10,7 +10,7 @@
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Номер карты покупателя.
+        /// Номер карты покупателя .
         /// </summary>
         public string CardNumber { get; set; }
         /// <summary>
