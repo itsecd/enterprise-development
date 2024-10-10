@@ -27,7 +27,7 @@ public class HRDepartmentTest : IClassFixture<HRDepartmentData>
     }
 
     /// <summary>
-    /// 2. Тестирует вывод сотрудников, работающих в нескольких отделах, упорядоченных по ФИО
+    /// 2. Тестирует вывод сотрудников, работающих в нескольких отделах, упорядоченных по ФИО.
     /// </summary>
     [Fact]
     public void TestEmployeesInMultipleDepartments()
