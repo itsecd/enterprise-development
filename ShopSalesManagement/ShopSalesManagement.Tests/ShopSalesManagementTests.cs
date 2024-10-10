@@ -1,5 +1,4 @@
 using ShopSalesManagement.Domain;
-using Xunit;
 
 namespace ShopSalesManagement.Tests;
 
