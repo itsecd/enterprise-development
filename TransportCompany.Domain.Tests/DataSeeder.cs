@@ -65,15 +65,15 @@ public static class DataSeeder
 
     public static List<Trip> GetTrips(List<VehicleModels> models, List<Driver> drivers, List<Client> clients) => new()
     {
-        new Trip { DriverId = 0, VehicleId = 0, ClientId = 0, Date = DateTime.Now.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
-        new Trip { DriverId = 1, VehicleId = 1, ClientId = 1, Date = DateTime.Now.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
-        new Trip { DriverId = 2, VehicleId = 2, ClientId = 2, Date = DateTime.Now.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
-        new Trip { DriverId = 3, VehicleId = 3, ClientId = 3, Date = DateTime.Now.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
-        new Trip { DriverId = 4, VehicleId = 4, ClientId = 4, Date = DateTime.Now.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
-        new Trip { DriverId = 5, VehicleId = 5, ClientId = 5, Date = DateTime.Now.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
-        new Trip { DriverId = 6, VehicleId = 6, ClientId = 6, Date = DateTime.Now.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
-        new Trip { DriverId = 7, VehicleId = 7, ClientId = 7, Date = DateTime.Now.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
-        new Trip { DriverId = 8, VehicleId = 8, ClientId = 8, Date = DateTime.Now.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
-        new Trip { DriverId = 9, VehicleId = 9, ClientId = 9, Date = DateTime.Now.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
+        new Trip { Id = 0, DriverId = 0, VehicleId = 0, ClientId = 0, Date = DateTime.Now.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
+        new Trip { Id = 1, DriverId = 1, VehicleId = 1, ClientId = 1, Date = DateTime.Now.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
+        new Trip { Id = 2, DriverId = 2, VehicleId = 2, ClientId = 2, Date = DateTime.Now.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
+        new Trip { Id = 3, DriverId = 3, VehicleId = 3, ClientId = 3, Date = DateTime.Now.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
+        new Trip { Id = 4, DriverId = 4, VehicleId = 4, ClientId = 4, Date = DateTime.Now.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
+        new Trip { Id = 5, DriverId = 5, VehicleId = 5, ClientId = 5, Date = DateTime.Now.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
+        new Trip { Id = 6, DriverId = 6, VehicleId = 6, ClientId = 6, Date = DateTime.Now.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
+        new Trip { Id = 7, DriverId = 7, VehicleId = 7, ClientId = 7, Date = DateTime.Now.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
+        new Trip { Id = 8, DriverId = 8, VehicleId = 8, ClientId = 8, Date = DateTime.Now.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
+        new Trip { Id = 9, DriverId = 9, VehicleId = 9, ClientId = 9, Date = DateTime.Now.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
     };
 }
