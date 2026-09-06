@@ -1,4 +1,4 @@
-namespace TransportCompany.Domain.Entitites;
+namespace TransportCompany.Domain.Entities;
 
 public class Vehicle
 { 
