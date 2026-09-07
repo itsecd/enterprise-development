@@ -4,12 +4,18 @@
 ### Детали
 В рамках первой лабораторной работы необходимо подготовить структуру классов, описывающих предметную область, определяемую в задании. В каждом из заданий присутствует часть, связанная с обработкой данных, представленная в разделе «Unit-тесты». Данную часть необходимо реализовать в виде unit-тестов: подготовить тестовые данные, выполнить запрос с использованием LINQ, проверить результаты.    
 
-Вариант: 63.
-Тема: транспортная компания.
+Вариант: **63**.
+
+Тема: **транспортная компания**.
 
 ### Выполнение
-Архитектура:
-- TransportCompany.Domain.Entities - сущности (Client, Driver, Trip, Vehicle, VehicleModel).
-- TransportCompany.Domain.Enums - перечисления (BodyType, DrivingLicence, TripStatus).
-- TransportCompany.Domain.Tests.DataSeeder - генератор данных
-- TransportCompany.Domain.Tests.QueriesTest - выполнение заданий и юнит-тесты.
+Архитектура:    
+- `TransportCompany.Domain.Entities` - сущности (`Client`, `Driver`, `Trip`, `Vehicle`, `VehicleModel`).
+- `TransportCompany.Domain.Enums` - перечисления (`BodyType`, `DrivingLicence`, `TripStatus`).
+- `TransportCompany.Domain.Tests.DataSeeder` - генератор данных
+- `TransportCompany.Domain.Tests.QueriesTest` - выполнение заданий и юнит-тесты.
+
+### Запуск
+```bash
+dotnet test
+```
