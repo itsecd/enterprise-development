@@ -51,8 +51,6 @@ public class QueriesTest
     [Fact]
     public void GetVehiclesByTripStatus()
     {
-        var expectedIds = new HashSet<int> {0, 4, 8, 9};
-
         var tripStatus = TripStatus.InTransit;
 
         var resultVehicles = _trips
@@ -60,7 +58,10 @@ public class QueriesTest
             .Select(t => t.Id)
             .ToHashSet();
         
-        Assert.All(expectedIds, (id) => resultVehicles.Contains(id));
+        Assert.Contains(0, resultVehicles);
+        Assert.Contains(4, resultVehicles);
+        Assert.Contains(8, resultVehicles);
+        Assert.Contains(9, resultVehicles);
     }
 
     [Fact]
