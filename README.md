@@ -20,3 +20,7 @@
 ```bash
 dotnet test
 ```
+
+### Результаты
+Тесты:
+<img width="445" height="161" alt="image" src="https://github.com/user-attachments/assets/78e8443e-f456-4e45-8d27-c0bc35bc998e" />
