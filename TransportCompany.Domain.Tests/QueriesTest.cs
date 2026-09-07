@@ -114,6 +114,6 @@ public class QueriesTest
         Assert.True(topClients.Count() <= 5);
 
         Assert.Equal(4, topClients.First().Client?.Id);
-        Assert.Equal(22000m, topClients.First().TotalCost);+
+        Assert.Equal(22000m, topClients.First().TotalCost);
     }
 }
