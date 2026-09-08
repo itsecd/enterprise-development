@@ -186,7 +186,7 @@ public static class DataSeeder
                 f => f.IndexFaker + 1)
             .RuleFor(
                 x => x.LicensePlate,
-                f => $"{f.Random.String2(3, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")}{f.Random.Int(100,999)}")
+                f => $"{f.Random.String2(3, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")}{f.Random.Int(100, 999)}")
             .RuleFor(
                 x => x.Brand,
                 f => f.Vehicle.Manufacturer())
@@ -227,10 +227,14 @@ public static class DataSeeder
                     .ClientId)
             .RuleFor(
                 x => x.AdmissionDate,
-                f => f.Date.Past(1))
+                f => f.Random.Bool()
+                    ? f.Date.Recent(20)
+                    : f.Date.Past(1))
             .RuleFor(
                 x => x.ReleaseDate,
-                f => f.Date.Recent());
+                (f, order) =>
+                    order.AdmissionDate.AddDays(
+                        f.Random.Int(1, 7)));
 
 
         var orders = orderFaker.Generate(20);
