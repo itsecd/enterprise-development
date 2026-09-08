@@ -128,5 +128,111 @@ public static class DataSeeder
 
     private static void CreateOrders(AutoServiceContext context)
     {
+        var orderFaker = new Faker<RepairOrder>()
+            .RuleFor(
+                x => x.Id,
+                f => f.IndexFaker + 1)
+            .RuleFor(
+                x => x.ClientId,
+                f => f.PickRandom(context.Clients).Id)
+            .RuleFor(
+                x => x.CarId,
+                (f, x) =>
+                    context.Cars
+                        .First(car => car.ClientId == x.ClientId)
+                        .Id)
+            .RuleFor(
+                x => x.AdmissionDate,
+                f => f.Date.Past(1))
+            .RuleFor(
+                x => x.ReleaseDate,
+                f => f.Date.Recent());
+
+
+        var orders = orderFaker.Generate(20);
+
+        foreach (var order in orders)
+        {
+            order.Client =
+                context.Clients
+                    .First(x => x.Id == order.ClientId);
+
+            order.Car =
+                context.Cars
+                    .First(x => x.Id == order.CarId);
+
+            AddMechanics(context, order);
+
+            AddWorks(context, order);
+        }
+
+        context.RepairOrders.AddRange(orders);
+    }
+
+
+    private static void AddMechanics(
+    AutoServiceContext context,
+    RepairOrder order)
+    {
+        var mechanics =
+            context.Mechanics
+                .OrderBy(_ => Guid.NewGuid())
+                .Take(2)
+                .ToList();
+
+
+        foreach (var mechanic in mechanics)
+        {
+            var orderMechanic = new OrderMechanic
+            {
+                Id = context.RepairOrders.Count + 1,
+
+                RepairOrder = order,
+
+                RepairOrderId = order.Id,
+
+                Mechanic = mechanic,
+
+                MechanicId = mechanic.Id
+            };
+
+            order.Mechanics.Add(orderMechanic);
+
+            mechanic.Orders.Add(orderMechanic);
+        }
+    }
+
+
+    private static void AddWorks(
+    AutoServiceContext context,
+    RepairOrder order)
+    {
+        var works =
+            context.WorkTypes
+                .OrderBy(_ => Guid.NewGuid())
+                .Take(3)
+                .ToList();
+
+
+        foreach (var work in works)
+        {
+            var orderWork = new OrderWork
+            {
+                Id = context.RepairOrders.Count + 1,
+
+                RepairOrder = order,
+
+                RepairOrderId = order.Id,
+
+                WorkType = work,
+
+                WorkTypeId = work.Id
+            };
+
+
+            order.Works.Add(orderWork);
+
+            work.Orders.Add(orderWork);
+        }
     }
 }
