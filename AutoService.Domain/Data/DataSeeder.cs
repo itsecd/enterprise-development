@@ -59,7 +59,10 @@ public static class DataSeeder
                 f => f.Random.Int(1, 30))
             .RuleFor(
                 x => x.Specialization,
-                f => f.PickRandom<MechanicSpecialization>());
+                f =>
+                    (MechanicSpecialization)
+                    (f.IndexFaker %
+                    Enum.GetValues<MechanicSpecialization>().Length));
 
         context.Mechanics.AddRange(
             mechanicFaker.Generate(10));
@@ -68,29 +71,110 @@ public static class DataSeeder
 
     private static void CreateWorkTypes(AutoServiceContext context)
     {
-        var workFaker = new Faker<WorkType>()
-            .RuleFor(
-                x => x.Id,
-                f => f.IndexFaker + 1)
-            .RuleFor(
-                x => x.Name,
-                f => f.Commerce.ProductName())
-            .RuleFor(
-                x => x.Category,
-                f => f.PickRandom<WorkCategory>())
-            .RuleFor(
-                x => x.Cost,
-                f => f.Random.Decimal(500, 50000))
-            .RuleFor(
-                x => x.Duration,
-                f => TimeSpan.FromHours(
-                    f.Random.Int(1, 8)))
-            .RuleFor(
-                x => x.Description,
-                f => f.Lorem.Sentence());
+        var works = new List<WorkType>
+        {
+            new()
+            {
+                Id = 1,
+                Name = "Oil And Filter Change",
+                Category = WorkCategory.Maintenance,
+                Cost = 2500,
+                Duration = TimeSpan.FromHours(1),
+                Description = "Engine Oil And Oil Filter Replacement"
+            },
 
-        context.WorkTypes.AddRange(
-            workFaker.Generate(10));
+            new()
+            {
+                Id = 2,
+                Name = "Engine Diagnostics",
+                Category = WorkCategory.Diagnostics,
+                Cost = 5000,
+                Duration = TimeSpan.FromHours(2),
+                Description = "Computerized Engine Diagnostic Testing"
+            },
+
+            new()
+            {
+                Id = 3,
+                Name = "Engine Repair",
+                Category = WorkCategory.Engine,
+                Cost = 15000,
+                Duration = TimeSpan.FromHours(6),
+                Description = "Repair Of Engine Components And Systems"
+            },
+
+            new()
+            {
+                Id = 4,
+                Name = "Clutch Replacement",
+                Category = WorkCategory.Transmission,
+                Cost = 20000,
+                Duration = TimeSpan.FromHours(6),
+                Description = "Clutch Assembly Replacement"
+            },
+
+            new()
+            {
+                Id = 5,
+                Name = "Electrical Diagnostics",
+                Category = WorkCategory.Electrical,
+                Cost = 4000,
+                Duration = TimeSpan.FromHours(2),
+                Description = "Electrical System Diagnostic And Troubleshooting"
+            },
+
+            new()
+            {
+                Id = 6,
+                Name = "Electrical Wiring Repair",
+                Category = WorkCategory.Electrical,
+                Cost = 7000,
+                Duration = TimeSpan.FromHours(3),
+                Description = "Repair And Restoration Of Electrical Wiring"
+            },
+
+            new()
+            {
+                Id = 7,
+                Name = "Body Repair",
+                Category = WorkCategory.BodyRepair,
+                Cost = 25000,
+                Duration = TimeSpan.FromHours(8),
+                Description = "Repair Of Vehicle Body Damage"
+            },
+
+            new()
+            {
+                Id = 8,
+                Name = "Routine Vehicle Maintenance",
+                Category = WorkCategory.Maintenance,
+                Cost = 8000,
+                Duration = TimeSpan.FromHours(3),
+                Description = "Scheduled Vehicle Maintenance And Inspection"
+            },
+
+            new()
+            {
+                Id = 9,
+                Name = "Engine Overhaul",
+                Category = WorkCategory.Engine,
+                Cost = 50000,
+                Duration = TimeSpan.FromHours(12),
+                Description = "Complete Engine Rebuild And Overhaul"
+            },
+
+            new()
+            {
+                Id = 10,
+                Name = "Transmission Diagnostics",
+                Category = WorkCategory.Transmission,
+                Cost = 6000,
+                Duration = TimeSpan.FromHours(2),
+                Description = "Transmission System Diagnostic And Inspection"
+            }
+        };
+
+        context.WorkTypes.AddRange(works);
     }
 
 
@@ -102,7 +186,7 @@ public static class DataSeeder
                 f => f.IndexFaker + 1)
             .RuleFor(
                 x => x.LicensePlate,
-                f => f.Vehicle.Vin())
+                f => $"{f.Random.String2(3, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")}{f.Random.Int(100,999)}")
             .RuleFor(
                 x => x.Brand,
                 f => f.Vehicle.Manufacturer())
@@ -133,14 +217,14 @@ public static class DataSeeder
                 x => x.Id,
                 f => f.IndexFaker + 1)
             .RuleFor(
-                x => x.ClientId,
-                f => f.PickRandom(context.Clients).Id)
-            .RuleFor(
                 x => x.CarId,
+                f => f.PickRandom(context.Cars).Id)
+            .RuleFor(
+                x => x.ClientId,
                 (f, x) =>
                     context.Cars
-                        .First(car => car.ClientId == x.ClientId)
-                        .Id)
+                    .First(car => car.Id == x.CarId)
+                    .ClientId)
             .RuleFor(
                 x => x.AdmissionDate,
                 f => f.Date.Past(1))
@@ -161,31 +245,65 @@ public static class DataSeeder
                 context.Cars
                     .First(x => x.Id == order.CarId);
 
+            AddWorks(context, order);
+
             AddMechanics(context, order);
 
-            AddWorks(context, order);
         }
 
         context.RepairOrders.AddRange(orders);
     }
 
 
+    private static int _orderMechanicId = 1;
+    private static int _orderWorkId = 1;
+
+
     private static void AddMechanics(
-    AutoServiceContext context,
-    RepairOrder order)
+        AutoServiceContext context,
+        RepairOrder order)
     {
+        var requiredSpecializations =
+            order.Works
+                .Select(work => work.WorkType.Category)
+                .Where(category =>
+                    Enum.TryParse<MechanicSpecialization>(
+                        category.ToString(),
+                        out _))
+                .Select(category =>
+                    (MechanicSpecialization)category)
+                .Distinct()
+                .ToList();
+
+
         var mechanics =
             context.Mechanics
-                .OrderBy(_ => Guid.NewGuid())
-                .Take(2)
+                .Where(mechanic =>
+                    requiredSpecializations
+                        .Contains(mechanic.Specialization))
+                .GroupBy(mechanic => mechanic.Specialization)
+                .Select(group =>
+                    group
+                        .OrderBy(_ => Guid.NewGuid())
+                        .First())
                 .ToList();
+
+
+        if (mechanics.Count < 2)
+        {
+            mechanics =
+                context.Mechanics
+                    .OrderBy(_ => Guid.NewGuid())
+                    .Take(2)
+                    .ToList();
+        }
 
 
         foreach (var mechanic in mechanics)
         {
             var orderMechanic = new OrderMechanic
             {
-                Id = context.RepairOrders.Count + 1,
+                Id = _orderMechanicId++,
 
                 RepairOrder = order,
 
@@ -196,6 +314,7 @@ public static class DataSeeder
                 MechanicId = mechanic.Id
             };
 
+
             order.Mechanics.Add(orderMechanic);
 
             mechanic.Orders.Add(orderMechanic);
@@ -204,8 +323,8 @@ public static class DataSeeder
 
 
     private static void AddWorks(
-    AutoServiceContext context,
-    RepairOrder order)
+        AutoServiceContext context,
+        RepairOrder order)
     {
         var works =
             context.WorkTypes
@@ -218,7 +337,7 @@ public static class DataSeeder
         {
             var orderWork = new OrderWork
             {
-                Id = context.RepairOrders.Count + 1,
+                Id = _orderWorkId++,
 
                 RepairOrder = order,
 
