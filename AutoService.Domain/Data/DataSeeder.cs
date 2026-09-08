@@ -270,15 +270,19 @@ public static class DataSeeder
         var requiredSpecializations =
             order.Works
                 .Select(work => work.WorkType.Category)
-                .Where(category =>
-                    Enum.TryParse<MechanicSpecialization>(
-                        category.ToString(),
-                        out _))
-                .Select(category =>
-                    (MechanicSpecialization)category)
+                .Where(category => category != WorkCategory.Maintenance)
+                .Select(category => category switch
+                {
+                    WorkCategory.Engine => MechanicSpecialization.Engine,
+                    WorkCategory.Transmission => MechanicSpecialization.Transmission,
+                    WorkCategory.Electrical => MechanicSpecialization.Electrical,
+                    WorkCategory.Diagnostics => MechanicSpecialization.Diagnostics,
+                    WorkCategory.BodyRepair => MechanicSpecialization.BodyRepair,
+                    _ => throw new InvalidOperationException(
+                        $"Unsupported work category: {category}")
+                })
                 .Distinct()
                 .ToList();
-
 
         var mechanics =
             context.Mechanics
@@ -292,16 +296,19 @@ public static class DataSeeder
                         .First())
                 .ToList();
 
-
-        if (mechanics.Count < 2)
+        if (order.Works.Any(work =>
+                work.WorkType.Category == WorkCategory.Maintenance))
         {
-            mechanics =
+            var randomMechanic =
                 context.Mechanics
                     .OrderBy(_ => Guid.NewGuid())
-                    .Take(2)
-                    .ToList();
-        }
+                    .First();
 
+            if (!mechanics.Any(mechanic => mechanic.Id == randomMechanic.Id))
+            {
+                mechanics.Add(randomMechanic);
+            }
+        }
 
         foreach (var mechanic in mechanics)
         {
@@ -317,7 +324,6 @@ public static class DataSeeder
 
                 MechanicId = mechanic.Id
             };
-
 
             order.Mechanics.Add(orderMechanic);
 
