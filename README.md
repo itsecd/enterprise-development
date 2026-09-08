@@ -118,4 +118,4 @@ dotnet test
 ```
 
 ## Результаты
-![Результаты тестов](pic/Screenshot 2026-09-09 024249.png)
+![Результаты тестов](pic/Screenshot.png)
