@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CarWash.Domain/CarWash.Domain.csproj" Id="7efe5a3c-30eb-46b4-a23d-c68d7bb46750" />
+  <Project Path="CarWash.Tests/CarWash.Tests.csproj" />
+</Solution>
