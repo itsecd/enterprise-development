@@ -19,17 +19,17 @@ public class Order
     /// <summary>
     /// Идентификатор клиента, оформившего заказ
     /// </summary>
-    public int CustomerId { get; set; }
+    public int Customer? { get; set; }
 
     /// <summary>
     /// Идентификатор ресторана, готового исполнить заказ
     /// </summary>
-    public int RestaurantId { get; set; }
+    public int Restaurant? { get; set; }
 
     /// <summary>
     /// Идентификатор назначенного курьера (null, если курьер еще не назначен)
     /// </summary>
-    public int? CourierId { get; set; }
+    public int? Courier? { get; set; }
 
     /// <summary>
     /// Адрес доставки заказа
