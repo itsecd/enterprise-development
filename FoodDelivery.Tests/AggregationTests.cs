@@ -7,7 +7,7 @@ public class AggregationTests
     private readonly FoodDeliveryTestData _data = new();
 
     /// <summary>
-    /// Verifies that dish category statistics are calculated for the selected period
+    /// Проверяет расчет статистики по категориям блюд за выбранный период
     /// </summary>
     [Theory]
     [InlineData(1)]
@@ -33,7 +33,6 @@ public class AggregationTests
                     (5, 1, 970m, 970m),
                     (7, 2, 1210m, 2420m),
                     (8, 3, 1446.67m, 4340m)
-                    
                 ];
                 break;
 
@@ -97,7 +96,7 @@ public class AggregationTests
     }
 
     /// <summary>
-    /// Verifies that the customer with the highest total order amount is returned
+    /// Проверяет получение клиента с наибольшей общей суммой заказов
     /// </summary>
     [Fact]
     public void GetCustomerWithMaximumSpending_ShouldReturnExpectedCustomer()

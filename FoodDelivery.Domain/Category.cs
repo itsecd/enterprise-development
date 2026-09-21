@@ -1,11 +1,17 @@
 namespace FoodDelivery.Domain;
 
 /// <summary>
-/// Represents a category of dishes offered by restaurants
+/// Категория блюд
 /// </summary>
 public class Category
 {
+    /// <summary>
+    /// Уникальный идентификатор категории
+    /// </summary>
     public required int Id { get; set; }
 
+    /// <summary>
+    /// Название категории
+    /// </summary>
     public required string Name { get; set; }
 }

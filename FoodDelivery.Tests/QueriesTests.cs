@@ -7,7 +7,7 @@ public class QueriesTests
     private readonly FoodDeliveryTestData _data = new();
 
     /// <summary>
-    /// Verifies that the five restaurants with the largest number of orders are returned
+    /// Проверяет получение пяти ресторанов с наибольшим количеством заказов
     /// </summary>
     [Fact]
     public void GetTopFiveRestaurantsByOrderCount_ShouldReturnExpectedRestaurants()
@@ -35,7 +35,7 @@ public class QueriesTests
     }
 
     /// <summary>
-    /// Verifies that all orders with the minimum delivery time are returned
+    /// Проверяет получение всех заказов с минимальным временем доставки
     /// </summary>
     [Fact]
     public void GetOrdersWithMinimumDeliveryTime_ShouldReturnAllFastestOrders()
@@ -56,7 +56,7 @@ public class QueriesTests
     }
 
     /// <summary>
-    /// Verifies that customers of the selected restaurant are returned in alphabetical order
+    /// Проверяет получение клиентов выбранного ресторана в алфавитном порядке
     /// </summary>
     [Theory]
     [InlineData(1)]
@@ -78,7 +78,7 @@ public class QueriesTests
             1 => new[] { "Ivanov", "Petrov", "Sidorov" },
             2 => new[] { "Ivanov", "Kuznetsov", "Popov", "Smirnov" },
             _ => throw new ArgumentOutOfRangeException(nameof(restaurantId))
-        }; 
+        };
 
         Assert.Equal(
             expectedLastNames,

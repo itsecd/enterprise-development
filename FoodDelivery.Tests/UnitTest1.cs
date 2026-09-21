@@ -4,6 +4,9 @@ namespace FoodDelivery.Tests;
 
 public class TestDataTests
 {
+    /// <summary>
+    /// Проверяет наличие необходимого количества тестовых данных
+    /// </summary>
     [Fact]
     public void TestData_ShouldContainRequiredNumberOfEntities()
     {
