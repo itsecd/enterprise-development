@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AutoServiceLab.Domain/AutoServiceLab.Domain.csproj" />
+  <Project Path="AutoServiceLab.Tests/AutoServiceLab.Tests.csproj" />
+</Solution>
