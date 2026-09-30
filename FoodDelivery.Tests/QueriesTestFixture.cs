@@ -88,16 +88,16 @@ public class QueriesTestFixture
     /// <returns>Список блюд</returns>
     private static List<Dish> GetDishes(List<Restaurant> restaurants) =>
     [
-        new Dish { Id = 0, RestaurantId = 0, Name = "Гранд", Price = 190m, Category = DishCategory.FastFood },
-        new Dish { Id = 1, RestaurantId = 0, Name = "Картофель фри", Price = 100m, Category = DishCategory.FastFood },
-        new Dish { Id = 2, RestaurantId = 1, Name = "Печень жареная с луком", Price = 350m, Category = DishCategory.MainCourse },
-        new Dish { Id = 3, RestaurantId = 2, Name = "Маргарита", Price = 490m, Category = DishCategory.FastFood },
-        new Dish { Id = 4, RestaurantId = 3, Name = "Воппер", Price = 250m, Category = DishCategory.FastFood },
-        new Dish { Id = 5, RestaurantId = 5, Name = "Блин с грибами", Price = 220m, Category = DishCategory.MainCourse },
-        new Dish { Id = 6, RestaurantId = 6, Name = "Филадельфия", Price = 550m, Category = DishCategory.MainCourse },
-        new Dish { Id = 7, RestaurantId = 7, Name = "Пепперони", Price = 600m, Category = DishCategory.FastFood },
-        new Dish { Id = 8, RestaurantId = 8, Name = "Капучино", Price = 180m, Category = DishCategory.Drink },
-        new Dish { Id = 9, RestaurantId = 9, Name = "Удон с курицей", Price = 420m, Category = DishCategory.MainCourse }
+        new Dish { Id = 0, RestaurantId = 0, Name = "Гранд", Price = 190, Category = DishCategory.FastFood },
+        new Dish { Id = 1, RestaurantId = 0, Name = "Картофель фри", Price = 100, Category = DishCategory.FastFood },
+        new Dish { Id = 2, RestaurantId = 1, Name = "Печень жареная с луком", Price = 350, Category = DishCategory.MainCourse },
+        new Dish { Id = 3, RestaurantId = 2, Name = "Маргарита", Price = 490, Category = DishCategory.FastFood },
+        new Dish { Id = 4, RestaurantId = 3, Name = "Воппер", Price = 250, Category = DishCategory.FastFood },
+        new Dish { Id = 5, RestaurantId = 5, Name = "Блин с грибами", Price = 220, Category = DishCategory.MainCourse },
+        new Dish { Id = 6, RestaurantId = 6, Name = "Филадельфия", Price = 550, Category = DishCategory.MainCourse },
+        new Dish { Id = 7, RestaurantId = 7, Name = "Пепперони", Price = 600, Category = DishCategory.FastFood },
+        new Dish { Id = 8, RestaurantId = 8, Name = "Капучино", Price = 180, Category = DishCategory.Drink },
+        new Dish { Id = 9, RestaurantId = 9, Name = "Удон с курицей", Price = 420, Category = DishCategory.MainCourse }
     ];
 
     /// <summary>
