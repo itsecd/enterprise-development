@@ -1,5 +1,4 @@
 <Solution>
-  <Project Path="FoodDelivery.Domain.Shared/FoodDelivery.Domain.Shared.csproj" />
   <Project Path="FoodDelivery.Domain/FoodDelivery.Domain.csproj" />
   <Project Path="FoodDelivery.Tests/FoodDelivery.Tests.csproj" />
 </Solution>
