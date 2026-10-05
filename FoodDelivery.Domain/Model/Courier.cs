@@ -1,4 +1,4 @@
-using FoodDelivery.Domain.Shared.Enums;
+using FoodDelivery.Domain.Enums;
 
 namespace FoodDelivery.Domain.Model;
 

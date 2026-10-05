@@ -1,4 +1,4 @@
-﻿namespace FoodDelivery.Domain.Shared.Enums;
+﻿namespace FoodDelivery.Domain.Enums;
 
 /// <summary>
 /// Способ доставки курьером
@@ -11,12 +11,12 @@ public enum TransportType
     Foot,
 
     /// <summary>
-    /// Доставка на ведосипеде
+    /// Доставка на велосипеде
     /// </summary>
     Bicycle,
 
     /// <summary>
-    /// Доставка на скуторе
+    /// Доставка на скутере
     /// </summary>
     Scooter,
 

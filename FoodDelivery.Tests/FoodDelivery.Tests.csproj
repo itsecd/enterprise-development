@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FoodDelivery.Domain\FoodDelivery.Domain.csproj" />
-    <ProjectReference Include="..\FoodDelivery.Domain.Shared\FoodDelivery.Domain.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

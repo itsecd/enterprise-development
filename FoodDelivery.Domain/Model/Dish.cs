@@ -16,9 +16,24 @@ public class Dish
     public required string Name { get; set; }
 
     /// <summary>
+    /// Вес блюда в граммах
+    /// </summary>
+    public required int Weight { get; set; }
+
+    /// <summary>
     /// Цена блюда
     /// </summary>
     public required decimal Price { get; set; }
+
+    /// <summary>
+    /// Идентификатор категории блюда из справочника
+    /// </summary>
+    public int CategoryId { get; set; }
+
+    /// <summary>
+    /// Категория блюда (справочник)
+    /// </summary>
+    public DishCategory? Category { get; set; }
 
     /// <summary>
     /// Идентификатор ресторана которому принадлежит блюдо

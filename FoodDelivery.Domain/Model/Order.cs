@@ -1,4 +1,4 @@
-using FoodDelivery.Domain.Shared.Enums;
+using FoodDelivery.Domain.Enums;
 
 namespace FoodDelivery.Domain.Model;
 
@@ -18,6 +18,16 @@ public class Order
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     /// <summary>
+    /// Время доставки заказа
+    /// </summary>
+    public DateTime? DeliveredAt { get; set; }
+
+    /// <summary>
+    /// Фактическая длительность доставки
+    /// </summary>
+    public TimeSpan? DeliveryDuration => DeliveredAt.HasValue ? DeliveredAt.Value - CreatedAt : null;
+
+    /// <summary>
     /// Адрес доставки
     /// </summary>
     public required string DeliveryAddress { get; set; }
@@ -26,16 +36,6 @@ public class Order
     /// Статус заказа
     /// </summary>
     public OrderStatus Status { get; set; } = OrderStatus.Created;
-
-    /// <summary>
-    /// Способ оплаты
-    /// </summary>
-    public required PaymentMethod PaymentMethod { get; set; }
-
-    /// <summary>
-    /// Стоимость доставки
-    /// </summary>
-    public required decimal DeliveryFee { get; set; }
 
     /// <summary>
     /// Идентификатор клиента оформившего заказ
@@ -73,7 +73,17 @@ public class Order
     public List<OrderItem> Items { get; set; } = [];
 
     /// <summary>
-    /// Стоимость заказа
+    /// Способ оплаты
     /// </summary>
-    public decimal Total => Items.Sum(item => item.Quantity * item.UnitPrice) + DeliveryFee;
+    public required PaymentMethod PaymentMethod { get; set; }
+
+    /// <summary>
+    /// Стоимость доставки
+    /// </summary>
+    public required decimal DeliveryFee { get; set; }
+
+    /// <summary>
+    /// Итоговая сумма заказа
+    /// </summary>
+    public decimal Total { get; set; }
 }

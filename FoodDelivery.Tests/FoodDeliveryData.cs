@@ -1,5 +1,6 @@
 ﻿using FoodDelivery.Domain.Model;
-using FoodDelivery.Domain.Shared.Enums;
+using FoodDelivery.Domain.Enums;
+using FoodDelivery.Domain.Services;
 
 namespace FoodDelivery.Tests;
 
@@ -14,6 +15,7 @@ public static class FoodDeliveryData
     public static List<Dish> Dishes { get; }
     public static List<Order> Orders { get; }
     public static List<OrderItem> OrderItems { get; }
+    public static List<DishCategory> Categories { get; }
 
     static FoodDeliveryData()
     {
@@ -33,16 +35,16 @@ public static class FoodDeliveryData
 
         Restaurants =
         [
-            new Restaurant { Id = 1, Name = "Пиццерия Pizza Tower", Address = "ул. Мира 25" },
-            new Restaurant { Id = 2, Name = "Суши-бар DANGANRONPA", Address = "ул. Мира 100" },
-            new Restaurant { Id = 3, Name = "Бургерная Machine Party", Address = "ул. Мира 3" },
-            new Restaurant { Id = 4, Name = "Кафе YAPYAP", Address = "ул. Мира 40" },
-            new Restaurant { Id = 5, Name = "Кофейня Leblanc", Address = "ул. Мира 7" },
-            new Restaurant { Id = 6, Name = "Бургерная REPO", Address = "ул. Мира 2" },
-            new Restaurant { Id = 7, Name = "Чайхана ZAVOD", Address = "ул. Мира 15" },
-            new Restaurant { Id = 8, Name = "Пиццерия Noita", Address = "ул. Мира 33" },
-            new Restaurant { Id = 9, Name = "Пельменная Ъ", Address = "ул. Мира 21" },
-            new Restaurant { Id = 10, Name = "Блинная Sandrock", Address = "ул. Мира 8" }
+            new Restaurant { Id = 1, Name = "Пиццерия Pizza Tower", Address = "ул. Мира 25", Rating = 4.8, WorkingHours = "10:00 - 23:00" },
+            new Restaurant { Id = 2, Name = "Суши-бар DANGANRONPA", Address = "ул. Мира 100", Rating = 4.9, WorkingHours = "11:00 - 00:00" },
+            new Restaurant { Id = 3, Name = "Бургерная Machine Party", Address = "ул. Мира 3", Rating = 4.6, WorkingHours = "09:00 - 22:00" },
+            new Restaurant { Id = 4, Name = "Кафе YAPYAP", Address = "ул. Мира 40", Rating = 4.5, WorkingHours = "08:00 - 21:00" },
+            new Restaurant { Id = 5, Name = "Кофейня Leblanc", Address = "ул. Мира 7", Rating = 4.9, WorkingHours = "08:00 - 22:00" },
+            new Restaurant { Id = 6, Name = "Бургерная REPO", Address = "ул. Мира 2", Rating = 4.4, WorkingHours = "10:00 - 22:00" },
+            new Restaurant { Id = 7, Name = "Чайхана ZAVOD", Address = "ул. Мира 15", Rating = 4.3, WorkingHours = "11:00 - 23:00" },
+            new Restaurant { Id = 8, Name = "Пиццерия Noita", Address = "ул. Мира 33", Rating = 4.7, WorkingHours = "10:00 - 23:00" },
+            new Restaurant { Id = 9, Name = "Пельменная Ъ", Address = "ул. Мира 21", Rating = 4.2, WorkingHours = "09:00 - 21:00" },
+            new Restaurant { Id = 10, Name = "Блинная Sandrock", Address = "ул. Мира 8", Rating = 4.5, WorkingHours = "08:00 - 20:00" }
         ];
 
         Couriers =
@@ -59,116 +61,140 @@ public static class FoodDeliveryData
             new Courier { Id = 10, FullName = "Петров И.", PhoneNumber = "+79171000010", Transport = TransportType.Car }
         ];
 
+        Categories =
+        [
+            new DishCategory { Id = 1, Name = "Пицца" },
+            new DishCategory { Id = 2, Name = "Суши" },
+            new DishCategory { Id = 3, Name = "Бургеры" },
+            new DishCategory { Id = 4, Name = "Салаты" }
+        ];
+
         Dishes =
         [
-            new Dish { Id = 1, Name = "Маргарита", Price = 450, RestaurantId = 1, Restaurant = Restaurants[0] },
-            new Dish { Id = 2, Name = "Пепперони", Price = 550, RestaurantId = 1, Restaurant = Restaurants[0] },
-            new Dish { Id = 3, Name = "Карбонара", Price = 420, RestaurantId = 1, Restaurant = Restaurants[0] },
-            new Dish { Id = 4, Name = "Филадельфия", Price = 890, RestaurantId = 2, Restaurant = Restaurants[1] },
-            new Dish { Id = 5, Name = "Калифорния", Price = 320, RestaurantId = 2, Restaurant = Restaurants[1] },
-            new Dish { Id = 6, Name = "Суши с лососем", Price = 180, RestaurantId = 2, Restaurant = Restaurants[1] },
-            new Dish { Id = 7, Name = "Шефбургер", Price = 350, RestaurantId = 3, Restaurant = Restaurants[2] },
-            new Dish { Id = 8, Name = "Чизбургер", Price = 470, RestaurantId = 3, Restaurant = Restaurants[2] },
-            new Dish { Id = 9, Name = "Картофель фри", Price = 150, RestaurantId = 3, Restaurant = Restaurants[2] },
-            new Dish { Id = 10, Name = "Цезарь", Price = 320, RestaurantId = 4, Restaurant = Restaurants[3] }
+            new Dish { Id = 1, Name = "Маргарита", Weight = 450, Price = 450, CategoryId = 1, Category = Categories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
+            new Dish { Id = 2, Name = "Пепперони", Weight = 500, Price = 550, CategoryId = 1, Category = Categories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
+            new Dish { Id = 3, Name = "Карбонара", Weight = 480, Price = 420, CategoryId = 1, Category = Categories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
+            new Dish { Id = 4, Name = "Филадельфия", Weight = 280, Price = 890, CategoryId = 2, Category = Categories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
+            new Dish { Id = 5, Name = "Калифорния", Weight = 250, Price = 320, CategoryId = 2, Category = Categories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
+            new Dish { Id = 6, Name = "Суши с лососем", Weight = 70, Price = 180, CategoryId = 2, Category = Categories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
+            new Dish { Id = 7, Name = "Шефбургер", Weight = 320, Price = 350, CategoryId = 3, Category = Categories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
+            new Dish { Id = 8, Name = "Чизбургер", Weight = 290, Price = 470, CategoryId = 3, Category = Categories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
+            new Dish { Id = 9, Name = "Картофель фри", Weight = 150, Price = 150, CategoryId = 3, Category = Categories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
+            new Dish { Id = 10, Name = "Цезарь", Weight = 220, Price = 320, CategoryId = 4, Category = Categories[3], RestaurantId = 4, Restaurant = Restaurants[3] }
         ];
+
+        Categories[0].Dishes.AddRange([Dishes[0], Dishes[1], Dishes[2]]);
+        Categories[1].Dishes.AddRange([Dishes[3], Dishes[4], Dishes[5]]);
+        Categories[2].Dishes.AddRange([Dishes[6], Dishes[7], Dishes[8]]);
+        Categories[3].Dishes.Add(Dishes[9]);
+
+        Restaurants[0].Dishes.AddRange([Dishes[0], Dishes[1], Dishes[2]]);
+        Restaurants[1].Dishes.AddRange([Dishes[3], Dishes[4], Dishes[5]]);
+        Restaurants[2].Dishes.AddRange([Dishes[6], Dishes[7], Dishes[8]]);
+        Restaurants[3].Dishes.Add(Dishes[9]);
 
         Orders =
         [
-            new Order 
-            { 
-                Id = 1, 
-                CustomerId = 1, 
-                Customer = Customers[0], 
-                RestaurantId = 1, 
-                Restaurant = Restaurants[0], 
-                CourierId = 1, 
-                Courier = Couriers[0], 
-                CreatedAt = new DateTime(2024, 5, 1, 12, 0, 0), 
-                Status = OrderStatus.Delivered, 
-                DeliveryFee = 150, 
-                DeliveryAddress = "ул. Ленина 1", 
-                PaymentMethod = PaymentMethod.Card 
+            new Order
+            {
+                Id = 1,
+                CustomerId = 1,
+                Customer = Customers[0],
+                RestaurantId = 1,
+                Restaurant = Restaurants[0],
+                CourierId = 1,
+                Courier = Couriers[0],
+                CreatedAt = new DateTime(2024, 5, 1, 12, 0, 0),
+                DeliveredAt = new DateTime(2024, 5, 1, 12, 35, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 150,
+                DeliveryAddress = "ул. Ленина 1",
+                PaymentMethod = PaymentMethod.Card
             },
 
-            new Order 
-            { 
-                Id = 2, 
-                CustomerId = 2, 
-                Customer = Customers[1], 
-                RestaurantId = 1, 
-                Restaurant = Restaurants[0], 
-                CourierId = 2, 
-                Courier = Couriers[1], 
-                CreatedAt = new DateTime(2024, 5, 2, 18, 30, 0), 
-                Status = OrderStatus.Delivered, 
-                DeliveryFee = 150, 
-                DeliveryAddress = "ул. Ленина 2", 
-                PaymentMethod = PaymentMethod.Cash 
+            new Order
+            {
+                Id = 2,
+                CustomerId = 2,
+                Customer = Customers[1],
+                RestaurantId = 1,
+                Restaurant = Restaurants[0],
+                CourierId = 2,
+                Courier = Couriers[1],
+                CreatedAt = new DateTime(2024, 5, 2, 18, 30, 0),
+                DeliveredAt = new DateTime(2024, 5, 2, 18, 50, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 150,
+                DeliveryAddress = "ул. Ленина 2",
+                PaymentMethod = PaymentMethod.Cash
             },
 
-            new Order 
-            { 
-                Id = 3, 
-                CustomerId = 3, 
-                Customer = Customers[2], 
-                RestaurantId = 2, 
-                Restaurant = Restaurants[1], 
-                CourierId = 3, 
-                Courier = Couriers[2], 
-                CreatedAt = new DateTime(2024, 5, 3, 19, 0, 0), 
-                Status = OrderStatus.Delivered, 
-                DeliveryFee = 200, 
-                DeliveryAddress = "ул. Ленина 3", 
-                PaymentMethod = PaymentMethod.Online 
+            new Order
+            {
+                Id = 3,
+                CustomerId = 3,
+                Customer = Customers[2],
+                RestaurantId = 2,
+                Restaurant = Restaurants[1],
+                CourierId = 3,
+                Courier = Couriers[2],
+                CreatedAt = new DateTime(2024, 5, 3, 19, 0, 0),
+                DeliveredAt = new DateTime(2024, 5, 3, 19, 45, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 200,
+                DeliveryAddress = "ул. Ленина 3",
+                PaymentMethod = PaymentMethod.Online
             },
 
-            new Order 
-            { 
-                Id = 4, 
-                CustomerId = 4, 
-                Customer = Customers[3], 
-                RestaurantId = 2, 
-                Restaurant = Restaurants[1], 
-                CourierId = 1, 
-                Courier = Couriers[0], 
-                CreatedAt = new DateTime(2024, 5, 5, 13, 15, 0), 
-                Status = OrderStatus.Delivering, 
-                DeliveryFee = 200, 
-                DeliveryAddress = "ул. Ленина 4", 
-                PaymentMethod = PaymentMethod.Card 
+            new Order
+            {
+                Id = 4,
+                CustomerId = 4,
+                Customer = Customers[3],
+                RestaurantId = 2,
+                Restaurant = Restaurants[1],
+                CourierId = 1,
+                Courier = Couriers[0],
+                CreatedAt = new DateTime(2024, 5, 5, 13, 15, 0),
+                DeliveredAt = null,
+                Status = OrderStatus.Delivering,
+                DeliveryFee = 200,
+                DeliveryAddress = "ул. Ленина 4",
+                PaymentMethod = PaymentMethod.Card
             },
 
-            new Order 
-            { 
-                Id = 5, 
-                CustomerId = 5, 
-                Customer = Customers[4], 
-                RestaurantId = 3, 
-                Restaurant = Restaurants[2], 
-                CourierId = 4, 
-                Courier = Couriers[3], 
-                CreatedAt = new DateTime(2024, 5, 6, 20, 45, 0), 
-                Status = OrderStatus.Preparing, 
-                DeliveryFee = 100, 
-                DeliveryAddress = "ул. Ленина 5", 
-                PaymentMethod = PaymentMethod.Cash 
+            new Order
+            {
+                Id = 5,
+                CustomerId = 5,
+                Customer = Customers[4],
+                RestaurantId = 3,
+                Restaurant = Restaurants[2],
+                CourierId = 4,
+                Courier = Couriers[3],
+                CreatedAt = new DateTime(2024, 5, 6, 20, 45, 0),
+                DeliveredAt = null,
+                Status = OrderStatus.Preparing,
+                DeliveryFee = 100,
+                DeliveryAddress = "ул. Ленина 5",
+                PaymentMethod = PaymentMethod.Cash
             },
-            
-            new Order 
-            { 
-                Id = 6, 
-                CustomerId = 6, 
-                Customer = Customers[5], 
-                RestaurantId = 4, 
-                Restaurant = Restaurants[3], 
-                CourierId = 5, 
-                Courier = Couriers[4], 
-                CreatedAt = new DateTime(2024, 5, 8, 11, 0, 0), 
-                Status = OrderStatus.Delivered, 
-                DeliveryFee = 120, 
-                DeliveryAddress = "ул. Ленина 6", 
-                PaymentMethod = PaymentMethod.Online 
+
+            new Order
+            {
+                Id = 6,
+                CustomerId = 6,
+                Customer = Customers[5],
+                RestaurantId = 4,
+                Restaurant = Restaurants[3],
+                CourierId = 5,
+                Courier = Couriers[4],
+                CreatedAt = new DateTime(2024, 5, 8, 11, 0, 0),
+                DeliveredAt = new DateTime(2024, 5, 8, 11, 40, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 120,
+                DeliveryAddress = "ул. Ленина 6",
+                PaymentMethod = PaymentMethod.Online
             },
 
             new Order
@@ -181,6 +207,7 @@ public static class FoodDeliveryData
                 CourierId = 6,
                 Courier = Couriers[5],
                 CreatedAt = new DateTime(2024, 5, 10, 14, 20, 0),
+                DeliveredAt = null,
                 Status = OrderStatus.Cancelled,
                 DeliveryFee = 90,
                 DeliveryAddress = "ул. Ленина 7",
@@ -189,63 +216,16 @@ public static class FoodDeliveryData
 
             new Order
             {
-                Id = 8,
-                CustomerId = 8,
-                Customer = Customers[7],
-                RestaurantId = 6,
-                Restaurant = Restaurants[5],
-                CourierId = 7,
-                Courier = Couriers[6],
-                CreatedAt = new DateTime(2024, 5, 12, 16, 0, 0),
-                Status = OrderStatus.Delivered,
-                DeliveryFee = 130,
-                DeliveryAddress = "ул. Ленина 8",
-                PaymentMethod = PaymentMethod.Online
-            },
-            
-            new Order
-            {
-                Id = 9,
-                CustomerId = 9,
-                Customer = Customers[8],
-                RestaurantId = 7,
-                Restaurant = Restaurants[6],
-                CourierId = 8,
-                Courier = Couriers[7],
-                CreatedAt = new DateTime(2024, 5, 15, 17, 40, 0),
-                Status = OrderStatus.Delivered,
-                DeliveryFee = 170,
-                DeliveryAddress = "ул. Ленина 9",
-                PaymentMethod = PaymentMethod.Cash
-            },
-
-            new Order
-            {
-                Id = 10,
-                CustomerId = 10,
-                Customer = Customers[9],
-                RestaurantId = 8,
-                Restaurant = Restaurants[7],
-                CourierId = 9,
-                Courier = Couriers[8],
-                CreatedAt = new DateTime(2024, 5, 18, 21, 10, 0),
-                Status = OrderStatus.Delivered,
-                DeliveryFee = 250,
-                DeliveryAddress = "ул. Ленина 10",
-                PaymentMethod = PaymentMethod.Card
-            },
-
-            new Order
-            {
                 Id = 11,
                 CustomerId = 1,
                 Customer = Customers[0],
-                RestaurantId = 9,
-                Restaurant = Restaurants[8],
+                RestaurantId = 1,
+                Restaurant = Restaurants[0],
                 CourierId = 10,
                 Courier = Couriers[9],
                 CreatedAt = new DateTime(2024, 5, 20, 12, 50, 0),
-                Status = OrderStatus.Created,
+                DeliveredAt = new DateTime(2024, 5, 20, 13, 20, 0),
+                Status = OrderStatus.Delivered,
                 DeliveryFee = 80,
                 DeliveryAddress = "ул. Ленина 1",
                 PaymentMethod = PaymentMethod.Online
@@ -256,14 +236,66 @@ public static class FoodDeliveryData
                 Id = 12,
                 CustomerId = 2,
                 Customer = Customers[1],
-                RestaurantId = 10,
-                Restaurant = Restaurants[9],
-                CourierId = null,
-                Courier = null,
+                RestaurantId = 1,
+                Restaurant = Restaurants[0],
+                CourierId = 2,
+                Courier = Couriers[1],
                 CreatedAt = new DateTime(2024, 5, 22, 19, 30, 0),
-                Status = OrderStatus.Created,
+                DeliveredAt = new DateTime(2024, 5, 22, 20, 05, 0),
+                Status = OrderStatus.Delivered,
                 DeliveryFee = 110,
                 DeliveryAddress = "ул. Ленина 2",
+                PaymentMethod = PaymentMethod.Cash
+            },
+
+            new Order
+            {
+                Id = 13,
+                CustomerId = 3,
+                Customer = Customers[2],
+                RestaurantId = 2,
+                Restaurant = Restaurants[1],
+                CourierId = 3,
+                Courier = Couriers[2],
+                CreatedAt = new DateTime(2024, 5, 24, 15, 0, 0),
+                DeliveredAt = new DateTime(2024, 5, 24, 15, 30, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 250,
+                DeliveryAddress = "ул. Ленина 3",
+                PaymentMethod = PaymentMethod.Card
+            },
+
+            new Order
+            {
+                Id = 14,
+                CustomerId = 3,
+                Customer = Customers[2],
+                RestaurantId = 3,
+                Restaurant = Restaurants[2],
+                CourierId = 1,
+                Courier = Couriers[0],
+                CreatedAt = new DateTime(2024, 5, 25, 14, 0, 0),
+                DeliveredAt = new DateTime(2024, 5, 25, 14, 30, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 190,
+                DeliveryAddress = "ул. Ленина 3",
+                PaymentMethod = PaymentMethod.Online
+            },
+
+            new Order
+            {
+                Id = 15,
+                CustomerId = 8,
+                Customer = Customers[7],
+                RestaurantId = 4,
+                Restaurant = Restaurants[3],
+                CourierId = 7,
+                Courier = Couriers[6],
+                CreatedAt = new DateTime(2024, 5, 26, 17, 0, 0),
+                DeliveredAt = new DateTime(2024, 5, 26, 17, 35, 0),
+                Status = OrderStatus.Delivered,
+                DeliveryFee = 130,
+                DeliveryAddress = "ул. Ленина 8",
                 PaymentMethod = PaymentMethod.Cash
             }
         ];
@@ -281,11 +313,33 @@ public static class FoodDeliveryData
             new OrderItem { Id = 9, OrderId = 5, Order = Orders[4], DishId = 8, Dish = Dishes[7], Quantity = 1, UnitPrice = 470 },
             new OrderItem { Id = 10, OrderId = 6, Order = Orders[5], DishId = 10, Dish = Dishes[9], Quantity = 2, UnitPrice = 320 },
             new OrderItem { Id = 11, OrderId = 7, Order = Orders[6], DishId = 3, Dish = Dishes[2], Quantity = 1, UnitPrice = 420 },
-            new OrderItem { Id = 12, OrderId = 8, Order = Orders[7], DishId = 9, Dish = Dishes[8], Quantity = 1, UnitPrice = 150 },
-            new OrderItem { Id = 13, OrderId = 9, Order = Orders[8], DishId = 4, Dish = Dishes[3], Quantity = 1, UnitPrice = 890 },
-            new OrderItem { Id = 14, OrderId = 10, Order = Orders[9], DishId = 6, Dish = Dishes[5], Quantity = 2, UnitPrice = 180 },
-            new OrderItem { Id = 15, OrderId = 11, Order = Orders[10], DishId = 8, Dish = Dishes[7], Quantity = 1, UnitPrice = 470 },
-            new OrderItem { Id = 16, OrderId = 12, Order = Orders[11], DishId = 1, Dish = Dishes[0], Quantity = 2, UnitPrice = 450 }
+            new OrderItem { Id = 12, OrderId = 11, Order = Orders[7], DishId = 3, Dish = Dishes[2], Quantity = 1, UnitPrice = 420 },
+            new OrderItem { Id = 13, OrderId = 12, Order = Orders[8], DishId = 1, Dish = Dishes[0], Quantity = 2, UnitPrice = 450 },
+            new OrderItem { Id = 14, OrderId = 13, Order = Orders[9], DishId = 4, Dish = Dishes[3], Quantity = 2, UnitPrice = 890 },
+            new OrderItem { Id = 15, OrderId = 13, Order = Orders[9], DishId = 6, Dish = Dishes[5], Quantity = 2, UnitPrice = 180 },
+            new OrderItem { Id = 16, OrderId = 14, Order = Orders[10], DishId = 7, Dish = Dishes[6], Quantity = 3, UnitPrice = 350 },
+            new OrderItem { Id = 17, OrderId = 15, Order = Orders[11], DishId = 10, Dish = Dishes[9], Quantity = 1, UnitPrice = 320 }
         ];
+
+        foreach (var order in Orders)
+        {
+            order.Items = OrderItems.Where(i => i.OrderId == order.Id).ToList();
+            order.Total = OrderCostCalculator.CalculateTotal(order);
+        }
+
+        foreach (var customer in Customers)
+        {
+            customer.Orders = Orders.Where(o => o.CustomerId == customer.Id).ToList();
+        }
+
+        foreach (var restaurant in Restaurants)
+        {
+            restaurant.Orders = Orders.Where(o => o.RestaurantId == restaurant.Id).ToList();
+        }
+
+        foreach (var courier in Couriers)
+        {
+            courier.Orders = Orders.Where(o => o.CourierId == courier.Id).ToList();
+        }
     }
 }

@@ -1,4 +1,4 @@
-namespace FoodDelivery.Domain.Shared.Enums;
+namespace FoodDelivery.Domain.Enums;
 
 /// <summary>
 /// Статус заказа
