@@ -18,7 +18,7 @@ public class Booking
     /// <summary>
     /// Клиент, записанный на занятие
     /// </summary>
-    public required Member Member { get; set; }
+    public required Member? Member { get; set; }
 
     /// <summary>
     /// Идентификатор тренера
@@ -28,7 +28,7 @@ public class Booking
     /// <summary>
     /// Тренер, проводящий занятие
     /// </summary>
-    public required Trainer Trainer { get; set; }
+    public required Trainer? Trainer { get; set; }
 
     /// <summary>
     /// Дата и время занятия
