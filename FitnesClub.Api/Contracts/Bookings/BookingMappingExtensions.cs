@@ -23,8 +23,6 @@ public static class BookingMappingExtensions
         Duration = dto.Duration,
         RoomName = dto.RoomName,
         IsTrial = dto.IsTrial,
-        Member = null!,
-        Trainer = null!
     };
 
     public static void UpdateEntity(this BookingCreateUpdateDto dto, Booking b)
