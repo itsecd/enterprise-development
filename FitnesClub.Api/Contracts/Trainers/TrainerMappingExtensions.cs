@@ -2,9 +2,17 @@
 
 namespace FitnesClub.Api.Contracts.Trainers;
 
+/// <summary>
+/// Методы расширения для преобразования между доменной сущностью <see cref="Trainer"/> и DTO тренеров.
+/// </summary>
 public static class TrainerMappingExtensions
 {
-    public static TrainerDto ToDto(this Trainer t) => new (
+    /// <summary>
+    /// Преобразует доменную сущность тренера в объект передачи данных <see cref="TrainerDto"/>.
+    /// </summary>
+    /// <param name="t">Сущность тренера клуба.</param>
+    /// <returns>DTO с полными данными тренера, включая специализацию и стаж работы.</returns>
+    public static TrainerDto ToDto(this Trainer t) => new(
         t.Id,
         t.FirstName,
         t.LastName,
@@ -17,6 +25,11 @@ public static class TrainerMappingExtensions
         t.WorkExperienceYears
     );
 
+    /// <summary>
+    /// Создает новый экземпляр доменной сущности <see cref="Trainer"/> на основе входного DTO.
+    /// </summary>
+    /// <param name="dto">Входные данные для создания тренера.</param>
+    /// <returns>Новая сущность тренера с новым идентификатором <see cref="Guid"/>.</returns>
     public static Trainer ToEntity(this TrainersCreateUpdateDto dto) => new()
     {
         Id = Guid.NewGuid(),
@@ -28,9 +41,14 @@ public static class TrainerMappingExtensions
         Gender = dto.Gender,
         BirthDate = dto.BirthDate,
         SpecializationId = dto.SpecializationId,
-        WorkExperienceYears = dto.WorkExperienceYears,
-        Specialization = null!
+        WorkExperienceYears = dto.WorkExperienceYears
     };
+
+    /// <summary>
+    /// Обновляет персональные данные, контакты и специализацию тренера значениями из переданного DTO.
+    /// </summary>
+    /// <param name="dto">DTO с актуальными данными тренера.</param>
+    /// <param name="t">Существующая сущность тренера, поля которой будут перезаписаны.</param>
     public static void UpdateEntity(this TrainersCreateUpdateDto dto, Trainer t)
     {
         t.FirstName = dto.FirstName;
@@ -44,4 +62,3 @@ public static class TrainerMappingExtensions
         t.WorkExperienceYears = dto.WorkExperienceYears;
     }
 }
-

@@ -3,9 +3,19 @@ using FitnesClub.Domain.Enums;
 
 namespace FitnesClub.Domain.Data;
 
+/// <summary>
+/// Предоставляет начальные (сидовые) данные для заполнения репозиториев фитнес-клуба при старте приложения.
+/// </summary>
 public static class DataSeeder
 {
-    private static readonly DateTime _date = new (2026, 9, 28, 12, 0, 0);
+    /// <summary>
+    /// Опорная дата и время для генерации расписания и сроков действия абонементов.
+    /// </summary>
+    private static readonly DateTime _date = new(2026, 9, 28, 12, 0, 0);
+
+    /// <summary>
+    /// Начальный список специализаций тренеров.
+    /// </summary>
     public static readonly List<Specialization> Specializations =
     [
         new Specialization { Name = "Фитнес" },
@@ -18,8 +28,11 @@ public static class DataSeeder
         new Specialization { Name = "Кроссфит" },
         new Specialization { Name = "Бокс" },
         new Specialization { Name = "Танцевальные тренировки" }
-     ];
+    ];
 
+    /// <summary>
+    /// Начальный список тренеров клуба с заполненными профилями и специализациями.
+    /// </summary>
     public static readonly List<Trainer> Trainers =
     [
         new Trainer
@@ -142,9 +155,11 @@ public static class DataSeeder
             WorkExperienceYears = 4,
             PhoneNumber = "+79990000010"
         }
-
     ];
 
+    /// <summary>
+    /// Начальный список клиентов клуба с активными и истекшими абонементами.
+    /// </summary>
     public static readonly List<Member> Members =
     [
         new Member
@@ -259,6 +274,9 @@ public static class DataSeeder
         }
     ];
 
+    /// <summary>
+    /// Начальный список записей на персональные тренировки.
+    /// </summary>
     public static readonly List<Booking> Bookings =
     [
         new Booking
