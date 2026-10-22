@@ -1,6 +1,4 @@
 using FoodDelivery.Domain.Enums;
-using FoodDelivery.Domain.Model;
-using FoodDelivery.Domain.Services;
 
 namespace FoodDelivery.Tests;
 

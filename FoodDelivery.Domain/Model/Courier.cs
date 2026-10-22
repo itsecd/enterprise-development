@@ -28,7 +28,7 @@ public class Courier
     public required TransportType Transport { get; set; }
 
     /// <summary>
-    /// Заказы курьероа
+    /// Заказы курьера
     /// </summary>
     public List<Order> Orders { get; set; } = [];
 }

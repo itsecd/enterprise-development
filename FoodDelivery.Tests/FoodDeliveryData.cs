@@ -66,7 +66,13 @@ public static class FoodDeliveryData
             new DishCategory { Id = 1, Name = "Пицца" },
             new DishCategory { Id = 2, Name = "Суши" },
             new DishCategory { Id = 3, Name = "Бургеры" },
-            new DishCategory { Id = 4, Name = "Салаты" }
+            new DishCategory { Id = 4, Name = "Салаты" },
+            new DishCategory { Id = 5, Name = "Супы" },
+            new DishCategory { Id = 6, Name = "Паста" },
+            new DishCategory { Id = 7, Name = "Закуски" },
+            new DishCategory { Id = 8, Name = "Напитки" },
+            new DishCategory { Id = 9, Name = "Десерты" },
+            new DishCategory { Id = 10, Name = "Завтраки" }
         ];
 
         Dishes =
@@ -321,25 +327,25 @@ public static class FoodDeliveryData
             new OrderItem { Id = 17, OrderId = 15, Order = Orders[11], DishId = 10, Dish = Dishes[9], Quantity = 1, UnitPrice = 320 }
         ];
 
-        foreach (var order in Orders)
+         foreach (var order in Orders)
         {
-            order.Items = OrderItems.Where(i => i.OrderId == order.Id).ToList();
+            order.Items = [.. OrderItems.Where(i => i.OrderId == order.Id)];
             order.Total = OrderCostCalculator.CalculateTotal(order);
         }
 
         foreach (var customer in Customers)
         {
-            customer.Orders = Orders.Where(o => o.CustomerId == customer.Id).ToList();
+            customer.Orders = [.. Orders.Where(o => o.CustomerId == customer.Id)];
         }
 
         foreach (var restaurant in Restaurants)
         {
-            restaurant.Orders = Orders.Where(o => o.RestaurantId == restaurant.Id).ToList();
+            restaurant.Orders = [.. Orders.Where(o => o.RestaurantId == restaurant.Id)];
         }
 
         foreach (var courier in Couriers)
         {
-            courier.Orders = Orders.Where(o => o.CourierId == courier.Id).ToList();
+            courier.Orders = [.. Orders.Where(o => o.CourierId == courier.Id)];
         }
     }
 }
