@@ -1,7 +1,7 @@
 ﻿using VetClinic.Domain.Entities;
 using VetClinic.Domain.Enums;
 using VetClinic.Tests.Fixtures;
-using Xunit.Abstractions;
+
 
 namespace VetClinic.Tests;
 
