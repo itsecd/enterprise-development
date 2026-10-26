@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="CarWash.Application/CarWash.Application.csproj" />
+  <Project Path="CarWash.Contracts/CarWash.Contracts.csproj" />
+  <Project Path="CarWash.Api/CarWash.Api.csproj" />
+  <Project Path="CarWash.Domain/CarWash.Domain.csproj" />
+  <Project Path="CarWash.Infrastructure/CarWash.Infrastructure.csproj" />
+  <Project Path="CarWash.Tests/CarWash.Tests.csproj" />
+</Solution>
