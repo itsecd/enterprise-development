@@ -1,12 +1,14 @@
 ﻿using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
 /// Выполняет аналитические запросы по данным фитнес-клуба
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsController> logger) : ControllerBase

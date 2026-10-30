@@ -1,12 +1,14 @@
 ﻿using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
 /// Работает с записями клиентов на занятия
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TrainingSessionsController(ITrainingSessionService service, ILogger<TrainingSessionsController> logger) : ControllerBase

@@ -1,12 +1,14 @@
 ﻿using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
 /// Работает со справочником специализаций
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SpecializationsController(ISpecializationService service, ILogger<SpecializationsController> logger) : ControllerBase
