@@ -1,6 +1,4 @@
-﻿using CarWash.Domain.Entities;
-
-namespace CarWash.Tests;
+﻿namespace CarWash.Tests;
 
 /// <summary>
 /// Юнит-тесты бизнес-логики автомойки

@@ -11,7 +11,7 @@ public class CarWashFixture
     private static readonly DateTime _baseTime = new(2026, 6, 1, 10, 0, 0);
 
     public static List<Car> Cars { get; set; } =
-        [
+    [
         new Car 
         { 
             Id = 1,
@@ -72,10 +72,10 @@ public class CarWashFixture
             LicensePlate = "Т042ТТ127", 
             Brand = "Geely Monjaro" 
         }
-        ];
+    ];
 
     public static List<Client> Clients { get; set; } =
-        [
+    [
         new Client 
         { 
             Id = 1, 
@@ -146,81 +146,91 @@ public class CarWashFixture
             Phone = "+78460001122", 
             Cars = [Cars[0]] 
         }
-        ];
+    ];
 
     public static List<Service> Services { get; set; } =
-        [
+    [
         new Service 
-        { Id = 1, 
+        { 
+            Id = 1, 
             Name = "Экспресс-мойка", 
             Category = CarCategory.Passenger, 
             Price = 600m, 
             DurationMinutes = 20 
         },
         new Service 
-        { Id = 2, 
+        { 
+            Id = 2, 
             Name = "Комплексная мойка", 
             Category = CarCategory.Passenger, 
             Price = 1400m, 
             DurationMinutes = 45 
         },
         new Service 
-        { Id = 3, 
+        { 
+            Id = 3, 
             Name = "Стандартная мойка SUV", 
             Category = CarCategory.Suv, 
             Price = 1100m, 
             DurationMinutes = 35 
         },
         new Service 
-        { Id = 4, 
+        { 
+            Id = 4, 
             Name = "Химчистка салона", 
             Category = CarCategory.Passenger, 
             Price = 4500m, 
             DurationMinutes = 90 
         },
         new Service 
-        { Id = 5, 
+        { 
+            Id = 5, 
             Name = "Мойка грузовика", 
             Category = CarCategory.Truck, 
             Price = 2800m, 
             DurationMinutes = 60 
         },
         new Service 
-        { Id = 6, 
+        { 
+            Id = 6, 
             Name = "Полировка кузова", 
             Category = CarCategory.Suv, 
             Price = 3500m, 
             DurationMinutes = 75 
         },
         new Service 
-        { Id = 7, 
+        { 
+            Id = 7, 
             Name = "Мойка двигателя", 
             Category = CarCategory.Suv, 
             Price = 1200m, 
             DurationMinutes = 30 
         },
         new Service 
-        { Id = 8, 
+        { 
+            Id = 8, 
             Name = "Обработка воском", 
             Category = CarCategory.Passenger, 
             Price = 500m, 
             DurationMinutes = 15 
         },
         new Service 
-        { Id = 9, 
+        { 
+            Id = 9, 
             Name = "Мойка днища", 
             Category = CarCategory.Suv, 
             Price = 900m, 
             DurationMinutes = 25 
         },
         new Service 
-        { Id = 10, 
+        { 
+            Id = 10, 
             Name = "Мойка минивэна", 
             Category = CarCategory.Minivan, 
             Price = 1800m, 
             DurationMinutes = 50 
         }
-        ];
+    ];
 
     public List<Order> Orders { get; set; } =
     [
