@@ -20,12 +20,12 @@ public interface ITrainerService
     /// <summary>
     /// Создать нового тренера
     /// </summary>
-    public Task<TrainerDto> CreateAsync(TrainerDto dto);
+    public Task<TrainerDto> CreateAsync(TrainerEditDto dto);
 
     /// <summary>
     /// Обновить данные существующего тренера
     /// </summary>
-    public Task<bool> UpdateAsync(int id, TrainerDto dto);
+    public Task<bool> UpdateAsync(int id, TrainerEditDto dto);
 
     /// <summary>
     /// Удалить тренера по идентификатору

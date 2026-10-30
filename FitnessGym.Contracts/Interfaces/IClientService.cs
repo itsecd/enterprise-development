@@ -20,12 +20,12 @@ public interface IClientService
     /// <summary>
     /// Создать нового клиента
     /// </summary>
-    public Task<ClientDto> CreateAsync(ClientDto dto);
+    public Task<ClientDto> CreateAsync(ClientEditDto dto);
 
     /// <summary>
     /// Обновить данные существующего клиента
     /// </summary>
-    public Task<bool> UpdateAsync(int id, ClientDto dto);
+    public Task<bool> UpdateAsync(int id, ClientEditDto dto);
 
     /// <summary>
     /// Удалить клиента по идентификатору

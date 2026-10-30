@@ -20,7 +20,7 @@ public interface ISpecializationService
     /// <summary>
     /// Создать новую специализацию
     /// </summary>
-    public Task<SpecializationDto> CreateAsync(SpecializationDto dto);
+    public Task<SpecializationDto> CreateAsync(SpecializationEditDto dto);
 
     /// <summary>
     /// Удалить специализацию по идентификатору

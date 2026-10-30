@@ -21,7 +21,7 @@ public interface ITrainingSessionService
     /// <summary>
     /// Создать новую запись на занятие
     /// </summary>
-    public Task<TrainingSessionDto> CreateAsync(TrainingSessionDto dto);
+    public Task<TrainingSessionDto> CreateAsync(TrainingSessionEditDto dto);
 
     /// <summary>
     /// Удалить запись о занятии по идентификатору
