@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Museum.Api/Museum.Api.csproj" />
   <Project Path="Museum.Domain/Museum.Domain.csproj" />
   <Project Path="Museum.Tests/Museum.Tests.csproj" />
 </Solution>
