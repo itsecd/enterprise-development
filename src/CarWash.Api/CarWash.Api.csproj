@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CarWash.Domain\CarWash.Domain.csproj" />
+    <ProjectReference Include="..\CarWash.Contracts\CarWash.Contracts.csproj" />
+    <ProjectReference Include="..\CarWash.Application\CarWash.Application.csproj" />
   </ItemGroup>
 
 </Project>
