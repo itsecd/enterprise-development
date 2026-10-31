@@ -1,52 +1,61 @@
-﻿using CarWash.Domain.Entities;
-using CarWash.Server.Data;
+﻿using CarWash.Contracts.Dto;
+using CarWash.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CarWash.Server.Controllers;
+namespace CarWash.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ServicesController(InMemoryDataStore dataStore) : ControllerBase
+public class ServicesController(IServiceService serviceService) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IEnumerable<Service>> GetAll() => Ok(dataStore.Services);
-
-    [HttpGet("{id}")]
-    public ActionResult<Service> GetById(int id)
+    [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceDto>))]
+    public async Task<ActionResult<IEnumerable<ServiceDto>>> GetAll()
     {
-        var service = dataStore.Services.FirstOrDefault(s => s.Id == id);
-        return service is null ? NotFound() : Ok(service);
+        return Ok(await serviceService.GetAllAsync());
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(200, Type = typeof(ServiceDto))]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<ServiceDto>> GetById(int id)
+    {
+        var service = await serviceService.GetByIdAsync(id);
+        return service == null ? NotFound() : Ok(service);
     }
 
     [HttpPost]
-    public ActionResult<Service> Create([FromBody] Service service)
+    [ProducesResponseType(201, Type = typeof(ServiceDto))]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<ServiceDto>> Create([FromBody] ServiceEditDto dto)
     {
-        service.Id = dataStore.Services.Any() ? dataStore.Services.Max(s => s.Id) + 1 : 1;
-        dataStore.Services.Add(service);
-        return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
+        var created = await serviceService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Service updatedService)
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Update(int id, [FromBody] ServiceEditDto dto)
     {
-        var service = dataStore.Services.FirstOrDefault(s => s.Id == id);
-        if (service is null) return NotFound();
-
-        service.Name = updatedService.Name;
-        service.Category = updatedService.Category;
-        service.Price = updatedService.Price;
-        service.DurationMinutes = updatedService.DurationMinutes;
-
-        return NoContent();
+        try
+        {
+            await serviceService.UpdateAsync(id, dto);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Delete(int id)
     {
-        var service = dataStore.Services.FirstOrDefault(s => s.Id == id);
-        if (service is null) return NotFound();
-
-        dataStore.Services.Remove(service);
+        await serviceService.DeleteAsync(id);
         return NoContent();
     }
 }

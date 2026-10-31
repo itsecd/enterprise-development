@@ -1,7 +1,7 @@
 ﻿using CarWash.Domain.Entities;
 using CarWash.Domain.Enums;
 
-namespace CarWash.Server.Data;
+namespace CarWash.Infrastructure.InMemory.Data;
 
 public class InMemoryDataStore
 {
@@ -155,7 +155,7 @@ public class InMemoryDataStore
         Services =
         [
             new Service
-            { 
+            {
                 Id = 1,
                 Name = "Экспресс-мойка",
                 Category = CarCategory.Passenger,
@@ -163,7 +163,7 @@ public class InMemoryDataStore
                 DurationMinutes = 20
             },
             new Service
-            { 
+            {
                 Id = 2,
                 Name = "Комплексная мойка",
                 Category = CarCategory.Passenger,
@@ -171,7 +171,7 @@ public class InMemoryDataStore
                 DurationMinutes = 45
             },
             new Service
-            { 
+            {
                 Id = 3,
                 Name = "Стандартная мойка SUV",
                 Category = CarCategory.Suv,
@@ -179,7 +179,7 @@ public class InMemoryDataStore
                 DurationMinutes = 35
             },
             new Service
-            { 
+            {
                 Id = 4,
                 Name = "Химчистка салона",
                 Category = CarCategory.Passenger,
@@ -187,7 +187,7 @@ public class InMemoryDataStore
                 DurationMinutes = 90
             },
             new Service
-            { 
+            {
                 Id = 5,
                 Name = "Мойка грузовика",
                 Category = CarCategory.Truck,
@@ -195,7 +195,7 @@ public class InMemoryDataStore
                 DurationMinutes = 60
             },
             new Service
-            { 
+            {
                 Id = 6,
                 Name = "Полировка кузова",
                 Category = CarCategory.Suv,
@@ -203,7 +203,7 @@ public class InMemoryDataStore
                 DurationMinutes = 75
             },
             new Service
-            { 
+            {
                 Id = 7,
                 Name = "Мойка двигателя",
                 Category = CarCategory.Suv,
@@ -211,7 +211,7 @@ public class InMemoryDataStore
                 DurationMinutes = 30
             },
             new Service
-            { 
+            {
                 Id = 8,
                 Name = "Обработка воском",
                 Category = CarCategory.Passenger,
@@ -219,7 +219,7 @@ public class InMemoryDataStore
                 DurationMinutes = 15
             },
             new Service
-            { 
+            {
                 Id = 9,
                 Name = "Мойка днища",
                 Category = CarCategory.Suv,
@@ -227,7 +227,7 @@ public class InMemoryDataStore
                 DurationMinutes = 25
             },
             new Service
-            { 
+            {
                 Id = 10,
                 Name = "Мойка минивэна",
                 Category = CarCategory.Minivan,

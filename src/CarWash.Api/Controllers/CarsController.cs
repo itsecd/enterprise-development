@@ -1,64 +1,61 @@
-﻿using CarWash.Domain.Entities;
-using CarWash.Server.Data;
+﻿using CarWash.Contracts.Dto;
+using CarWash.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CarWash.Server.Controllers;
+namespace CarWash.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CarsController(InMemoryDataStore dataStore) : ControllerBase
+public class CarsController(ICarService carService) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IEnumerable<Car>> GetAll()
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CarDto>))]
+    public async Task<ActionResult<IEnumerable<CarDto>>> GetAll()
     {
-        return Ok(dataStore.Cars);
+        return Ok(await carService.GetAllAsync());
     }
 
-    [HttpGet("{id}")]
-    public ActionResult<Car> GetById(int id)
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(200, Type = typeof(CarDto))]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<CarDto>> GetById(int id)
     {
-        var car = dataStore.Cars.FirstOrDefault(c => c.Id == id);
-        if (car is null)
-        {
-            return NotFound();
-        }
-        return Ok(car);
+        var car = await carService.GetByIdAsync(id);
+        return car == null ? NotFound() : Ok(car);
     }
 
     [HttpPost]
-    public ActionResult<Car> Create([FromBody] Car car)
+    [ProducesResponseType(201, Type = typeof(CarDto))]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<CarDto>> Create([FromBody] CarEditDto dto)
     {
-        car.Id = dataStore.Cars.Any() ? dataStore.Cars.Max(c => c.Id) + 1 : 1;
-        dataStore.Cars.Add(car);
-
-        return CreatedAtAction(nameof(GetById), new { id = car.Id }, car);
+        var created = await carService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Car updatedCar)
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Update(int id, [FromBody] CarEditDto dto)
     {
-        var car = dataStore.Cars.FirstOrDefault(c => c.Id == id);
-        if (car is null)
+        try
+        {
+            await carService.UpdateAsync(id, dto);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
         {
             return NotFound();
         }
-
-        car.LicensePlate = updatedCar.LicensePlate;
-        car.Brand = updatedCar.Brand;
-
-        return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Delete(int id)
     {
-        var car = dataStore.Cars.FirstOrDefault(c => c.Id == id);
-        if (car is null)
-        {
-            return NotFound();
-        }
-
-        dataStore.Cars.Remove(car);
+        await carService.DeleteAsync(id);
         return NoContent();
     }
 }

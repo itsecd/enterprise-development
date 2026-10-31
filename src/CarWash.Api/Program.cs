@@ -1,22 +1,31 @@
-using CarWash.Server.Data;
+using CarWash.Application.Services;
+using CarWash.Contracts.Interfaces;
+using CarWash.Domain.Interfaces;
+using CarWash.Infrastructure.InMemory.Data;
+using CarWash.Infrastructure.InMemory.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<InMemoryDataStore>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
