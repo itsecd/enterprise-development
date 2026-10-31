@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CarWash.Domain\CarWash.Domain.csproj" />
+		<ProjectReference Include="..\..\src\CarWash.Domain\CarWash.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
