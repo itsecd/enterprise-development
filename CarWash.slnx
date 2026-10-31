@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="CarWash.Domain/CarWash.Domain.csproj" />
+  <Project Path="CarWash.Infrastructure.InMemory/CarWash.Infrastructure.InMemory.csproj" />
+  <Project Path="CarWash.Tests/CarWash.Tests.csproj" />
+  <Project Path="CarWash.Api.Host/CarWash.Api.Host.csproj" />
+  <Project Path="CarWash.Application.Contracts/CarWash.Application.Contracts.csproj" />
+  <Project Path="CarWash.Application/CarWash.Application.csproj" />
+  <Project Path="CarWash.Domain.Shared/CarWash.Domain.Shared.csproj" />
+</Solution>
