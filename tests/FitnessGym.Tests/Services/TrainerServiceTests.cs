@@ -1,32 +1,36 @@
+using System.ComponentModel.DataAnnotations;
+using FitnessGym.Application.Exceptions;
+using FitnessGym.Domain.Seeds;
 using FitnessGym.Application.Services;
 using FitnessGym.Contracts.Dto;
-using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Enums;
 using FitnessGym.Infrastructure.InMemory;
 
 namespace FitnessGym.Tests.Services;
 
 /// <summary>
-/// Тесты CRUD-операций с тренерами и аналитических запросов по тренерам в ClubService.
+/// Тесты CRUD-операций с тренерами и аналитических запросов по тренерам в сервисе.
 /// </summary>
 /// <param name="fixture">Фикстура с тестовыми данными фитнес-клуба.</param>
-public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture<FitnessGymFixture>
+public class TrainerServiceTests(FitnessGymFixture fixture) : IClassFixture<FitnessGymFixture>
 {
     /// <summary>
     /// Создаёт сервис на репозиториях фикстуры с детерминированными часами.
     /// </summary>
-    private IClubService CreateService() => new ClubService(
-        new InMemoryClientRepository(fixture.Clients),
-        new InMemoryTrainerRepository(fixture.Trainers),
-        new InMemorySpecializationRepository(fixture.Specializations),
-        new InMemoryTrainingSessionRepository(fixture.Sessions),
-        () => fixture.Now);
+    private TrainerService CreateService()
+    {
+        var data = ClubDataSeeder.Create(fixture.Now);
+        return new TrainerService(
+            new InMemoryTrainerRepository(data.Trainers),
+            new InMemorySpecializationRepository(data.Specializations),
+            new InMemoryTrainingSessionRepository(data.Sessions));
+    }
 
     /// <summary>
     /// Должен возвращать только тренеров, стаж работы которых не менее 5 лет.
     /// </summary>
     [Fact]
-    public void GetExperiencedTrainersShouldReturnTrainersWithAtLeastFiveYearsExperience()
+    public async Task GetExperiencedTrainersShouldReturnTrainersWithAtLeastFiveYearsExperience()
     {
         // arrange
         var service = CreateService();
@@ -43,7 +47,7 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
         ];
 
         // act
-        var actualTrainers = service.GetExperiencedTrainers(minYears: 5);
+        var actualTrainers = await service.GetExperiencedTrainersAsync(minYears: 5);
 
         // assert
         Assert.Equal(expectedTrainerNames, actualTrainers.Select(t => t.FullName));
@@ -53,7 +57,7 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
     /// Должен возвращать пять наиболее популярных тренеров, упорядоченных по убыванию популярности.
     /// </summary>
     [Fact]
-    public void GetPopularTrainersShouldReturnTopFiveOrderedByPopularity()
+    public async Task GetPopularTrainersShouldReturnTopFiveOrderedByPopularity()
     {
         // arrange
         var service = CreateService();
@@ -67,7 +71,7 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
         ];
 
         // act
-        var actualTrainers = service.GetPopularTrainers(count: 5);
+        var actualTrainers = await service.GetPopularTrainersAsync(count: 5);
 
         // assert
         Assert.Equal(expectedTrainerNames, actualTrainers.Select(t => t.FullName));
@@ -78,12 +82,12 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
     /// присваивая ему следующий свободный идентификатор.
     /// </summary>
     [Fact]
-    public void AddTrainerShouldAssignNextIdentifierAndStoreTrainer()
+    public async Task AddTrainerShouldAssignNextIdentifierAndStoreTrainer()
     {
         // arrange
         var service = CreateService();
         var expectedTrainersCount = fixture.Trainers.Count + 1;
-        var newTrainer = new TrainerDto
+        var newTrainer = new UpsertTrainerDto
         {
             PassportNumber = "4699 999999",
             FullName = "Тестова Анастасия Игоревна",
@@ -94,11 +98,11 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
         };
 
         // act
-        var addedTrainer = service.AddTrainer(newTrainer);
-        var storedTrainer = service.GetTrainer(addedTrainer.Id);
+        var addedTrainer = await service.AddTrainerAsync(newTrainer);
+        var storedTrainer = await service.GetTrainerAsync(addedTrainer.Id);
 
         // assert
-        Assert.Equal(expectedTrainersCount, service.GetTrainers().Count);
+        Assert.Equal(expectedTrainersCount, (await service.GetTrainersAsync()).Count);
         Assert.Equal(newTrainer.FullName, storedTrainer?.FullName);
         Assert.Equal("Йога", storedTrainer?.SpecializationName);
     }
@@ -107,11 +111,11 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
     /// Должен запрещать добавлять тренера с несуществующей специализацией.
     /// </summary>
     [Fact]
-    public void AddTrainerWithMissingSpecializationShouldThrow()
+    public async Task AddTrainerWithMissingSpecializationShouldThrow()
     {
         // arrange
         var service = CreateService();
-        var newTrainer = new TrainerDto
+        var newTrainer = new UpsertTrainerDto
         {
             PassportNumber = "4698 888888",
             FullName = "Несуществующий Артём Львович",
@@ -122,41 +126,22 @@ public class ClubServiceTrainersTests(FitnessGymFixture fixture) : IClassFixture
         };
 
         // act, assert
-        Assert.Throws<InvalidOperationException>(() => service.AddTrainer(newTrainer));
-        Assert.Equal(fixture.Trainers.Count, service.GetTrainers().Count);
-    }
-
-    /// <summary>
-    /// Должен отражать обновление названия специализации в данных тренеров.
-    /// </summary>
-    [Fact]
-    public void UpdateSpecializationShouldBeReflectedInTrainerDtos()
-    {
-        // arrange
-        var service = CreateService();
-        var specializationId = fixture.Trainers[1].Specialization.Id;
-        var updatedSpecialization = new SpecializationDto { Id = specializationId, Name = "Хатха-йога" };
-
-        // act
-        service.UpdateSpecialization(specializationId, updatedSpecialization);
-        var trainer = service.GetTrainer(1);
-
-        // assert
-        Assert.Equal("Хатха-йога", trainer?.SpecializationName);
+        await Assert.ThrowsAsync<ValidationException>(() => service.AddTrainerAsync(newTrainer));
+        Assert.Equal(fixture.Trainers.Count, (await service.GetTrainersAsync()).Count);
     }
 
     /// <summary>
     /// Должен запрещать удалять тренера, у которого есть записи на занятия.
     /// </summary>
     [Fact]
-    public void DeleteTrainerWithSessionsShouldThrow()
+    public async Task DeleteTrainerWithSessionsShouldThrow()
     {
         // arrange
         var service = CreateService();
         var trainerWithSessionsId = fixture.Sessions[0].Trainer.Id;
 
         // act, assert
-        Assert.Throws<InvalidOperationException>(() => service.DeleteTrainer(trainerWithSessionsId));
-        Assert.NotNull(service.GetTrainer(trainerWithSessionsId));
+        await Assert.ThrowsAsync<EntityInUseException>(() => service.DeleteTrainerAsync(trainerWithSessionsId));
+        Assert.NotNull((await service.GetTrainerAsync(trainerWithSessionsId)));
     }
 }

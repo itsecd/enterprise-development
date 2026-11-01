@@ -5,74 +5,68 @@ using Microsoft.AspNetCore.Mvc;
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
-/// Контроллер CRUD-операций со справочником специализаций тренеров.
+/// CRUD-операции и запросы для сущностей Specialization.
 /// </summary>
-/// <param name="clubService">Сервис фитнес-клуба.</param>
+/// <param name="service">Сервис специализаций.</param>
 [ApiController]
 [Route("api/specializations")]
-public class SpecializationsController(IClubService clubService) : ControllerBase
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+public class SpecializationsController(ISpecializationService service) : ControllerBase
 {
     /// <summary>
-    /// Возвращает список всех специализаций.
+    /// Возвращает все записи.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<SpecializationDto>), StatusCodes.Status200OK)]
-    public IReadOnlyList<SpecializationDto> GetSpecializations() => clubService.GetSpecializations();
+    [ProducesResponseType<IReadOnlyList<SpecializationDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> GetSpecializations() =>
+        Ok(await service.GetSpecializationsAsync());
 
     /// <summary>
-    /// Возвращает специализацию по идентификатору.
+    /// Возвращает запись по идентификатору.
     /// </summary>
-    /// <param name="id">Идентификатор специализации.</param>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<SpecializationDto> GetSpecialization(int id)
+    [ProducesResponseType<SpecializationDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<SpecializationDto>> GetSpecialization(int id)
     {
-        var specialization = clubService.GetSpecialization(id);
-        return specialization == null ? NotFound() : specialization;
+        var specialization = await service.GetSpecializationAsync(id);
+        return specialization is null ? NotFound() : Ok(specialization);
     }
 
     /// <summary>
-    /// Создаёт новую специализацию и возвращает созданную сущность.
+    /// Создаёт запись; идентификатор присваивается сервером.
     /// </summary>
-    /// <param name="specialization">Данные специализации.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status201Created)]
-    public ActionResult<SpecializationDto> AddSpecialization(SpecializationDto specialization)
+    [ProducesResponseType<SpecializationDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<SpecializationDto>> AddSpecialization(UpsertSpecializationDto specialization)
     {
-        var created = clubService.AddSpecialization(specialization);
+        var created = await service.AddSpecializationAsync(specialization);
         return CreatedAtAction(nameof(GetSpecialization), new { id = created.Id }, created);
     }
 
     /// <summary>
-    /// Обновляет специализацию по идентификатору.
+    /// Обновляет запись и возвращает обновлённые данные.
     /// </summary>
-    /// <param name="id">Идентификатор специализации.</param>
-    /// <param name="specialization">Новые данные специализации.</param>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult UpdateSpecialization(int id, SpecializationDto specialization) =>
-        clubService.UpdateSpecialization(id, specialization) ? NoContent() : NotFound();
+    [ProducesResponseType<SpecializationDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<SpecializationDto>> UpdateSpecialization(int id, UpsertSpecializationDto specialization)
+    {
+        var updated = await service.UpdateSpecializationAsync(id, specialization);
+        return updated is null ? NotFound() : Ok(updated);
+    }
 
     /// <summary>
-    /// Удаляет специализацию по идентификатору.
-    /// Удаление невозможно, если специализация назначена хотя бы одному тренеру.
+    /// Удаляет запись по идентификатору.
     /// </summary>
-    /// <param name="id">Идентификатор специализации.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public IActionResult DeleteSpecialization(int id)
-    {
-        try
-        {
-            return clubService.DeleteSpecialization(id) ? NoContent() : NotFound();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
-    }
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> DeleteSpecialization(int id) =>
+        await service.DeleteSpecializationAsync(id) ? NoContent() : NotFound();
 }

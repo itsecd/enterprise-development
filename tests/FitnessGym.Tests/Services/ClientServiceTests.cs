@@ -1,32 +1,36 @@
+using System.ComponentModel.DataAnnotations;
+using FitnessGym.Application.Exceptions;
+using FitnessGym.Domain.Seeds;
 using FitnessGym.Application.Services;
 using FitnessGym.Contracts.Dto;
-using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Enums;
 using FitnessGym.Infrastructure.InMemory;
 
 namespace FitnessGym.Tests.Services;
 
 /// <summary>
-/// Тесты CRUD-операций с клиентами и запроса клиентов с просроченным абонементом в ClubService.
+/// Тесты CRUD-операций с клиентами и запроса клиентов с просроченным абонементом в сервисе.
 /// </summary>
 /// <param name="fixture">Фикстура с тестовыми данными фитнес-клуба.</param>
-public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<FitnessGymFixture>
+public class ClientServiceTests(FitnessGymFixture fixture) : IClassFixture<FitnessGymFixture>
 {
     /// <summary>
     /// Создаёт сервис на репозиториях фикстуры с детерминированными часами.
     /// </summary>
-    private IClubService CreateService() => new ClubService(
-        new InMemoryClientRepository(fixture.Clients),
-        new InMemoryTrainerRepository(fixture.Trainers),
-        new InMemorySpecializationRepository(fixture.Specializations),
-        new InMemoryTrainingSessionRepository(fixture.Sessions),
-        () => fixture.Now);
+    private ClientService CreateService()
+    {
+        var data = ClubDataSeeder.Create(fixture.Now);
+        return new ClientService(
+            new InMemoryClientRepository(data.Clients),
+            new InMemoryTrainingSessionRepository(data.Sessions),
+            () => fixture.Now);
+    }
 
     /// <summary>
     /// Должен возвращать только клиентов с просроченным абонементом, упорядоченных по ФИО.
     /// </summary>
     [Fact]
-    public void GetClientsWithExpiredSubscriptionShouldReturnClientsOrderedByFullName()
+    public async Task GetClientsWithExpiredSubscriptionShouldReturnClientsOrderedByFullName()
     {
         // arrange
         var service = CreateService();
@@ -40,7 +44,7 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
         ];
 
         // act
-        var actualClients = service.GetClientsWithExpiredSubscription();
+        var actualClients = await service.GetClientsWithExpiredSubscriptionAsync();
 
         // assert
         Assert.Equal(expectedClientNames, actualClients.Select(c => c.FullName));
@@ -50,12 +54,12 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
     /// Должен добавлять клиента, присваивая ему следующий свободный идентификатор.
     /// </summary>
     [Fact]
-    public void AddClientShouldAssignNextIdentifierAndStoreClient()
+    public async Task AddClientShouldAssignNextIdentifierAndStoreClient()
     {
         // arrange
         var service = CreateService();
         var expectedClientsCount = fixture.Clients.Count + 1;
-        var newClient = new ClientDto
+        var newClient = new UpsertClientDto
         {
             PassportNumber = "4599 999999",
             FullName = "Тестов Тест Тестович",
@@ -67,11 +71,11 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
         };
 
         // act
-        var addedClient = service.AddClient(newClient);
-        var storedClient = service.GetClient(addedClient.Id);
+        var addedClient = await service.AddClientAsync(newClient);
+        var storedClient = await service.GetClientAsync(addedClient.Id);
 
         // assert
-        Assert.Equal(expectedClientsCount, service.GetClients().Count);
+        Assert.Equal(expectedClientsCount, (await service.GetClientsAsync()).Count);
         Assert.Equal(newClient.FullName, storedClient?.FullName);
     }
 
@@ -79,12 +83,12 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
     /// Должен заменять данные существующего клиента, сохраняя его идентификатор.
     /// </summary>
     [Fact]
-    public void UpdateClientShouldReplaceExistingClientKeepingIdentifier()
+    public async Task UpdateClientShouldReplaceExistingClientKeepingIdentifier()
     {
         // arrange
         var service = CreateService();
         var expectedClientsCount = fixture.Clients.Count;
-        var updatedClient = new ClientDto
+        var updatedClient = new UpsertClientDto
         {
             PassportNumber = fixture.Clients[0].PassportNumber,
             FullName = fixture.Clients[0].FullName,
@@ -96,12 +100,12 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
         };
 
         // act
-        var isUpdated = service.UpdateClient(0, updatedClient);
-        var storedClient = service.GetClient(0);
+        var isUpdated = await service.UpdateClientAsync(0, updatedClient);
+        var storedClient = await service.GetClientAsync(0);
 
         // assert
-        Assert.True(isUpdated);
-        Assert.Equal(expectedClientsCount, service.GetClients().Count);
+        Assert.NotNull(isUpdated);
+        Assert.Equal(expectedClientsCount, (await service.GetClientsAsync()).Count);
         Assert.Equal("+7 (911) 555-55-55", storedClient?.Phone);
     }
 
@@ -109,7 +113,7 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
     /// Должен удалять клиента, у которого нет записей на занятия.
     /// </summary>
     [Fact]
-    public void DeleteClientWithoutSessionsShouldRemoveClient()
+    public async Task DeleteClientWithoutSessionsShouldRemoveClient()
     {
         // arrange
         var service = CreateService();
@@ -117,26 +121,26 @@ public class ClubServiceClientsTests(FitnessGymFixture fixture) : IClassFixture<
         var expectedClientsCount = fixture.Clients.Count - 1;
 
         // act
-        var isDeleted = service.DeleteClient(clientWithoutSessionsId);
+        var isDeleted = await service.DeleteClientAsync(clientWithoutSessionsId);
 
         // assert
         Assert.True(isDeleted);
-        Assert.Null(service.GetClient(clientWithoutSessionsId));
-        Assert.Equal(expectedClientsCount, service.GetClients().Count);
+        Assert.Null((await service.GetClientAsync(clientWithoutSessionsId)));
+        Assert.Equal(expectedClientsCount, (await service.GetClientsAsync()).Count);
     }
 
     /// <summary>
     /// Должен запрещать удалять клиента, у которого есть записи на занятия.
     /// </summary>
     [Fact]
-    public void DeleteClientWithSessionsShouldThrow()
+    public async Task DeleteClientWithSessionsShouldThrow()
     {
         // arrange
         var service = CreateService();
         var clientWithSessionsId = fixture.Sessions[0].Client.Id;
 
         // act, assert
-        Assert.Throws<InvalidOperationException>(() => service.DeleteClient(clientWithSessionsId));
-        Assert.NotNull(service.GetClient(clientWithSessionsId));
+        await Assert.ThrowsAsync<EntityInUseException>(() => service.DeleteClientAsync(clientWithSessionsId));
+        Assert.NotNull((await service.GetClientAsync(clientWithSessionsId)));
     }
 }

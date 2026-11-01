@@ -1,3 +1,5 @@
+using FitnessGym.Domain.Entities;
+
 namespace FitnessGym.Tests;
 
 /// <summary>
@@ -19,11 +21,13 @@ public class SessionsQueryTests(FitnessGymFixture fixture) : IClassFixture<Fitne
         int[] expectedSessionIds = [0, 1, 2];
 
         // act
-        var actualSessions = fixture.Sessions
+        IReadOnlyList<TrainingSession> actualSessions =
+        [
+            .. fixture.Sessions
             .Where(s => s.HallName == hallName
                         && s.StartsAt.Year == today.Year
                         && s.StartsAt.Month == today.Month)
-            .ToList();
+        ];
 
         // assert
         Assert.Equal(expectedSessionIds, actualSessions.Select(s => s.Id));

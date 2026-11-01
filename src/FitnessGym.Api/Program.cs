@@ -1,29 +1,33 @@
 using System.Text.Json.Serialization;
-using FitnessGym.Application.Services;
-using FitnessGym.Contracts.Interfaces;
-using FitnessGym.Domain.Interfaces;
-using FitnessGym.Domain.Seeds;
-using FitnessGym.Infrastructure.InMemory;
+using FitnessGym.Api.Extensions;
+using FitnessGym.Api.Infrastructure;
+using Microsoft.AspNetCore.HttpLogging;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var data = ClubDataSeeder.Create();
 
 builder.Services
     .AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-
 builder.Services.AddOpenApi();
-
-builder.Services.AddSingleton<IClientRepository>(_ => new InMemoryClientRepository(data.Clients));
-builder.Services.AddSingleton<ITrainerRepository>(_ => new InMemoryTrainerRepository(data.Trainers));
-builder.Services.AddSingleton<ISpecializationRepository>(_ => new InMemorySpecializationRepository(data.Specializations));
-builder.Services.AddSingleton<ITrainingSessionRepository>(_ => new InMemoryTrainingSessionRepository(data.Sessions));
-builder.Services.AddSingleton<IClubService, ClubService>();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.RequestMethod
+                            | HttpLoggingFields.RequestPath
+                            | HttpLoggingFields.ResponseStatusCode;
+    options.CombineLogs = true;
+});
+builder.Services.AddInMemoryRepositories();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
+app.UseHttpLogging();
+app.UseExceptionHandler();
 app.MapOpenApi();
+app.MapScalarApiReference();
 app.MapControllers();
 
 app.Run();

@@ -10,20 +10,20 @@ public class ClubData
     /// <summary>
     /// Справочник специализаций тренеров.
     /// </summary>
-    public required List<Specialization> Specializations { get; init; }
+    public required IReadOnlyList<Specialization> Specializations { get; init; }
 
     /// <summary>
     /// Клиенты фитнес-клуба.
     /// </summary>
-    public required List<Client> Clients { get; init; }
+    public required IReadOnlyList<Client> Clients { get; init; }
 
     /// <summary>
     /// Тренеры фитнес-клуба.
     /// </summary>
-    public required List<Trainer> Trainers { get; init; }
+    public required IReadOnlyList<Trainer> Trainers { get; init; }
 
     /// <summary>
     /// Записи клиентов на персональные занятия.
     /// </summary>
-    public required List<TrainingSession> Sessions { get; init; }
+    public required IReadOnlyList<TrainingSession> Sessions { get; init; }
 }

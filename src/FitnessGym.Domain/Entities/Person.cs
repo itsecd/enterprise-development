@@ -1,3 +1,4 @@
+using FitnessGym.Domain.Interfaces;
 using FitnessGym.Domain.Enums;
 
 namespace FitnessGym.Domain.Entities;

@@ -1,3 +1,5 @@
+using FitnessGym.Domain.Entities;
+
 namespace FitnessGym.Tests;
 
 /// <summary>
@@ -26,9 +28,11 @@ public class TrainersQueryTests(FitnessGymFixture fixture) : IClassFixture<Fitne
         ];
 
         // act
-        var actualTrainers = fixture.Trainers
+        IReadOnlyList<Trainer> actualTrainers =
+        [
+            .. fixture.Trainers
             .Where(t => t.ExperienceYears >= 5)
-            .ToList();
+        ];
 
         // assert
         Assert.Equal(expectedTrainerNames, actualTrainers.Select(t => t.FullName));

@@ -1,88 +1,81 @@
-using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Interfaces;
 
 namespace FitnessGym.Infrastructure.InMemory;
 
 /// <summary>
-/// Базовая реализация IRepository, хранящая сущности в памяти в виде коллекции.
+/// Репозиторий с хранением в памяти и последовательным выделением идентификаторов.
 /// </summary>
+/// <param name="seed">Начальные данные.</param>
 /// <typeparam name="TEntity">Тип сущности.</typeparam>
-public class InMemoryRepository<TEntity> : IRepository<TEntity>
+public abstract class InMemoryRepository<TEntity>(IReadOnlyList<TEntity> seed) : IRepository<TEntity>
     where TEntity : class, IIdentified
 {
-    private readonly List<TEntity> _items;
-    private int _nextId;
+    private readonly List<TEntity> _items = [.. seed];
+    private readonly Lock _lock = new();
+    private int _nextId = seed.Count == 0 ? 0 : seed.Max(item => item.Id) + 1;
+
+    /// <inheritdoc/>
+    public Task<IReadOnlyList<TEntity>> GetAllAsync() =>
+        ReadAsync<IReadOnlyList<TEntity>>(items => [.. items]);
+
+    /// <inheritdoc/>
+    public Task<TEntity?> GetByIdAsync(int id) =>
+        ReadAsync(items => items.FirstOrDefault(item => item.Id == id));
+
+    /// <inheritdoc/>
+    public Task<TEntity> AddAsync(TEntity entity)
+    {
+        lock (_lock)
+        {
+            if (_items.Any(item => ReferenceEquals(item, entity)))
+            {
+                throw new InvalidOperationException("Объект уже добавлен в репозиторий.");
+            }
+
+            entity.Id = _nextId++;
+            _items.Add(entity);
+            return Task.FromResult(entity);
+        }
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> UpdateAsync(int id, TEntity entity)
+    {
+        lock (_lock)
+        {
+            var existing = _items.FirstOrDefault(item => item.Id == id);
+            if (existing is null)
+            {
+                return Task.FromResult(false);
+            }
+
+            CopyProperties(entity, existing);
+            return Task.FromResult(true);
+        }
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> DeleteAsync(int id)
+    {
+        lock (_lock)
+        {
+            return Task.FromResult(_items.RemoveAll(item => item.Id == id) > 0);
+        }
+    }
 
     /// <summary>
-    /// Создаёт репозиторий, копируя начальный набор сущностей.
+    /// Выполняет запрос под блокировкой, пока коллекция не меняется.
     /// </summary>
-    /// <param name="seed">Начальный набор сущностей.</param>
-    protected InMemoryRepository(IEnumerable<TEntity> seed)
+    protected Task<TResult> ReadAsync<TResult>(Func<IReadOnlyList<TEntity>, TResult> query)
     {
-        _items = [.. seed];
-        _nextId = _items.Count == 0 ? 0 : _items.Max(i => i.Id) + 1;
-    }
-
-    /// <inheritdoc/>
-    public IReadOnlyList<TEntity> GetAll() => _items;
-
-    /// <inheritdoc/>
-    public TEntity? GetById(int id) => _items.FirstOrDefault(i => i.Id == id);
-
-    /// <inheritdoc/>
-    public TEntity Add(TEntity entity)
-    {
-        entity.Id = _nextId++;
-        _items.Add(entity);
-        return entity;
-    }
-
-    /// <inheritdoc/>
-    public bool Update(int id, TEntity entity)
-    {
-        var index = _items.FindIndex(i => i.Id == id);
-        if (index < 0)
+        lock (_lock)
         {
-            return false;
+            return Task.FromResult(query(_items));
         }
-
-        entity.Id = id;
-        _items[index] = entity;
-        return true;
     }
 
-    /// <inheritdoc/>
-    public bool Delete(int id)
-    {
-        var countRemoved = _items.RemoveAll(i => i.Id == id);
-        return countRemoved > 0;
-    }
+    /// <summary>
+    /// Копирует изменяемые свойства, сохраняя идентификатор и ссылки на существующий объект.
+    /// </summary>
+    protected abstract void CopyProperties(TEntity source, TEntity target);
 }
-
-/// <summary>
-/// Реализация репозитория клиентов поверх коллекции в памяти.
-/// </summary>
-/// <param name="seed">Начальный набор клиентов.</param>
-public class InMemoryClientRepository(IEnumerable<Client> seed)
-    : InMemoryRepository<Client>(seed), IClientRepository;
-
-/// <summary>
-/// Реализация репозитория тренеров поверх коллекции в памяти.
-/// </summary>
-/// <param name="seed">Начальный набор тренеров.</param>
-public class InMemoryTrainerRepository(IEnumerable<Trainer> seed)
-    : InMemoryRepository<Trainer>(seed), ITrainerRepository;
-
-/// <summary>
-/// Реализация репозитория специализаций поверх коллекции в памяти.
-/// </summary>
-/// <param name="seed">Начальный набор специализаций.</param>
-public class InMemorySpecializationRepository(IEnumerable<Specialization> seed)
-    : InMemoryRepository<Specialization>(seed), ISpecializationRepository;
-
-/// <summary>
-/// Реализация репозитория записей на занятия поверх коллекции в памяти.
-/// </summary>
-/// <param name="seed">Начальный набор записей.</param>
-public class InMemoryTrainingSessionRepository(IEnumerable<TrainingSession> seed)
-    : InMemoryRepository<TrainingSession>(seed), ITrainingSessionRepository;

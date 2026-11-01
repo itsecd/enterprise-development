@@ -1,3 +1,5 @@
+using FitnessGym.Domain.Entities;
+
 namespace FitnessGym.Tests;
 
 /// <summary>
@@ -24,10 +26,12 @@ public class ExpiredSubscriptionTests(FitnessGymFixture fixture) : IClassFixture
         ];
 
         // act
-        var actualClients = fixture.Clients
+        IReadOnlyList<Client> actualClients =
+        [
+            .. fixture.Clients
             .Where(c => c.SubscriptionEnd < today)
             .OrderBy(c => c.FullName)
-            .ToList();
+        ];
 
         // assert
         Assert.Equal(expectedClientNames, actualClients.Select(c => c.FullName));

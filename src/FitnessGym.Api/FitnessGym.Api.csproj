@@ -7,14 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.18.7" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FitnessGym.Application\FitnessGym.Application.csproj"/>
-        <ProjectReference Include="..\FitnessGym.Contracts\FitnessGym.Contracts.csproj"/>
-        <ProjectReference Include="..\FitnessGym.Domain\FitnessGym.Domain.csproj"/>
-        <ProjectReference Include="..\FitnessGym.Infrastructure.InMemory\FitnessGym.Infrastructure.InMemory.csproj"/>
+        <ProjectReference Include="..\FitnessGym.Application\FitnessGym.Application.csproj" />
+        <ProjectReference Include="..\FitnessGym.Contracts\FitnessGym.Contracts.csproj" />
+        <ProjectReference Include="..\FitnessGym.Domain\FitnessGym.Domain.csproj" />
+        <ProjectReference Include="..\FitnessGym.Infrastructure.InMemory\FitnessGym.Infrastructure.InMemory.csproj" />
     </ItemGroup>
 
 </Project>

@@ -20,10 +20,13 @@
 - `src/FitnessGym.Application` — реализация сервисов: маппинг сущностей в DTO, бизнес-логика, аналитические запросы.
 - `src/FitnessGym.Infrastructure.InMemory` — реализации репозиториев поверх коллекций в памяти.
 - `src/FitnessGym.Api` — REST API сервер (ASP.NET Core, .NET 10).
-- `tests/FitnessGym.Tests` — unit-тесты (xUnit v3).
+- `tests/FitnessGym.Tests` — unit-тесты и HTTP-тесты API через `WebApplicationFactory` (xUnit v3).
 
 Хранение данных абстрагировано за интерфейсами репозиториев: переход с коллекций
 в памяти на базу данных выполняется заменой реализаций в конфигурации DI.
+Контроллеры, сервисы и репозитории используют асинхронные контракты.
+За клиентов, тренеров, специализации, занятия и залы отвечают отдельные сервисы.
+Репозитории обновляют свойства существующих объектов, сохраняя связи между сущностями.
 
 ## Лабораторная работа №1 «Классы»
 
@@ -45,11 +48,12 @@ REST API сервер, реализующий базовые CRUD-операци
 ### Запуск
 
 ```bash
-dotnet run --project FitnessGym.Api
+dotnet run --project src/FitnessGym.Api
 ```
 
 Сервер доступен на `http://localhost:5080`, OpenAPI-спецификация —
 `http://localhost:5080/openapi/v1.json`.
+Интерактивная документация Scalar с отправкой запросов — `http://localhost:5080/scalar/v1`.
 
 ### CRUD-эндпоинты
 
@@ -60,6 +64,24 @@ dotnet run --project FitnessGym.Api
 | Специализации | `GET/POST /api/specializations`, `GET/PUT/DELETE /api/specializations/{id}` |
 | Занятия | `GET/POST /api/sessions`, `GET/PUT/DELETE /api/sessions/{id}` |
 | Залы | `GET /api/halls` |
+
+Для POST и PUT используются `UpsertClientDto`, `UpsertTrainerDto`,
+`UpsertSpecializationDto`, `UpsertTrainingSessionDto` без поля `id`.
+Идентификатор создаётся в репозитории; при обновлении он берётся из маршрута.
+Название специализации тренера заполняется сервером только в ответе.
+
+- POST возвращает `201 Created`, DTO и заголовок `Location`.
+- PUT возвращает `200 OK` и обновлённый DTO.
+- DELETE возвращает `204 No Content`.
+- Несуществующая запись — `404 Not Found`; удаление связанной записи — `409 Conflict`.
+- Ошибки валидации — `400 Bad Request` в формате `ValidationProblemDetails`.
+- Непредвиденные ошибки — `500 Internal Server Error` без внутренних деталей;
+  исключение записывается в журнал, ответ содержит `traceId`.
+
+Обязательные даты, пол и внешние ключи должны быть явно указаны.
+Дата окончания абонемента не может предшествовать началу, а время окончания
+занятия должно быть позже начала (либо отсутствовать).
+Идентификаторы допускают `0`, поскольку исходный набор данных нумеруется с нуля.
 
 ### Аналитические эндпоинты
 

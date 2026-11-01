@@ -24,12 +24,14 @@ public class PopularTrainersTests(FitnessGymFixture fixture) : IClassFixture<Fit
         ];
 
         // act
-        var actualTrainerNames = fixture.Sessions
+        IReadOnlyList<string> actualTrainerNames =
+        [
+            .. fixture.Sessions
             .GroupBy(s => s.Trainer)
             .OrderByDescending(g => g.Count())
             .Take(5)
             .Select(g => g.Key.FullName)
-            .ToList();
+        ];
 
         // assert
         Assert.Equal(expectedTrainerNames, actualTrainerNames);

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using FitnessGym.Contracts.Dto;
 using FitnessGym.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -5,90 +6,77 @@ using Microsoft.AspNetCore.Mvc;
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
-/// Контроллер CRUD-операций с записями клиентов на занятия и аналитических запросов по занятиям.
+/// CRUD-операции и запросы для сущностей TrainingSession.
 /// </summary>
-/// <param name="clubService">Сервис фитнес-клуба.</param>
+/// <param name="service">Сервис занятий.</param>
 [ApiController]
 [Route("api/sessions")]
-public class TrainingSessionsController(IClubService clubService) : ControllerBase
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+public class TrainingSessionsController(ITrainingSessionService service) : ControllerBase
 {
     /// <summary>
-    /// Возвращает список всех записей на занятия.
+    /// Возвращает все записи.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainingSessionDto>), StatusCodes.Status200OK)]
-    public IReadOnlyList<TrainingSessionDto> GetSessions() => clubService.GetSessions();
+    [ProducesResponseType<IReadOnlyList<TrainingSessionDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<TrainingSessionDto>>> GetSessions() =>
+        Ok(await service.GetSessionsAsync());
 
     /// <summary>
-    /// Возвращает запись на занятие по идентификатору.
+    /// Возвращает запись по идентификатору.
     /// </summary>
-    /// <param name="id">Идентификатор записи.</param>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(TrainingSessionDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<TrainingSessionDto> GetSession(int id)
+    [ProducesResponseType<TrainingSessionDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<TrainingSessionDto>> GetSession(int id)
     {
-        var session = clubService.GetSession(id);
-        return session == null ? NotFound() : session;
+        var session = await service.GetSessionAsync(id);
+        return session is null ? NotFound() : Ok(session);
     }
 
     /// <summary>
-    /// Создаёт новую запись на занятие и возвращает созданную сущность.
+    /// Создаёт запись; идентификатор присваивается сервером.
     /// </summary>
-    /// <param name="session">Данные записи.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(TrainingSessionDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<TrainingSessionDto> AddSession(TrainingSessionDto session)
+    [ProducesResponseType<TrainingSessionDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<TrainingSessionDto>> AddSession(UpsertTrainingSessionDto session)
     {
-        try
-        {
-            var created = clubService.AddSession(session);
-            return CreatedAtAction(nameof(GetSession), new { id = created.Id }, created);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var created = await service.AddSessionAsync(session);
+        return CreatedAtAction(nameof(GetSession), new { id = created.Id }, created);
     }
 
     /// <summary>
-    /// Обновляет запись на занятие по идентификатору.
+    /// Обновляет запись и возвращает обновлённые данные.
     /// </summary>
-    /// <param name="id">Идентификатор записи.</param>
-    /// <param name="session">Новые данные записи.</param>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult UpdateSession(int id, TrainingSessionDto session)
+    [ProducesResponseType<TrainingSessionDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TrainingSessionDto>> UpdateSession(int id, UpsertTrainingSessionDto session)
     {
-        try
-        {
-            return clubService.UpdateSession(id, session) ? NoContent() : NotFound();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var updated = await service.UpdateSessionAsync(id, session);
+        return updated is null ? NotFound() : Ok(updated);
     }
 
     /// <summary>
-    /// Удаляет запись на занятие по идентификатору.
+    /// Удаляет запись по идентификатору.
     /// </summary>
-    /// <param name="id">Идентификатор записи.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult DeleteSession(int id) =>
-        clubService.DeleteSession(id) ? NoContent() : NotFound();
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteSession(int id) =>
+        await service.DeleteSessionAsync(id) ? NoContent() : NotFound();
 
     /// <summary>
     /// Возвращает занятия в выбранном зале за текущий месяц.
     /// </summary>
-    /// <param name="hallName">Название зала.</param>
     [HttpGet("current-month")]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainingSessionDto>), StatusCodes.Status200OK)]
-    public IReadOnlyList<TrainingSessionDto> GetSessionsForCurrentMonth([FromQuery] string hallName) =>
-        clubService.GetSessionsForCurrentMonth(hallName);
+    [ProducesResponseType<IReadOnlyList<TrainingSessionDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<TrainingSessionDto>>> GetSessionsForCurrentMonth(
+        [FromQuery, Required] string hallName) =>
+        Ok(await service.GetSessionsForCurrentMonthAsync(hallName));
 }

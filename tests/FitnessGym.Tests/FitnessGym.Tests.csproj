@@ -10,18 +10,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="xunit.v3" Version="4.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
+        <PackageReference Include="xunit.v3" Version="4.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Xunit"/>
+        <Using Include="Xunit" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\FitnessGym.Application\FitnessGym.Application.csproj"/>
-        <ProjectReference Include="..\..\src\FitnessGym.Contracts\FitnessGym.Contracts.csproj"/>
-        <ProjectReference Include="..\..\src\FitnessGym.Domain\FitnessGym.Domain.csproj"/>
-        <ProjectReference Include="..\..\src\FitnessGym.Infrastructure.InMemory\FitnessGym.Infrastructure.InMemory.csproj"/>
+        <ProjectReference Include="..\..\src\FitnessGym.Api\FitnessGym.Api.csproj"/>
+        <ProjectReference Include="..\..\src\FitnessGym.Application\FitnessGym.Application.csproj" />
+        <ProjectReference Include="..\..\src\FitnessGym.Contracts\FitnessGym.Contracts.csproj" />
+        <ProjectReference Include="..\..\src\FitnessGym.Domain\FitnessGym.Domain.csproj" />
+        <ProjectReference Include="..\..\src\FitnessGym.Infrastructure.InMemory\FitnessGym.Infrastructure.InMemory.csproj" />
     </ItemGroup>
 
 </Project>

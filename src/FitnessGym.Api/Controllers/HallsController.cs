@@ -1,32 +1,33 @@
+using System.ComponentModel.DataAnnotations;
 using FitnessGym.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
-/// Контроллер проверки доступности залов фитнес-клуба для записи.
+/// Получение списка залов и проверка их доступности.
 /// </summary>
-/// <param name="clubService">Сервис фитнес-клуба.</param>
+/// <param name="service">Сервис залов.</param>
 [ApiController]
 [Route("api/halls")]
-public class HallsController(IClubService clubService) : ControllerBase
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+public class HallsController(IHallService service) : ControllerBase
 {
     /// <summary>
-    /// Возвращает названия всех залов, встречающихся в записях на занятия.
+    /// Возвращает названия залов, встречающихся в записях на занятия.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
-    public IReadOnlyList<string> GetHalls() =>
-        clubService.GetSessions().Select(s => s.HallName).Distinct().ToList();
+    [ProducesResponseType<IReadOnlyList<string>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetHalls() =>
+        Ok(await service.GetHallsAsync());
 
     /// <summary>
-    /// Определяет, доступен ли зал для записи в указанный момент времени.
-    /// Занятия с ещё не проставленным временем окончания не учитываются.
+    /// Проверяет доступность зала; занятия без времени окончания не учитываются.
     /// </summary>
-    /// <param name="hallName">Название зала.</param>
-    /// <param name="at">Момент времени проверки; по умолчанию — текущий момент.</param>
     [HttpGet("{hallName}/availability")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-    public bool IsHallAvailable(string hallName, [FromQuery] DateTime? at) =>
-        clubService.IsHallAvailable(hallName, at);
+    [ProducesResponseType<bool>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<bool>> IsHallAvailable(
+        [Required] string hallName, [FromQuery] DateTime? at) =>
+        Ok(await service.IsHallAvailableAsync(hallName, at));
 }

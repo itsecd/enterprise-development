@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using FitnessGym.Contracts.Dto;
 using FitnessGym.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -5,111 +6,88 @@ using Microsoft.AspNetCore.Mvc;
 namespace FitnessGym.Api.Controllers;
 
 /// <summary>
-/// Контроллер CRUD-операций с тренерами фитнес-клуба и аналитических запросов по тренерам.
+/// CRUD-операции и запросы для сущностей Trainer.
 /// </summary>
-/// <param name="clubService">Сервис фитнес-клуба.</param>
+/// <param name="service">Сервис тренеров.</param>
 [ApiController]
 [Route("api/trainers")]
-public class TrainersController(IClubService clubService) : ControllerBase
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+public class TrainersController(ITrainerService service) : ControllerBase
 {
     /// <summary>
-    /// Возвращает список всех тренеров.
+    /// Возвращает все записи.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainerDto>), StatusCodes.Status200OK)]
-    public IReadOnlyList<TrainerDto> GetTrainers() => clubService.GetTrainers();
+    [ProducesResponseType<IReadOnlyList<TrainerDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<TrainerDto>>> GetTrainers() =>
+        Ok(await service.GetTrainersAsync());
 
     /// <summary>
-    /// Возвращает тренера по идентификатору.
+    /// Возвращает запись по идентификатору.
     /// </summary>
-    /// <param name="id">Идентификатор тренера.</param>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(TrainerDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<TrainerDto> GetTrainer(int id)
+    [ProducesResponseType<TrainerDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<TrainerDto>> GetTrainer(int id)
     {
-        var trainer = clubService.GetTrainer(id);
-        return trainer == null ? NotFound() : trainer;
+        var trainer = await service.GetTrainerAsync(id);
+        return trainer is null ? NotFound() : Ok(trainer);
     }
 
     /// <summary>
-    /// Создаёт нового тренера и возвращает созданную сущность.
+    /// Создаёт запись; идентификатор присваивается сервером.
     /// </summary>
-    /// <param name="trainer">Данные тренера.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(TrainerDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<TrainerDto> AddTrainer(TrainerDto trainer)
+    [ProducesResponseType<TrainerDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<TrainerDto>> AddTrainer(UpsertTrainerDto trainer)
     {
-        try
-        {
-            var created = clubService.AddTrainer(trainer);
-            return CreatedAtAction(nameof(GetTrainer), new { id = created.Id }, created);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var created = await service.AddTrainerAsync(trainer);
+        return CreatedAtAction(nameof(GetTrainer), new { id = created.Id }, created);
     }
 
     /// <summary>
-    /// Обновляет тренера по идентификатору.
+    /// Обновляет запись и возвращает обновлённые данные.
     /// </summary>
-    /// <param name="id">Идентификатор тренера.</param>
-    /// <param name="trainer">Новые данные тренера.</param>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult UpdateTrainer(int id, TrainerDto trainer)
+    [ProducesResponseType<TrainerDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TrainerDto>> UpdateTrainer(int id, UpsertTrainerDto trainer)
     {
-        try
-        {
-            return clubService.UpdateTrainer(id, trainer) ? NoContent() : NotFound();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var updated = await service.UpdateTrainerAsync(id, trainer);
+        return updated is null ? NotFound() : Ok(updated);
     }
 
     /// <summary>
-    /// Удаляет тренера по идентификатору.
-    /// Удаление невозможно, если у тренера есть записи на занятия.
+    /// Удаляет запись по идентификатору.
     /// </summary>
-    /// <param name="id">Идентификатор тренера.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public IActionResult DeleteTrainer(int id)
-    {
-        try
-        {
-            return clubService.DeleteTrainer(id) ? NoContent() : NotFound();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
-    }
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> DeleteTrainer(int id) =>
+        await service.DeleteTrainerAsync(id) ? NoContent() : NotFound();
 
     /// <summary>
-    /// Возвращает тренеров, стаж работы которых не менее указанного количества лет.
+    /// Возвращает тренеров с указанным минимальным стажем работы.
     /// </summary>
-    /// <param name="minYears">Минимальный стаж работы в годах; по умолчанию 5.</param>
     [HttpGet("experienced")]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainerDto>), StatusCodes.Status200OK)]
-    public IReadOnlyList<TrainerDto> GetExperiencedTrainers([FromQuery] int minYears = 5) =>
-        clubService.GetExperiencedTrainers(minYears);
+    [ProducesResponseType<IReadOnlyList<TrainerDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<TrainerDto>>> GetExperiencedTrainers(
+        [FromQuery, Range(0, int.MaxValue)] int minYears = 5) =>
+        Ok(await service.GetExperiencedTrainersAsync(minYears));
 
     /// <summary>
-    /// Возвращает наиболее популярных тренеров по числу записанных занятий,
-    /// упорядоченных по убыванию популярности.
+    /// Возвращает самых популярных тренеров по числу записанных занятий.
     /// </summary>
-    /// <param name="count">Количество тренеров в ответе; по умолчанию 5.</param>
     [HttpGet("popular")]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainerDto>), StatusCodes.Status200OK)]
-    public IReadOnlyList<TrainerDto> GetPopularTrainers([FromQuery] int count = 5) =>
-        clubService.GetPopularTrainers(count);
+    [ProducesResponseType<IReadOnlyList<TrainerDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<TrainerDto>>> GetPopularTrainers(
+        [FromQuery, Range(1, int.MaxValue)] int count = 5) =>
+        Ok(await service.GetPopularTrainersAsync(count));
 }

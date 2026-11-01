@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace FitnessGym.Contracts.Dto;
 
 /// <summary>
@@ -10,39 +8,35 @@ public class TrainingSessionDto
     /// <summary>
     /// Идентификатор.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     /// <summary>
     /// Идентификатор клиента.
     /// </summary>
-    [Range(0, int.MaxValue, ErrorMessage = "Некорректный идентификатор клиента")]
-    public int ClientId { get; set; }
+    public int ClientId { get; init; }
 
     /// <summary>
     /// Идентификатор тренера.
     /// </summary>
-    [Range(0, int.MaxValue, ErrorMessage = "Некорректный идентификатор тренера")]
-    public int TrainerId { get; set; }
+    public int TrainerId { get; init; }
 
     /// <summary>
     /// Дата и время начала занятия.
     /// </summary>
-    [Required(ErrorMessage = "Не указано время начала занятия")]
-    public DateTime StartsAt { get; set; }
+    public DateTime StartsAt { get; init; }
 
     /// <summary>
     /// Дата и время окончания занятия; может быть не проставлена.
     /// </summary>
-    public DateTime? EndsAt { get; set; }
+    public DateTime? EndsAt { get; init; }
 
     /// <summary>
     /// Название зала, в котором проходит занятие.
     /// </summary>
-    [Required(ErrorMessage = "Не указано название зала")]
-    public string HallName { get; set; } = null!;
+    public string HallName { get; init; } = string.Empty;
 
     /// <summary>
     /// Является ли посещение пробным.
     /// </summary>
-    public bool IsTrial { get; set; }
+    public bool IsTrial { get; init; }
 }

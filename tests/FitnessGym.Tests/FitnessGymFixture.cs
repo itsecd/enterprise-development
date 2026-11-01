@@ -28,22 +28,22 @@ public class FitnessGymFixture
     /// <summary>
     /// Справочник специализаций тренеров.
     /// </summary>
-    public List<Specialization> Specializations => Data.Specializations;
+    public IReadOnlyList<Specialization> Specializations => Data.Specializations;
 
     /// <summary>
     /// Клиенты фитнес-клуба.
     /// </summary>
-    public List<Client> Clients => Data.Clients;
+    public IReadOnlyList<Client> Clients => Data.Clients;
 
     /// <summary>
     /// Тренеры фитнес-клуба.
     /// </summary>
-    public List<Trainer> Trainers => Data.Trainers;
+    public IReadOnlyList<Trainer> Trainers => Data.Trainers;
 
     /// <summary>
     /// Записи клиентов на персональные занятия.
     /// </summary>
-    public List<TrainingSession> Sessions => Data.Sessions;
+    public IReadOnlyList<TrainingSession> Sessions => Data.Sessions;
 
     /// <summary>
     /// Инициализирует тестовые данные: не менее 10 экземпляров каждого класса.

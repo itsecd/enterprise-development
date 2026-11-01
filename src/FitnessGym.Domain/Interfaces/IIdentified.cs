@@ -1,4 +1,4 @@
-namespace FitnessGym.Domain.Entities;
+namespace FitnessGym.Domain.Interfaces;
 
 /// <summary>
 /// Сущность с целочисленным идентификатором.

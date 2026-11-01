@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace FitnessGym.Contracts.Dto;
 
 /// <summary>
@@ -10,12 +8,10 @@ public class SpecializationDto
     /// <summary>
     /// Идентификатор.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     /// <summary>
     /// Название специализации.
     /// </summary>
-    [Required(ErrorMessage = "Не указано название специализации")]
-    [MinLength(2, ErrorMessage = "Название специализации слишком короткое")]
-    public string Name { get; set; } = null!;
+    public string Name { get; init; } = string.Empty;
 }
