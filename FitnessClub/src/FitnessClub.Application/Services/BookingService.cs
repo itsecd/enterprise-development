@@ -9,6 +9,9 @@ using FitnessClub.Application.Validation;
 
 namespace FitnessClub.Application.Services;
 
+/// <summary>
+/// Управление бронированиями
+/// </summary>
 public class BookingService(
     IRepository<Booking> bookingRepository,
     IRepository<Client> clientRepository,
@@ -17,16 +20,25 @@ public class BookingService(
     BookingScheduleValidator scheduleValidator
     ) : ICrudService<BookingDto, BookingEditDto>
 {
+    /// <summary>
+    /// Получить список бронирований
+    /// </summary>
     public async Task<IReadOnlyList<BookingDto>> GetAllAsync()
     {
         var bookings = await bookingRepository.GetAllAsync();
         return [.. bookings.Select(b => b.ToDto())];
     }
+    /// <summary>
+    /// Получить бронирование по идентификатору
+    /// </summary>
     public async Task<BookingDto?> GetByIdAsync(int id)
     {
         var booking = await bookingRepository.GetByIdAsync(id);
         return booking?.ToDto();
     }
+    /// <summary>
+    /// Создать бронирование с проверкой доступности
+    /// </summary>
     public async Task<BookingDto> AddAsync(BookingEditDto editDto)
     {
         var (client, trainer, hall) = await GetBookingReferencesAsync(editDto);
@@ -36,12 +48,14 @@ public class BookingService(
         var savedBooking = await bookingRepository.AddAsync(booking);
         return savedBooking.ToDto();
     }
+    /// <summary>
+    /// Обновить бронирование с проверкой доступности
+    /// </summary>
     public async Task<BookingDto?> UpdateAsync(int id, BookingEditDto editDto)
     {
         var existingBooking = await bookingRepository.GetByIdAsync(id);
         if (existingBooking is null)
             return null;
-
         var (client, trainer, hall) = await GetBookingReferencesAsync(editDto);
         var candidateBooking = editDto.ToEntity(client, trainer, hall);
         candidateBooking.Id = id; //эту шнягу в 3-ей лабе мб придется переделать
@@ -49,10 +63,16 @@ public class BookingService(
         var savedBooking = await bookingRepository.UpdateAsync(candidateBooking);
         return savedBooking?.ToDto();
     }
+    /// <summary>
+    /// Удалить бронирование по идентификатору
+    /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {
         return await bookingRepository.DeleteAsync(id);
     }
+    /// <summary>
+    /// Получить клиента, тренера и зал бронирования
+    /// </summary>
     private async Task<(Client, Trainer, Hall)> GetBookingReferencesAsync(
         BookingEditDto editDto)
     {

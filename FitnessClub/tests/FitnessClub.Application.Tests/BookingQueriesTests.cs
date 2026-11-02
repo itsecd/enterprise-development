@@ -2,7 +2,6 @@ namespace FitnessClub.Application.Tests;
 /// <summary>
 /// Класс тестов для запросов бронирования
 /// </summary>
-/// 
 public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<BookingQueriesFixture>
 {
     /// <summary>
@@ -15,6 +14,7 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     [Fact]
     public async Task ExperiencedTrainers_ShouldHaveAtLeast5YearsExperience()
     {
+        // Arrange
         var expectedTrainers = new[]
         {
             fixture.SeedData.Trainers[0],
@@ -26,9 +26,9 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
             fixture.SeedData.Trainers[8],
             fixture.SeedData.Trainers[9]
         };
-
+        // Act
         var result = await fixture.AnalyticsService.GetExperiencedTrainersAsync();
-
+        // Assert
         Assert.Equal(expectedTrainers.Select(trainer => trainer.FullName),
             result.Select(trainer => trainer.FullName));
         Assert.All(result, trainer => Assert.True(trainer.Experience >= 5));
@@ -39,6 +39,7 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     [Fact]
     public async Task ClientsWithOverdueSubscriptions_ShouldBeOrderedByFullName()
     {
+        // Arrange
         var checkDate = DateOnly.FromDateTime(_checkTime.Date);
         var expectedClients = new[]
         {
@@ -47,10 +48,10 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
             fixture.SeedData.Clients[2],
             fixture.SeedData.Clients[4]
         };
-
+        // Act
         var result = await fixture.AnalyticsService
             .GetClientsWithOverdueSubscriptionsAsync(checkDate);
-
+        // Assert
         Assert.Equal(expectedClients.Select(client => client.FullName),
             result.Select(client => client.FullName));
         Assert.All(result, client => Assert.True(client.SubscriptionEnd < checkDate));
@@ -61,8 +62,10 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     [Fact]
     public async Task MostPopularTrainers_ShouldBeOrderedByNumberOfBookings()
     {
+        // Arrange
+        // Act
         var result = await fixture.AnalyticsService.GetMostPopularTrainersAsync();
-
+        // Assert
         Assert.Equal([3, 4, 2, 1, 7], result.Select(trainer => trainer.TrainerId));
         Assert.Equal([5, 4, 3, 2, 2], result.Select(trainer => trainer.BookingCount));
         Assert.Equal(
@@ -78,16 +81,15 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     /// <summary>
     /// Проверить, является ли зал доступным для записи в момент времени _checkTime. 
     /// </summary> dotnet add tests/FitnessClub.IntegrationTests/FitnessClub.IntegrationTests.csproj package Aspire.Hosting.Testing
-
-
     [Fact]
     public async Task Hall_ShouldBeUnavailable_WhenBookingOverlapsCheckTime()
     {
+        // Arrange
         var busyHallId = fixture.SeedData.Halls[4].Id;
-
+        // Act
         var isAvailable = await fixture.AnalyticsService
             .IsHallAvailableAsync(busyHallId, _checkTime);
-
+        // Assert
         Assert.False(isAvailable);
     }
     /// <summary>
@@ -96,6 +98,7 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     [Fact]
     public async Task SessionsInTheChosenHall_ShouldBeFilteredByCurrentMonth()
     {
+        // Arrange
         var checkDate = DateOnly.FromDateTime(_checkTime.Date);
         var chosenHallId = fixture.SeedData.Halls[4].Id;
         var expectedBookingIds = new[]
@@ -104,10 +107,10 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
             fixture.SeedData.Bookings[11].Id,
             fixture.SeedData.Bookings[12].Id
         };
-
+        // Act
         var result = await fixture.AnalyticsService
             .GetBookingsInHallForMonthAsync(chosenHallId, checkDate);
-
+        // Assert
         Assert.Equal(expectedBookingIds, result.Select(booking => booking.Id));
     }
 }

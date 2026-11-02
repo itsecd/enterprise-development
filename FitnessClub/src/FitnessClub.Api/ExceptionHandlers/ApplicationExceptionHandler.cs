@@ -9,6 +9,9 @@ namespace FitnessClub.Api.ExceptionHandlers;
 /// </summary>
 public class ApplicationExceptionHandler : IExceptionHandler
 {
+    /// <summary>
+    /// Обработать исключение и сформировать HTTP-ответ
+    /// </summary>
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {

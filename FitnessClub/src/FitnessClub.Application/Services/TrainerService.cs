@@ -9,22 +9,34 @@ using FitnessClub.Application.Validation;
 
 namespace FitnessClub.Application.Services;
 
+/// <summary>
+/// Управление тренерами
+/// </summary>
 public class TrainerService(
     IRepository<Trainer> trainerRepository,
     IRepository<Booking> bookingRepository,
     IRepository<Specialization> specializationRepository,
     PassportNumberUniquenessValidator passportNumberValidator) : ICrudService<TrainerDto, TrainerEditDto>
 {
+    /// <summary>
+    /// Получить список тренеров
+    /// </summary>
     public async Task<IReadOnlyList<TrainerDto>> GetAllAsync()
     {
         var trainers = await trainerRepository.GetAllAsync();
         return [.. trainers.Select(t => t.ToDto())];
     }
+    /// <summary>
+    /// Получить тренера по идентификатору
+    /// </summary>
     public async Task<TrainerDto?> GetByIdAsync(int id)
     {
         var trainer = await trainerRepository.GetByIdAsync(id);
         return trainer?.ToDto();
     }
+    /// <summary>
+    /// Добавить тренера
+    /// </summary>
     public async Task<TrainerDto> AddAsync(TrainerEditDto editDto)
     {
         await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber);
@@ -32,6 +44,9 @@ public class TrainerService(
         var trainer = await trainerRepository.AddAsync(editDto.ToEntity(specialization));
         return trainer.ToDto();
     }
+    /// <summary>
+    /// Обновить данные тренера
+    /// </summary>
     public async Task<TrainerDto?> UpdateAsync(int id, TrainerEditDto editDto)
     {
         var trainer = await trainerRepository.GetByIdAsync(id);
@@ -43,6 +58,9 @@ public class TrainerService(
         await trainerRepository.UpdateAsync(trainer);
         return trainer.ToDto();
     }
+    /// <summary>
+    /// Удалить тренера при отсутствии бронирований
+    /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {
         var allBookings = await bookingRepository.GetAllAsync();

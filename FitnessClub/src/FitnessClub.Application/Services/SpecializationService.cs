@@ -8,25 +8,40 @@ using FitnessClub.Domain.Interfaces;
 
 namespace FitnessClub.Application.Services;
 
+/// <summary>
+/// Управление специализациями тренеров
+/// </summary>
 public class SpecializationService(
     IRepository<Specialization> specializationRepository,
     IRepository<Trainer> trainerRepository) : ICrudService<SpecializationDto, SpecializationEditDto>
 {
+    /// <summary>
+    /// Получить список специализаций
+    /// </summary>
     public async Task<IReadOnlyList<SpecializationDto>> GetAllAsync()
     {
         var specializations = await specializationRepository.GetAllAsync();
         return [.. specializations.Select(s => s.ToDto())];
     }
+    /// <summary>
+    /// Получить специализацию по идентификатору
+    /// </summary>
     public async Task<SpecializationDto?> GetByIdAsync(int id)
     {
         var specialization = await specializationRepository.GetByIdAsync(id);
         return specialization?.ToDto();
     }
+    /// <summary>
+    /// Добавить специализацию
+    /// </summary>
     public async Task<SpecializationDto> AddAsync(SpecializationEditDto editDto)
     {
         var specialization = await specializationRepository.AddAsync(editDto.ToEntity());
         return specialization.ToDto();
     }
+    /// <summary>
+    /// Обновить специализацию
+    /// </summary>
     public async Task<SpecializationDto?> UpdateAsync(int id, SpecializationEditDto editDto)
     {
         var specialization = await specializationRepository.GetByIdAsync(id);
@@ -36,6 +51,9 @@ public class SpecializationService(
         await specializationRepository.UpdateAsync(specialization);
         return specialization.ToDto();
     }
+    /// <summary>
+    /// Удалить специализацию при отсутствии связанных тренеров
+    /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {
         var allTrainers = await trainerRepository.GetAllAsync();

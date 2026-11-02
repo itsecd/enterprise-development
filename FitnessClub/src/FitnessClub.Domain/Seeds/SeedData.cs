@@ -28,7 +28,6 @@ public class SeedData
     /// Список броней на тренировки
     /// </summary>
     public List<Booking> Bookings { get; }
-
     public SeedData()
     {
         Specializations =
