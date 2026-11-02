@@ -10,7 +10,7 @@ namespace FitnessClub.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/bookings")]
-public class BookingController(ICrudService<BookingDto, BookingEditDto> service) : ControllerBase
+public class BookingsController(ICrudService<BookingDto, BookingEditDto> service) : ControllerBase
 {
     /// <summary>
     /// Получить все брони

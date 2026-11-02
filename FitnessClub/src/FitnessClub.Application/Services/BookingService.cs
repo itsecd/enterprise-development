@@ -58,10 +58,10 @@ public class BookingService(
             return null;
         var (client, trainer, hall) = await GetBookingReferencesAsync(editDto);
         var candidateBooking = editDto.ToEntity(client, trainer, hall);
-        candidateBooking.Id = id; //эту шнягу в 3-ей лабе мб придется переделать
         await scheduleValidator.EnsureAvailableAsync(candidateBooking, excludingBookingId: id);
-        var savedBooking = await bookingRepository.UpdateAsync(candidateBooking);
-        return savedBooking?.ToDto();
+        existingBooking.UpdateEntity(editDto, client, trainer, hall);
+        await bookingRepository.UpdateAsync(existingBooking);
+        return existingBooking?.ToDto();
     }
     /// <summary>
     /// Удалить бронирование по идентификатору

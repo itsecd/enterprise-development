@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using FitnessClub.Domain.Enums;
+using FitnessClub.Shared.Enums;
 
 namespace FitnessClub.Contracts.Dtos.Edit;
 /// <summary>

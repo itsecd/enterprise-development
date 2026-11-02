@@ -1,5 +1,5 @@
 ﻿using FitnessClub.Domain.Entities;
-using FitnessClub.Domain.Enums;
+using FitnessClub.Shared.Enums;
 
 namespace FitnessClub.Domain.Seeds;
 
@@ -42,6 +42,19 @@ public class SeedData
             new Specialization { Name = "Фитнес для начинающих" },
             new Specialization { Name = "Боевые искусства" },
             new Specialization { Name = "Плавание" }
+        ];
+        Halls =
+        [
+            new Hall { Name = "Зал бокса" },
+            new Hall { Name = "Зал фитнеса" },
+            new Hall { Name = "Зал йоги" },
+            new Hall { Name = "Зал пилатеса" },
+            new Hall { Name = "Кросс-фитнес студия" },
+            new Hall { Name = "Зал кардиотренировок" },
+            new Hall { Name = "Зал функциональных тренировок" },
+            new Hall { Name = "Зал групповых тренировок" },
+            new Hall { Name = "Зал боевых искусств" },
+            new Hall { Name = "Бассейн" }
         ];
         Clients =
         [
@@ -258,19 +271,6 @@ public class SeedData
                 Gender = Gender.Female,
                 BirthDate = new DateOnly(1991, 12, 26)
             }
-        ];
-        Halls =
-        [
-            new Hall { Name = "Зал бокса" },
-            new Hall { Name = "Зал фитнеса" },
-            new Hall { Name = "Зал йоги" },
-            new Hall { Name = "Зал пилатеса" },
-            new Hall { Name = "Кросс-фитнес студия" },
-            new Hall { Name = "Зал кардиотренировок" },
-            new Hall { Name = "Зал функциональных тренировок" },
-            new Hall { Name = "Зал групповых тренировок" },
-            new Hall { Name = "Зал боевых искусств" },
-            new Hall { Name = "Бассейн" }
         ];
         Bookings =
         [

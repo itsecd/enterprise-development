@@ -21,11 +21,8 @@ await app.Services.SeedInMemoryStorageAsync();
 
 app.UseExceptionHandler();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.MapControllers();
 app.Run();
