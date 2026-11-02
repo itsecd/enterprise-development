@@ -1,6 +1,4 @@
-using FitnessClub.Application;
 using FitnessClub.Contracts.Interfaces;
-using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Seeds;
 using FitnessClub.Infrastructure.InMemory;
 using FitnessClub.Infrastructure.InMemory.Seeding;
@@ -10,11 +8,13 @@ namespace FitnessClub.Application.Tests;
 
 public sealed class BookingQueriesFixture : IAsyncLifetime
 {
+    private IAnalyticsService? _analyticsService;
     private ServiceProvider? _serviceProvider;
     private AsyncServiceScope? _scope;
-
     public SeedData SeedData { get; } = new();
-    public IAnalyticsService AnalyticsService { get; private set; } = null!;
+    public IAnalyticsService AnalyticsService => 
+        _analyticsService 
+        ?? throw new InvalidOperationException("Фикстура не инициализирована.");
 
     public async ValueTask InitializeAsync()
     {
@@ -22,12 +22,11 @@ public sealed class BookingQueriesFixture : IAsyncLifetime
         services.AddInMemoryStorage();
         services.AddApplication();
         _serviceProvider = services.BuildServiceProvider();
-
         _scope = _serviceProvider.CreateAsyncScope();
         var scopedServices = _scope.Value.ServiceProvider;
         var seeder = scopedServices.GetRequiredService<DataSeeder>();
         await seeder.DataSeedingAsync(SeedData);
-        AnalyticsService = scopedServices.GetRequiredService<IAnalyticsService>();
+        _analyticsService = scopedServices.GetRequiredService<IAnalyticsService>();
     }
 
     public async ValueTask DisposeAsync()

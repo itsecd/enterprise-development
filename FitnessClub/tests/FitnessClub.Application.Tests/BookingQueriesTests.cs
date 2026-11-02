@@ -77,7 +77,9 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     }
     /// <summary>
     /// Проверить, является ли зал доступным для записи в момент времени _checkTime. 
-    /// </summary>
+    /// </summary> dotnet add tests/FitnessClub.IntegrationTests/FitnessClub.IntegrationTests.csproj package Aspire.Hosting.Testing
+
+
     [Fact]
     public async Task Hall_ShouldBeUnavailable_WhenBookingOverlapsCheckTime()
     {

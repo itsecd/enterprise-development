@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/FitnessClub.AppHost/FitnessClub.AppHost.csproj" />
     <Project Path="src/FitnessClub.Api/FitnessClub.Api.csproj" />
     <Project Path="src/FitnessClub.Application/FitnessClub.Application.csproj" />
     <Project Path="src/FitnessClub.Contracts/FitnessClub.Contracts.csproj" />
@@ -8,5 +9,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/FitnessClub.Application.Tests/FitnessClub.Application.Tests.csproj" />
+    <Project Path="tests/FitnessClub.IntegrationTests/FitnessClub.IntegrationTests.csproj" />
   </Folder>
 </Solution>

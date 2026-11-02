@@ -26,7 +26,6 @@ public static class DependencyInjection
         services.AddScoped<PassportNumberUniquenessValidator>();
         services.AddScoped<BookingScheduleValidator>();
         services.AddScoped<IAnalyticsService, AnalyticsService>();
-        
         services.AddScoped<ICrudService<TrainerDto, TrainerEditDto>, TrainerService>();
         services.AddScoped<ICrudService<BookingDto, BookingEditDto>, BookingService>();
         services.AddScoped<ICrudService<SpecializationDto, SpecializationEditDto>, SpecializationService>();
