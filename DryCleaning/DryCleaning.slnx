@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/DryCleaning.AppHost/DryCleaning.AppHost.csproj" />
+    <Project Path="src/DryCleaning.Infrastructure.EfCore/DryCleaning.Infrastructure.EfCore.csproj" />
     <Project Path="src/DryCleaning.ServiceDefaults/DryCleaning.ServiceDefaults.csproj" />
   </Folder>
   <Project Path="src/DryCleaning.Api/DryCleaning.Api.csproj" />
