@@ -11,7 +11,6 @@ public class OwnerEditDto
     /// ФИО владельца
     /// </summary>
     [Required]
-    [MaxLength(150)]
     public required string FullName { get; init; }
 
     /// <summary>

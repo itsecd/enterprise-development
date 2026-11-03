@@ -18,14 +18,13 @@ public class VetEditDto
     /// ФИО врача
     /// </summary>
     [Required]
-    [MaxLength(150)]
     public required string FullName { get; init; }
 
     /// <summary>
     /// Год рождения
     /// </summary>
     [Required]
-    [Range(1920, 2010)]
+    [Range(1900, 2200)]
     public required int BirthYear { get; init; }
 
     /// <summary>
