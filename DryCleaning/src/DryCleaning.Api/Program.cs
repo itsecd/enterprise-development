@@ -7,6 +7,8 @@ using DryCleaning.Infrastructure.InMemory;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Записываем в лог ошибки проверки запроса до вызова контроллера
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
 {
@@ -40,6 +42,8 @@ builder.Services.AddScoped<IItemCategoryService, ItemCategoryService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Документация и интерфейс проверки API доступны в режиме разработки
 if (app.Environment.IsDevelopment())
