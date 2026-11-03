@@ -38,6 +38,3 @@ if (app.Environment.IsDevelopment())
 }
 app.MapControllers();
 app.Run();
-
-/// <summary>Точка входа для интеграционных тестов API.</summary>
-public partial class Program;

@@ -6,13 +6,13 @@ namespace AutoService.Application.Interfaces;
 public interface ICrudService<TRequest, TDto>
 {
     /// <summary>Возвращает все записи.</summary>
-    public IReadOnlyList<TDto> GetAll();
+    public Task<IReadOnlyList<TDto>> GetAllAsync();
     /// <summary>Возвращает запись по идентификатору.</summary>
-    public TDto Get(int id);
+    public Task<TDto> GetAsync(int id);
     /// <summary>Создаёт запись.</summary>
-    public TDto Create(TRequest request);
+    public Task<TDto> CreateAsync(TRequest request);
     /// <summary>Полностью обновляет существующую запись.</summary>
-    public void Update(int id, TRequest request);
+    public Task UpdateAsync(int id, TRequest request);
     /// <summary>Удаляет запись, если она не используется.</summary>
-    public void Delete(int id);
+    public Task DeleteAsync(int id);
 }

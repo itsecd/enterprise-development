@@ -8,6 +8,7 @@ namespace AutoService.Api.Controllers;
 /// <summary>Сводные отчёты по заказам.</summary>
 /// <param name="service">Сервис аналитики.</param>
 [ApiController]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
 [Route("api/analytics")]
 public class AnalyticsController(IAnalyticsService service) : ControllerBase
 {
@@ -17,13 +18,13 @@ public class AnalyticsController(IAnalyticsService service) : ControllerBase
     [HttpGet("repeat-visits")]
     [ProducesResponseType<IReadOnlyList<RepeatVisitDto>>(StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
-    public ActionResult<IReadOnlyList<RepeatVisitDto>> GetRepeatVisits([FromQuery, Required] DateTimeOffset? reportDate) =>
-        Ok(service.GetRepeatVisits(reportDate!.Value));
+    public async Task<ActionResult<IReadOnlyList<RepeatVisitDto>>> GetRepeatVisits([FromQuery, Required] DateTimeOffset? reportDate) =>
+        Ok(await service.GetRepeatVisitsAsync(reportDate!.Value));
 
     /// <summary>Топ-5 наиболее частых видов работ за всю историю.</summary>
     /// <remarks>При одинаковом количестве заказов первым идёт вид работ с меньшим идентификатором.</remarks>
     [HttpGet("most-frequent-work-types")]
     [ProducesResponseType<IReadOnlyList<WorkFrequencyDto>>(StatusCodes.Status200OK, "application/json")]
-    public ActionResult<IReadOnlyList<WorkFrequencyDto>> GetMostFrequentWorkTypes() =>
-        Ok(service.GetMostFrequentWorkTypes());
+    public async Task<ActionResult<IReadOnlyList<WorkFrequencyDto>>> GetMostFrequentWorkTypes() =>
+        Ok(await service.GetMostFrequentWorkTypesAsync());
 }

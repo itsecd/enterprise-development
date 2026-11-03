@@ -7,11 +7,11 @@ namespace AutoService.Domain.Interfaces;
 public interface IOrderRepository : IRepository<Order>
 {
     /// <summary>Клиенты механика без повторов, упорядоченные по ФИО.</summary>
-    public IReadOnlyList<Client> GetClientsByMechanic(int mechanicId);
+    public Task<IReadOnlyList<Client>> GetClientsByMechanicAsync(int mechanicId);
 
     /// <summary>Повторные обращения за месяц до даты отчёта, не включая саму дату.</summary>
-    public IReadOnlyList<RepeatVisit> GetRepeatVisits(DateTimeOffset reportDate);
+    public Task<IReadOnlyList<RepeatVisit>> GetRepeatVisitsAsync(DateTimeOffset reportDate);
 
     /// <summary>Пять самых частых видов работ с разрешением равенства по Id.</summary>
-    public IReadOnlyList<WorkFrequency> GetMostFrequentWorkTypes();
+    public Task<IReadOnlyList<WorkFrequency>> GetMostFrequentWorkTypesAsync();
 }

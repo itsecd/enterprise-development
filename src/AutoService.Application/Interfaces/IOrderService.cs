@@ -6,13 +6,13 @@ namespace AutoService.Application.Interfaces;
 public interface IOrderService : ICrudService<OrderRequest, OrderDto>
 {
     /// <summary>Возвращает автомобиль заказа.</summary>
-    public CarDto GetCar(int id);
+    public Task<CarDto> GetCarAsync(int id);
     /// <summary>Возвращает клиента заказа.</summary>
-    public ClientDto GetClient(int id);
+    public Task<ClientDto> GetClientAsync(int id);
     /// <summary>Возвращает механика заказа.</summary>
-    public MechanicDto GetMechanic(int id);
+    public Task<MechanicDto> GetMechanicAsync(int id);
     /// <summary>Возвращает виды работ заказа.</summary>
-    public IReadOnlyList<WorkTypeDto> GetWorkTypes(int id);
+    public Task<IReadOnlyList<WorkTypeDto>> GetWorkTypesAsync(int id);
     /// <summary>Рассчитывает суммарную стоимость заказа.</summary>
-    public OrderCostDto GetTotalCost(int id);
+    public Task<OrderCostDto> GetTotalCostAsync(int id);
 }

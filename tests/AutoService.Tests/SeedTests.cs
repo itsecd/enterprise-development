@@ -13,11 +13,11 @@ public class SeedTests(AutoServiceFixture fixture) : IClassFixture<AutoServiceFi
         // Arrange
         int[][] identifiers =
         [
-            fixture.Clients.Select(client => client.Id).ToArray(),
-            fixture.Cars.Select(car => car.Id).ToArray(),
-            fixture.Mechanics.Select(mechanic => mechanic.Id).ToArray(),
-            fixture.WorkTypes.Select(work => work.Id).ToArray(),
-            fixture.Orders.Select(order => order.Id).ToArray()
+            [.. fixture.Clients.Select(client => client.Id)],
+            [.. fixture.Cars.Select(car => car.Id)],
+            [.. fixture.Mechanics.Select(mechanic => mechanic.Id)],
+            [.. fixture.WorkTypes.Select(work => work.Id)],
+            [.. fixture.Orders.Select(order => order.Id)]
         ];
 
         // Act

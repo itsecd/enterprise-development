@@ -1,3 +1,4 @@
+using AutoService.Api.Controllers;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -15,7 +16,7 @@ public class DocumentationApiTests : ApiTestBase
     [Fact]
     public async Task UnexpectedFailure_ReturnsSafeProblemDetails()
     {
-        using var factory = new WebApplicationFactory<Program>()
+        using var factory = new WebApplicationFactory<ClientsController>()
             .WithWebHostBuilder(builder => builder.ConfigureServices(services =>
                 services.AddScoped<IClientService>(_ => throw new InvalidOperationException("internal-secret"))));
         using var client = factory.CreateClient();
@@ -33,6 +34,14 @@ public class DocumentationApiTests : ApiTestBase
     {
         var document = await Client.GetFromJsonAsync<JsonElement>("/openapi/v1.json", cancellationToken: TestContext.Current.CancellationToken);
         var paths = document.GetProperty("paths");
+        foreach (var path in paths.EnumerateObject())
+        {
+            foreach (var operation in path.Value.EnumerateObject())
+            {
+                var error = operation.Value.GetProperty("responses").GetProperty("500");
+                Assert.True(error.GetProperty("content").TryGetProperty("application/problem+json", out _));
+            }
+        }
         var clients = paths.GetProperty("/api/clients");
         Assert.False(string.IsNullOrWhiteSpace(clients.GetProperty("get").GetProperty("summary").GetString()));
         Assert.True(clients.GetProperty("post").GetProperty("responses").TryGetProperty("201", out _));
@@ -68,7 +77,7 @@ public class DocumentationApiTests : ApiTestBase
     [Fact]
     public async Task Production_ExposesOnlyApi()
     {
-        using var factory = new WebApplicationFactory<Program>()
+        using var factory = new WebApplicationFactory<ClientsController>()
             .WithWebHostBuilder(builder => builder.UseEnvironment("Production"));
         using var client = factory.CreateClient();
         using var openApi = await client.GetAsync("/openapi/v1.json", cancellationToken: TestContext.Current.CancellationToken);

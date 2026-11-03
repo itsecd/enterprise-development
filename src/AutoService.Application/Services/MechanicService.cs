@@ -13,16 +13,16 @@ public class MechanicService(IAutoServiceSession session)
     : CrudService<Mechanic, MechanicRequest, MechanicDto>(session, session.Mechanics), IMechanicService
 {
     /// <inheritdoc />
-    protected override Mechanic Build(MechanicRequest request, int id)
+    protected override async Task<Mechanic> BuildAsync(MechanicRequest request, int id)
     {
         var specialization = (Domain.Enums.Specialization)request.Specialization!.Value;
         var passport = request.PassportNumber.Trim();
-        if (Session.Mechanics.Exists(mechanic => mechanic.Id != id && mechanic.PassportNumber == passport))
+        if ((await Session.Mechanics.ExistsAsync(mechanic => mechanic.Id != id && mechanic.PassportNumber == passport)))
         {
             throw new EntityConflictException("Механик с таким паспортом уже существует.");
         }
-        if (Session.Orders.Exists(order => order.Mechanic.Id == id &&
-            order.WorkTypes.Any(work => work.Category != specialization)))
+        if ((await Session.Orders.ExistsAsync(order => order.Mechanic.Id == id &&
+            order.WorkTypes.Any(work => work.Category != specialization))))
         {
             throw new EntityConflictException("Новая специализация не соответствует работам в заказах механика.");
         }
@@ -49,24 +49,24 @@ public class MechanicService(IAutoServiceSession session)
     protected override MechanicDto ToDto(Mechanic entity) => entity.ToDto();
 
     /// <inheritdoc />
-    protected override void CheckDelete(Mechanic entity)
+    protected override async Task CheckDeleteAsync(Mechanic entity)
     {
-        if (Session.Orders.Exists(order => order.Mechanic.Id == entity.Id))
+        if ((await Session.Orders.ExistsAsync(order => order.Mechanic.Id == entity.Id)))
         {
             throw new EntityConflictException("Запись используется. Сначала удалите связанные записи.");
         }
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderDto> GetOrders(int id) => Session.Execute<IReadOnlyList<OrderDto>>(() =>
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id) => Session.ExecuteAsync<IReadOnlyList<OrderDto>>(async () =>
     {
-        _ = Require(Session.Mechanics, id);
-        return [.. Session.Orders.Find(order => order.Mechanic.Id == id).Select(entity => entity.ToDto())];
+        _ = await RequireAsync(Session.Mechanics, id);
+        return [.. (await Session.Orders.FindAsync(order => order.Mechanic.Id == id)).Select(entity => entity.ToDto())];
     });
     /// <inheritdoc />
-    public IReadOnlyList<ClientDto> GetClients(int id) => Session.Execute<IReadOnlyList<ClientDto>>(() =>
+    public Task<IReadOnlyList<ClientDto>> GetClientsAsync(int id) => Session.ExecuteAsync<IReadOnlyList<ClientDto>>(async () =>
     {
-        _ = Require(Session.Mechanics, id);
-        return [.. Session.Orders.GetClientsByMechanic(id).Select(client => client.ToDto())];
+        _ = await RequireAsync(Session.Mechanics, id);
+        return [.. (await Session.Orders.GetClientsByMechanicAsync(id)).Select(client => client.ToDto())];
     });
 }

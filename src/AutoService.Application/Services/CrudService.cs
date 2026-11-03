@@ -21,53 +21,53 @@ public abstract class CrudService<TEntity, TRequest, TDto>(
     protected IAutoServiceSession Session { get; } = session;
 
     /// <inheritdoc />
-    public IReadOnlyList<TDto> GetAll() => Session.Execute<IReadOnlyList<TDto>>(() =>
-        [.. repository.GetAll().Select(ToDto)]);
+    public Task<IReadOnlyList<TDto>> GetAllAsync() => Session.ExecuteAsync<IReadOnlyList<TDto>>(async () =>
+        [.. (await repository.GetAllAsync()).Select(ToDto)]);
 
     /// <inheritdoc />
-    public TDto Get(int id) => Session.Execute(() => ToDto(Require(repository, id)));
+    public Task<TDto> GetAsync(int id) => Session.ExecuteAsync(async () => ToDto(await RequireAsync(repository, id)));
 
     /// <inheritdoc />
-    public TDto Create(TRequest request) => Session.Execute(() =>
+    public Task<TDto> CreateAsync(TRequest request) => Session.ExecuteAsync(async () =>
     {
         Validate(request);
-        var entity = Build(request, 0);
-        return ToDto(repository.Add(entity));
+        var entity = await BuildAsync(request, 0);
+        return ToDto(await repository.AddAsync(entity));
     });
 
     /// <inheritdoc />
-    public void Update(int id, TRequest request) => Session.Execute(() =>
+    public Task UpdateAsync(int id, TRequest request) => Session.ExecuteAsync(async () =>
     {
-        _ = Require(repository, id);
+        _ = await RequireAsync(repository, id);
         Validate(request);
-        var values = Build(request, id);
-        repository.Update(id, entity => Copy(values, entity));
+        var values = await BuildAsync(request, id);
+        await repository.UpdateAsync(id, entity => Copy(values, entity));
     });
 
     /// <inheritdoc />
-    public void Delete(int id) => Session.Execute(() =>
+    public Task DeleteAsync(int id) => Session.ExecuteAsync(async () =>
     {
-        var entity = Require(repository, id);
-        CheckDelete(entity);
-        repository.Delete(id);
+        var entity = await RequireAsync(repository, id);
+        await CheckDeleteAsync(entity);
+        await repository.DeleteAsync(id);
     });
 
     /// <summary>Проверяет связи и подготавливает все значения до изменения хранилища.</summary>
-    protected abstract TEntity Build(TRequest request, int id);
+    protected abstract Task<TEntity> BuildAsync(TRequest request, int id);
     /// <summary>Применяет проверенные значения к существующему объекту.</summary>
     protected abstract void Copy(TEntity source, TEntity target);
     /// <summary>Преобразует сущность в контракт.</summary>
     protected abstract TDto ToDto(TEntity entity);
     /// <summary>Проверяет, что удаляемая сущность не используется.</summary>
-    protected abstract void CheckDelete(TEntity entity);
+    protected abstract Task CheckDeleteAsync(TEntity entity);
 
     /// <summary>Находит запрашиваемый ресурс или сообщает о его отсутствии.</summary>
-    protected static T Require<T>(IRepository<T> source, int id) where T : class, IEntity =>
-        source.GetById(id) ?? throw new EntityNotFoundException($"Запись с идентификатором {id} не найдена.");
+    protected static async Task<T> RequireAsync<T>(IRepository<T> source, int id) where T : class, IEntity =>
+        await source.GetByIdAsync(id) ?? throw new EntityNotFoundException($"Запись с идентификатором {id} не найдена.");
 
     /// <summary>Находит ссылку из входного контракта; отсутствующая ссылка означает ошибку ввода.</summary>
-    protected static T Reference<T>(IRepository<T> source, int id, string name) where T : class, IEntity =>
-        source.GetById(id) ?? throw new DomainValidationException($"{name} с идентификатором {id} не существует.");
+    protected static async Task<T> ReferenceAsync<T>(IRepository<T> source, int id, string name) where T : class, IEntity =>
+        await source.GetByIdAsync(id) ?? throw new DomainValidationException($"{name} с идентификатором {id} не существует.");
 
     private static void Validate(TRequest request)
     {

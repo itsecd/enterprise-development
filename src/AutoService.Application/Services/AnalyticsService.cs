@@ -10,20 +10,20 @@ namespace AutoService.Application.Services;
 public class AnalyticsService(IAutoServiceSession session) : IAnalyticsService
 {
     /// <inheritdoc />
-    public IReadOnlyList<RepeatVisitDto> GetRepeatVisits(DateTimeOffset reportDate) =>
-        session.Execute<IReadOnlyList<RepeatVisitDto>>(() =>
+    public Task<IReadOnlyList<RepeatVisitDto>> GetRepeatVisitsAsync(DateTimeOffset reportDate) =>
+        session.ExecuteAsync<IReadOnlyList<RepeatVisitDto>>(async () =>
         {
             if (reportDate.Year < 2000)
             {
                 throw new DomainValidationException("Дата отчёта должна быть не раньше 2000 года.");
             }
-            return [.. session.Orders.GetRepeatVisits(reportDate)
+            return [.. (await session.Orders.GetRepeatVisitsAsync(reportDate))
                 .Select(row => new RepeatVisitDto(row.ClientId, row.Count))];
         });
 
     /// <inheritdoc />
-    public IReadOnlyList<WorkFrequencyDto> GetMostFrequentWorkTypes() =>
-        session.Execute<IReadOnlyList<WorkFrequencyDto>>(() =>
-            [.. session.Orders.GetMostFrequentWorkTypes()
+    public Task<IReadOnlyList<WorkFrequencyDto>> GetMostFrequentWorkTypesAsync() =>
+        session.ExecuteAsync<IReadOnlyList<WorkFrequencyDto>>(async () =>
+            [.. (await session.Orders.GetMostFrequentWorkTypesAsync())
                 .Select(row => new WorkFrequencyDto(row.WorkTypeId, row.Count))]);
 }

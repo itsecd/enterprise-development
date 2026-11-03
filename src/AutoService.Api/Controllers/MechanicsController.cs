@@ -7,28 +7,29 @@ namespace AutoService.Api.Controllers;
 /// <summary>Механики автосервиса.</summary>
 /// <param name="service">Сервис ресурса.</param>
 [ApiController]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
 [Route("api/mechanics")]
 public class MechanicsController(IMechanicService service) : ControllerBase
 {
     /// <summary>Возвращает все записи.</summary>
     [HttpGet]
     [ProducesResponseType<IReadOnlyList<MechanicDto>>(StatusCodes.Status200OK, "application/json")]
-    public ActionResult<IReadOnlyList<MechanicDto>> GetAll() => Ok(service.GetAll());
+    public async Task<ActionResult<IReadOnlyList<MechanicDto>>> GetAll() => Ok(await service.GetAllAsync());
 
     /// <summary>Возвращает запись по идентификатору.</summary>
     [HttpGet("{id:int}")]
     [ProducesResponseType<MechanicDto>(StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
-    public ActionResult<MechanicDto> Get(int id) => Ok(service.Get(id));
+    public async Task<ActionResult<MechanicDto>> Get(int id) => Ok(await service.GetAsync(id));
 
     /// <summary>Создаёт запись и возвращает ссылку на неё в заголовке Location.</summary>
     [HttpPost]
     [ProducesResponseType<MechanicDto>(StatusCodes.Status201Created, "application/json")]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")]
-    public ActionResult<MechanicDto> Create(MechanicRequest request)
+    public async Task<ActionResult<MechanicDto>> Create(MechanicRequest request)
     {
-        var result = service.Create(request);
+        var result = await service.CreateAsync(request);
         return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
     }
 
@@ -38,9 +39,9 @@ public class MechanicsController(IMechanicService service) : ControllerBase
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")]
-    public IActionResult Update(int id, MechanicRequest request)
+    public async Task<IActionResult> Update(int id, MechanicRequest request)
     {
-        service.Update(id, request);
+        await service.UpdateAsync(id, request);
         return NoContent();
     }
 
@@ -49,9 +50,9 @@ public class MechanicsController(IMechanicService service) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        service.Delete(id);
+        await service.DeleteAsync(id);
         return NoContent();
     }
 
@@ -59,11 +60,11 @@ public class MechanicsController(IMechanicService service) : ControllerBase
     [HttpGet("{id:int}/orders")]
     [ProducesResponseType<IReadOnlyList<OrderDto>>(StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
-    public ActionResult<IReadOnlyList<OrderDto>> GetOrders(int id) => Ok(service.GetOrders(id));
+    public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrders(int id) => Ok(await service.GetOrdersAsync(id));
 
     /// <summary>Клиенты механика без повторов, в порядке ФИО.</summary>
     [HttpGet("{id:int}/clients")]
     [ProducesResponseType<IReadOnlyList<ClientDto>>(StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
-    public ActionResult<IReadOnlyList<ClientDto>> GetClients(int id) => Ok(service.GetClients(id));
+    public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetClients(int id) => Ok(await service.GetClientsAsync(id));
 }

@@ -7,6 +7,8 @@ namespace AutoService.Tests.Api;
 /// <summary>Проверки CRUD через настоящий конвейер ASP.NET Core.</summary>
 public class CrudApiTests : ApiTestBase
 {
+    private static readonly int[] _workTypeIds = [1, 2];
+
     /// <summary>Полный цикл CRUD для каждой сущности, включая Location и непереиспользование Id.</summary>
     [Theory]
     [InlineData("clients", "fullName", "Тестовый клиент", "Обновлённый клиент")]
@@ -130,7 +132,7 @@ public class CrudApiTests : ApiTestBase
             carId = 1,
             clientId = 1,
             mechanicId = 1,
-            workTypeIds = new[] { 1, 2 },
+            workTypeIds = _workTypeIds,
             acceptedAt = "2026-10-01T12:00:00Z",
             returnedAt = updated ? "2026-10-01T14:00:00Z" : null
         },

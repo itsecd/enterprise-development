@@ -1,3 +1,4 @@
+using AutoService.Api.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ public abstract class ApiTestBase : IDisposable
         Converters = { new JsonStringEnumConverter() }
     };
 
-    private readonly WebApplicationFactory<Program> _factory = new WebApplicationFactory<Program>()
+    private readonly WebApplicationFactory<ClientsController> _factory = new WebApplicationFactory<ClientsController>()
         .WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Development");

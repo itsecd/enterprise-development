@@ -8,6 +8,7 @@ namespace AutoService.Infrastructure.InMemory.Repositories;
 /// <typeparam name="T">Тип хранимой сущности.</typeparam>
 public class InMemoryRepository<T> : IRepository<T> where T : class, IEntity
 {
+    private readonly Lock _gate = new();
     private readonly Dictionary<int, T> _entities;
     private int _lastId;
 
@@ -19,40 +20,82 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IEntity
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<T> GetAll() => [.. _entities.Values.OrderBy(entity => entity.Id)];
-
-    /// <inheritdoc />
-    public T? GetById(int id) => _entities.GetValueOrDefault(id);
-
-    /// <inheritdoc />
-    public IReadOnlyList<T> GetByIds(IReadOnlyCollection<int> ids) =>
-        [.. ids.Distinct().Where(_entities.ContainsKey).Select(id => _entities[id])];
-
-    /// <inheritdoc />
-    public IReadOnlyList<T> Find(Expression<Func<T, bool>> predicate) =>
-        [.. _entities.Values.Where(predicate.Compile()).OrderBy(entity => entity.Id)];
-
-    /// <inheritdoc />
-    public bool Exists(Expression<Func<T, bool>> predicate) => _entities.Values.Any(predicate.Compile());
-
-    /// <inheritdoc />
-    public T Add(T entity)
+    public Task<IReadOnlyList<T>> GetAllAsync()
     {
-        entity.Id = checked(++_lastId);
-        _entities.Add(entity.Id, entity);
-        return entity;
+        lock (_gate)
+        {
+            return Task.FromResult<IReadOnlyList<T>>([.. _entities.Values.OrderBy(entity => entity.Id)]);
+        }
     }
 
     /// <inheritdoc />
-    public void Update(int id, Action<T> update) => update(GetRequired(id));
-
-    /// <inheritdoc />
-    public void Delete(int id)
+    public Task<T?> GetByIdAsync(int id)
     {
-        _ = GetRequired(id);
-        _entities.Remove(id);
+        lock (_gate)
+        {
+            return Task.FromResult(_entities.GetValueOrDefault(id));
+        }
     }
 
-    private T GetRequired(int id) => GetById(id)
+    /// <inheritdoc />
+    public Task<IReadOnlyList<T>> GetByIdsAsync(IReadOnlyCollection<int> ids)
+    {
+        lock (_gate)
+        {
+            return Task.FromResult<IReadOnlyList<T>>([.. ids.Distinct().Where(_entities.ContainsKey).Select(id => _entities[id])]);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate)
+    {
+        lock (_gate)
+        {
+            return Task.FromResult<IReadOnlyList<T>>([.. _entities.Values.Where(predicate.Compile()).OrderBy(entity => entity.Id)]);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+    {
+        lock (_gate)
+        {
+            return Task.FromResult(_entities.Values.Any(predicate.Compile()));
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<T> AddAsync(T entity)
+    {
+        lock (_gate)
+        {
+            entity.Id = checked(++_lastId);
+            _entities.Add(entity.Id, entity);
+            return Task.FromResult(entity);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task UpdateAsync(int id, Action<T> update)
+    {
+        lock (_gate)
+        {
+            update(GetRequired(id));
+            return Task.CompletedTask;
+        }
+    }
+
+    /// <inheritdoc />
+    public Task DeleteAsync(int id)
+    {
+        lock (_gate)
+        {
+            _ = GetRequired(id);
+            _entities.Remove(id);
+            return Task.CompletedTask;
+        }
+    }
+
+    private T GetRequired(int id) => _entities.GetValueOrDefault(id)
         ?? throw new EntityNotFoundException($"Запись с идентификатором {id} не найдена.");
 }

@@ -8,7 +8,7 @@ namespace AutoService.Infrastructure.InMemory;
 /// <summary>Общее хранилище с блокировкой на время операции сервиса.</summary>
 public class AutoServiceSession : IAutoServiceSession
 {
-    private readonly object _gate = new();
+    private readonly SemaphoreSlim _gate = new(1, 1);
 
     /// <summary>Создаёт независимый набор связанных коллекций.</summary>
     public AutoServiceSession()
@@ -33,20 +33,31 @@ public class AutoServiceSession : IAutoServiceSession
     public IOrderRepository Orders { get; }
 
     /// <inheritdoc />
-    public T Execute<T>(Func<T> action)
+    public async Task<T> ExecuteAsync<T>(Func<Task<T>> action)
     {
-        lock (_gate)
+        // Блокировка охватывает всю операцию, в том числе асинхронные ожидания.
+        await _gate.WaitAsync();
+        try
         {
-            return action();
+            return await action();
+        }
+        finally
+        {
+            _gate.Release();
         }
     }
 
     /// <inheritdoc />
-    public void Execute(Action action)
+    public async Task ExecuteAsync(Func<Task> action)
     {
-        lock (_gate)
+        await _gate.WaitAsync();
+        try
         {
-            action();
+            await action();
+        }
+        finally
+        {
+            _gate.Release();
         }
     }
 }

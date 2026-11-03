@@ -6,7 +6,7 @@ namespace AutoService.Application.Interfaces;
 public interface IMechanicService : ICrudService<MechanicRequest, MechanicDto>
 {
     /// <summary>Возвращает заказы механика.</summary>
-    public IReadOnlyList<OrderDto> GetOrders(int id);
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id);
     /// <summary>Клиенты механика в порядке ФИО.</summary>
-    public IReadOnlyList<ClientDto> GetClients(int id);
+    public Task<IReadOnlyList<ClientDto>> GetClientsAsync(int id);
 }

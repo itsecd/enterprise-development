@@ -13,14 +13,14 @@ public class ClientService(IAutoServiceSession session)
     : CrudService<Client, ClientRequest, ClientDto>(session, session.Clients), IClientService
 {
     /// <inheritdoc />
-    protected override Client Build(ClientRequest request, int id)
+    protected override Task<Client> BuildAsync(ClientRequest request, int id)
     {
-        return new()
+        return Task.FromResult(new Client
         {
             Id = id,
             FullName = request.FullName.Trim(),
             Phone = request.Phone.Trim()
-        };
+        });
     }
 
     /// <inheritdoc />
@@ -34,26 +34,26 @@ public class ClientService(IAutoServiceSession session)
     protected override ClientDto ToDto(Client entity) => entity.ToDto();
 
     /// <inheritdoc />
-    protected override void CheckDelete(Client entity)
+    protected override async Task CheckDeleteAsync(Client entity)
     {
-        if (Session.Cars.Exists(car => car.Owner.Id == entity.Id) ||
-            Session.Orders.Exists(order => order.Client.Id == entity.Id))
+        if ((await Session.Cars.ExistsAsync(car => car.Owner.Id == entity.Id)) ||
+            (await Session.Orders.ExistsAsync(order => order.Client.Id == entity.Id)))
         {
             throw new EntityConflictException("Запись используется. Сначала удалите связанные записи.");
         }
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<CarDto> GetCars(int id) => Session.Execute<IReadOnlyList<CarDto>>(() =>
+    public Task<IReadOnlyList<CarDto>> GetCarsAsync(int id) => Session.ExecuteAsync<IReadOnlyList<CarDto>>(async () =>
     {
-        _ = Require(Session.Clients, id);
-        return [.. Session.Cars.Find(car => car.Owner.Id == id).Select(entity => entity.ToDto())];
+        _ = await RequireAsync(Session.Clients, id);
+        return [.. (await Session.Cars.FindAsync(car => car.Owner.Id == id)).Select(entity => entity.ToDto())];
     });
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderDto> GetOrders(int id) => Session.Execute<IReadOnlyList<OrderDto>>(() =>
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id) => Session.ExecuteAsync<IReadOnlyList<OrderDto>>(async () =>
     {
-        _ = Require(Session.Clients, id);
-        return [.. Session.Orders.Find(order => order.Client.Id == id).Select(entity => entity.ToDto())];
+        _ = await RequireAsync(Session.Clients, id);
+        return [.. (await Session.Orders.FindAsync(order => order.Client.Id == id)).Select(entity => entity.ToDto())];
     });
 }

@@ -6,7 +6,7 @@ namespace AutoService.Application.Interfaces;
 public interface IClientService : ICrudService<ClientRequest, ClientDto>
 {
     /// <summary>Возвращает автомобили клиента.</summary>
-    public IReadOnlyList<CarDto> GetCars(int id);
+    public Task<IReadOnlyList<CarDto>> GetCarsAsync(int id);
     /// <summary>Возвращает заказы клиента.</summary>
-    public IReadOnlyList<OrderDto> GetOrders(int id);
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id);
 }

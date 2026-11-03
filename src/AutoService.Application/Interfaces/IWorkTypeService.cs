@@ -6,7 +6,7 @@ namespace AutoService.Application.Interfaces;
 public interface IWorkTypeService : ICrudService<WorkTypeRequest, WorkTypeDto>
 {
     /// <summary>Возвращает заказы с данным видом работ.</summary>
-    public IReadOnlyList<OrderDto> GetOrders(int id);
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id);
     /// <summary>Механики с подходящей специализацией.</summary>
-    public IReadOnlyList<MechanicDto> GetMechanics(int id);
+    public Task<IReadOnlyList<MechanicDto>> GetMechanicsAsync(int id);
 }

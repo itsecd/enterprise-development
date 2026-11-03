@@ -16,8 +16,8 @@ public interface IAutoServiceSession
     /// <summary>Заказы.</summary>
     public IOrderRepository Orders { get; }
     /// <summary>Выполняет операцию целиком, включая проверку связей и формирование результата.</summary>
-    public T Execute<T>(Func<T> action);
+    public Task<T> ExecuteAsync<T>(Func<Task<T>> action);
 
     /// <summary>Выполняет изменение связанных данных как одну операцию.</summary>
-    public void Execute(Action action);
+    public Task ExecuteAsync(Func<Task> action);
 }

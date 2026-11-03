@@ -13,11 +13,11 @@ public class WorkTypeService(IAutoServiceSession session)
     : CrudService<WorkType, WorkTypeRequest, WorkTypeDto>(session, session.WorkTypes), IWorkTypeService
 {
     /// <inheritdoc />
-    protected override WorkType Build(WorkTypeRequest request, int id)
+    protected override async Task<WorkType> BuildAsync(WorkTypeRequest request, int id)
     {
         var category = (Domain.Enums.Specialization)request.Category!.Value;
-        if (Session.Orders.Exists(order => order.WorkTypes.Any(work => work.Id == id) &&
-            order.Mechanic.Specialization != category))
+        if ((await Session.Orders.ExistsAsync(order => order.WorkTypes.Any(work => work.Id == id) &&
+            order.Mechanic.Specialization != category)))
         {
             throw new EntityConflictException("Новая категория не соответствует механикам в существующих заказах.");
         }
@@ -44,25 +44,25 @@ public class WorkTypeService(IAutoServiceSession session)
     protected override WorkTypeDto ToDto(WorkType entity) => entity.ToDto();
 
     /// <inheritdoc />
-    protected override void CheckDelete(WorkType entity)
+    protected override async Task CheckDeleteAsync(WorkType entity)
     {
-        if (Session.Orders.Exists(order => order.WorkTypes.Any(work => work.Id == entity.Id)))
+        if ((await Session.Orders.ExistsAsync(order => order.WorkTypes.Any(work => work.Id == entity.Id))))
         {
             throw new EntityConflictException("Запись используется. Сначала удалите связанные записи.");
         }
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderDto> GetOrders(int id) => Session.Execute<IReadOnlyList<OrderDto>>(() =>
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id) => Session.ExecuteAsync<IReadOnlyList<OrderDto>>(async () =>
     {
-        _ = Require(Session.WorkTypes, id);
-        return [.. Session.Orders.Find(order => order.WorkTypes.Any(work => work.Id == id)).Select(entity => entity.ToDto())];
+        _ = await RequireAsync(Session.WorkTypes, id);
+        return [.. (await Session.Orders.FindAsync(order => order.WorkTypes.Any(work => work.Id == id))).Select(entity => entity.ToDto())];
     });
     /// <inheritdoc />
-    public IReadOnlyList<MechanicDto> GetMechanics(int id) => Session.Execute<IReadOnlyList<MechanicDto>>(() =>
+    public Task<IReadOnlyList<MechanicDto>> GetMechanicsAsync(int id) => Session.ExecuteAsync<IReadOnlyList<MechanicDto>>(async () =>
     {
-        var work = Require(Session.WorkTypes, id);
-        return [.. Session.Mechanics.Find(mechanic => mechanic.Specialization == work.Category)
+        var work = await RequireAsync(Session.WorkTypes, id);
+        return [.. (await Session.Mechanics.FindAsync(mechanic => mechanic.Specialization == work.Category))
             .Select(mechanic => mechanic.ToDto())];
     });
 }

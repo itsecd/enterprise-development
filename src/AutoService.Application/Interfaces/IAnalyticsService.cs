@@ -6,7 +6,7 @@ namespace AutoService.Application.Interfaces;
 public interface IAnalyticsService
 {
     /// <summary>Количество повторных обращений за последний месяц.</summary>
-    public IReadOnlyList<RepeatVisitDto> GetRepeatVisits(DateTimeOffset reportDate);
+    public Task<IReadOnlyList<RepeatVisitDto>> GetRepeatVisitsAsync(DateTimeOffset reportDate);
     /// <summary>Пять наиболее частых видов работ.</summary>
-    public IReadOnlyList<WorkFrequencyDto> GetMostFrequentWorkTypes();
+    public Task<IReadOnlyList<WorkFrequencyDto>> GetMostFrequentWorkTypesAsync();
 }

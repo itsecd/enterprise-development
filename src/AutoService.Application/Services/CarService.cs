@@ -14,15 +14,15 @@ public class CarService(IAutoServiceSession session, TimeProvider clock)
     : CrudService<Car, CarRequest, CarDto>(session, session.Cars), ICarService
 {
     /// <inheritdoc />
-    protected override Car Build(CarRequest request, int id)
+    protected override async Task<Car> BuildAsync(CarRequest request, int id)
     {
-        var owner = Reference(Session.Clients, request.OwnerId!.Value, "Клиент");
+        var owner = await ReferenceAsync(Session.Clients, request.OwnerId!.Value, "Клиент");
         var number = request.RegistrationNumber.Trim().ToUpperInvariant();
         if (request.ManufactureYear > clock.GetUtcNow().Year)
         {
             throw new DomainValidationException("Год выпуска не может быть позже текущего года.");
         }
-        if (Session.Cars.Exists(car => car.Id != id && car.RegistrationNumber == number))
+        if ((await Session.Cars.ExistsAsync(car => car.Id != id && car.RegistrationNumber == number)))
         {
             throw new EntityConflictException("Автомобиль с таким регистрационным номером уже существует.");
         }
@@ -51,20 +51,20 @@ public class CarService(IAutoServiceSession session, TimeProvider clock)
     protected override CarDto ToDto(Car entity) => entity.ToDto();
 
     /// <inheritdoc />
-    protected override void CheckDelete(Car entity)
+    protected override async Task CheckDeleteAsync(Car entity)
     {
-        if (Session.Orders.Exists(order => order.Car.Id == entity.Id))
+        if ((await Session.Orders.ExistsAsync(order => order.Car.Id == entity.Id)))
         {
             throw new EntityConflictException("Запись используется. Сначала удалите связанные записи.");
         }
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderDto> GetOrders(int id) => Session.Execute<IReadOnlyList<OrderDto>>(() =>
+    public Task<IReadOnlyList<OrderDto>> GetOrdersAsync(int id) => Session.ExecuteAsync<IReadOnlyList<OrderDto>>(async () =>
     {
-        _ = Require(Session.Cars, id);
-        return [.. Session.Orders.Find(order => order.Car.Id == id).Select(entity => entity.ToDto())];
+        _ = await RequireAsync(Session.Cars, id);
+        return [.. (await Session.Orders.FindAsync(order => order.Car.Id == id)).Select(entity => entity.ToDto())];
     });
     /// <inheritdoc />
-    public ClientDto GetOwner(int id) => Session.Execute(() => Require(Session.Cars, id).Owner.ToDto());
+    public Task<ClientDto> GetOwnerAsync(int id) => Session.ExecuteAsync(async () => (await RequireAsync(Session.Cars, id)).Owner.ToDto());
 }

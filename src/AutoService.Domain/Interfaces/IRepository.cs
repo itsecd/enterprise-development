@@ -7,26 +7,26 @@ namespace AutoService.Domain.Interfaces;
 public interface IRepository<T> where T : class, IEntity
 {
     /// <summary>Возвращает записи в порядке идентификаторов.</summary>
-    public IReadOnlyList<T> GetAll();
+    public Task<IReadOnlyList<T>> GetAllAsync();
 
     /// <summary>Возвращает запись или null.</summary>
-    public T? GetById(int id);
+    public Task<T?> GetByIdAsync(int id);
 
     /// <summary>Отбирает записи по набору идентификаторов.</summary>
-    public IReadOnlyList<T> GetByIds(IReadOnlyCollection<int> ids);
+    public Task<IReadOnlyList<T>> GetByIdsAsync(IReadOnlyCollection<int> ids);
 
     /// <summary>Отбирает записи на стороне хранилища.</summary>
-    public IReadOnlyList<T> Find(Expression<Func<T, bool>> predicate);
+    public Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
     /// <summary>Проверяет наличие подходящей записи без создания списка.</summary>
-    public bool Exists(Expression<Func<T, bool>> predicate);
+    public Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
 
     /// <summary>Добавляет сущность и назначает новый идентификатор.</summary>
-    public T Add(T entity);
+    public Task<T> AddAsync(T entity);
 
     /// <summary>Обновляет существующий объект, сохраняя ссылки на него.</summary>
-    public void Update(int id, Action<T> update);
+    public Task UpdateAsync(int id, Action<T> update);
 
     /// <summary>Удаляет существующую запись.</summary>
-    public void Delete(int id);
+    public Task DeleteAsync(int id);
 }
