@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.18.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HotelSystem.Domain\HotelSystem.Domain.csproj" />
+    <ProjectReference Include="..\HotelSystem.Domain.Shared\HotelSystem.Domain.Shared.csproj" />
+    <ProjectReference Include="..\HotelSystem.Application\HotelSystem.Application.csproj" />
+    <ProjectReference Include="..\HotelSystem.Infrastructure\HotelSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\HotelSystem.Application.Contracts\HotelSystem.Application.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
