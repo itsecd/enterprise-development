@@ -21,6 +21,17 @@ public static class OwnerMapping
     };
 
     /// <summary>
+    /// Преобразовать владельца в DTO с количеством питомцев
+    /// </summary>
+    /// <param name="entity">Владелец</param>
+    public static OwnerPetsCountDto ToDtoWithPetsCount(this Owner entity) => new()
+    {
+        Id = entity.Id,
+        FullName = entity.FullName,
+        PetsCount = entity.Pets.Count
+    };
+
+    /// <summary>
     /// Создать владельца из DTO, идентификатор назначает репозиторий
     /// </summary>
     /// <param name="dto">Данные владельца</param>

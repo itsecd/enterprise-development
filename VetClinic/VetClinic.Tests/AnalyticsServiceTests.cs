@@ -1,28 +1,15 @@
 using VetClinic.Application.Services;
-using VetClinic.Domain.Seeds;
-using VetClinic.Infrastructure.InMemory.Repositories;
 using VetClinic.Shared;
+using VetClinic.Tests.Fixtures;
 
 namespace VetClinic.Tests;
 
 /// <summary>
 /// Тесты сервиса аналитики: те же запросы, что и в лабораторной 1, но через репозитории и DTO
 /// </summary>
-public class AnalyticsServiceTests
+public class AnalyticsServiceTests(AnalyticsServiceFixture fixture) : IClassFixture<AnalyticsServiceFixture>
 {
-    private readonly AnalyticsService _service;
-
-    /// <summary>
-    /// Создает сервис аналитики поверх InMemory репозиториев с начальными данными
-    /// </summary>
-    public AnalyticsServiceTests()
-    {
-        var seed = new VetClinicSeed();
-        _service = new AnalyticsService(
-            new OwnerRepository(seed),
-            new VetRepository(seed),
-            new AppointmentRepository(seed));
-    }
+    private readonly AnalyticsService _service = fixture.Service;
 
     /// <summary>
     /// Все ветеринары, специализирующиеся на выбранном виде животных

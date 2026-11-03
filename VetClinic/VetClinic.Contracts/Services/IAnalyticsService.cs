@@ -30,9 +30,9 @@ public interface IAnalyticsService
     public Task<int> GetRepeatAppointmentCountByBreedAsync(int breedId);
 
     /// <summary>
-    /// Владельцы, у которых больше одного питомца, упорядоченные по ФИО
+    /// Владельцы, у которых больше одного питомца, упорядоченные по ФИО, с количеством питомцев
     /// </summary>
-    public Task<IReadOnlyList<OwnerDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync();
+    public Task<IReadOnlyList<OwnerPetsCountDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync();
 
     /// <summary>
     /// Приемы за выбранный месяц в выбранном кабинете

@@ -65,7 +65,7 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// <response code="200">Список владельцев</response>
     [HttpGet("owners-with-multiple-pets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<OwnerDto>>> GetOwnersWithMultiplePets()
+    public async Task<ActionResult<IReadOnlyList<OwnerPetsCountDto>>> GetOwnersWithMultiplePets()
     {
         logger.LogInformation("Аналитика: владельцы с несколькими питомцами");
         return Ok(await service.GetOwnersWithMultiplePetsOrderedByFullNameAsync());
@@ -75,8 +75,8 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// Приемы за выбранный месяц в выбранном кабинете
     /// </summary>
     /// <param name="roomNumber">Номер кабинета</param>
-    /// <param name="year">Год</param>
-    /// <param name="month">Месяц от 1 до 12</param>
+    /// <param name="year">Год, по умолчанию текущий</param>
+    /// <param name="month">Месяц от 1 до 12, по умолчанию текущий</param>
     /// <response code="200">Список приемов</response>
     /// <response code="400">Неверные параметры</response>
     [HttpGet("appointments-by-room")]
@@ -84,10 +84,14 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointmentsByRoomAndMonth(
         [FromQuery, Required] string roomNumber,
-        [FromQuery, Range(1, 9999)] int year,
-        [FromQuery, Range(1, 12)] int month)
+        [FromQuery, Range(1900, 9999)] int? year = null,
+        [FromQuery, Range(1, 12)] int? month = null)
     {
-        logger.LogInformation("Аналитика: приемы в кабинете {Room} за {Month}.{Year}", roomNumber, month, year);
-        return Ok(await service.GetAppointmentsByRoomAndMonthAsync(roomNumber, year, month));
+        var today = DateTime.Now;
+        var targetYear = year ?? today.Year;
+        var targetMonth = month ?? today.Month;
+
+        logger.LogInformation("Аналитика: приемы в кабинете {Room} за {Month}.{Year}", roomNumber, targetMonth, targetYear);
+        return Ok(await service.GetAppointmentsByRoomAndMonthAsync(roomNumber, targetYear, targetMonth));
     }
 }

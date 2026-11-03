@@ -50,13 +50,13 @@ public class AnalyticsService(
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<OwnerDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync()
+    public async Task<IReadOnlyList<OwnerPetsCountDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync()
     {
         var all = await owners.GetAllAsync();
         return [.. all
             .Where(o => o.Pets.Count > 1)
             .OrderBy(o => o.FullName)
-            .Select(o => o.ToDto())];
+            .Select(o => o.ToDtoWithPetsCount())];
     }
 
     /// <inheritdoc/>

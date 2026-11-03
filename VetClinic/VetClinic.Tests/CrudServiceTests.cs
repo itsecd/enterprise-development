@@ -3,39 +3,19 @@ using VetClinic.Contracts.Dto.Pets;
 using VetClinic.Domain.Seeds;
 using VetClinic.Infrastructure.InMemory.Repositories;
 using VetClinic.Shared;
+using VetClinic.Tests.Fixtures;
 
 namespace VetClinic.Tests;
 
 /// <summary>
 /// Тесты CRUD-сервисов: связи между сущностями и каскадное удаление
 /// </summary>
-public class CrudServiceTests
+public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudServicesFixture>
 {
-    private readonly VetClinicSeed _seed = new();
-    private readonly OwnerService _owners;
-    private readonly PetService _pets;
-    private readonly AppointmentService _appointments;
-    private readonly BreedService _breeds;
-    private readonly VetService _vets;
-
     /// <summary>
     /// Для каждого теста создаются свежие данные, потому что тесты их изменяют
     /// </summary>
-    public CrudServiceTests()
-    {
-        var ownerRepo = new OwnerRepository(_seed);
-        var petRepo = new PetRepository(_seed);
-        var vetRepo = new VetRepository(_seed);
-        var appointmentRepo = new AppointmentRepository(_seed);
-        var breedRepo = new BreedRepository(_seed);
-        var specializationRepo = new SpecializationRepository(_seed);
-
-        _owners = new OwnerService(ownerRepo, petRepo, appointmentRepo);
-        _pets = new PetService(petRepo, ownerRepo, breedRepo, appointmentRepo);
-        _appointments = new AppointmentService(appointmentRepo, petRepo, vetRepo);
-        _breeds = new BreedService(breedRepo, petRepo);
-        _vets = new VetService(vetRepo, specializationRepo, appointmentRepo);
-    }
+    private CrudServices NewServices() => fixture.Create();
 
     private static PetEditDto NewPet(int ownerId, int? breedId = 1) => new()
     {
@@ -53,11 +33,13 @@ public class CrudServiceTests
     [Fact]
     public async Task CreatePet_AddsPetToOwner()
     {
-        var created = await _pets.CreateAsync(NewPet(ownerId: 4));
+        var s = NewServices();
+
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4));
 
         Assert.Equal(12, created.Id);
         Assert.Equal(4, created.OwnerId);
-        Assert.Contains(_seed.Owners[3].Pets, p => p.Id == created.Id);
+        Assert.Contains(s.Seed.Owners[3].Pets, p => p.Id == created.Id);
     }
 
     /// <summary>
@@ -66,12 +48,13 @@ public class CrudServiceTests
     [Fact]
     public async Task UpdatePet_MovesPetBetweenOwners()
     {
-        var created = await _pets.CreateAsync(NewPet(ownerId: 4));
+        var s = NewServices();
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4));
 
-        await _pets.UpdateAsync(created.Id, NewPet(ownerId: 5));
+        await s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 5));
 
-        Assert.DoesNotContain(_seed.Owners[3].Pets, p => p.Id == created.Id);
-        Assert.Contains(_seed.Owners[4].Pets, p => p.Id == created.Id);
+        Assert.DoesNotContain(s.Seed.Owners[3].Pets, p => p.Id == created.Id);
+        Assert.Contains(s.Seed.Owners[4].Pets, p => p.Id == created.Id);
     }
 
     /// <summary>
@@ -80,7 +63,7 @@ public class CrudServiceTests
     [Fact]
     public async Task UpdatePet_NotFound_ReturnsNull()
     {
-        var result = await _pets.UpdateAsync(999, NewPet(ownerId: 1));
+        var result = await NewServices().Pets.UpdateAsync(999, NewPet(ownerId: 1));
 
         Assert.Null(result);
     }
@@ -91,7 +74,9 @@ public class CrudServiceTests
     [Fact]
     public async Task CreatePet_UnknownOwner_Throws()
     {
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => _pets.CreateAsync(NewPet(ownerId: 999)));
+        var s = NewServices();
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => s.Pets.CreateAsync(NewPet(ownerId: 999)));
     }
 
     /// <summary>
@@ -100,11 +85,13 @@ public class CrudServiceTests
     [Fact]
     public async Task DeleteOwner_CascadesToPetsAndAppointments()
     {
-        await _owners.DeleteAsync(1);
+        var s = NewServices();
 
-        Assert.Null(await _owners.GetByIdAsync(1));
-        Assert.Equal(9, (await _pets.GetAllAsync()).Count);
-        Assert.Equal(13, (await _appointments.GetAllAsync()).Count);
+        await s.Owners.DeleteAsync(1);
+
+        Assert.Null(await s.Owners.GetByIdAsync(1));
+        Assert.Equal(9, (await s.Pets.GetAllAsync()).Count);
+        Assert.Equal(13, (await s.Appointments.GetAllAsync()).Count);
     }
 
     /// <summary>
@@ -113,9 +100,11 @@ public class CrudServiceTests
     [Fact]
     public async Task DeleteVet_CascadesToAppointments()
     {
-        await _vets.DeleteAsync(6);
+        var s = NewServices();
 
-        Assert.DoesNotContain(await _appointments.GetAllAsync(), a => a.VetId == 6);
+        await s.Vets.DeleteAsync(6);
+
+        Assert.DoesNotContain(await s.Appointments.GetAllAsync(), a => a.VetId == 6);
     }
 
     /// <summary>
@@ -124,11 +113,12 @@ public class CrudServiceTests
     [Fact]
     public async Task DeleteBreed_SetsPetBreedToNull()
     {
-        var petsBefore = (await _pets.GetAllAsync()).Count;
+        var s = NewServices();
+        var petsBefore = (await s.Pets.GetAllAsync()).Count;
 
-        await _breeds.DeleteAsync(1);
+        await s.Breeds.DeleteAsync(1);
 
-        var pets = await _pets.GetAllAsync();
+        var pets = await s.Pets.GetAllAsync();
         Assert.Equal(petsBefore, pets.Count);
         Assert.DoesNotContain(pets, p => p.BreedId == 1);
     }
@@ -139,11 +129,12 @@ public class CrudServiceTests
     [Fact]
     public async Task DeletePet_Twice_DoesNotThrow()
     {
-        var created = await _pets.CreateAsync(NewPet(ownerId: 4));
+        var s = NewServices();
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4));
 
-        await _pets.DeleteAsync(created.Id);
-        await _pets.DeleteAsync(created.Id);
+        await s.Pets.DeleteAsync(created.Id);
+        await s.Pets.DeleteAsync(created.Id);
 
-        Assert.Null(await _pets.GetByIdAsync(created.Id));
+        Assert.Null(await s.Pets.GetByIdAsync(created.Id));
     }
 }
