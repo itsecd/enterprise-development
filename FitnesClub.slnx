@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FitnesClub.Api/FitnesClub.Api.csproj" Id="7fdb4a50-3d0c-4202-af10-c00f978afdbd" />
+  <Project Path="FitnesClub.Data/FitnesClub.Data.csproj" Id="0606ca9a-dbd0-42dc-8208-09baa07e7192" />
+  <Project Path="FitnesClub.Domain/FitnesClub.Domain.csproj" />
+  <Project Path="FitnesClub.Tests/FitnesClub.Tests.csproj" />
+</Solution>
