@@ -1,5 +1,5 @@
-﻿using FitnesClub.Domain.Data;
-using FitnesClub.Domain.Entities;
+﻿using FitnesClub.Domain.Entities;
+using FitnesClub.Data.Data;
 
 namespace FitnesClub.Tests;
 

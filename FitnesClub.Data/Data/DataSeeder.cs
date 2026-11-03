@@ -1,7 +1,7 @@
-﻿using FitnesClub.Domain.Entities;
-using FitnesClub.Domain.Enums;
+﻿namespace FitnesClub.Data.Data;
 
-namespace FitnesClub.Domain.Data;
+using FitnesClub.Domain.Entities;
+using FitnesClub.Domain.Enums;
 
 /// <summary>
 /// Предоставляет начальные (сидовые) данные для заполнения репозиториев фитнес-клуба при старте приложения.

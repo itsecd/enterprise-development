@@ -1,7 +1,8 @@
-﻿using FitnesClub.Domain.Data;
-using FitnesClub.Domain.Entities;
+﻿using FitnesClub.Domain.Entities;
+using FitnesClub.Domain.Interfaces;
+using FitnesClub.Data.Data;
 
-namespace FitnesClub.Api.Storage;
+namespace FitnesClub.Data.Repositories;
 
 /// <summary>
 /// Репозиторий для хранения и управления данными клиентов фитнес-клуба в оперативной памяти.

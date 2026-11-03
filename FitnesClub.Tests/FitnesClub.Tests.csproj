@@ -22,6 +22,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\FitnesClub.Api\FitnesClub.Api.csproj" />
 		<ProjectReference Include="..\FitnesClub.Domain\FitnesClub.Domain.csproj" />
+		<ProjectReference Include="..\FitnesClub.Data\FitnesClub.Data.csproj" />
 	</ItemGroup>
 
 </Project>

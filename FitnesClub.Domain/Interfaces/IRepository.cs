@@ -1,4 +1,4 @@
-﻿namespace FitnesClub.Api.Storage;
+﻿namespace FitnesClub.Domain.Interfaces;
 
 /// <summary>
 /// Обобщенный интерфейс репозитория для выполнения базовых CRUD-операций над сущностями.
