@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Appointments;
 using VetClinic.Contracts.Dto.Owners;
 using VetClinic.Contracts.Dto.Pets;
 using VetClinic.Contracts.Dto.Vets;
 using VetClinic.Contracts.Services;
+using VetClinic.Shared;
 
 namespace VetClinic.Api.Controllers;
 
@@ -27,7 +27,7 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// <response code="200">Список врачей</response>
     [HttpGet("vets-by-species/{species}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<VetDto>>> GetVetsBySpecies(AnimalSpeciesDto species)
+    public async Task<ActionResult<IReadOnlyList<VetDto>>> GetVetsBySpecies(AnimalSpecies species)
     {
         logger.LogInformation("Аналитика: врачи по виду {Species}", species);
         return Ok(await service.GetVetsBySpeciesAsync(species));

@@ -95,7 +95,7 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     }
 
     /// <summary>
-    /// Удалить запись, повторное удаление тоже возвращает 204
+    /// Удалить запись
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <response code="204">Записи больше нет</response>

@@ -5,6 +5,4 @@ namespace VetClinic.Domain.Repositories;
 /// <summary>
 /// Репозиторий записей на прием
 /// </summary>
-public interface IAppointmentRepository : IRepository<Appointment>
-{
-}
+public interface IAppointmentRepository : IRepository<Appointment>;

@@ -5,6 +5,4 @@ namespace VetClinic.Domain.Repositories;
 /// <summary>
 /// Репозиторий питомцев
 /// </summary>
-public interface IPetRepository : IRepository<Pet>
-{
-}
+public interface IPetRepository : IRepository<Pet>;

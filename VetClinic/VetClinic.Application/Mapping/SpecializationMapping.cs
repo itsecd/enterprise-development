@@ -1,4 +1,3 @@
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Specializations;
 using VetClinic.Domain.Models;
 
@@ -17,7 +16,7 @@ public static class SpecializationMapping
     {
         Id = entity.Id,
         Name = entity.Name,
-        FocusSpecies = (AnimalSpeciesDto?)entity.FocusSpecies
+        FocusSpecies = entity.FocusSpecies
     };
 
     /// <summary>
@@ -27,7 +26,7 @@ public static class SpecializationMapping
     public static Specialization ToEntity(this SpecializationEditDto dto) => new()
     {
         Name = dto.Name,
-        FocusSpecies = (AnimalSpecies?)dto.FocusSpecies
+        FocusSpecies = dto.FocusSpecies
     };
 
     /// <summary>
@@ -38,6 +37,6 @@ public static class SpecializationMapping
     public static void Apply(this Specialization entity, SpecializationEditDto dto)
     {
         entity.Name = dto.Name;
-        entity.FocusSpecies = (AnimalSpecies?)dto.FocusSpecies;
+        entity.FocusSpecies = dto.FocusSpecies;
     }
 }

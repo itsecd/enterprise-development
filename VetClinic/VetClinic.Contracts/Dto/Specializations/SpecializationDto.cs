@@ -1,3 +1,5 @@
+using VetClinic.Shared;
+
 namespace VetClinic.Contracts.Dto.Specializations;
 
 /// <summary>
@@ -18,5 +20,5 @@ public class SpecializationDto
     /// <summary>
     /// Вид животного, с которым работает специализация, null если специализация общая
     /// </summary>
-    public AnimalSpeciesDto? FocusSpecies { get; init; }
+    public AnimalSpecies? FocusSpecies { get; init; }
 }

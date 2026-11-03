@@ -1,5 +1,5 @@
-using VetClinic.Domain.Models;
 using VetClinic.Domain.Seeds;
+using VetClinic.Shared;
 
 namespace VetClinic.Tests;
 

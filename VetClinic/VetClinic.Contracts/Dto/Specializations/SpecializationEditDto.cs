@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using VetClinic.Shared;
 
 namespace VetClinic.Contracts.Dto.Specializations;
 
@@ -17,6 +18,6 @@ public class SpecializationEditDto
     /// <summary>
     /// Вид животного, с которым работает специализация, null если специализация общая
     /// </summary>
-    [EnumDataType(typeof(AnimalSpeciesDto))]
-    public AnimalSpeciesDto? FocusSpecies { get; init; }
+    [EnumDataType(typeof(AnimalSpecies))]
+    public AnimalSpecies? FocusSpecies { get; init; }
 }

@@ -1,5 +1,4 @@
 ﻿using VetClinic.Application.Mapping;
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Appointments;
 using VetClinic.Contracts.Dto.Owners;
 using VetClinic.Contracts.Dto.Pets;
@@ -7,6 +6,7 @@ using VetClinic.Contracts.Dto.Vets;
 using VetClinic.Contracts.Services;
 using VetClinic.Domain.Models;
 using VetClinic.Domain.Repositories;
+using VetClinic.Shared;
 
 namespace VetClinic.Application.Services;
 
@@ -22,12 +22,11 @@ public class AnalyticsService(
     IAppointmentRepository appointments) : IAnalyticsService
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<VetDto>> GetVetsBySpeciesAsync(AnimalSpeciesDto species)
+    public async Task<IReadOnlyList<VetDto>> GetVetsBySpeciesAsync(AnimalSpecies species)
     {
-        var domainSpecies = (AnimalSpecies)species;
         var all = await vets.GetAllAsync();
         return [.. all
-            .Where(v => v.Specialization?.FocusSpecies == domainSpecies)
+            .Where(v => v.Specialization?.FocusSpecies == species)
             .Select(v => v.ToDto())];
     }
 

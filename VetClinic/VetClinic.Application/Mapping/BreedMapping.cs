@@ -1,4 +1,3 @@
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Breeds;
 using VetClinic.Domain.Models;
 
@@ -17,7 +16,7 @@ public static class BreedMapping
     {
         Id = entity.Id,
         Name = entity.Name,
-        Species = (AnimalSpeciesDto)entity.Species
+        Species = entity.Species
     };
 
     /// <summary>
@@ -27,7 +26,7 @@ public static class BreedMapping
     public static Breed ToEntity(this BreedEditDto dto) => new()
     {
         Name = dto.Name,
-        Species = (AnimalSpecies)dto.Species
+        Species = dto.Species
     };
 
     /// <summary>
@@ -38,6 +37,6 @@ public static class BreedMapping
     public static void Apply(this Breed entity, BreedEditDto dto)
     {
         entity.Name = dto.Name;
-        entity.Species = (AnimalSpecies)dto.Species;
+        entity.Species = dto.Species;
     }
 }

@@ -5,6 +5,4 @@ namespace VetClinic.Domain.Repositories;
 /// <summary>
 /// Репозиторий специализаций врачей
 /// </summary>
-public interface ISpecializationRepository : IRepository<Specialization>
-{
-}
+public interface ISpecializationRepository : IRepository<Specialization>;

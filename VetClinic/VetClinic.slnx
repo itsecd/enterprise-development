@@ -3,6 +3,7 @@
   <Project Path="VetClinic.Application/VetClinic.Application.csproj" />
   <Project Path="VetClinic.Contracts/VetClinic.Contracts.csproj" Id="e58c0535-e6a9-4cf0-b092-cdb1a684eaa9" />
   <Project Path="VetClinic.Domain/VetClinic.Domain.csproj" />
+  <Project Path="VetClinic.Shared/VetClinic.Shared.csproj" />
   <Project Path="VetClinic.Infrastructure.InMemory/VetClinic.Infrastructure.InMemory.csproj" Id="e35ab524-39a9-44d0-8c2a-daa8ba3a764f" />
   <Project Path="VetClinic.Tests/VetClinic.Tests.csproj" />
 </Solution>

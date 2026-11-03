@@ -1,3 +1,5 @@
+using VetClinic.Shared;
+
 namespace VetClinic.Contracts.Dto.Pets;
 
 /// <summary>
@@ -18,7 +20,7 @@ public class PetDto
     /// <summary>
     /// Биологический вид животного
     /// </summary>
-    public required AnimalSpeciesDto Species { get; init; }
+    public required AnimalSpecies Species { get; init; }
 
     /// <summary>
     /// Идентификатор породы, null если порода не указана

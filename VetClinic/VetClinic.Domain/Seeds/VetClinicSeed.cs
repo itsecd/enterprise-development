@@ -1,4 +1,5 @@
 using VetClinic.Domain.Models;
+using VetClinic.Shared;
 
 namespace VetClinic.Domain.Seeds;
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using VetClinic.Shared;
 
 namespace VetClinic.Contracts.Dto.Pets;
 
@@ -18,8 +19,8 @@ public class PetEditDto
     /// Биологический вид животного
     /// </summary>
     [Required]
-    [EnumDataType(typeof(AnimalSpeciesDto))]
-    public required AnimalSpeciesDto Species { get; init; }
+    [EnumDataType(typeof(AnimalSpecies))]
+    public required AnimalSpecies Species { get; init; }
 
     /// <summary>
     /// Идентификатор породы, null если порода не указана

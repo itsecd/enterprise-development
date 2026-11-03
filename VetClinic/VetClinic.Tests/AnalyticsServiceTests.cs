@@ -1,7 +1,7 @@
 using VetClinic.Application.Services;
-using VetClinic.Contracts.Dto;
 using VetClinic.Domain.Seeds;
 using VetClinic.Infrastructure.InMemory.Repositories;
+using VetClinic.Shared;
 
 namespace VetClinic.Tests;
 
@@ -28,10 +28,10 @@ public class AnalyticsServiceTests
     /// Все ветеринары, специализирующиеся на выбранном виде животных
     /// </summary>
     [Theory]
-    [InlineData(AnimalSpeciesDto.Dog, new[] { 1, 6, 10 })]
-    [InlineData(AnimalSpeciesDto.Cat, new[] { 2, 7 })]
-    [InlineData(AnimalSpeciesDto.Hamster, new[] { 8 })]
-    public async Task GetVetsBySpecies(AnimalSpeciesDto species, int[] expectedIds)
+    [InlineData(AnimalSpecies.Dog, new[] { 1, 6, 10 })]
+    [InlineData(AnimalSpecies.Cat, new[] { 2, 7 })]
+    [InlineData(AnimalSpecies.Hamster, new[] { 8 })]
+    public async Task GetVetsBySpecies(AnimalSpecies species, int[] expectedIds)
     {
         var result = await _service.GetVetsBySpeciesAsync(species);
 

@@ -1,8 +1,8 @@
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Appointments;
 using VetClinic.Contracts.Dto.Owners;
 using VetClinic.Contracts.Dto.Pets;
 using VetClinic.Contracts.Dto.Vets;
+using VetClinic.Shared;
 
 namespace VetClinic.Contracts.Services;
 
@@ -15,7 +15,7 @@ public interface IAnalyticsService
     /// Все ветеринары, специализирующиеся на выбранном виде животных
     /// </summary>
     /// <param name="species">Вид животного</param>
-    public Task<IReadOnlyList<VetDto>> GetVetsBySpeciesAsync(AnimalSpeciesDto species);
+    public Task<IReadOnlyList<VetDto>> GetVetsBySpeciesAsync(AnimalSpecies species);
 
     /// <summary>
     /// Все питомцы, записанные на прием к указанному врачу, упорядоченные по кличке

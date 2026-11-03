@@ -1,8 +1,8 @@
 using VetClinic.Application.Services;
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Pets;
 using VetClinic.Domain.Seeds;
 using VetClinic.Infrastructure.InMemory.Repositories;
+using VetClinic.Shared;
 
 namespace VetClinic.Tests;
 
@@ -40,7 +40,7 @@ public class CrudServiceTests
     private static PetEditDto NewPet(int ownerId, int? breedId = 1) => new()
     {
         Nickname = "Тест",
-        Species = AnimalSpeciesDto.Dog,
+        Species = AnimalSpecies.Dog,
         BreedId = breedId,
         BirthDate = new DateTime(2020, 1, 1),
         Weight = 10,

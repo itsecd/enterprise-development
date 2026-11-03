@@ -1,3 +1,5 @@
+using VetClinic.Shared;
+
 namespace VetClinic.Contracts.Dto.Breeds;
 
 /// <summary>
@@ -18,5 +20,5 @@ public class BreedDto
     /// <summary>
     /// Биологический вид животного
     /// </summary>
-    public required AnimalSpeciesDto Species { get; init; }
+    public required AnimalSpecies Species { get; init; }
 }

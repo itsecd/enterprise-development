@@ -1,4 +1,3 @@
-using VetClinic.Contracts.Dto;
 using VetClinic.Contracts.Dto.Pets;
 using VetClinic.Domain.Models;
 
@@ -17,7 +16,7 @@ public static class PetMapping
     {
         Id = entity.Id,
         Nickname = entity.Nickname,
-        Species = (AnimalSpeciesDto)entity.Species,
+        Species = entity.Species,
         BreedId = entity.Breed?.Id,
         BirthDate = entity.BirthDate,
         Weight = entity.Weight,
@@ -31,7 +30,7 @@ public static class PetMapping
     public static Pet ToEntity(this PetEditDto dto) => new()
     {
         Nickname = dto.Nickname,
-        Species = (AnimalSpecies)dto.Species,
+        Species = dto.Species,
         BirthDate = dto.BirthDate,
         Weight = dto.Weight
     };
@@ -44,7 +43,7 @@ public static class PetMapping
     public static void Apply(this Pet entity, PetEditDto dto)
     {
         entity.Nickname = dto.Nickname;
-        entity.Species = (AnimalSpecies)dto.Species;
+        entity.Species = dto.Species;
         entity.BirthDate = dto.BirthDate;
         entity.Weight = dto.Weight;
     }

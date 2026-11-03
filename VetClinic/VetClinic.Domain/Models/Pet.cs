@@ -1,3 +1,5 @@
+using VetClinic.Shared;
+
 namespace VetClinic.Domain.Models;
 
 /// <summary>
