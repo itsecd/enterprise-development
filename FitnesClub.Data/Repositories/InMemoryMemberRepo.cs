@@ -9,15 +9,7 @@ namespace FitnesClub.Data.Repositories;
 /// </summary>
 public class InMemoryMemberRepo : IRepository<Member, Guid>
 {
-    private readonly List<Member> _members;
-
-    /// <summary>
-    /// Инициализирует репозиторий клиентов начальными данными из <see cref="DataSeeder"/>.
-    /// </summary>
-    public InMemoryMemberRepo()
-    {
-        _members = [.. DataSeeder.Members];
-    }
+    private readonly List<Member> _members = [.. DataSeeder.Members];
 
     /// <inheritdoc />
     public void Create(Member member)
@@ -55,10 +47,6 @@ public class InMemoryMemberRepo : IRepository<Member, Guid>
     /// <inheritdoc />
     public void Delete(Guid id)
     {
-        var item = Read(id);
-        if (item is not null)
-        {
-            _members.Remove(item);
-        }
+        _members.RemoveAll(m => m.Id == id);
     }
 }

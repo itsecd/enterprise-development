@@ -9,19 +9,16 @@ namespace FitnesClub.Data.Repositories;
 /// </summary>
 public class InMemoryTrainerRepo : IRepository<Trainer, Guid>
 {
-    private readonly List<Trainer> _trainers;
-
-    /// <summary>
-    /// Инициализирует репозиторий тренеров начальными данными из <see cref="DataSeeder"/>.
-    /// </summary>
-    public InMemoryTrainerRepo()
-    {
-        _trainers = [.. DataSeeder.Trainers];
-    }
+    private readonly List<Trainer> _trainers = [.. DataSeeder.Trainers];
 
     /// <inheritdoc />
     public void Create(Trainer trainer)
     {
+        if (trainer.Id == Guid.Empty)
+        {
+            trainer.Id = Guid.NewGuid();
+        }
+
         _trainers.Add(trainer);
     }
 
@@ -38,16 +35,6 @@ public class InMemoryTrainerRepo : IRepository<Trainer, Guid>
     }
 
     /// <inheritdoc />
-    public void Delete(Guid id)
-    {
-        var item = Read(id);
-        if (item is not null)
-        {
-            _trainers.Remove(item);
-        }
-    }
-
-    /// <inheritdoc />
     public void Update(Trainer updatedTrainer)
     {
         var index = _trainers.FindIndex(t => t.Id == updatedTrainer.Id);
@@ -55,5 +42,11 @@ public class InMemoryTrainerRepo : IRepository<Trainer, Guid>
         {
             _trainers[index] = updatedTrainer;
         }
+    }
+
+    /// <inheritdoc />
+    public void Delete(Guid id)
+    {
+        _trainers.RemoveAll(t => t.Id == id);
     }
 }

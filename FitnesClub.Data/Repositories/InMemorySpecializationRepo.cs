@@ -9,15 +9,7 @@ namespace FitnesClub.Data.Repositories;
 /// </summary>
 public class InMemorySpecializationRepo : IRepository<Specialization, Guid>
 {
-    private readonly List<Specialization> _specializations;
-
-    /// <summary>
-    /// Инициализирует репозиторий специализаций начальными данными из <see cref="DataSeeder"/>.
-    /// </summary>
-    public InMemorySpecializationRepo()
-    {
-        _specializations = [.. DataSeeder.Specializations];
-    }
+    private readonly List<Specialization> _specializations = [.. DataSeeder.Specializations];
 
     /// <inheritdoc />
     public void Create(Specialization specialization)
@@ -55,10 +47,6 @@ public class InMemorySpecializationRepo : IRepository<Specialization, Guid>
     /// <inheritdoc />
     public void Delete(Guid id)
     {
-        var item = Read(id);
-        if (item is not null)
-        {
-            _specializations.Remove(item);
-        }
+        _specializations.RemoveAll(s => s.Id == id);
     }
 }
