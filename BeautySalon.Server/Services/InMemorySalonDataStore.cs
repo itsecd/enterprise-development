@@ -40,6 +40,9 @@ public class InMemorySalonDataStore : ISalonDataStore
         Appointments = SeedData.Appointments;
     }
 
+    /// <summary>
+    /// Сохранение изменений в базе.
+    /// </summary>
     public void SaveChanges()
     {
         // При хранении в памяти сохранение не требуется, 

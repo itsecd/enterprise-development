@@ -6,12 +6,30 @@ namespace BeautySalon.Server.Controllers;
 
 // DTO для создания/обновления записи. 
 // Содержит только ID, а не целые объекты.
+/// <summary>
+/// Запрос на создание или обновление записи клиента к мастеру.
+/// </summary>
 public class AppointmentRequest
 {
+    /// <summary>
+    /// Дата и время начала процедуры.
+    /// </summary>
     public DateTime StartTime { get; set; }
+    /// <summary>
+    /// Является ли клиент постоянным.
+    /// </summary>
     public bool IsRegularClient { get; set; }
+    /// <summary>
+    /// Идентификатор клиента.
+    /// </summary>
     public int ClientId { get; set; }
+    /// <summary>
+    /// Идентификатор мастера.
+    /// </summary>
     public int MasterId { get; set; }
+    /// <summary>
+    /// Идентификатор процедуры.
+    /// </summary>
     public int ServiceId { get; set; }
 }
 

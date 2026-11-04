@@ -12,16 +12,18 @@ builder.Services.AddControllers()
     });
 
 // Добавляем Swagger для документации API
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<ISalonDataStore, InMemorySalonDataStore>();
 
 var app = builder.Build();
 
 // Настраиваем Swagger UI
-app.UseSwagger();
-app.UseSwaggerUI();
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "v1");
+});;
 
 app.MapControllers();
 
