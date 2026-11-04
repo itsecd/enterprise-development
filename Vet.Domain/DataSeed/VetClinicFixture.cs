@@ -8,13 +8,41 @@ namespace Vet.Domain.DataSeed;
 /// </summary>
 public class VetClinicTestFixture
 {
+    /// <summary>
+    /// Фиксированная дата
+    /// </summary>
     public static readonly DateTime ReferenceDate = new(2026, 10, 15, 12, 0, 0);
+
+    /// <summary>
+    /// Список пород
+    /// </summary>
     public readonly List<Breed> Breeds;
+
+    /// <summary>
+    /// Список специализаций
+    /// </summary>
     public readonly List<Specialization> Specializations;
+
+    /// <summary>
+    /// Список ветеринаров
+    /// </summary>
     public readonly List<Veterinarian> Veterinarians;
+
+    /// <summary>
+    /// Список хозяев
+    /// </summary>
     public readonly List<Owner> Owners;
+
+    /// <summary>
+    /// Список питомцев
+    /// </summary>
     public readonly List<Pet> Pets;
+
+    /// <summary>
+    /// Список записей на прием
+    /// </summary>
     public readonly List<Appointment> Appointments;
+
 
     /// <summary>
     /// Инициализирует тестовые данные

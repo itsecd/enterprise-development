@@ -5,8 +5,16 @@ using Vet.Contracts.Dtos;
 
 namespace Vet.Application;
 
+/// <summary>
+/// Класс для регистрации зависимостей слоя приложения
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Добавление сервисов приложения в коллекцию зависимостей
+    /// </summary>
+    /// <param name="services">Коллекция дескрипторов служб</param>
+    /// <returns>Коллекция служб с добавленными сервисами</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IApplicationService<BreedDto, BreedCreateUpdateDto, int>, BreedService>();

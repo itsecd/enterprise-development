@@ -1,5 +1,4 @@
 using System.Reflection;
-using Vet.Api.Middlewares;
 using Vet.Application;
 using Vet.Infrastructure.InMemory;
 using Vet.ServiceDefaults;
@@ -25,7 +24,7 @@ builder.Services.AddSwaggerGen(options =>
         options.IncludeXmlComments(contractsXmlPath);
     }
 });
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddProblemDetails();
 
 builder.Services.AddApplication();
