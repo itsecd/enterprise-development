@@ -1,3 +1,5 @@
+using FitnessClub.Contracts.Interfaces;
+
 namespace FitnessClub.Contracts.Dtos.Read;
 /// <summary>
 /// Данные зала для ответа API
@@ -12,4 +14,4 @@ public record HallDto
 (
     int Id,
     string Name
-);
+) : IHasId;

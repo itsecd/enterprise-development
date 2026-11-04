@@ -1,3 +1,4 @@
+using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Shared.Enums;
 
 namespace FitnessClub.Contracts.Dtos.Read;
@@ -42,4 +43,4 @@ public record TrainerDto
     int SpecializationId,
     string SpecializationName,
     int Experience
-);
+) : IHasId;

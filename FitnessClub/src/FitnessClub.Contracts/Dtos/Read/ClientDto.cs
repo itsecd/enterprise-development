@@ -1,3 +1,4 @@
+using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Shared.Enums;
 
 namespace FitnessClub.Contracts.Dtos.Read;
@@ -38,4 +39,4 @@ public record ClientDto
     string? PhoneNumber,
     DateOnly SubscriptionStart,
     DateOnly SubscriptionEnd
-);
+) : IHasId;

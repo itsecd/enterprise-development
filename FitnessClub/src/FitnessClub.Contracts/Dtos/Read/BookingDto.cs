@@ -1,3 +1,5 @@
+using FitnessClub.Contracts.Interfaces;
+
 namespace FitnessClub.Contracts.Dtos.Read;
 /// <summary>
 /// Данные бронирования тренировки
@@ -32,4 +34,4 @@ public record BookingDto
     DateTime DateTime,
     bool IsTrial,
     TimeSpan Duration
-);
+) : IHasId;
