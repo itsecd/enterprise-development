@@ -1,0 +1,21 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.6.4">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>b98ea8a4-9fb2-4eb4-afe0-fa5237fa078b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EnvDTE" Version="17.14.40260" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vet.Api\Vet.Api.csproj" />
+  </ItemGroup>
+
+</Project>

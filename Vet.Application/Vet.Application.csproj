@@ -2,12 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vet.Contracts\Vet.Contracts.csproj" />
     <ProjectReference Include="..\Vet.Domain\Vet.Domain.csproj" />
+    <ProjectReference Include="..\Vet.Infrastructure.InMemory\Vet.Infrastructure.InMemory.csproj" />
   </ItemGroup>
 
 </Project>
