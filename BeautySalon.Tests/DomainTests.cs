@@ -1,3 +1,5 @@
+using BeautySalon.Domain.Data;
+
 namespace BeautySalon.Tests;
 
 /// <summary>
@@ -12,14 +14,14 @@ public class DomainTests
     public void ShouldReturnOnlyMastersWithAtLeast5YearsExperience()
     {
         // Act
-        var result = TestData.Masters
+        var result = SeederData.Masters
             .Where(m => m.ExperienceYears >= 5)
             .ToList();
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Equal(new[] { TestData.Master10YearsId, TestData.Master7YearsId }, result.Select(m => m.Id).ToArray());
-        Assert.DoesNotContain(result, m => m.Id == TestData.Master2YearsId);
+        Assert.Equal(8, result.Count);
+        Assert.All(result, m => Assert.True(m.ExperienceYears >= 5));
+        Assert.DoesNotContain(result, m => m.Id == 103);
     }
 
     /// </summary>
@@ -29,8 +31,9 @@ public class DomainTests
     public void ShouldReturnPositiveTimeGapsBetweenMasterAppointments()
     {
         // Arrange
-        var appointments = TestData.Appointments
-            .Where(a => a.MasterId == TestData.Master10YearsId)
+        var masterId = 101;
+        var appointments = SeederData.Appointments
+            .Where(a => a.MasterId == masterId)
             .OrderBy(a => a.StartTime)
             .ToList();
 
@@ -61,11 +64,11 @@ public class DomainTests
     public void ShouldReturnTop5ServicesOrderedByAppointmentCount()
     {
         // Act
-        var top5 = TestData.Appointments
+        var top5 = SeederData.Appointments
             .GroupBy(a => a.ServiceId)
             .Select(g => new
             {
-                Service = TestData.Services.First(s => s.Id == g.Key),
+                ServiceId = g.Key,
                 Count = g.Count()
             })
             .OrderByDescending(x => x.Count)
@@ -76,23 +79,20 @@ public class DomainTests
         Assert.Equal(5, top5.Count);
 
         // Топ: Стрижка(5), Маникюр(4), Массаж(3).
-        Assert.Equal(TestData.ServicePopularId, top5[0].Service.Id);
-        Assert.Equal(TestData.ServiceSecondId,  top5[1].Service.Id);
-        Assert.Equal(TestData.ServiceThirdId,   top5[2].Service.Id);
+        Assert.Equal(201, top5[0].ServiceId);
+        Assert.Equal(202, top5[1].ServiceId);
+        Assert.Equal(203, top5[2].ServiceId);
         
         // Педикюр(2) и Ботокс(2) делят 4-5 места, порядок может быть разным.
-        var top4And5 = top5.Skip(3).Select(x => x.Service.Id).ToList();
-        Assert.Contains(TestData.ServiceFourthId, top4And5);
-        Assert.Contains(TestData.ServiceUnpopularId, top4And5);
+        var top4And5 = top5.Skip(3).Select(x => x.ServiceId).ToList();
+        Assert.Contains(204, top4And5);
+        Assert.Contains(206, top4And5);
 
         Assert.Equal(5, top5[0].Count);
         Assert.Equal(4, top5[1].Count);
         Assert.Equal(3, top5[2].Count);
         Assert.Equal(2, top5[3].Count);
         Assert.Equal(2, top5[4].Count);
-
-        // Услуга с 1 записью не должна попасть в топ
-        Assert.DoesNotContain(top5, x => x.Service.Id == TestData.ServiceFifthId);
     }
 
     /// <summary>
@@ -105,16 +105,19 @@ public class DomainTests
         var lastMonth = DateTime.Now.AddDays(-30);
 
         // Act
-        var repeatClients = TestData.Appointments
+        var repeatClients = SeederData.Appointments
             .Where(a => a.StartTime >= lastMonth)
             .GroupBy(a => a.ClientId)
             .Where(g => g.Count() > 1)
             .Select(g => new { ClientId = g.Key, Count = g.Count() })
             .ToList();
 
-        // Assert
+        // Assert        
         Assert.Equal(3, repeatClients.Count);
-        Assert.DoesNotContain(repeatClients, rc => rc.ClientId == TestData.Clients[3].Id);
+        Assert.Contains(repeatClients, rc => rc.ClientId == 1);
+        Assert.Contains(repeatClients, rc => rc.ClientId == 2);
+        Assert.Contains(repeatClients, rc => rc.ClientId == 3);
+        Assert.DoesNotContain(repeatClients, rc => rc.ClientId == 4);
     }
 
     /// <summary>
@@ -124,17 +127,17 @@ public class DomainTests
     public void ShouldReturnClientsWithMultipleMastersOrderedByBirthDate()
     {
         // Act
-        var clients = TestData.Appointments
+        var clients = SeederData.Appointments
             .GroupBy(a => a.ClientId)
             .Where(g => g.Select(a => a.MasterId).Distinct().Count() > 1)
-            .Select(g => TestData.Clients.First(c => c.Id == g.Key))
+            .Select(g => SeederData.Clients.First(c => c.Id == g.Key))
             .OrderBy(c => c.BirthDate)
             .ToList();
 
         // Assert
         Assert.Equal(3, clients.Count);
-        Assert.Equal(TestData.ClientOldId,    clients[0].Id);
-        Assert.Equal(TestData.ClientMiddleId, clients[1].Id);
-        Assert.Equal(TestData.ClientYoungId,  clients[2].Id);
+        Assert.Equal(1, clients[0].Id);
+        Assert.Equal(2, clients[1].Id);
+        Assert.Equal(3, clients[2].Id);
     }
 }

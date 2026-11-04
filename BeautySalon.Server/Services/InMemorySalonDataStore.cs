@@ -4,7 +4,7 @@ using BeautySalon.Domain.Entities;
 namespace BeautySalon.Server.Services;
 
 /// <summary>
-/// Реализация хранилища в памяти на основе данных из SeedData.
+/// Реализация хранилища в памяти на основе данных из SeederData.
 /// </summary>
 public class InMemorySalonDataStore : ISalonDataStore
 {
@@ -26,18 +26,18 @@ public class InMemorySalonDataStore : ISalonDataStore
     public List<Appointment> Appointments { get; }
 
     /// <summary>
-    /// Инициализирует хранилище, связывая его с коллекциями из SeedData
+    /// Инициализирует хранилище, связывая его с коллекциями из SeederData
     /// </summary>
     public InMemorySalonDataStore()
     {
-        // Инициализируем SeedData
-        SeedData.Initialize();
+        // Инициализируем SeederData
+        SeederData.Initialize();
         
-        // Связываем хранилище с коллекциями из SeedData
-        Clients = SeedData.Clients;
-        Masters = SeedData.Masters;
-        Services = SeedData.Services;
-        Appointments = SeedData.Appointments;
+        // Связываем хранилище с коллекциями из SeederData
+        Clients = SeederData.Clients;
+        Masters = SeederData.Masters;
+        Services = SeederData.Services;
+        Appointments = SeederData.Appointments;
     }
 
     /// <summary>

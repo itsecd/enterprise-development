@@ -6,12 +6,14 @@ namespace BeautySalon.Domain.Data;
 /// <summary>
 /// Список тестовых данных.
 /// </summary>
-public static class SeedData
+public static class SeederData
 {
     public static List<Client> Clients { get; private set; } = [];
     public static List<Master> Masters { get; private set; } = [];
     public static List<Service> Services { get; private set; } = [];
     public static List<Appointment> Appointments { get; private set; } = [];
+
+    static SeederData() => Initialize();
 
     public static void Initialize()
     {
@@ -303,27 +305,54 @@ public static class SeedData
         ];
 
         // Записи
-        var random = new Random(42);
-        Appointments = new List<Appointment>(50);
+        Appointments = 
+        [
+            CreateAppointment(1, DateTime.Today.AddDays(-10).AddHours(10), 1, 101, 201, false),
+            CreateAppointment(2, DateTime.Today.AddDays(-10).AddHours(12), 2, 101, 203, false),
+            CreateAppointment(3, DateTime.Today.AddDays(-10).AddHours(14), 3, 101, 205, false),
 
-        for (var i = 0; i < 50; i++)
+            CreateAppointment(4, DateTime.Today.AddDays(-5).AddHours(10), 1, 102, 201, true),
+            CreateAppointment(5, DateTime.Today.AddDays(-4).AddHours(10), 1, 102, 201, true),
+            CreateAppointment(6, DateTime.Today.AddDays(-3).AddHours(10), 2, 102, 201, false),
+            CreateAppointment(7, DateTime.Today.AddDays(-2).AddHours(10), 3, 102, 201, false),
+
+            CreateAppointment(8, DateTime.Today.AddDays(-5).AddHours(10), 2, 103, 202, false),
+            CreateAppointment(9, DateTime.Today.AddDays(-4).AddHours(10), 3, 103, 202, false),
+            CreateAppointment(10, DateTime.Today.AddDays(-3).AddHours(10), 1, 103, 202, true),
+            CreateAppointment(11, DateTime.Today.AddDays(-2).AddHours(10), 1, 103, 202, true),
+
+            CreateAppointment(12, DateTime.Today.AddDays(-2).AddHours(14), 2, 104, 203, false),
+            CreateAppointment(13, DateTime.Today.AddDays(-1).AddHours(10), 3, 104, 203, false),
+
+            CreateAppointment(14, DateTime.Today.AddDays(-1).AddHours(10), 3, 102, 204, false),
+            CreateAppointment(15, DateTime.Today.AddDays(-1).AddHours(14), 2, 103, 204, false),
+
+            CreateAppointment(16, DateTime.Today.AddDays(-7).AddHours(10), 4, 104, 206, false),
+            CreateAppointment(17, DateTime.Today.AddDays(-45).AddHours(10), 4, 104, 206, false),
+
+            CreateAppointment(18, DateTime.Today.AddDays(-20).AddHours(10), 5, 105, 207, false),
+            CreateAppointment(19, DateTime.Today.AddDays(-15).AddHours(10), 6, 106, 208, false),
+            CreateAppointment(20, DateTime.Today.AddDays(-12).AddHours(10), 7, 108, 209, false)
+        ];
+    }
+
+    /// <summary>
+    /// Вспомогательный метод для создания записи с заполнением обязательных навигационных свойств.
+    /// </summary>
+    private static Appointment CreateAppointment(int id, DateTime start, int clientId, int masterId, int serviceId, bool isRegular)
+    {
+        return new Appointment
         {
-            var client = Clients[random.Next(Clients.Count)];
-            var master = Masters[random.Next(Masters.Count)];
-            var service = Services[random.Next(Services.Count)];
-
-            Appointments.Add(new Appointment
-            {
-                Id = 301 + i,
-                StartTime = DateTime.Now.AddDays(random.Next(-60, 30)).AddHours(random.Next(9, 19)),
-                IsRegularClient = random.NextDouble() < 0.3,
-                ClientId = client.Id,
-                Client = client,
-                MasterId = master.Id,
-                Master = master,
-                ServiceId = service.Id,
-                Service = service
-            });
-        }
+            Id = id,
+            StartTime = start,
+            IsRegularClient = isRegular,
+            ClientId = clientId,
+            Client = Clients.First(c => c.Id == clientId),
+            MasterId = masterId,
+            Master = Masters.First(m => m.Id == masterId),
+            ServiceId = serviceId,
+            Service = Services.First(s => s.Id == serviceId)
+        };
+    
     }
 }
