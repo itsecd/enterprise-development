@@ -1,101 +1,88 @@
 using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Dtos;
-using Museum.Api.Storage;
-using Museum.Domain;
+using Museum.Contracts.Dto;
+using Museum.Contracts.Interfaces;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>Обрабатывает HTTP-запросы для работы с экскурсиями</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ToursController(MuseumStore store) : ControllerBase
+public sealed class ToursController(ITourService tourService) : ControllerBase
 {
+    /// <summary>Возвращает список всех экскурсий</summary>
     [HttpGet]
-    public ActionResult<List<Tour>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<TourDto>>> GetAll()
     {
-        return store.Tours;
+        var tours = await tourService.GetAllAsync();
+        return Ok(tours);
     }
 
+    /// <summary>Возвращает экскурсию по её идентификатору</summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Tour> GetById(int id)
+    public async Task<ActionResult<TourDto>> GetById(int id)
     {
-        var tour = store.Tours.FirstOrDefault(t => t.Id == id);
-        if (tour is null)
-        {
-            return NotFound();
-        }
+        var tour = await tourService.GetByIdAsync(id);
 
-        return tour;
+        if (tour is null)
+            return NotFound();
+
+        return Ok(tour);
     }
 
+    /// <summary>Создаёт новую экскурсию</summary>
     [HttpPost]
-    public ActionResult<Tour> Create(TourRequest request)
+    public async Task<ActionResult<TourDto>> Create(TourEditDto dto)
     {
-        var exhibitions = FindExhibitions(request.ExhibitionIds);
-        if (exhibitions is null)
+        try
         {
-            return BadRequest("Одна или несколько выставок не найдены");
+            var tour = await tourService.CreateAsync(dto);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = tour.Id },
+                tour);
         }
-
-        var tour = new Tour
+        catch (ArgumentException exception)
         {
-            Id = store.Tours.Select(t => t.Id).DefaultIfEmpty(0).Max() + 1,
-            Date = request.Date,
-            StartTime = request.StartTime,
-            DurationMinutes = request.DurationMinutes,
-            Exhibitions = exhibitions
-        };
-        store.Tours.Add(tour);
-
-        return CreatedAtAction(nameof(GetById), new { id = tour.Id }, tour);
+            return BadRequest(exception.Message);
+        }
     }
 
+    /// <summary>Обновляет сведения об экскурсии</summary>
     [HttpPut("{id:int}")]
-    public ActionResult<Tour> Update(int id, TourRequest request)
+    public async Task<IActionResult> Update(int id, TourEditDto dto)
     {
-        var tour = store.Tours.FirstOrDefault(t => t.Id == id);
-        if (tour is null)
+        try
         {
-            return NotFound();
-        }
+            var updated = await tourService.UpdateAsync(id, dto);
 
-        var exhibitions = FindExhibitions(request.ExhibitionIds);
-        if (exhibitions is null)
+            if (!updated)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (ArgumentException exception)
         {
-            return BadRequest("Одна или несколько выставок не найдены");
+            return BadRequest(exception.Message);
         }
-
-        tour.Date = request.Date;
-        tour.StartTime = request.StartTime;
-        tour.DurationMinutes = request.DurationMinutes;
-        tour.Exhibitions = exhibitions;
-
-        return tour;
     }
 
+    /// <summary>Удаляет экскурсию, если на неё не оформлены билеты</summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var tour = store.Tours.FirstOrDefault(t => t.Id == id);
-        if (tour is null)
+        try
         {
-            return NotFound();
-        }
+            var deleted = await tourService.DeleteAsync(id);
 
-        if (store.Tickets.Any(t => t.Tour.Id == id))
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (InvalidOperationException exception)
         {
-            return Conflict("На экскурсию есть билеты");
+            return Conflict(exception.Message);
         }
-
-        store.Tours.Remove(tour);
-
-        return NoContent();
-    }
-
-    private List<Exhibition>? FindExhibitions(List<int> ids)
-    {
-        var distinctIds = ids.Distinct().ToList();
-        var exhibitions = store.Exhibitions.Where(e => distinctIds.Contains(e.Id)).ToList();
-
-        return exhibitions.Count == distinctIds.Count ? exhibitions : null;
     }
 }

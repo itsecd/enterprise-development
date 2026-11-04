@@ -12,6 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Museum.Domain\Museum.Domain.csproj" />
+    <ProjectReference Include="..\Museum.Application\Museum.Application.csproj" />
+    <ProjectReference Include="..\Museum.Contracts\Museum.Contracts.csproj" />
+    <ProjectReference Include="..\Museum.Infrastructure.InMemory\Museum.Infrastructure.InMemory.csproj" />
   </ItemGroup>
 
 </Project>

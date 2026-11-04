@@ -1,72 +1,74 @@
 using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Storage;
-using Museum.Domain;
+using Museum.Contracts.Dto;
+using Museum.Contracts.Interfaces;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>Обрабатывает HTTP-запросы для работы с посетителями музея</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class VisitorsController(MuseumStore store) : ControllerBase
+public sealed class VisitorsController(IVisitorService visitorService) : ControllerBase
 {
+    /// <summary>Возвращает список всех посетителей</summary>
     [HttpGet]
-    public ActionResult<List<Visitor>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<VisitorDto>>> GetAll()
     {
-        return store.Visitors;
+        var visitors = await visitorService.GetAllAsync();
+        return Ok(visitors);
     }
 
+    /// <summary>Возвращает посетителя по его идентификатору</summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Visitor> GetById(int id)
+    public async Task<ActionResult<VisitorDto>> GetById(int id)
     {
-        var visitor = store.Visitors.FirstOrDefault(v => v.Id == id);
-        if (visitor is null)
-        {
-            return NotFound();
-        }
+        var visitor = await visitorService.GetByIdAsync(id);
 
-        return visitor;
+        if (visitor is null)
+            return NotFound();
+
+        return Ok(visitor);
     }
 
+    /// <summary>Добавляет нового посетителя</summary>
     [HttpPost]
-    public ActionResult<Visitor> Create(Visitor visitor)
+    public async Task<ActionResult<VisitorDto>> Create(VisitorEditDto dto)
     {
-        visitor.Id = store.Visitors.Select(v => v.Id).DefaultIfEmpty(0).Max() + 1;
-        store.Visitors.Add(visitor);
+        var visitor = await visitorService.CreateAsync(dto);
 
-        return CreatedAtAction(nameof(GetById), new { id = visitor.Id }, visitor);
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = visitor.Id },
+            visitor);
     }
 
+    /// <summary>Обновляет сведения о посетителе</summary>
     [HttpPut("{id:int}")]
-    public ActionResult<Visitor> Update(int id, Visitor updated)
+    public async Task<IActionResult> Update(int id, VisitorEditDto dto)
     {
-        var visitor = store.Visitors.FirstOrDefault(v => v.Id == id);
-        if (visitor is null)
-        {
+        var updated = await visitorService.UpdateAsync(id, dto);
+
+        if (!updated)
             return NotFound();
-        }
-
-        visitor.FullName = updated.FullName;
-        visitor.Phone = updated.Phone;
-        visitor.BirthDate = updated.BirthDate;
-
-        return visitor;
-    }
-
-    [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
-    {
-        var visitor = store.Visitors.FirstOrDefault(v => v.Id == id);
-        if (visitor is null)
-        {
-            return NotFound();
-        }
-
-        if (store.Tickets.Any(t => t.Visitor.Id == id))
-        {
-            return Conflict("У посетителя есть билеты");
-        }
-
-        store.Visitors.Remove(visitor);
 
         return NoContent();
+    }
+
+    /// <summary>Удаляет посетителя, если у него нет билетов</summary>
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            var deleted = await visitorService.DeleteAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Conflict(exception.Message);
+        }
     }
 }

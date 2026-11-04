@@ -1,5 +1,8 @@
 <Solution>
   <Project Path="Museum.Api/Museum.Api.csproj" />
+  <Project Path="Museum.Application/Museum.Application.csproj" />
+  <Project Path="Museum.Contracts/Museum.Contracts.csproj" />
   <Project Path="Museum.Domain/Museum.Domain.csproj" />
+  <Project Path="Museum.Infrastructure.InMemory/Museum.Infrastructure.InMemory.csproj" />
   <Project Path="Museum.Tests/Museum.Tests.csproj" />
 </Solution>

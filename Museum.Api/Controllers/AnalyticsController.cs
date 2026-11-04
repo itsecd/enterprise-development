@@ -1,98 +1,68 @@
 using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Storage;
+using Museum.Contracts.Dto;
+using Museum.Contracts.Interfaces;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>Обрабатывает запросы аналитики по деятельности музея</summary>
 [ApiController]
-[Route("api/analytics")]
-public class AnalyticsController(MuseumStore store) : ControllerBase
+[Route("api/[controller]")]
+public sealed class AnalyticsController(IAnalyticsService analyticsService) : ControllerBase
 {
+    /// <summary>Возвращает пять самых посещаемых выставок</summary>
     [HttpGet("top-exhibitions")]
-    public IActionResult GetTopExhibitions()
+    public async Task<ActionResult<IReadOnlyList<TopExhibitionDto>>> GetTopExhibitions()
     {
-        var result = store.Tickets
-            .SelectMany(t => t.Tour.Exhibitions)
-            .GroupBy(e => e.Id)
-            .Select(g => new { Exhibition = g.First(), VisitorCount = g.Count() })
-            .OrderByDescending(x => x.VisitorCount)
-            .Take(5)
-            .ToList();
-
+        var result = await analyticsService.GetTopExhibitionsAsync();
         return Ok(result);
     }
 
+    /// <summary>Возвращает экскурсии с минимальным количеством участников</summary>
     [HttpGet("tours-with-min-visitors")]
-    public IActionResult GetToursWithMinVisitors()
+    public async Task<ActionResult<IReadOnlyList<TourWithVisitorCountDto>>> GetToursWithMinVisitors()
     {
-        var counts = store.Tickets
-            .GroupBy(t => t.Tour.Id)
-            .Select(g => new { Tour = g.First().Tour, VisitorCount = g.Count() })
-            .ToList();
-
-        if (counts.Count == 0)
-        {
-            return Ok(counts);
-        }
-
-        var minCount = counts.Min(x => x.VisitorCount);
-        var result = counts.Where(x => x.VisitorCount == minCount).ToList();
-
+        var result = await analyticsService.GetToursWithMinVisitorsAsync();
         return Ok(result);
     }
 
+    /// <summary>Возвращает сводку посещаемости и выручки по темам выставок за период</summary>
     [HttpGet("attendance-summary")]
-    public IActionResult GetAttendanceSummary(DateTime from, DateTime to)
+    public async Task<ActionResult<IReadOnlyList<AttendanceSummaryDto>>> GetAttendanceSummary(
+        [FromQuery] DateTime from,
+        [FromQuery] DateTime to)
     {
-        var result = store.Tickets
-            .Where(t => t.Tour.Date >= from && t.Tour.Date <= to)
-            .SelectMany(t => t.Tour.Exhibitions.Select(e => new { e.Theme, Ticket = t }))
-            .GroupBy(x => x.Theme)
-            .Select(g =>
-            {
-                var dailyCounts = g
-                    .GroupBy(x => x.Ticket.Tour.Date.Date)
-                    .Select(day => day.Count())
-                    .ToList();
+        if (from > to)
+            return BadRequest("Начало периода не может быть позже его окончания");
 
-                return new
-                {
-                    Theme = g.Key,
-                    TotalVisitors = g.Count(),
-                    TotalPrice = g.Sum(x => x.Ticket.Price),
-                    AverageVisitorsPerDay = dailyCounts.Average(),
-                    MinVisitorsPerDay = dailyCounts.Min(),
-                    MaxVisitorsPerDay = dailyCounts.Max()
-                };
-            })
-            .ToList();
-
+        var result = await analyticsService.GetAttendanceSummaryAsync(from, to);
         return Ok(result);
     }
 
+    /// <summary>Возвращает экскурсии, проходящие в выбранном зале за период</summary>
     [HttpGet("tours-in-hall")]
-    public IActionResult GetToursInHall(int hall, DateTime from, DateTime to)
+    public async Task<ActionResult<IReadOnlyList<TourDto>>> GetToursInHall(
+        [FromQuery] int hall,
+        [FromQuery] DateTime from,
+        [FromQuery] DateTime to)
     {
-        var result = store.Tours
-            .Where(t => t.Date >= from && t.Date <= to)
-            .Where(t => t.Exhibitions.Any(e => e.HallNumber == hall))
-            .ToList();
+        if (hall <= 0)
+            return BadRequest("Номер зала должен быть положительным");
 
+        if (from > to)
+            return BadRequest("Начало периода не может быть позже его окончания");
+
+        var result = await analyticsService.GetToursInHallAsync(hall, from, to);
         return Ok(result);
     }
 
+    /// <summary>Возвращает посетителей выбранной экскурсии по алфавиту</summary>
     [HttpGet("visitors-by-tour/{tourId:int}")]
-    public IActionResult GetVisitorsByTour(int tourId)
+    public async Task<ActionResult<IReadOnlyList<VisitorDto>>> GetVisitorsByTour(int tourId)
     {
-        if (store.Tours.All(t => t.Id != tourId))
-        {
-            return NotFound();
-        }
+        var result = await analyticsService.GetVisitorsByTourAsync(tourId);
 
-        var result = store.Tickets
-            .Where(t => t.Tour.Id == tourId)
-            .Select(t => t.Visitor)
-            .OrderBy(v => v.FullName)
-            .ToList();
+        if (result is null)
+            return NotFound();
 
         return Ok(result);
     }

@@ -1,12 +1,19 @@
 using System.Text.Json.Serialization;
-using Museum.Api.Storage;
+using Museum.Application.DependencyInjection;
+using Museum.Infrastructure.InMemory.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<MuseumStore>();
+// Подключение сервисов приложения и хранилища
+builder.Services
+    .AddApplication()
+    .AddInMemoryPersistence();
+
 builder.Services
     .AddControllers()
-    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

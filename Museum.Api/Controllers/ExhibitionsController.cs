@@ -1,74 +1,75 @@
 using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Storage;
-using Museum.Domain;
+using Museum.Contracts.Dto;
+using Museum.Contracts.Interfaces;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>Обрабатывает HTTP-запросы для работы с выставками</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ExhibitionsController(MuseumStore store) : ControllerBase
+public sealed class ExhibitionsController(IExhibitionService exhibitionService) : ControllerBase
 {
+    /// <summary>Возвращает список всех выставок</summary>
     [HttpGet]
-    public ActionResult<List<Exhibition>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<ExhibitionDto>>> GetAll()
     {
-        return store.Exhibitions;
+        var exhibitions = await exhibitionService.GetAllAsync();
+        return Ok(exhibitions);
     }
 
+    /// <summary>Возвращает выставку по её идентификатору</summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Exhibition> GetById(int id)
+    public async Task<ActionResult<ExhibitionDto>> GetById(int id)
     {
-        var exhibition = store.Exhibitions.FirstOrDefault(e => e.Id == id);
-        if (exhibition is null)
-        {
-            return NotFound();
-        }
+        var exhibition = await exhibitionService.GetByIdAsync(id);
 
-        return exhibition;
+        if (exhibition is null)
+            return NotFound();
+
+        return Ok(exhibition);
     }
 
+    /// <summary>Создаёт новую выставку</summary>
     [HttpPost]
-    public ActionResult<Exhibition> Create(Exhibition exhibition)
+    public async Task<ActionResult<ExhibitionDto>> Create(ExhibitionEditDto dto)
     {
-        exhibition.Id = store.Exhibitions.Count == 0 ? 1 : store.Exhibitions.Max(e => e.Id) + 1;
-        store.Exhibitions.Add(exhibition);
+        var exhibition = await exhibitionService.CreateAsync(dto);
 
-        return CreatedAtAction(nameof(GetById), new { id = exhibition.Id }, exhibition);
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = exhibition.Id },
+            exhibition);
     }
 
+    /// <summary>Обновляет сведения о выставке</summary>
     [HttpPut("{id:int}")]
-    public ActionResult<Exhibition> Update(int id, Exhibition updated)
+    public async Task<ActionResult<ExhibitionDto>> Update(int id, ExhibitionEditDto dto)
     {
-        var exhibition = store.Exhibitions.FirstOrDefault(e => e.Id == id);
-        if (exhibition is null)
-        {
+        var updated = await exhibitionService.UpdateAsync(id, dto);
+
+        if (!updated)
             return NotFound();
-        }
 
-        exhibition.Name = updated.Name;
-        exhibition.Theme = updated.Theme;
-        exhibition.HallNumber = updated.HallNumber;
-        exhibition.StartDate = updated.StartDate;
-        exhibition.EndDate = updated.EndDate;
-
-        return exhibition;
+        var exhibition = await exhibitionService.GetByIdAsync(id);
+        return Ok(exhibition);
     }
 
+    /// <summary>Удаляет выставку, если она не используется в экскурсиях</summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var exhibition = store.Exhibitions.FirstOrDefault(e => e.Id == id);
-        if (exhibition is null)
+        try
         {
-            return NotFound();
-        }
+            var deleted = await exhibitionService.DeleteAsync(id);
 
-        if (store.Tours.Any(t => t.Exhibitions.Any(e => e.Id == id)))
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (InvalidOperationException exception)
         {
-            return Conflict("Выставка используется в экскурсиях");
+            return Conflict(exception.Message);
         }
-
-        store.Exhibitions.Remove(exhibition);
-
-        return NoContent();
     }
 }

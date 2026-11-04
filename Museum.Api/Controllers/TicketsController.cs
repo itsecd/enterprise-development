@@ -1,89 +1,80 @@
 using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Dtos;
-using Museum.Api.Storage;
-using Museum.Domain;
+using Museum.Contracts.Dto;
+using Museum.Contracts.Interfaces;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>Обрабатывает HTTP-запросы для работы с билетами</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class TicketsController(MuseumStore store) : ControllerBase
+public sealed class TicketsController(ITicketService ticketService) : ControllerBase
 {
+    /// <summary>Возвращает список всех билетов</summary>
     [HttpGet]
-    public ActionResult<List<Ticket>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<TicketDto>>> GetAll()
     {
-        return store.Tickets;
+        var tickets = await ticketService.GetAllAsync();
+        return Ok(tickets);
     }
 
+    /// <summary>Возвращает билет по его идентификатору</summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Ticket> GetById(int id)
+    public async Task<ActionResult<TicketDto>> GetById(int id)
     {
-        var ticket = store.Tickets.FirstOrDefault(t => t.Id == id);
-        if (ticket is null)
-        {
-            return NotFound();
-        }
+        var ticket = await ticketService.GetByIdAsync(id);
 
-        return ticket;
+        if (ticket is null)
+            return NotFound();
+
+        return Ok(ticket);
     }
 
+    /// <summary>Оформляет новый билет</summary>
     [HttpPost]
-    public ActionResult<Ticket> Create(TicketRequest request)
+    public async Task<ActionResult<TicketDto>> Create(TicketEditDto dto)
     {
-        var tour = store.Tours.FirstOrDefault(t => t.Id == request.TourId);
-        var visitor = store.Visitors.FirstOrDefault(v => v.Id == request.VisitorId);
-        if (tour is null || visitor is null)
+        try
         {
-            return BadRequest("Экскурсия или посетитель не найдены");
+            var ticket = await ticketService.CreateAsync(dto);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = ticket.Id },
+                ticket);
         }
-
-        var ticket = new Ticket
+        catch (ArgumentException exception)
         {
-            Id = store.Tickets.Select(t => t.Id).DefaultIfEmpty(0).Max() + 1,
-            Tour = tour,
-            Visitor = visitor,
-            Type = request.Type,
-            Price = request.Price
-        };
-        store.Tickets.Add(ticket);
-
-        return CreatedAtAction(nameof(GetById), new { id = ticket.Id }, ticket);
+            return BadRequest(exception.Message);
+        }
     }
 
+    /// <summary>Обновляет сведения о билете</summary>
     [HttpPut("{id:int}")]
-    public ActionResult<Ticket> Update(int id, TicketRequest request)
+    public async Task<IActionResult> Update(int id, TicketEditDto dto)
     {
-        var ticket = store.Tickets.FirstOrDefault(t => t.Id == id);
-        if (ticket is null)
+        try
         {
-            return NotFound();
-        }
+            var updated = await ticketService.UpdateAsync(id, dto);
 
-        var tour = store.Tours.FirstOrDefault(t => t.Id == request.TourId);
-        var visitor = store.Visitors.FirstOrDefault(v => v.Id == request.VisitorId);
-        if (tour is null || visitor is null)
+            if (!updated)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (ArgumentException exception)
         {
-            return BadRequest("Экскурсия или посетитель не найдены");
+            return BadRequest(exception.Message);
         }
-
-        ticket.Tour = tour;
-        ticket.Visitor = visitor;
-        ticket.Type = request.Type;
-        ticket.Price = request.Price;
-
-        return ticket;
     }
 
+    /// <summary>Удаляет билет по его идентификатору</summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var ticket = store.Tickets.FirstOrDefault(t => t.Id == id);
-        if (ticket is null)
-        {
-            return NotFound();
-        }
+        var deleted = await ticketService.DeleteAsync(id);
 
-        store.Tickets.Remove(ticket);
+        if (!deleted)
+            return NotFound();
 
         return NoContent();
     }
