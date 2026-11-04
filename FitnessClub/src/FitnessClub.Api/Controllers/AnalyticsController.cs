@@ -32,7 +32,7 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     [HttpGet("overdue-subscriptions")]
     [ProducesResponseType(typeof(IReadOnlyList<ClientDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetClientsWithOverdueSubscriptions(
-        [FromQuery, Required]
+        [FromQuery, Required] // или не писать Required я не знаю Т_Т
         [Description("Дата проверки в формате yyyy-MM-dd, без кавычек. Пример: 2026-09-15.")]
         DateOnly asOfDate) =>
         Ok(await analyticsService.GetClientsWithOverdueSubscriptionsAsync(asOfDate));
