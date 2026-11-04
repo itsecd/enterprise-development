@@ -56,7 +56,7 @@ public class ClientService(
         return client.ToDto();
     }
     /// <summary>
-    /// Удалить клиента при отсутствии бронирований
+    /// Удалить клиента при отсутствии брони
     /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {

@@ -71,7 +71,7 @@ public class BookingService(
         return await bookingRepository.DeleteAsync(id);
     }
     /// <summary>
-    /// Получить клиента, тренера и зал бронирования
+    /// Получить клиента, тренера и зал для брони
     /// </summary>
     private async Task<(Client, Trainer, Hall)> GetBookingReferencesAsync(
         BookingEditDto editDto)
