@@ -1,4 +1,5 @@
-using BeautySalon.Server.Services;
+using BeautySalon.Domain.Repositories;
+using BeautySalon.Infrastructure.Repositories;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,10 @@ builder.Services.AddControllers()
 // Добавляем Swagger для документации API
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<ISalonDataStore, InMemorySalonDataStore>();
+builder.Services.AddSingleton<IClientRepository, InMemoryClientRepository>();
+builder.Services.AddSingleton<IMasterRepository, InMemoryMasterRepository>();
+builder.Services.AddSingleton<IServiceRepository, InMemoryServiceRepository>();
+builder.Services.AddSingleton<IAppointmentRepository, InMemoryAppointmentRepository>();
 
 var app = builder.Build();
 

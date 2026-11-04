@@ -1,5 +1,6 @@
+using BeautySalon.Contracts.Masters;
 using BeautySalon.Domain.Entities;
-using BeautySalon.Server.Services;
+using BeautySalon.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeautySalon.Server.Controllers;
@@ -9,77 +10,97 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class MastersController(ISalonDataStore _store) : ControllerBase
+public class MastersController(IMasterRepository masterRepository) : ControllerBase
 {
     /// <summary>
     /// Возвращает всех мастеров.
     /// </summary>
-    // GET: api/masters
     [HttpGet]
-    public ActionResult<IEnumerable<Master>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<MasterResponse>), StatusCodes.Status200OK)]
+    public ActionResult<IEnumerable<MasterResponse>> GetAll()
     {
-        return Ok(_store.Masters);
+        return Ok(masterRepository.GetAll().Select(MapToResponse));
     }
 
     /// <summary>
     /// Возвращает мастера по идентификатору.
     /// </summary>
-    // GET: api/masters/{id}
-    [HttpGet("{id}")]
-    public ActionResult<Master> GetById(int id)
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<MasterResponse> GetById(int id)
     {
-        var master = _store.Masters.FirstOrDefault(m => m.Id == id);
-        if (master == null) return NotFound();
-        return Ok(master);
+        var master = masterRepository.GetById(id);
+        return master is null ? NotFound() : Ok(MapToResponse(master));
     }
 
     /// <summary>
     /// Создает нового мастера.
     /// </summary>
-    // POST: api/masters
     [HttpPost]
-    public ActionResult<Master> Create([FromBody] Master master)
+    [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<MasterResponse> Create([FromBody] MasterRequest request)
     {
-        master.Id = _store.Masters.Any() ? _store.Masters.Max(m => m.Id) + 1 : 1;
+        var master = new Master
+        {
+            FullName = request.FullName,
+            Gender = request.Gender,
+            PassportNumber = request.PassportNumber,
+            Specialization = request.Specialization,
+            ExperienceYears = request.ExperienceYears
+        };
+
+        masterRepository.Add(master);
         
-        _store.Masters.Add(master);
-        _store.SaveChanges();
-        
-        return CreatedAtAction(nameof(GetById), new { id = master.Id }, master);
+        return CreatedAtAction(nameof(GetById), new { id = master.Id }, MapToResponse(master));
     }
 
     /// <summary>
     /// Обновляет данные мастера по идентификатору.
     /// </summary>
-    // PUT: api/masters/{id}
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Master updatedMaster)
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult Update(int id, [FromBody] MasterRequest request)
     {
-        var master = _store.Masters.FirstOrDefault(m => m.Id == id);
-        if (master == null) return NotFound();
+        var master = masterRepository.GetById(id);
+        if (master is null) return NotFound();
 
-        master.FullName = updatedMaster.FullName;
-        master.Gender = updatedMaster.Gender;
-        master.PassportNumber = updatedMaster.PassportNumber;
-        master.Specialization = updatedMaster.Specialization;
-        master.ExperienceYears = updatedMaster.ExperienceYears;
+        master.FullName = request.FullName;
+        master.Gender = request.Gender;
+        master.PassportNumber = request.PassportNumber;
+        master.Specialization = request.Specialization;
+        master.ExperienceYears = request.ExperienceYears;
 
-        _store.SaveChanges();
+        masterRepository.Update(master);
         return NoContent();
     }
 
     /// <summary>
     /// Удаляет мастера по идентификатору.
     /// </summary>
-    // DELETE: api/masters/{id}
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
     {
-        var master = _store.Masters.FirstOrDefault(m => m.Id == id);
-        if (master == null) return NotFound();
+        var master = masterRepository.GetById(id);
+        
+        if (master is not null)
+        {
+            masterRepository.Delete(master);
+        }
 
-        _store.Masters.Remove(master);
-        _store.SaveChanges();
         return NoContent();
     }
+
+    private static MasterResponse MapToResponse(Master master) => new()
+    {
+        Id = master.Id,
+        FullName = master.FullName,
+        Gender = master.Gender,
+        PassportNumber = master.PassportNumber,
+        Specialization = master.Specialization,
+        ExperienceYears = master.ExperienceYears
+    };
 }

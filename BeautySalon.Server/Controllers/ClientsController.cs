@@ -1,5 +1,6 @@
 using BeautySalon.Domain.Entities;
-using BeautySalon.Server.Services;
+using BeautySalon.Domain.Repositories;
+using BeautySalon.Contracts.Clients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeautySalon.Server.Controllers;
@@ -9,78 +10,95 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ClientsController(ISalonDataStore _store) : ControllerBase
+public class ClientsController(IClientRepository clientRepository) : ControllerBase
 {
     /// <summary>
     /// Возвращает всех клиентов.
     /// </summary>
-    // GET: api/clients
     [HttpGet]
-    public ActionResult<IEnumerable<Client>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<ClientResponse>), StatusCodes.Status200OK)]
+    public ActionResult<IEnumerable<ClientResponse>> GetAll()
     {
-        return Ok(_store.Clients);
+        return Ok(clientRepository.GetAll().Select(MapToResponse));
     }
 
     /// <summary>
     /// Возвращает клиента по идентификатору.
     /// </summary>
-    // GET: api/clients/{id}
-    [HttpGet("{id}")]
-    public ActionResult<Client> GetById(int id)
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<ClientResponse> GetById(int id)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == id);
-        if (client == null) return NotFound();
-        return Ok(client);
+        var client = clientRepository.GetById(id);
+        return client is null ? NotFound() : Ok(MapToResponse(client));
     }
 
     /// <summary>
     /// Создает нового клиента.
     /// </summary>
-    // POST: api/clients
     [HttpPost]
-    public ActionResult<Client> Create([FromBody] Client client)
+    [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<ClientResponse> Create([FromBody] ClientRequest request)
     {
-        client.Id = _store.Clients.Any() ? _store.Clients.Max(c => c.Id) + 1 : 1;
-        _store.Clients.Add(client);
+        // Маппинг из Request DTO в доменную сущность
+        var client = new Client
+        {
+            FullName = request.FullName,
+            Gender = request.Gender,
+            BirthDate = request.BirthDate,
+            Phone = request.Phone
+        };
+
+        clientRepository.Add(client);
         
-        _store.Clients.Add(client);
-        _store.SaveChanges();
-        
-        return CreatedAtAction(nameof(GetById), new { id = client.Id }, client);
+        return CreatedAtAction(nameof(GetById), new { id = client.Id }, MapToResponse(client));
     }
 
     /// <summary>
     /// Обновляет данные клиента по идентификатору.
     /// </summary>
-    // PUT: api/clients/{id}
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Client updatedClient)
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult Update(int id, [FromBody] ClientRequest request)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == id);
-        if (client == null) return NotFound();
+        var client = clientRepository.GetById(id);
+        if (client is null) return NotFound();
 
-        // Обновляем поля
-        client.FullName = updatedClient.FullName;
-        client.Gender = updatedClient.Gender;
-        client.BirthDate = updatedClient.BirthDate;
-        client.Phone = updatedClient.Phone;
+        client.FullName = request.FullName;
+        client.Gender = request.Gender;
+        client.BirthDate = request.BirthDate;
+        client.Phone = request.Phone;
 
-        _store.SaveChanges();
+        clientRepository.Update(client);
         return NoContent();
     }
 
     /// <summary>
     /// Удаляет клиента по идентификатору.
     /// </summary>
-    // DELETE: api/clients/{id}
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == id);
-        if (client == null) return NotFound();
+        var client = clientRepository.GetById(id);
+        if (client is not null)
+        {
+            clientRepository.Delete(client);
+        }
 
-        _store.Clients.Remove(client);
-        _store.SaveChanges();
         return NoContent();
     }
+
+    // Метод для маппинга доменной сущности в DTO ответа
+    private static ClientResponse MapToResponse(Client client) => new()
+    {
+        Id = client.Id,
+        FullName = client.FullName,
+        Gender = client.Gender,
+        BirthDate = client.BirthDate,
+        Phone = client.Phone
+    };
 }

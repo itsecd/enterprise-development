@@ -1,4 +1,5 @@
-using BeautySalon.Server.Services;
+using BeautySalon.Contracts.Analytics;
+using BeautySalon.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeautySalon.Server.Controllers;
@@ -8,42 +9,59 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class AnalyticsController(ISalonDataStore _store) : ControllerBase
+public class AnalyticsController(
+    IAppointmentRepository appointmentRepository,
+    IMasterRepository masterRepository,
+    IServiceRepository serviceRepository,
+    IClientRepository clientRepository) : ControllerBase
 {
     /// <summary>
     /// Мастера со стажем не менее указанного количества лет.
     /// </summary>
     [HttpGet("masters-with-experience")]
-    public IActionResult GetMastersWithExperience([FromQuery] int minYears = 5)
+    [ProducesResponseType(typeof(MastersWithExperienceResponse), StatusCodes.Status200OK)]
+    public ActionResult<MastersWithExperienceResponse> GetMastersWithExperience([FromQuery] int minYears = 5)
     {
-        var result = _store.Masters
+        var masters = masterRepository.GetAll()
             .Where(m => m.ExperienceYears >= minYears)
-            .Select(m => new { m.Id, m.FullName, m.Specialization, m.ExperienceYears })
+            .Select(m => new MasterExperienceItem
+            {
+                Id = m.Id,
+                FullName = m.FullName,
+                Specialization = m.Specialization,
+                ExperienceYears = m.ExperienceYears
+            })
             .ToList();
 
-        return Ok(new { MinYears = minYears, Count = result.Count, Masters = result });
+        var response = new MastersWithExperienceResponse
+        {
+            MinYears = minYears,
+            Count = masters.Count,
+            Masters = masters
+        };
+
+        return Ok(response);
     }
 
     /// <summary>
     /// Временные промежутки между записями выбранного мастера.
     /// </summary>
-    [HttpGet("master-gaps/{masterId}")] 
-    public IActionResult GetMasterTimeGaps(int masterId)
+    [HttpGet("master-gaps/{masterId:int}")]
+    [ProducesResponseType(typeof(MasterGapsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<MasterGapsResponse> GetMasterTimeGaps(int masterId)
     {
-        var master = _store.Masters.FirstOrDefault(m => m.Id == masterId);
-        if (master == null)
-        {
-            return NotFound($"Мастер с id '{masterId}' не найден.");
-        }
+        var master = masterRepository.GetById(masterId);
+        if (master is null) return NotFound($"Мастер с id '{masterId}' не найден.");
 
-        var appointments = _store.Appointments
+        var appointments = appointmentRepository.GetAll()
             .Where(a => a.MasterId == masterId)
             .OrderBy(a => a.StartTime)
             .ToList();
 
         if (appointments.Count < 2)
         {
-            return Ok(new
+            return Ok(new MasterGapsResponse
             {
                 MasterId = masterId,
                 MasterName = master.FullName,
@@ -52,7 +70,7 @@ public class AnalyticsController(ISalonDataStore _store) : ControllerBase
             });
         }
 
-        var gaps = new List<object>();
+        var gaps = new List<GapItem>();
         for (var i = 0; i < appointments.Count - 1; i++)
         {
             var current = appointments[i];
@@ -61,7 +79,7 @@ public class AnalyticsController(ISalonDataStore _store) : ControllerBase
 
             if (next.StartTime > currentEnd)
             {
-                gaps.Add(new
+                gaps.Add(new GapItem
                 {
                     From = currentEnd,
                     To = next.StartTime,
@@ -70,22 +88,29 @@ public class AnalyticsController(ISalonDataStore _store) : ControllerBase
             }
         }
 
-        return Ok(new { MasterId = masterId, MasterName = master.FullName, GapsCount = gaps.Count, Gaps = gaps });
+        return Ok(new MasterGapsResponse
+        {
+            MasterId = masterId,
+            MasterName = master.FullName,
+            GapsCount = gaps.Count,
+            Gaps = gaps
+        });
     }
 
     /// <summary>
     /// Топ самых популярных услуг.
     /// </summary>
     [HttpGet("top-services")]
-    public IActionResult GetTopServices([FromQuery] int take = 5)
+    [ProducesResponseType(typeof(IEnumerable<TopServiceItem>), StatusCodes.Status200OK)]
+    public ActionResult<IEnumerable<TopServiceItem>> GetTopServices([FromQuery] int take = 5)
     {
-        var top = _store.Appointments
+        var top = appointmentRepository.GetAll()
             .GroupBy(a => a.ServiceId)
-            .Select(g => new
+            .Select(g => new TopServiceItem
             {
                 ServiceId = g.Key,
-                ServiceName = _store.Services.First(s => s.Id == g.Key).Name,
-                Category = _store.Services.First(s => s.Id == g.Key).Category,
+                ServiceName = serviceRepository.GetById(g.Key)!.Name,
+                Category = serviceRepository.GetById(g.Key)!.Category,
                 AppointmentCount = g.Count()
             })
             .OrderByDescending(x => x.AppointmentCount)
@@ -99,45 +124,56 @@ public class AnalyticsController(ISalonDataStore _store) : ControllerBase
     /// Клиенты с повторными записями за указанный период.
     /// </summary>
     [HttpGet("repeat-clients")]
-    public IActionResult GetRepeatClients([FromQuery] int days = 30)
+    [ProducesResponseType(typeof(RepeatClientsResponse), StatusCodes.Status200OK)]
+    public ActionResult<RepeatClientsResponse> GetRepeatClients([FromQuery] int days = 30)
     {
         var threshold = DateTime.Now.AddDays(-days);
 
-        var repeats = _store.Appointments
+        var repeats = appointmentRepository.GetAll()
             .Where(a => a.StartTime >= threshold)
             .GroupBy(a => a.ClientId)
             .Where(g => g.Count() > 1)
-            .Select(g => new
+            .Select(g => new RepeatClientItem
             {
                 ClientId = g.Key,
-                ClientName = _store.Clients.First(c => c.Id == g.Key).FullName,
+                ClientName = clientRepository.GetById(g.Key)!.FullName,
                 RepeatCount = g.Count()
             })
             .OrderByDescending(x => x.RepeatCount)
             .ToList();
 
-        return Ok(new { PeriodDays = days, ClientsWithRepeats = repeats.Count, Details = repeats });
+        return Ok(new RepeatClientsResponse
+        {
+            PeriodDays = days,
+            ClientsWithRepeats = repeats.Count,
+            Details = repeats
+        });
     }
 
     /// <summary>
     /// Клиенты, записанные к нескольким мастерам, отсортированные по дате рождения.
     /// </summary>
     [HttpGet("clients-multiple-masters")]
-    public IActionResult GetClientsWithMultipleMasters()
+    [ProducesResponseType(typeof(ClientsMultipleMastersResponse), StatusCodes.Status200OK)]
+    public ActionResult<ClientsMultipleMastersResponse> GetClientsWithMultipleMasters()
     {
-        var result = _store.Appointments
+        var result = appointmentRepository.GetAll()
             .GroupBy(a => a.ClientId)
             .Where(g => g.Select(a => a.MasterId).Distinct().Count() > 1)
-            .Select(g => new
+            .Select(g => new ClientMultipleMastersItem
             {
                 ClientId = g.Key,
-                FullName = _store.Clients.First(c => c.Id == g.Key).FullName,
-                BirthDate = _store.Clients.First(c => c.Id == g.Key).BirthDate,
+                FullName = clientRepository.GetById(g.Key)!.FullName,
+                BirthDate = clientRepository.GetById(g.Key)!.BirthDate,
                 UniqueMastersCount = g.Select(a => a.MasterId).Distinct().Count()
             })
             .OrderBy(x => x.BirthDate)
             .ToList();
 
-        return Ok(new { Count = result.Count, Clients = result });
+        return Ok(new ClientsMultipleMastersResponse
+        {
+            Count = result.Count,
+            Clients = result
+        });
     }
 }

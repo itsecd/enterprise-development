@@ -1,5 +1,6 @@
+using BeautySalon.Contracts.Services;
 using BeautySalon.Domain.Entities;
-using BeautySalon.Server.Services;
+using BeautySalon.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeautySalon.Server.Controllers;
@@ -9,76 +10,94 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ServicesController(ISalonDataStore _store) : ControllerBase
+public class ServicesController(IServiceRepository serviceRepository) : ControllerBase
 {
     /// <summary>
     /// Возвращает все услуги.
     /// </summary>
-    // GET: api/services
     [HttpGet]
-    public ActionResult<IEnumerable<Service>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<ServiceResponse>), StatusCodes.Status200OK)]
+    public ActionResult<IEnumerable<ServiceResponse>> GetAll()
     {
-        return Ok(_store.Services);
+        return Ok(serviceRepository.GetAll().Select(MapToResponse));
     }
 
     /// <summary>
     /// Возвращает услугу по идентификатору.
     /// </summary>
-    // GET: api/services/{id}
-    [HttpGet("{id}")]
-    public ActionResult<Service> GetById(int id)
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<ServiceResponse> GetById(int id)
     {
-        var service = _store.Services.FirstOrDefault(s => s.Id == id);
-        if (service == null) return NotFound();
-        return Ok(service);
+        var service = serviceRepository.GetById(id);
+        return service is null ? NotFound() : Ok(MapToResponse(service));
     }
 
     /// <summary>
     /// Создает новую услугу.
     /// </summary>
-    // POST: api/services
     [HttpPost]
-    public ActionResult<Service> Create([FromBody] Service service)
+    [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<ServiceResponse> Create([FromBody] ServiceRequest request)
     {
-        service.Id = _store.Services.Any() ? _store.Services.Max(s => s.Id) + 1 : 1;
+        var service = new Service
+        {
+            Name = request.Name,
+            Category = request.Category,
+            Cost = request.Cost,
+            Duration = request.Duration
+        };
+
+        serviceRepository.Add(service);
         
-        _store.Services.Add(service);
-        _store.SaveChanges();
-        
-        return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
+        return CreatedAtAction(nameof(GetById), new { id = service.Id }, MapToResponse(service));
     }
 
     /// <summary>
     /// Обновляет данные услуги по идентификатору.
     /// </summary>
-    // PUT: api/services/{id}
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Service updatedService)
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult Update(int id, [FromBody] ServiceRequest request)
     {
-        var service = _store.Services.FirstOrDefault(s => s.Id == id);
-        if (service == null) return NotFound();
+        var service = serviceRepository.GetById(id);
+        if (service is null) return NotFound();
 
-        service.Name = updatedService.Name;
-        service.Category = updatedService.Category;
-        service.Cost = updatedService.Cost;
-        service.Duration = updatedService.Duration;
+        service.Name = request.Name;
+        service.Category = request.Category;
+        service.Cost = request.Cost;
+        service.Duration = request.Duration;
 
-        _store.SaveChanges();
+        serviceRepository.Update(service);
         return NoContent();
     }
 
     /// <summary>
     /// Удаляет услугу по идентификатору.
     /// </summary>
-    // DELETE: api/services/{id}
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
     {
-        var service = _store.Services.FirstOrDefault(s => s.Id == id);
-        if (service == null) return NotFound();
+        var service = serviceRepository.GetById(id);
+        
+        if (service is not null)
+        {
+            serviceRepository.Delete(service);
+        }
 
-        _store.Services.Remove(service);
-        _store.SaveChanges();
         return NoContent();
     }
+
+    private static ServiceResponse MapToResponse(Service service) => new()
+    {
+        Id = service.Id,
+        Name = service.Name,
+        Category = service.Category,
+        Cost = service.Cost,
+        Duration = service.Duration
+    };
 }

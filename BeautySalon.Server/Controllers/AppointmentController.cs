@@ -1,89 +1,62 @@
+using BeautySalon.Contracts.Appointments;
 using BeautySalon.Domain.Entities;
-using BeautySalon.Server.Services;
+using BeautySalon.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeautySalon.Server.Controllers;
-
-// DTO для создания/обновления записи. 
-// Содержит только ID, а не целые объекты.
-/// <summary>
-/// Запрос на создание или обновление записи клиента к мастеру.
-/// </summary>
-public class AppointmentRequest
-{
-    /// <summary>
-    /// Дата и время начала процедуры.
-    /// </summary>
-    public DateTime StartTime { get; set; }
-    /// <summary>
-    /// Является ли клиент постоянным.
-    /// </summary>
-    public bool IsRegularClient { get; set; }
-    /// <summary>
-    /// Идентификатор клиента.
-    /// </summary>
-    public int ClientId { get; set; }
-    /// <summary>
-    /// Идентификатор мастера.
-    /// </summary>
-    public int MasterId { get; set; }
-    /// <summary>
-    /// Идентификатор процедуры.
-    /// </summary>
-    public int ServiceId { get; set; }
-}
 
 /// <summary>
 /// CRUD-операции над записями клиентов к мастерам.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class AppointmentsController(ISalonDataStore _store) : ControllerBase
+public class AppointmentController(
+    IAppointmentRepository appointmentRepository,
+    IClientRepository clientRepository,
+    IMasterRepository masterRepository,
+    IServiceRepository serviceRepository) : ControllerBase
 {
     /// <summary>
     /// Возвращает все записи.
     /// </summary>
-    // GET: api/appointments
     [HttpGet]
-    public ActionResult<IEnumerable<Appointment>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<AppointmentResponse>), StatusCodes.Status200OK)]
+    public ActionResult<IEnumerable<AppointmentResponse>> GetAll()
     {
-        return Ok(_store.Appointments);
+        return Ok(appointmentRepository.GetAll().Select(MapToResponse));
     }
 
     /// <summary>
     /// Возвращает запись по идентификатору.
     /// </summary>
-    // GET: api/appointments/{id}
-    [HttpGet("{id}")]
-    public ActionResult<Appointment> GetById(int id)
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<AppointmentResponse> GetById(int id)
     {
-        var appointment = _store.Appointments.FirstOrDefault(a => a.Id == id);
-        if (appointment == null) return NotFound();
-        return Ok(appointment);
+        var appointment = appointmentRepository.GetById(id);
+        return appointment is null ? NotFound() : Ok(MapToResponse(appointment));
     }
 
     /// <summary>
     /// Создает новую запись.
     /// </summary>
-    // POST: api/appointments
     [HttpPost]
-    public ActionResult<Appointment> Create([FromBody] AppointmentRequest request)
+    [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<AppointmentResponse> Create([FromBody] AppointmentRequest request)
     {
-        // 1. Находим связанные сущности по ID
-        var client = _store.Clients.FirstOrDefault(c => c.Id == request.ClientId);
-        var master = _store.Masters.FirstOrDefault(m => m.Id == request.MasterId);
-        var service = _store.Services.FirstOrDefault(s => s.Id == request.ServiceId);
+        var client = clientRepository.GetById(request.ClientId);
+        var master = masterRepository.GetById(request.MasterId);
+        var service = serviceRepository.GetById(request.ServiceId);
 
-        // Если хотя бы один ID передан неверно, возвращаем ошибку 400
-        if (client == null || master == null || service == null)
+        if (client is null || master is null || service is null)
         {
             return BadRequest("Указан неверный ID клиента, мастера или услуги.");
         }
 
-        // 2. Создаем запись, заполняя required-свойства
         var appointment = new Appointment
         {
-            Id = _store.Appointments.Any() ? _store.Appointments.Max(a => a.Id) + 1 : 1,
             StartTime = request.StartTime,
             IsRegularClient = request.IsRegularClient,
             ClientId = client.Id,
@@ -94,32 +67,32 @@ public class AppointmentsController(ISalonDataStore _store) : ControllerBase
             Service = service
         };
 
-        _store.Appointments.Add(appointment);
-        _store.SaveChanges();
-
-        return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, appointment);
+        appointmentRepository.Add(appointment);
+        
+        return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, MapToResponse(appointment));
     }
 
     /// <summary>
     /// Обновляет запись.
     /// </summary>
-    // PUT: api/appointments/{id}
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Update(int id, [FromBody] AppointmentRequest request)
     {
-        var appointment = _store.Appointments.FirstOrDefault(a => a.Id == id);
-        if (appointment == null) return NotFound();
+        var appointment = appointmentRepository.GetById(id);
+        if (appointment is null) return NotFound();
 
-        var client = _store.Clients.FirstOrDefault(c => c.Id == request.ClientId);
-        var master = _store.Masters.FirstOrDefault(m => m.Id == request.MasterId);
-        var service = _store.Services.FirstOrDefault(s => s.Id == request.ServiceId);
+        var client = clientRepository.GetById(request.ClientId);
+        var master = masterRepository.GetById(request.MasterId);
+        var service = serviceRepository.GetById(request.ServiceId);
 
-        if (client == null || master == null || service == null)
+        if (client is null || master is null || service is null)
         {
             return BadRequest("Указан неверный ID клиента, мастера или услуги.");
         }
 
-        // Обновляем поля
         appointment.StartTime = request.StartTime;
         appointment.IsRegularClient = request.IsRegularClient;
         appointment.ClientId = client.Id;
@@ -129,22 +102,36 @@ public class AppointmentsController(ISalonDataStore _store) : ControllerBase
         appointment.ServiceId = service.Id;
         appointment.Service = service;
 
-        _store.SaveChanges();
+        appointmentRepository.Update(appointment);
         return NoContent();
     }
 
     /// <summary>
     /// Удаляет запись по идентификатору.
     /// </summary>
-    // DELETE: api/appointments/{id}
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
     {
-        var appointment = _store.Appointments.FirstOrDefault(a => a.Id == id);
-        if (appointment == null) return NotFound();
+        var appointment = appointmentRepository.GetById(id);
+        
+        // Если записи нет, всё равно возвращаем 204 (идемпотентность)
+        if (appointment is not null)
+        {
+            appointmentRepository.Delete(appointment);
+        }
 
-        _store.Appointments.Remove(appointment);
-        _store.SaveChanges();
         return NoContent();
     }
+
+    // Метод маппинга
+    private static AppointmentResponse MapToResponse(Appointment appointment) => new()
+    {
+        Id = appointment.Id,
+        StartTime = appointment.StartTime,
+        IsRegularClient = appointment.IsRegularClient,
+        ClientId = appointment.ClientId,
+        MasterId = appointment.MasterId,
+        ServiceId = appointment.ServiceId
+    };
 }
