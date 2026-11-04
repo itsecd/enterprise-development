@@ -1,5 +1,9 @@
-﻿using DryCleaner.Application.Contracts.DTOs;
+﻿using DryCleaner.Application.Contracts.DTOs.Item;
+using DryCleaner.Application.Contracts.DTOs.ItemCategory;
+using DryCleaner.Application.Contracts.DTOs.Customer;
+using DryCleaner.Application.Contracts.DTOs.Order;
 using DryCleaner.Application.Contracts.Interfaces;
+using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Entities;
 
 namespace DryCleaner.Application.Services;
@@ -8,10 +12,52 @@ namespace DryCleaner.Application.Services;
 /// Прикладные операции над заказами
 /// </summary>
 public class OrderService(
-    IOrderRepository orderRepository,
-    ICustomerRepository customerRepository,
-    IItemRepository itemRepository) : IOrderService
+    IRepository<Order> orderRepository,
+    IRepository<Customer> customerRepository,
+    IRepository<Item> itemRepository) : IOrderService
+
+
 {
+    /// <inheritdoc />
+    public IList<OrderDto> GetByCustomerId(int customerId)
+    {
+        return orderRepository.GetAll()
+            .Where(o => o.CustomerId == customerId)
+            .Select(order => new OrderDto(
+                order.Id,
+                new CustomerDto(order.Customer.Id, order.Customer.FirstName, order.Customer.Patronymic, order.Customer.LastName, order.Customer.PhoneNumber),
+                order.CustomerId,
+                new ItemDto(
+                    order.Item.Id, order.Item.Name,
+                    new ItemCategoryDto(order.Item.Category.Id, order.Item.Category.Name, order.Item.Category.RecommendedCleaning, order.Item.Category.Price),
+                    order.Item.CategoryId, order.Item.Material),
+                order.ItemId,
+                order.AcceptanceDate,
+                order.CompletionDays,
+                order.Status))
+            .ToList();
+    }
+
+    /// <inheritdoc />
+    public IList<OrderDto> GetByItemId(int itemId)
+    {
+        return orderRepository.GetAll()
+            .Where(o => o.ItemId == itemId)
+            .Select(order => new OrderDto(
+                order.Id,
+                new CustomerDto(order.Customer.Id, order.Customer.FirstName, order.Customer.Patronymic, order.Customer.LastName, order.Customer.PhoneNumber),
+                order.CustomerId,
+                new ItemDto(
+                    order.Item.Id, order.Item.Name,
+                    new ItemCategoryDto(order.Item.Category.Id, order.Item.Category.Name, order.Item.Category.RecommendedCleaning, order.Item.Category.Price),
+                    order.Item.CategoryId, order.Item.Material),
+                order.ItemId,
+                order.AcceptanceDate,
+                order.CompletionDays,
+                order.Status))
+            .ToList();
+    }
+
     /// <inheritdoc />
     public OrderDto Create(OrderCreateUpdateDto dto)
     {

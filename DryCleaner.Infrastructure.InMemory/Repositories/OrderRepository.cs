@@ -1,4 +1,4 @@
-﻿using DryCleaner.Application.Contracts.Interfaces;
+﻿using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Data;
 using DryCleaner.Domain.Entities;
 
@@ -8,7 +8,7 @@ namespace DryCleaner.Infrastructure.InMemory.Repositories;
 /// Реализация репозитория для работы с заказами в памяти
 /// </summary>
 public class OrderRepository()
-    : InMemoryRepository<Order>(DataSeed.Orders.ToList()), IOrderRepository
+    : InMemoryRepository<Order>(DataSeed.Orders.ToList())
 {
     /// <inheritdoc />
     public override Order? Update(Order entity)

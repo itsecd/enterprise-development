@@ -1,5 +1,9 @@
-﻿using DryCleaner.Application.Contracts.DTOs;
+﻿using DryCleaner.Application.Contracts.DTOs.Item;
+using DryCleaner.Application.Contracts.DTOs.ItemCategory;
+using DryCleaner.Application.Contracts.DTOs.Customer;
+using DryCleaner.Application.Contracts.DTOs.Order;
 using DryCleaner.Application.Contracts.Interfaces;
+using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Entities;
 
 namespace DryCleaner.Application.Services;
@@ -7,7 +11,7 @@ namespace DryCleaner.Application.Services;
 /// <summary>
 /// Прикладные операции над изделиями
 /// </summary>
-public class ItemService(IItemRepository itemRepository, IItemCategoryRepository categoryRepository) : IItemService
+public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCategory> categoryRepository) : IItemService
 {
     /// <inheritdoc />
     public ItemDto Create(ItemCreateUpdateDto dto)
@@ -45,6 +49,20 @@ public class ItemService(IItemRepository itemRepository, IItemCategoryRepository
             new ItemCategoryDto(item.Category.Id, item.Category.Name, item.Category.RecommendedCleaning, item.Category.Price),
             item.CategoryId,
             item.Material);
+    }
+
+    /// <inheritdoc />
+    public IList<ItemDto> GetByCategoryId(int categoryId)
+    {
+        return itemRepository.GetAll()
+            .Where(i => i.CategoryId == categoryId)
+            .Select(i => new ItemDto(
+                i.Id,
+                i.Name,
+                new ItemCategoryDto(i.Category.Id, i.Category.Name, i.Category.RecommendedCleaning, i.Category.Price),
+                i.CategoryId,
+                i.Material))
+            .ToList();
     }
 
     /// <inheritdoc />

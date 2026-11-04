@@ -1,4 +1,5 @@
 ﻿using DryCleaner.Application.Contracts.Interfaces;
+using DryCleaner.Application.Contracts.DTOs.Analytics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DryCleaner.Api.Controllers;
@@ -14,7 +15,9 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// Получает заказы, находящиеся в обработке
     /// </summary>
     [HttpGet("in-progress-orders")]
-    public IActionResult GetInProgressOrders()
+    [ProducesResponseType(typeof(IList<OrderInProgressDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderInProgressDto>> GetInProgressOrders()
     {
         try
         {
@@ -23,7 +26,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в обработке");
+            logger.LogError(ex, "Ошибка в получении заказов в обработке");
             return StatusCode(500, "Ошибка сервера");
         }
     }
@@ -32,23 +35,25 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// Получает ТОП-5 клиентов по числу сданных изделий за выбранный период
     /// </summary>
     [HttpGet("top-5-customers")]
-    public IActionResult GetTop5Customers([FromQuery] DateOnly start, [FromQuery] DateOnly end)
+    [ProducesResponseType(typeof(IList<CustomerOrderCountDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<CustomerOrderCountDto>> GetTop5Customers([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
+        if (end < start)
+        {
+            logger.LogWarning("Некорректный период: дата окончания раньше даты начала");
+            return BadRequest("Дата окончания не может быть раньше даты начала");
+        }
         try
         {
             logger.LogInformation("Запрос: Топ-5 клиентов за период");
-            if (start == default) start = new DateOnly(2025, 1, 1);
-            if (end == default) end = new DateOnly(2026, 3, 15);
 
             return Ok(analyticsService.GetTop5CustomersByItems(start, end));
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в аналитике");
+            logger.LogError(ex, "Ошибка в получении Топ-5 клиентов за период");
             return StatusCode(500, "Ошибка сервера");
         }
     }
@@ -57,7 +62,9 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// Получает клиентов с наибольшим временем обработки заказов
     /// </summary>
     [HttpGet("longest-processing")]
-    public IActionResult GetLongestProcessing()
+    [ProducesResponseType(typeof(IList<OrderProcessingTimeDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderProcessingTimeDto>> GetLongestProcessing()
     {
         try
         {
@@ -66,7 +73,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в аналитике");
+            logger.LogError(ex, "Ошибка в получении клиентов с наибольшим временем обработки заказов");
             return StatusCode(500, "Ошибка сервера");
         }
     }
@@ -75,7 +82,9 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// Получает наиболее популярные категории
     /// </summary>
     [HttpGet("popular-categories")]
-    public IActionResult GetPopularCategories()
+    [ProducesResponseType(typeof(IList<CategoryPopularityDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<CategoryPopularityDto>> GetPopularCategories()
     {
         try
         {
@@ -84,7 +93,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в аналитике");
+            logger.LogError(ex, "Ошибка в получении наиболее популярных категорий");
             return StatusCode(500, "Ошибка сервера");
         }
     }
@@ -93,7 +102,10 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     /// Получает клиента с наибольшими тратами
     /// </summary>
     [HttpGet("top-spender")]
-    public IActionResult GetTopSpender()
+    [ProducesResponseType(typeof(TotalSpentCustomerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<TotalSpentCustomerDto>> GetTopSpender()
     {
         try
         {
@@ -104,7 +116,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в аналитике");
+            logger.LogError(ex, "Ошибка в получении клиента с наибольшими тратами");
             return StatusCode(500, "Ошибка сервера");
         }
     }

@@ -1,4 +1,7 @@
-﻿using DryCleaner.Application.Contracts.DTOs;
+﻿using DryCleaner.Application.Contracts.DTOs.Item;
+using DryCleaner.Application.Contracts.DTOs.ItemCategory;
+using DryCleaner.Application.Contracts.DTOs.Customer;
+using DryCleaner.Application.Contracts.DTOs.Order;
 using DryCleaner.Application.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +18,9 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     /// Получение всех заказов
     /// </summary>
     [HttpGet]
-    public IActionResult GetAll()
+    [ProducesResponseType(typeof(IList<OrderDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderDto>> GetAll()
     {
         try 
         {
@@ -33,7 +38,10 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     /// Получение заказов по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public IActionResult Get(int id)
+    [ProducesResponseType(typeof(OrderDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderDto>> Get(int id)
     {
         try
         {
@@ -54,7 +62,10 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     /// Создание заказа
     /// </summary>
     [HttpPost]
-    public IActionResult Create([FromBody] OrderCreateUpdateDto dto)
+    [ProducesResponseType(typeof(OrderDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderDto>> Create([FromBody] OrderCreateUpdateDto dto)
     {
         try
         {
@@ -79,7 +90,11 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     /// Обновление заказа
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] OrderCreateUpdateDto dto)
+    [ProducesResponseType(typeof(OrderDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderDto>> Update(int id, [FromBody] OrderCreateUpdateDto dto)
     {
         try
         {
@@ -103,7 +118,10 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     /// Удаление заказа
     /// </summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<OrderDto>> Delete(int id)
     {
         try
         {

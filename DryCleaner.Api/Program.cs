@@ -1,9 +1,16 @@
 using System.Text.Json.Serialization;
+using System.Globalization;
+using System.Reflection;
 using DryCleaner.Application.Contracts.Interfaces;
+using DryCleaner.Domain.Entities;
+using DryCleaner.Domain.Repositories;
 using DryCleaner.Application.Services;
 using DryCleaner.Infrastructure.InMemory.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -12,12 +19,24 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 
-builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
-builder.Services.AddSingleton<IItemRepository, ItemRepository>();
-builder.Services.AddSingleton<IItemCategoryRepository, ItemCategoryRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+    var contractsXmlFile = "DryCleaner.Application.Contracts.xml";
+    var contractsXmlPath = Path.Combine(AppContext.BaseDirectory, contractsXmlFile);
+    if (File.Exists(contractsXmlPath))
+    {
+        options.IncludeXmlComments(contractsXmlPath);
+    }
+});
+
+builder.Services.AddSingleton<IRepository<Customer>, CustomerRepository>();
+builder.Services.AddSingleton<IRepository<Item>, ItemRepository>();
+builder.Services.AddSingleton<IRepository<ItemCategory>, ItemCategoryRepository>();
+builder.Services.AddSingleton<IRepository<Order>, OrderRepository>();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IItemService, ItemService>();

@@ -1,4 +1,4 @@
-﻿using DryCleaner.Application.Contracts.Interfaces;
+﻿using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Data;
 using DryCleaner.Domain.Entities;
 
@@ -8,7 +8,7 @@ namespace DryCleaner.Infrastructure.InMemory.Repositories;
 /// Реализация репозитория для работы с изделиями в памяти
 /// </summary>
 public class ItemRepository()
-    : InMemoryRepository<Item>(DataSeed.Items.ToList()), IItemRepository
+    : InMemoryRepository<Item>(DataSeed.Items.ToList())
 {
     /// <inheritdoc />
     public override Item? Update(Item entity)

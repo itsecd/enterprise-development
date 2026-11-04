@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DryCleaner.Application.Contracts.DTOs;
+namespace DryCleaner.Application.Contracts.DTOs.Customer;
 
 /// <summary>
 /// DTO для создания или обновления клиента
@@ -18,7 +18,6 @@ public record CustomerCreateUpdateDto(
     [Required(ErrorMessage = "Фамилия клиента обязательна для заполнения!")]
     string LastName,
 
-    [Required(ErrorMessage = "Номер телефона обязателен для заполнения!")]
-    [RegularExpression(@"^\+?[0-9()\-\s]{5,20}$", ErrorMessage = "Некорректный номер телефона!")]
+    [Phone(ErrorMessage = "Некорректный формат номера телефона!")]
     string PhoneNumber
 );

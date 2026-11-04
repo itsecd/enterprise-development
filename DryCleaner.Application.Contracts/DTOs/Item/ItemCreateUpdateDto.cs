@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DryCleaner.Application.Contracts.DTOs;
+namespace DryCleaner.Application.Contracts.DTOs.Item;
 
 /// <summary>
 /// DTO для создания или обновления изделия

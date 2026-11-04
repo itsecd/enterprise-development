@@ -3,10 +3,10 @@
 /// <summary>
 /// Информация о времени обработки заказа
 /// </summary>
-/// <param name="OrderId">Идентификатор заказа</param>
+/// <param name="CustomerId">Идентификатор клиента</param>
 /// <param name="CustomerName">ФИО клиента</param>
 /// <param name="CompletionDays">Время обработки заказа</param>
 public record OrderProcessingTimeDto(
-    int OrderId,
+    int CustomerId,
     string CustomerName,
     int CompletionDays);

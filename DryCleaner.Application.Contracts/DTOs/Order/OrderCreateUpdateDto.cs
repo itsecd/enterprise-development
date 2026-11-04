@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DryCleaner.Shared.Enums;
 
-namespace DryCleaner.Application.Contracts.DTOs;
+namespace DryCleaner.Application.Contracts.DTOs.Order;
 
 /// <summary>
 /// DTO для создания или обновления заказа
@@ -12,10 +12,8 @@ namespace DryCleaner.Application.Contracts.DTOs;
 /// <param name="CompletionDays">Время выполнения</param>
 /// <param name="Status">Статус заказа</param>
 public record OrderCreateUpdateDto(
-    [Required(ErrorMessage = "Идентификатор клиента обязателен для заполнения!")]
     int CustomerId,
 
-    [Required(ErrorMessage = "Идентификатор изделия обязателен для заполнения!")]
     int ItemId,
 
     [Required(ErrorMessage = "Дата приема обязательна для заполнения!")]

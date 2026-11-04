@@ -1,6 +1,8 @@
-﻿using DryCleaner.Shared.Enums;
+﻿using DryCleaner.Application.Contracts.DTOs.Customer;
+using DryCleaner.Application.Contracts.DTOs.Item;
+using DryCleaner.Shared.Enums;
 
-namespace DryCleaner.Application.Contracts.DTOs;
+namespace DryCleaner.Application.Contracts.DTOs.Order;
 
 /// <summary>
 /// DTO заказа

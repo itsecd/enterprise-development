@@ -1,4 +1,4 @@
-﻿namespace DryCleaner.Application.Contracts.DTOs;
+﻿namespace DryCleaner.Application.Contracts.DTOs.Customer;
 
 /// <summary>
 /// DTO клиента

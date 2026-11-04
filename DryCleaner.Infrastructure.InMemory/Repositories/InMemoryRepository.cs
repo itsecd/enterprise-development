@@ -1,4 +1,4 @@
-﻿using DryCleaner.Application.Contracts.Interfaces;
+﻿using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Entities;
 
 namespace DryCleaner.Infrastructure.InMemory.Repositories;

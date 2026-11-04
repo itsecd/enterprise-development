@@ -1,6 +1,6 @@
 ﻿using DryCleaner.Shared.Enums;
 
-namespace DryCleaner.Application.Contracts.DTOs;
+namespace DryCleaner.Application.Contracts.DTOs.ItemCategory;
 
 /// <summary>
 /// DTO категории изделия

@@ -1,4 +1,4 @@
-﻿using DryCleaner.Application.Contracts.DTOs;
+﻿using DryCleaner.Application.Contracts.DTOs.ItemCategory;
 
 namespace DryCleaner.Application.Contracts.Interfaces;
 

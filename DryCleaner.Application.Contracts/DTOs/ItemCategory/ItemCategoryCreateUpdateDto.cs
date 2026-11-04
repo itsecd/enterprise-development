@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DryCleaner.Shared.Enums;
 
-namespace DryCleaner.Application.Contracts.DTOs;
+namespace DryCleaner.Application.Contracts.DTOs.ItemCategory;
 
 /// <summary>
 /// DTO для создания или обновления категории изделия
@@ -15,5 +15,6 @@ public record ItemCategoryCreateUpdateDto(
 
     CleaningType RecommendedCleaning,
 
+    [Range(0, int.MaxValue, ErrorMessage = "Цена не может быть отрицательной")]
     decimal Price
 );

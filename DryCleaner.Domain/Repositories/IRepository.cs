@@ -1,6 +1,6 @@
 ﻿using DryCleaner.Domain.Entities;
 
-namespace DryCleaner.Application.Contracts.Interfaces;
+namespace DryCleaner.Domain.Repositories;
 
 /// <summary>
 /// Базовый интерфейс для работы с сущностями

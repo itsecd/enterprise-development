@@ -1,4 +1,4 @@
-﻿using DryCleaner.Application.Contracts.Interfaces;
+﻿using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Data;
 using DryCleaner.Domain.Entities;
 
@@ -8,7 +8,7 @@ namespace DryCleaner.Infrastructure.InMemory.Repositories;
 /// Реализация репозитория для работы с клиентами в памяти
 /// </summary>
 public class CustomerRepository()
-    : InMemoryRepository<Customer>(DataSeed.Customers.ToList()), ICustomerRepository
+    : InMemoryRepository<Customer>(DataSeed.Customers.ToList())
 {
     /// <inheritdoc />
     public override Customer? Update(Customer entity)

@@ -1,5 +1,9 @@
-﻿using DryCleaner.Application.Contracts.DTOs;
+﻿using DryCleaner.Application.Contracts.DTOs.Item;
+using DryCleaner.Application.Contracts.DTOs.ItemCategory;
+using DryCleaner.Application.Contracts.DTOs.Customer;
+using DryCleaner.Application.Contracts.DTOs.Order;
 using DryCleaner.Application.Contracts.Interfaces;
+using DryCleaner.Domain.Repositories;
 using DryCleaner.Domain.Entities;
 
 namespace DryCleaner.Application.Services;
@@ -7,7 +11,7 @@ namespace DryCleaner.Application.Services;
 /// <summary>
 /// Прикладные операции над категориями изделий
 /// </summary>
-public class ItemCategoryService(IItemCategoryRepository categoryRepository) : IItemCategoryService
+public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) : IItemCategoryService
 {
     /// <inheritdoc />
     public ItemCategoryDto Create(ItemCategoryCreateUpdateDto dto)

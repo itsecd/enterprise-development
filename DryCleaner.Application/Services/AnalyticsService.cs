@@ -1,5 +1,7 @@
 ﻿using DryCleaner.Application.Contracts.DTOs.Analytics;
 using DryCleaner.Application.Contracts.Interfaces;
+using DryCleaner.Domain.Repositories;
+using DryCleaner.Domain.Entities;
 using DryCleaner.Shared.Enums;
 
 namespace DryCleaner.Application.Services;
@@ -7,7 +9,7 @@ namespace DryCleaner.Application.Services;
 /// <summary>
 /// Аналитическая информация
 /// </summary>
-public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsService
+public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsService
 {
     /// <inheritdoc />
     public IList<OrderInProgressDto> GetOrdersInProgress()

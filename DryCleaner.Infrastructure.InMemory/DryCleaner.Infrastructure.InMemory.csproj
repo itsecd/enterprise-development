@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DryCleaner.Application.Contracts\DryCleaner.Application.Contracts.csproj" />
+    <ProjectReference Include="..\DryCleaner.Domain\DryCleaner.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

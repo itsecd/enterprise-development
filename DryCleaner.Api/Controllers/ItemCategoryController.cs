@@ -1,4 +1,7 @@
-﻿using DryCleaner.Application.Contracts.DTOs;
+﻿using DryCleaner.Application.Contracts.DTOs.Item;
+using DryCleaner.Application.Contracts.DTOs.ItemCategory;
+using DryCleaner.Application.Contracts.DTOs.Customer;
+using DryCleaner.Application.Contracts.DTOs.Order;
 using DryCleaner.Application.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +12,15 @@ namespace DryCleaner.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ItemCategoryController(IItemCategoryService service, ILogger<ItemCategoryController> logger) : ControllerBase
+public class ItemCategoryController(IItemCategoryService service, IItemService itemService, ILogger<ItemCategoryController> logger) : ControllerBase
 {
     /// <summary>
     /// Получение всех категорий изделий
     /// </summary>
     [HttpGet]
-    public IActionResult GetAll()
+    [ProducesResponseType(typeof(IList<ItemCategoryDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ItemCategoryDto>> GetAll()
     {
         try 
         {
@@ -33,11 +38,14 @@ public class ItemCategoryController(IItemCategoryService service, ILogger<ItemCa
     /// Получение категории изделия по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public IActionResult Get(int id)
+    [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ItemCategoryDto>> Get(int id)
     {
         try
         {
-            logger.LogInformation("Запрос: Получение каегории по идентификатору");
+            logger.LogInformation("Запрос: Получение категории по идентификатору");
 
             var result = service.Get(id);
             if (result is null) return NotFound();
@@ -51,10 +59,43 @@ public class ItemCategoryController(IItemCategoryService service, ILogger<ItemCa
     }
 
     /// <summary>
+    /// Получение списка изделий в конкретной категории
+    /// </summary>
+    [HttpGet("{id:int}/items")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ItemDto>> GetCategoryItems(int id)
+    {
+        try
+        {
+            logger.LogInformation("Запрос списка изделий для категории с указанным идентификатором");
+
+            var categoryExists = service.Get(id) != null;
+            if (!categoryExists)
+            {
+                logger.LogWarning("Категория с указанным идентификатором не найдена");
+                return NotFound("Категория с указанным идентификатором не найдена");
+            }
+
+            var items = itemService.GetByCategoryId(id);
+            return Ok(items);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении изделий категории с указанным идентификатором");
+            return StatusCode(500, "Ошибка сервера");
+        }
+    }
+
+    /// <summary>
     /// Создание категории изделия
     /// </summary>
     [HttpPost]
-    public IActionResult Create([FromBody] ItemCategoryCreateUpdateDto dto)
+    [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ItemCategoryDto>> Create([FromBody] ItemCategoryCreateUpdateDto dto)
     {
         try
         {
@@ -75,7 +116,11 @@ public class ItemCategoryController(IItemCategoryService service, ILogger<ItemCa
     /// Обновление категории изделия
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] ItemCategoryCreateUpdateDto dto)
+    [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ItemCategoryDto>> Update(int id, [FromBody] ItemCategoryCreateUpdateDto dto)
     {
         try
         {
@@ -99,7 +144,10 @@ public class ItemCategoryController(IItemCategoryService service, ILogger<ItemCa
     /// Удаление категории изделия
     /// </summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ItemCategoryDto>> Delete(int id)
     {
         try
         {
