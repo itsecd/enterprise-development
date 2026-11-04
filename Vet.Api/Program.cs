@@ -11,7 +11,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // 1. Подключаем комментарии из контроллеров (Vet.Api)
     var apiXmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var apiXmlPath = Path.Combine(AppContext.BaseDirectory, apiXmlFilename);
     if (File.Exists(apiXmlPath))
@@ -19,7 +18,6 @@ builder.Services.AddSwaggerGen(options =>
         options.IncludeXmlComments(apiXmlPath);
     }
 
-    // 2. Подключаем комментарии из моделей DTO (Vet.Contracts)
     var contractsXmlFilename = "Vet.Contracts.xml";
     var contractsXmlPath = Path.Combine(AppContext.BaseDirectory, contractsXmlFilename);
     if (File.Exists(contractsXmlPath))
@@ -35,7 +33,6 @@ builder.Services.AddInMemoryInfrastructure();
 
 var app = builder.Build();
 
-// Активируем глобальный обработчик исключений
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
@@ -44,7 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Vet API v1");
-        options.RoutePrefix = string.Empty; // Делает Swagger главной страницей сайта
+        options.RoutePrefix = string.Empty;
     });
 }
 
