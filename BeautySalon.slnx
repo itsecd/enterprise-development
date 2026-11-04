@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BeautySalon.Contracts/BeautySalon.Contracts.csproj" />
+  <Project Path="BeautySalon.Domain/BeautySalon.Domain.csproj" />
+  <Project Path="BeautySalon.Infrastructure/BeautySalon.Infrastructure.csproj" />
+  <Project Path="BeautySalon.Server/BeautySalon.Server.csproj" />
+  <Project Path="BeautySalon.Tests/BeautySalon.Tests.csproj" />
+</Solution>
