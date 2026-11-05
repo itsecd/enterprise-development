@@ -3,6 +3,7 @@ using DryCleaning.Contracts.Dto;
 using DryCleaning.Contracts.Exceptions;
 using DryCleaning.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DryCleaning.Api.Controllers;
 
@@ -100,6 +101,7 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
     [ProducesResponseType(typeof(ItemDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status415UnsupportedMediaType)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ItemDto>> Create([FromBody] ItemEditDto request)
     {
@@ -111,6 +113,10 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
         catch (ValidationException exception)
         {
             return InvalidItem(exception, nameof(Create));
+        }
+        catch (DbUpdateException exception)
+        {
+            return RelatedDataConflict(exception, nameof(Create));
         }
         catch (Exception exception)
         {
@@ -128,6 +134,7 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status415UnsupportedMediaType)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update(int id, [FromBody] ItemEditDto request)
     {
@@ -145,6 +152,10 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
         catch (ValidationException exception)
         {
             return InvalidItem(exception, nameof(Update));
+        }
+        catch (DbUpdateException exception)
+        {
+            return RelatedDataConflict(exception, nameof(Update));
         }
         catch (Exception exception)
         {
@@ -185,6 +196,10 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
                 Detail = "С изделием связаны заказы."
             });
         }
+        catch (DbUpdateException exception)
+        {
+            return RelatedDataConflict(exception, nameof(Delete));
+        }
         catch (Exception exception)
         {
             return ServerError(exception, nameof(Delete));
@@ -202,6 +217,24 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
         _logger.LogWarning(exception, "Некорректные данные изделия при выполнении операции {Operation}", operation);
         ModelState.AddModelError("request", "Некорректные данные изделия или категория не найдена.");
         return ValidationProblem(ModelState);
+    }
+
+    /// <summary>
+    /// Записывает в журнал отказ базы данных из-за связей между записями и возвращает ответ 409.
+    /// Возникает, если связанная запись была создана или удалена одновременно с запросом
+    /// </summary>
+    /// <param name="exception">Ошибка сохранения изменений в базе</param>
+    /// <param name="operation">Название операции</param>
+    /// <returns>Ответ с кодом 409</returns>
+    private ObjectResult RelatedDataConflict(DbUpdateException exception, string operation)
+    {
+        _logger.LogWarning(exception, "База данных отклонила операцию {Operation} из-за связанных данных", operation);
+        return Conflict(new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Операция нарушает связи между данными.",
+            Detail = "Связанная запись была изменена во время запроса. Повторите запрос."
+        });
     }
 
     /// <summary>

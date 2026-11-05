@@ -3,6 +3,7 @@ using DryCleaning.Contracts.Exceptions;
 using DryCleaning.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace DryCleaning.Api.Controllers;
 
@@ -210,10 +211,32 @@ public class ClientsController(IClientService service, ILogger<ClientsController
                 Detail = "У клиента есть заказы."
             });
         }
+        catch (DbUpdateException exception)
+        {
+            return RelatedDataConflict(exception, nameof(Delete));
+        }
         catch (Exception exception)
         {
             return ServerError(exception, nameof(Delete));
         }
+    }
+
+    /// <summary>
+    /// Записывает в журнал отказ базы данных из-за связей между записями и возвращает ответ 409.
+    /// Возникает, если связанная запись была создана или удалена одновременно с запросом
+    /// </summary>
+    /// <param name="exception">Ошибка сохранения изменений в базе</param>
+    /// <param name="operation">Название операции</param>
+    /// <returns>Ответ с кодом 409</returns>
+    private ObjectResult RelatedDataConflict(DbUpdateException exception, string operation)
+    {
+        _logger.LogWarning(exception, "База данных отклонила операцию {Operation} из-за связанных данных", operation);
+        return Conflict(new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Операция нарушает связи между данными.",
+            Detail = "Связанная запись была изменена во время запроса. Повторите запрос."
+        });
     }
 
     /// <summary>Записывает ошибку в журнал и возвращает ответ без внутренних деталей.</summary>
