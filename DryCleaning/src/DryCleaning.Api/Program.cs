@@ -4,7 +4,7 @@ using DryCleaning.Domain.Interfaces;
 using DryCleaning.Domain.Seeds;
 using DryCleaning.Infrastructure.EfCore.Data;
 using DryCleaning.Infrastructure.InMemory;
-using DryCleaning.Infrastructure.InMemory.Repositories;
+using DryCleaning.Infrastructure.EfCore.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
