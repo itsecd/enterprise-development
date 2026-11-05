@@ -22,7 +22,7 @@ public class ApplicationExceptionHandler : IExceptionHandler
             _ => (0, string.Empty)
         };
         if (status == 0)
-            return false; // добавить вывод сообщения че именно случилось
+            return false; 
         httpContext.Response.StatusCode = status;
         await httpContext.Response.WriteAsJsonAsync(
             new ProblemDetails { Status = status, Title = title, Detail = exception.Message },

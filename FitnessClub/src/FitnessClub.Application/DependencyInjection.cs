@@ -1,4 +1,5 @@
 using FitnessClub.Application.Services;
+using FitnessClub.Application.Services.Analytics;
 using FitnessClub.Application.Validation;
 using FitnessClub.Contracts.Dtos.Edit;
 using FitnessClub.Contracts.Dtos.Read;

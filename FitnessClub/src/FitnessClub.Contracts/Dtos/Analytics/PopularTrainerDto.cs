@@ -9,7 +9,7 @@ namespace FitnessClub.Contracts.Dtos.Analytics;
 /// <param name="TrainerFullName">
 /// Полное имя тренера
 /// </param>
-/// <param name="BookingCount"
+/// <param name="BookingCount">
 /// Количество бронирований
 /// </param>
 public record PopularTrainerDto(

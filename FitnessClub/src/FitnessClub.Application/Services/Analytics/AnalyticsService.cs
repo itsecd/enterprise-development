@@ -6,7 +6,7 @@ using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Interfaces;
 
-namespace FitnessClub.Application.Services;
+namespace FitnessClub.Application.Services.Analytics;
 
 public class AnalyticsService(
     IRepository<Trainer> trainerRepository,
