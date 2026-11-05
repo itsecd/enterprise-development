@@ -1,13 +1,17 @@
-using DryCleaning.Domain.Seeds;
 using DryCleaning.Application.Services;
 using DryCleaning.Contracts.Interfaces;
 using DryCleaning.Domain.Interfaces;
-using DryCleaning.Infrastructure.InMemory.Repositories;
+using DryCleaning.Domain.Seeds;
+using DryCleaning.Infrastructure.EfCore.Data;
 using DryCleaning.Infrastructure.InMemory;
+using DryCleaning.Infrastructure.InMemory.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+
+builder.AddSqlServerDbContext<DryCleaningDbContext>("drycleaning");
 
 // Записываем в лог ошибки проверки запроса до вызова контроллера
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
@@ -42,6 +46,14 @@ builder.Services.AddScoped<IItemCategoryService, ItemCategoryService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 var app = builder.Build();
+
+// В режиме разработки применяем миграции при запуске: создаются таблицы и начальные данные
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DryCleaningDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 app.MapDefaultEndpoints();
 
