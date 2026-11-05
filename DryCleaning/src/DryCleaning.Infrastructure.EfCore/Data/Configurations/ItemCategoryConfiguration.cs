@@ -10,7 +10,11 @@ namespace DryCleaning.Infrastructure.EfCore.Data.Configurations;
 /// </summary>
 public class ItemCategoryConfiguration : IEntityTypeConfiguration<ItemCategory>
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Задаёт ключ, длину названия и точность цены категории
+    /// и добавляет начальные данные из TestData
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации таблицы</param>
     public void Configure(EntityTypeBuilder<ItemCategory> builder)
     {
         builder.HasKey(c => c.CategoryId);

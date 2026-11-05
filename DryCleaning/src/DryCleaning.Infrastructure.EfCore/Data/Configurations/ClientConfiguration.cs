@@ -10,7 +10,11 @@ namespace DryCleaning.Infrastructure.EfCore.Data.Configurations;
 /// </summary>
 public class ClientConfiguration : IEntityTypeConfiguration<Client>
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Задаёт ключ, обязательность и длину полей клиента
+    /// и добавляет начальные данные из TestData
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации таблицы</param>
     public void Configure(EntityTypeBuilder<Client> builder)
     {
         builder.HasKey(c => c.ClientId);

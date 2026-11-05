@@ -10,7 +10,11 @@ namespace DryCleaning.Infrastructure.EfCore.Data.Configurations;
 /// </summary>
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Задаёт ключ заказа, связи с клиентом и изделием через теневые ключи,
+    /// хранение дат в UTC и добавляет начальные данные из TestData
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации таблицы</param>
     public void Configure(EntityTypeBuilder<Order> builder)
     {
         builder.HasKey(o => o.Id);

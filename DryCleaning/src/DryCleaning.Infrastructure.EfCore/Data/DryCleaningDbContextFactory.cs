@@ -8,7 +8,12 @@ namespace DryCleaning.Infrastructure.EfCore.Data;
 /// </summary>
 public class DryCleaningDbContextFactory : IDesignTimeDbContextFactory<DryCleaningDbContext>
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Создаёт контекст с фиктивной строкой подключения:
+    /// для генерации миграций подключение к базе не требуется
+    /// </summary>
+    /// <param name="args">Аргументы командной строки dotnet ef, не используются</param>
+    /// <returns>Контекст базы данных для работы с миграциями</returns>
     public DryCleaningDbContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder<DryCleaningDbContext>()
