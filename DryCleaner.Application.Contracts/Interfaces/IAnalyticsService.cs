@@ -23,9 +23,14 @@ public interface IAnalyticsService
     IList<OrderProcessingTimeDto> GetCustomersWithLongestProcessing();
 
     /// <summary>
-    /// Получает топ-5 популярных и непопулярных категорий изделий
+    /// Получает топ-5 популярных категорий изделий
     /// </summary>
-    IList<CategoryPopularityDto> GetTop5PopularCategories();
+    IList<CategoryPopularityDto> GetTop5PopularCategories(DateOnly start, DateOnly end);
+
+    /// <summary>
+    /// Получает топ-5 непопулярных категорий изделий
+    /// </summary>
+    IList<CategoryPopularityDto> GetTop5UnpopularCategories(DateOnly start, DateOnly end);
 
     /// <summary>
     /// Получает клиента с наибольшей суммой заказов

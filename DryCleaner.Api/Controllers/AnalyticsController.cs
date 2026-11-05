@@ -84,16 +84,36 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [HttpGet("popular-categories")]
     [ProducesResponseType(typeof(IList<CategoryPopularityDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CategoryPopularityDto>> GetPopularCategories()
+    public ActionResult<IList<CategoryPopularityDto>> GetPopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
         try
         {
             logger.LogInformation("Запрос: Наиболее популярные категории");
-            return Ok(analyticsService.GetTop5PopularCategories());
+            return Ok(analyticsService.GetTop5PopularCategories(start, end));
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Ошибка в получении наиболее популярных категорий");
+            return StatusCode(500, "Ошибка сервера");
+        }
+    }
+
+    /// <summary>
+    /// Получает наименее популярные категории
+    /// </summary>
+    [HttpGet("unpopular-categories")]
+    [ProducesResponseType(typeof(IList<CategoryPopularityDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<CategoryPopularityDto>> GetUnpopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
+    {
+        try
+        {
+            logger.LogInformation("Запрос: Наименее популярные категории");
+            return Ok(analyticsService.GetTop5UnpopularCategories(start, end));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении непопулярных категорий");
             return StatusCode(500, "Ошибка сервера");
         }
     }

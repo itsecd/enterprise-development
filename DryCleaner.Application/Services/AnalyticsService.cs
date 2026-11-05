@@ -30,10 +30,10 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     {
         return orderRepository.GetAll()
             .Where(o => o.AcceptanceDate >= periodStart && o.AcceptanceDate <= periodEnd)
-            .GroupBy(o => o.Customer)
+            .GroupBy(o => o.CustomerId)
             .Select(group => new CustomerOrderCountDto(
-                group.Key.Id,
-                $"{group.Key.LastName} {group.Key.FirstName}",
+                group.Key,
+                $"{group.First().Customer.LastName} {group.First().Customer.FirstName}",
                 group.Count()))
             .OrderByDescending(x => x.OrderCount)
             .ThenBy(x => x.CustomerName)
@@ -66,19 +66,33 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     }
 
     /// <inheritdoc />
-    public IList<CategoryPopularityDto> GetTop5PopularCategories()
+    public IList<CategoryPopularityDto> GetTop5PopularCategories(DateOnly start, DateOnly end)
     {
-        var referenceDate = new DateOnly(2026, 3, 15);
-        var yearAgo = referenceDate.AddYears(-1);
-
         return orderRepository.GetAll()
-            .Where(o => o.AcceptanceDate >= yearAgo && o.AcceptanceDate <= referenceDate)
-            .GroupBy(o => o.Item.Category)
+            .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
+            .GroupBy(o => o.Item.CategoryId)
             .Select(group => new CategoryPopularityDto(
-                group.Key.Id,
-                group.Key.Name,
+                group.Key,
+                group.First().Item.Category.Name,
                 group.Count()))
             .OrderByDescending(x => x.OrderCount)
+            .ThenBy(x => x.CategoryName)
+            .Take(5)
+            .ToList();
+    }
+
+    /// <inheritdoc />
+    public IList<CategoryPopularityDto> GetTop5UnpopularCategories(DateOnly start, DateOnly end)
+    {
+        return orderRepository.GetAll()
+            .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
+            .GroupBy(o => o.Item.CategoryId)
+            .Select(group => new CategoryPopularityDto(
+                group.Key,
+                group.First().Item.Category.Name,
+                group.Count()))
+            .Where(x => x.OrderCount > 0)
+            .OrderBy(x => x.OrderCount)
             .ThenBy(x => x.CategoryName)
             .Take(5)
             .ToList();
@@ -88,12 +102,12 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     public TotalSpentCustomerDto? GetCustomerWithMaxTotalSpent()
     {
         return orderRepository.GetAll()
-            .GroupBy(o => o.Customer)
+            .GroupBy(o => o.CustomerId)
             .Select(group => new TotalSpentCustomerDto(
-                group.Key.Id,
-                group.Key.LastName,
-                group.Key.FirstName,
-                group.Key.Patronymic,
+                group.Key,
+                group.First().Customer.LastName,
+                group.First().Customer.FirstName,
+                group.First().Customer.Patronymic,
                 group.Sum(o => o.Item.Category.Price)))
             .OrderByDescending(c => c.TotalSpentAmount)
             .ThenBy(c => c.CustomerId)
