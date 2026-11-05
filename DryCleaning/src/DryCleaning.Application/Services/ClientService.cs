@@ -10,10 +10,10 @@ namespace DryCleaning.Application.Services;
 /// <summary>Сервис для работы с клиентами химчистки.</summary>
 /// <param name="repository">Репозиторий клиентов.</param>
 /// <param name="orderRepository">Репозиторий заказов.</param>
-/// <param name="relationshipLock">Защита операций со связанными данными</param>
-public class ClientService(IClientRepository repository, IOrderRepository orderRepository, IRelationshipLock relationshipLock) : IClientService
+public class ClientService(
+    IClientRepository repository,
+    IOrderRepository orderRepository) : IClientService
 {
-    private readonly IRelationshipLock _relationshipLock = relationshipLock;
     private readonly IClientRepository _repository = repository;
     private readonly IOrderRepository _orderRepository = orderRepository;
 
@@ -76,8 +76,6 @@ public class ClientService(IClientRepository repository, IOrderRepository orderR
     /// <exception cref="ClientHasOrdersException">У клиента есть заказы.</exception>
     public async Task<bool> DeleteAsync(int id)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         var client = await _repository.GetByIdAsync(id);
         if (client is null)
         {
@@ -158,8 +156,6 @@ public class ClientService(IClientRepository repository, IOrderRepository orderR
     /// <returns>Длительность и список клиентов или null, если подходящих заказов нет.</returns>
     public async Task<LongestProcessingDto?> GetLongestProcessingOrderAsync()
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         var orders = await _orderRepository.GetAllAsync();
         var completedOrders = orders
             .Where(order => (order.Status == OrderStatus.Completed || order.Status == OrderStatus.Issued) &&

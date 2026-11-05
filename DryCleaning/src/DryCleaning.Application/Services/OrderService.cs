@@ -13,10 +13,11 @@ namespace DryCleaning.Application.Services;
 /// <param name="orderRepository">Репозиторий заказов</param>
 /// <param name="clientRepository">Репозиторий клиентов</param>
 /// <param name="itemRepository">Репозиторий изделий</param>
-/// <param name="relationshipLock">Защита операций со связанными данными</param>
-public class OrderService( IOrderRepository orderRepository, IClientRepository clientRepository, IItemRepository itemRepository, IRelationshipLock relationshipLock) : IOrderService
+public class OrderService(
+    IOrderRepository orderRepository,
+    IClientRepository clientRepository,
+    IItemRepository itemRepository) : IOrderService
 {
-    private readonly IRelationshipLock _relationshipLock = relationshipLock;
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IClientRepository _clientRepository = clientRepository;
     private readonly IItemRepository _itemRepository = itemRepository;
@@ -65,8 +66,6 @@ public class OrderService( IOrderRepository orderRepository, IClientRepository c
     /// <exception cref="ValidationException">Некорректные данные заказа, клиент или изделие не найдены</exception>
     public async Task<OrderDto> AddAsync(OrderCreateDto order)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         ValidateOrder(order);
 
         var client = await _clientRepository.GetByIdAsync(order.ClientId)
@@ -97,8 +96,6 @@ public class OrderService( IOrderRepository orderRepository, IClientRepository c
     /// <exception cref="ValidationException">Некорректные данные или дата завершения, клиент или изделие не найдены</exception>
     public async Task<bool> UpdateAsync(int id, OrderEditDto order)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         ValidateOrder(order);
 
         var existingOrder = await _orderRepository.GetByIdAsync(id);

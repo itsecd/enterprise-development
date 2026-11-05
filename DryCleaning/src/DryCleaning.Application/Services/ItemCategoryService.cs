@@ -14,13 +14,11 @@ namespace DryCleaning.Application.Services;
 /// <param name="repository">Репозиторий категорий</param>
 /// <param name="itemRepository">Репозиторий изделий</param>
 /// <param name="orderRepository">Репозиторий заказов</param>
-/// <param name="relationshipLock">Защита операций со связанными данными</param>
 public class ItemCategoryService(
     IItemCategoryRepository repository,
     IItemRepository itemRepository,
-    IOrderRepository orderRepository, IRelationshipLock relationshipLock) : IItemCategoryService
+    IOrderRepository orderRepository) : IItemCategoryService
 {
-    private readonly IRelationshipLock _relationshipLock = relationshipLock;
     private readonly IItemCategoryRepository _repository = repository;
     private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
@@ -102,8 +100,6 @@ public class ItemCategoryService(
     /// <exception cref="CategoryHasItemsException">Категория используется изделиями</exception>
     public async Task<bool> DeleteAsync(int id)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         var category = await _repository.GetByIdAsync(id);
         if (category is null)
         {

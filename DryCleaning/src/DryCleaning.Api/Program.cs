@@ -1,9 +1,7 @@
 using DryCleaning.Application.Services;
 using DryCleaning.Contracts.Interfaces;
 using DryCleaning.Domain.Interfaces;
-using DryCleaning.Domain.Seeds;
 using DryCleaning.Infrastructure.EfCore.Data;
-using DryCleaning.Infrastructure.InMemory;
 using DryCleaning.Infrastructure.EfCore.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,9 +32,6 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
     };
 });
 builder.Services.AddOpenApi();
-// Один набор данных используется всеми запросами до остановки приложения.
-builder.Services.AddSingleton<TestData>();
-builder.Services.AddSingleton<IRelationshipLock, RelationshipLock>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();

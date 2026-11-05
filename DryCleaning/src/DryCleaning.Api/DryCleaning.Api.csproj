@@ -17,7 +17,6 @@
     <ProjectReference Include="..\DryCleaning.Domain\DryCleaning.Domain.csproj" />
     <ProjectReference Include="..\DryCleaning.Contracts\DryCleaning.Contracts.csproj" />
     <ProjectReference Include="..\DryCleaning.Application\DryCleaning.Application.csproj" />
-    <ProjectReference Include="..\DryCleaning.Infrastructure.InMemory\DryCleaning.Infrastructure.InMemory.csproj" />
     <ProjectReference Include="..\DryCleaning.ServiceDefaults\DryCleaning.ServiceDefaults.csproj" />
     <ProjectReference Include="..\DryCleaning.Infrastructure.EfCore\DryCleaning.Infrastructure.EfCore.csproj" />
   </ItemGroup>

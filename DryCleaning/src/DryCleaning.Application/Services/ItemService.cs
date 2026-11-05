@@ -13,10 +13,11 @@ namespace DryCleaning.Application.Services;
 /// <param name="itemRepository">Репозиторий изделий</param>
 /// <param name="categoryRepository">Репозиторий категорий</param>
 /// <param name="orderRepository">Репозиторий заказов</param>
-/// <param name="relationshipLock">Защита операций со связанными данными</param>
-public class ItemService(IItemRepository itemRepository, IItemCategoryRepository categoryRepository, IOrderRepository orderRepository, IRelationshipLock relationshipLock) : IItemService
+public class ItemService(
+    IItemRepository itemRepository,
+    IItemCategoryRepository categoryRepository,
+    IOrderRepository orderRepository) : IItemService
 {
-    private readonly IRelationshipLock _relationshipLock = relationshipLock;
     private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IItemCategoryRepository _categoryRepository = categoryRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
@@ -43,8 +44,6 @@ public class ItemService(IItemRepository itemRepository, IItemCategoryRepository
     /// <exception cref="ValidationException">Некорректные данные изделия или категория не найдена</exception>
     public async Task<ItemDto> AddAsync(ItemEditDto item)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         ValidateItem(item);
         var category = await _categoryRepository.GetByIdAsync(item.CategoryId) ?? throw new ValidationException("Категория не найдена");
         var createdItem = await _itemRepository.AddAsync(new Item
@@ -63,8 +62,6 @@ public class ItemService(IItemRepository itemRepository, IItemCategoryRepository
     /// <exception cref="ItemHasOrdersException">С изделием связаны заказы</exception>
     public async Task<bool> DeleteAsync(int id)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         var item = await _itemRepository.GetByIdAsync(id);
         if (item is null)
             return false;
@@ -102,8 +99,6 @@ public class ItemService(IItemRepository itemRepository, IItemCategoryRepository
     /// <exception cref="ValidationException">Некорректные данные изделия или категория не найдена</exception>
     public async Task<bool> UpdateAsync(int id, ItemEditDto item)
     {
-        using var operation = await _relationshipLock.AcquireAsync();
-
         ValidateItem(item);
         var existingItem = await _itemRepository.GetByIdAsync(id);
         if (existingItem == null)
