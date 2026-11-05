@@ -4,15 +4,15 @@ namespace VetClinic.Contracts.Breeds;
 
 public interface IBreedService
 {
-    IReadOnlyList<BreedDto> GetAll();
+    public Task<IReadOnlyList<BreedDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    BreedDto GetById(int id);
+    public Task<BreedDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<BreedDto> GetBySpecies(AnimalSpecies species);
+    public Task<IReadOnlyList<BreedDto>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    BreedDto Create(BreedEditDto dto);
+    public Task<BreedDto> CreateAsync(BreedEditDto dto, CancellationToken cancellationToken = default);
 
-    BreedDto Update(int id, BreedEditDto dto);
+    public Task<BreedDto> UpdateAsync(int id, BreedEditDto dto, CancellationToken cancellationToken = default);
 
-    void Delete(int id);
+    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

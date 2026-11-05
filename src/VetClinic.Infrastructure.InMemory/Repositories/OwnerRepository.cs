@@ -6,35 +6,38 @@ namespace VetClinic.Infrastructure.InMemory.Repositories;
 
 public sealed class OwnerRepository(InMemoryClinicStore store) : IOwnerRepository
 {
-    public IReadOnlyList<Owner> GetAll()
+    public Task<IReadOnlyList<Owner>> GetAllAsync(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Owners.ToArray();
+            return Task.FromResult<IReadOnlyList<Owner>>([.. store.Owners]);
         }
     }
 
-    public Owner? FindById(int id)
+    public Task<Owner?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Owners.FirstOrDefault(owner => owner.Id == id);
+            return Task.FromResult(store.Owners.FirstOrDefault(owner => owner.Id == id));
         }
     }
 
-    public IReadOnlyList<Owner> GetWithSeveralPets()
+    public Task<IReadOnlyList<Owner>> GetWithSeveralPetsAsync(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Owners
+            return Task.FromResult<IReadOnlyList<Owner>>([.. store.Owners
                 .Where(owner => owner.Pets.Count > 1)
-                .OrderBy(owner => owner.FullName)
-                .ToArray();
+                .OrderBy(owner => owner.FullName)]);
         }
     }
 
-    public Owner Add(string fullName, string phoneNumber, string? address)
+    public Task<Owner> AddAsync(string fullName, string phoneNumber, string? address, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var owner = new Owner
@@ -45,12 +48,13 @@ public sealed class OwnerRepository(InMemoryClinicStore store) : IOwnerRepositor
                 Address = address
             };
             store.Owners.Add(owner);
-            return owner;
+            return Task.FromResult(owner);
         }
     }
 
-    public Owner Update(int id, string fullName, string phoneNumber, string? address)
+    public Task<Owner> UpdateAsync(int id, string fullName, string phoneNumber, string? address, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var owner = store.Owners.FirstOrDefault(item => item.Id == id)
@@ -58,12 +62,13 @@ public sealed class OwnerRepository(InMemoryClinicStore store) : IOwnerRepositor
             owner.FullName = fullName;
             owner.PhoneNumber = phoneNumber;
             owner.Address = address;
-            return owner;
+            return Task.FromResult(owner);
         }
     }
 
-    public void Remove(int id)
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var owner = store.Owners.FirstOrDefault(item => item.Id == id)
@@ -76,5 +81,7 @@ public sealed class OwnerRepository(InMemoryClinicStore store) : IOwnerRepositor
 
             store.Owners.Remove(owner);
         }
+
+        return Task.CompletedTask;
     }
 }

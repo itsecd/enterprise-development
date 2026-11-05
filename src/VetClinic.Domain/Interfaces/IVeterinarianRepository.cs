@@ -8,28 +8,30 @@ namespace VetClinic.Domain.Interfaces;
 /// </summary>
 public interface IVeterinarianRepository
 {
-    IReadOnlyList<Veterinarian> GetAll();
+    public Task<IReadOnlyList<Veterinarian>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Veterinarian? FindById(int id);
+    public Task<Veterinarian?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Veterinarian> GetBySpecies(AnimalSpecies species);
+    public Task<IReadOnlyList<Veterinarian>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Veterinarian> GetBySpecialization(int specializationId);
+    public Task<IReadOnlyList<Veterinarian>> GetBySpecializationAsync(int specializationId, CancellationToken cancellationToken = default);
 
-    Veterinarian Add(
+    public Task<Veterinarian> AddAsync(
         string passportNumber,
         string fullName,
         int specializationId,
         int birthYear,
-        int experienceYears);
+        int experienceYears,
+        CancellationToken cancellationToken = default);
 
-    Veterinarian Update(
+    public Task<Veterinarian> UpdateAsync(
         int id,
         string passportNumber,
         string fullName,
         int specializationId,
         int birthYear,
-        int experienceYears);
+        int experienceYears,
+        CancellationToken cancellationToken = default);
 
-    void Remove(int id);
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default);
 }

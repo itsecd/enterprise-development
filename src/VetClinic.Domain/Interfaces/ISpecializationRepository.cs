@@ -8,15 +8,15 @@ namespace VetClinic.Domain.Interfaces;
 /// </summary>
 public interface ISpecializationRepository
 {
-    IReadOnlyList<Specialization> GetAll();
+    public Task<IReadOnlyList<Specialization>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Specialization? FindById(int id);
+    public Task<Specialization?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Specialization> GetBySpecies(AnimalSpecies species);
+    public Task<IReadOnlyList<Specialization>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    Specialization Add(string name, AnimalSpecies species);
+    public Task<Specialization> AddAsync(string name, AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    Specialization Update(int id, string name, AnimalSpecies species);
+    public Task<Specialization> UpdateAsync(int id, string name, AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    void Remove(int id);
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default);
 }

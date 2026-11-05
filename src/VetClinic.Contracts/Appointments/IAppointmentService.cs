@@ -2,21 +2,21 @@ namespace VetClinic.Contracts.Appointments;
 
 public interface IAppointmentService
 {
-    IReadOnlyList<AppointmentDto> GetAll();
+    public Task<IReadOnlyList<AppointmentDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    AppointmentDto GetById(int id);
+    public Task<AppointmentDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<AppointmentDto> GetByVeterinarian(int veterinarianId);
+    public Task<IReadOnlyList<AppointmentDto>> GetByVeterinarianAsync(int veterinarianId, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<AppointmentDto> GetByPet(int petId);
+    public Task<IReadOnlyList<AppointmentDto>> GetByPetAsync(int petId, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<AppointmentDto> GetCurrentMonth(string roomNumber);
+    public Task<IReadOnlyList<AppointmentDto>> GetCurrentMonthAsync(string roomNumber, CancellationToken cancellationToken = default);
 
-    FollowUpCountDto CountFollowUps(int breedId);
+    public Task<FollowUpCountDto> CountFollowUpsAsync(int breedId, CancellationToken cancellationToken = default);
 
-    AppointmentDto Create(AppointmentEditDto dto);
+    public Task<AppointmentDto> CreateAsync(AppointmentEditDto dto, CancellationToken cancellationToken = default);
 
-    AppointmentDto Update(int id, AppointmentEditDto dto);
+    public Task<AppointmentDto> UpdateAsync(int id, AppointmentEditDto dto, CancellationToken cancellationToken = default);
 
-    void Delete(int id);
+    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

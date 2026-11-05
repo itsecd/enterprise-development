@@ -18,12 +18,12 @@ public sealed class InMemoryClinicStore
     public InMemoryClinicStore()
     {
         var seed = new VetClinicSeedData();
-        Breeds = seed.Breeds.ToList();
-        Specializations = seed.Specializations.ToList();
-        Owners = seed.Owners.ToList();
-        Pets = seed.Pets.ToList();
-        Veterinarians = seed.Veterinarians.ToList();
-        Appointments = seed.Appointments.ToList();
+        Breeds = [.. seed.Breeds];
+        Specializations = [.. seed.Specializations];
+        Owners = [.. seed.Owners];
+        Pets = [.. seed.Pets];
+        Veterinarians = [.. seed.Veterinarians];
+        Appointments = [.. seed.Appointments];
 
         _nextBreedId = NextAfter(Breeds, breed => breed.Id);
         _nextSpecializationId = NextAfter(Specializations, specialization => specialization.Id);

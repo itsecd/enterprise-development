@@ -7,32 +7,36 @@ namespace VetClinic.Infrastructure.InMemory.Repositories;
 
 public sealed class SpecializationRepository(InMemoryClinicStore store) : ISpecializationRepository
 {
-    public IReadOnlyList<Specialization> GetAll()
+    public Task<IReadOnlyList<Specialization>> GetAllAsync(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Specializations.ToArray();
+            return Task.FromResult<IReadOnlyList<Specialization>>([.. store.Specializations]);
         }
     }
 
-    public Specialization? FindById(int id)
+    public Task<Specialization?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Specializations.FirstOrDefault(specialization => specialization.Id == id);
+            return Task.FromResult(store.Specializations.FirstOrDefault(specialization => specialization.Id == id));
         }
     }
 
-    public IReadOnlyList<Specialization> GetBySpecies(AnimalSpecies species)
+    public Task<IReadOnlyList<Specialization>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Specializations.Where(specialization => specialization.Species == species).ToArray();
+            return Task.FromResult<IReadOnlyList<Specialization>>([.. store.Specializations.Where(specialization => specialization.Species == species)]);
         }
     }
 
-    public Specialization Add(string name, AnimalSpecies species)
+    public Task<Specialization> AddAsync(string name, AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var specialization = new Specialization
@@ -42,12 +46,13 @@ public sealed class SpecializationRepository(InMemoryClinicStore store) : ISpeci
                 Species = species
             };
             store.Specializations.Add(specialization);
-            return specialization;
+            return Task.FromResult(specialization);
         }
     }
 
-    public Specialization Update(int id, string name, AnimalSpecies species)
+    public Task<Specialization> UpdateAsync(int id, string name, AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var specialization = store.Specializations.FirstOrDefault(item => item.Id == id)
@@ -61,12 +66,13 @@ public sealed class SpecializationRepository(InMemoryClinicStore store) : ISpeci
 
             specialization.Name = name;
             specialization.Species = species;
-            return specialization;
+            return Task.FromResult(specialization);
         }
     }
 
-    public void Remove(int id)
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var specialization = store.Specializations.FirstOrDefault(item => item.Id == id)
@@ -80,6 +86,8 @@ public sealed class SpecializationRepository(InMemoryClinicStore store) : ISpeci
 
             store.Specializations.Remove(specialization);
         }
+
+        return Task.CompletedTask;
     }
 
     private bool HasAppointmentOfAnotherSpecies(int specializationId, AnimalSpecies species)

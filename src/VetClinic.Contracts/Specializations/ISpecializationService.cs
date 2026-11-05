@@ -4,15 +4,15 @@ namespace VetClinic.Contracts.Specializations;
 
 public interface ISpecializationService
 {
-    IReadOnlyList<SpecializationDto> GetAll();
+    public Task<IReadOnlyList<SpecializationDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    SpecializationDto GetById(int id);
+    public Task<SpecializationDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<SpecializationDto> GetBySpecies(AnimalSpecies species);
+    public Task<IReadOnlyList<SpecializationDto>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    SpecializationDto Create(SpecializationEditDto dto);
+    public Task<SpecializationDto> CreateAsync(SpecializationEditDto dto, CancellationToken cancellationToken = default);
 
-    SpecializationDto Update(int id, SpecializationEditDto dto);
+    public Task<SpecializationDto> UpdateAsync(int id, SpecializationEditDto dto, CancellationToken cancellationToken = default);
 
-    void Delete(int id);
+    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

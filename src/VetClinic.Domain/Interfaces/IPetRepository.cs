@@ -7,17 +7,17 @@ namespace VetClinic.Domain.Interfaces;
 /// </summary>
 public interface IPetRepository
 {
-    IReadOnlyList<Pet> GetAll();
+    public Task<IReadOnlyList<Pet>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Pet? FindById(int id);
+    public Task<Pet?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Pet> GetByOwner(int ownerId);
+    public Task<IReadOnlyList<Pet>> GetByOwnerAsync(int ownerId, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Pet> GetByVeterinarian(int veterinarianId);
+    public Task<IReadOnlyList<Pet>> GetByVeterinarianAsync(int veterinarianId, CancellationToken cancellationToken = default);
 
-    Pet Add(string name, int breedId, int ownerId, DateOnly birthDate, double weight);
+    public Task<Pet> AddAsync(string name, int breedId, int ownerId, DateOnly birthDate, double weight, CancellationToken cancellationToken = default);
 
-    Pet Update(int id, string name, int breedId, int ownerId, DateOnly birthDate, double weight);
+    public Task<Pet> UpdateAsync(int id, string name, int breedId, int ownerId, DateOnly birthDate, double weight, CancellationToken cancellationToken = default);
 
-    void Remove(int id);
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default);
 }

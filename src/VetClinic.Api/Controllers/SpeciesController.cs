@@ -13,53 +13,74 @@ public class SpeciesController(
     IBreedService breeds,
     ISpecializationService specializations,
     IVeterinarianService veterinarians,
-    ILogger<SpeciesController> logger) : ControllerBase
+    ILogger<SpeciesController> logger) : ClinicControllerBase(logger)
 {
     [HttpGet("breeds")]
-    public ActionResult<IReadOnlyList<BreedDto>> Breeds(AnimalSpecies species)
+    [ProducesResponseType(typeof(IReadOnlyList<BreedDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<BreedDto>>> Breeds(AnimalSpecies species, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/species/{Species}/breeds", species);
-        if (!Enum.IsDefined(species))
+        return await Execute("GET /api/species/{Species}/breeds", async () =>
         {
-            return BadRequest("Укажите биологический вид.");
-        }
+            logger.LogInformation("GET /api/species/{Species}/breeds", species);
+            if (!Enum.IsDefined(species))
+            {
+                return BadRequest("Укажите биологический вид.");
+            }
 
-        var result = breeds.GetBySpecies(species);
-        logger.LogInformation("GET /api/species/{Species}/breeds завершён, записей: {Count}", species, result.Count);
-        return Ok(result);
+            var result = await breeds.GetBySpeciesAsync(species, cancellationToken);
+            logger.LogInformation("GET /api/species/{Species}/breeds завершён, записей: {Count}", species, result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("specializations")]
-    public ActionResult<IReadOnlyList<SpecializationDto>> Specializations(AnimalSpecies species)
+    [ProducesResponseType(typeof(IReadOnlyList<SpecializationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> Specializations(AnimalSpecies species, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/species/{Species}/specializations", species);
-        if (!Enum.IsDefined(species))
+        return await Execute("GET /api/species/{Species}/specializations", async () =>
         {
-            return BadRequest("Укажите биологический вид.");
-        }
+            logger.LogInformation("GET /api/species/{Species}/specializations", species);
+            if (!Enum.IsDefined(species))
+            {
+                return BadRequest("Укажите биологический вид.");
+            }
 
-        var result = specializations.GetBySpecies(species);
-        logger.LogInformation(
-            "GET /api/species/{Species}/specializations завершён, записей: {Count}",
-            species,
-            result.Count);
-        return Ok(result);
+            var result = await specializations.GetBySpeciesAsync(species, cancellationToken);
+            logger.LogInformation(
+                "GET /api/species/{Species}/specializations завершён, записей: {Count}",
+                species,
+                result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("veterinarians")]
-    public ActionResult<IReadOnlyList<VeterinarianDto>> Veterinarians(AnimalSpecies species)
+    [ProducesResponseType(typeof(IReadOnlyList<VeterinarianDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<VeterinarianDto>>> Veterinarians(AnimalSpecies species, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/species/{Species}/veterinarians", species);
-        if (!Enum.IsDefined(species))
+        return await Execute("GET /api/species/{Species}/veterinarians", async () =>
         {
-            return BadRequest("Укажите биологический вид.");
-        }
+            logger.LogInformation("GET /api/species/{Species}/veterinarians", species);
+            if (!Enum.IsDefined(species))
+            {
+                return BadRequest("Укажите биологический вид.");
+            }
 
-        var result = veterinarians.GetBySpecies(species);
-        logger.LogInformation(
-            "GET /api/species/{Species}/veterinarians завершён, записей: {Count}",
-            species,
-            result.Count);
-        return Ok(result);
+            var result = await veterinarians.GetBySpeciesAsync(species, cancellationToken);
+            logger.LogInformation(
+                "GET /api/species/{Species}/veterinarians завершён, записей: {Count}",
+                species,
+                result.Count);
+            return Ok(result);
+
+        });
     }
 }

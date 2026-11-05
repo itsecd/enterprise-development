@@ -4,17 +4,17 @@ namespace VetClinic.Contracts.Veterinarians;
 
 public interface IVeterinarianService
 {
-    IReadOnlyList<VeterinarianDto> GetAll();
+    public Task<IReadOnlyList<VeterinarianDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    VeterinarianDto GetById(int id);
+    public Task<VeterinarianDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<VeterinarianDto> GetBySpecies(AnimalSpecies species);
+    public Task<IReadOnlyList<VeterinarianDto>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<VeterinarianDto> GetBySpecialization(int specializationId);
+    public Task<IReadOnlyList<VeterinarianDto>> GetBySpecializationAsync(int specializationId, CancellationToken cancellationToken = default);
 
-    VeterinarianDto Create(VeterinarianEditDto dto);
+    public Task<VeterinarianDto> CreateAsync(VeterinarianEditDto dto, CancellationToken cancellationToken = default);
 
-    VeterinarianDto Update(int id, VeterinarianEditDto dto);
+    public Task<VeterinarianDto> UpdateAsync(int id, VeterinarianEditDto dto, CancellationToken cancellationToken = default);
 
-    void Delete(int id);
+    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

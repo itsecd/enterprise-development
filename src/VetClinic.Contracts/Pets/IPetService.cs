@@ -2,17 +2,17 @@ namespace VetClinic.Contracts.Pets;
 
 public interface IPetService
 {
-    IReadOnlyList<PetDto> GetAll();
+    public Task<IReadOnlyList<PetDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    PetDto GetById(int id);
+    public Task<PetDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<PetDto> GetByOwner(int ownerId);
+    public Task<IReadOnlyList<PetDto>> GetByOwnerAsync(int ownerId, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<PetDto> GetByVeterinarian(int veterinarianId);
+    public Task<IReadOnlyList<PetDto>> GetByVeterinarianAsync(int veterinarianId, CancellationToken cancellationToken = default);
 
-    PetDto Create(PetEditDto dto);
+    public Task<PetDto> CreateAsync(PetEditDto dto, CancellationToken cancellationToken = default);
 
-    PetDto Update(int id, PetEditDto dto);
+    public Task<PetDto> UpdateAsync(int id, PetEditDto dto, CancellationToken cancellationToken = default);
 
-    void Delete(int id);
+    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

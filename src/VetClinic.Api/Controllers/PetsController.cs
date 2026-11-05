@@ -8,59 +8,103 @@ namespace VetClinic.Api.Controllers;
 [Produces("application/json")]
 [Route("api/pets")]
 public class PetsController(IPetService pets, IAppointmentService appointments, ILogger<PetsController> logger)
-    : ControllerBase
+    : ClinicControllerBase(logger)
 {
     [HttpGet]
-    public ActionResult<IReadOnlyList<PetDto>> GetAll()
+    [ProducesResponseType(typeof(IReadOnlyList<PetDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<PetDto>>> GetAll(CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/pets");
-        var result = pets.GetAll();
-        logger.LogInformation("GET /api/pets завершён, записей: {Count}", result.Count);
-        return Ok(result);
+        return await Execute("GET /api/pets", async () =>
+        {
+            logger.LogInformation("GET /api/pets");
+            var result = await pets.GetAllAsync(cancellationToken);
+            logger.LogInformation("GET /api/pets завершён, записей: {Count}", result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<PetDto> GetById(int id)
+    [ProducesResponseType(typeof(PetDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PetDto>> GetById(int id, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/pets/{PetId}", id);
-        var result = pets.GetById(id);
-        logger.LogInformation("GET /api/pets/{PetId} завершён", id);
-        return Ok(result);
+        return await Execute("GET /api/pets/{PetId}", async () =>
+        {
+            logger.LogInformation("GET /api/pets/{PetId}", id);
+            var result = await pets.GetByIdAsync(id, cancellationToken);
+            logger.LogInformation("GET /api/pets/{PetId} завершён", id);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("{id:int}/appointments")]
-    public ActionResult<IReadOnlyList<AppointmentDto>> GetAppointments(int id)
+    [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointments(int id, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/pets/{PetId}/appointments", id);
-        var result = appointments.GetByPet(id);
-        logger.LogInformation("GET /api/pets/{PetId}/appointments завершён, записей: {Count}", id, result.Count);
-        return Ok(result);
+        return await Execute("GET /api/pets/{PetId}/appointments", async () =>
+        {
+            logger.LogInformation("GET /api/pets/{PetId}/appointments", id);
+            var result = await appointments.GetByPetAsync(id, cancellationToken);
+            logger.LogInformation("GET /api/pets/{PetId}/appointments завершён, записей: {Count}", id, result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpPost]
-    public ActionResult<PetDto> Create(PetEditDto dto)
+    [ProducesResponseType(typeof(PetDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PetDto>> Create(PetEditDto dto, CancellationToken cancellationToken)
     {
-        logger.LogInformation("POST /api/pets");
-        var created = pets.Create(dto);
-        logger.LogInformation("POST /api/pets завершён, идентификатор: {PetId}", created.Id);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        return await Execute("POST /api/pets", async () =>
+        {
+            logger.LogInformation("POST /api/pets");
+            var created = await pets.CreateAsync(dto, cancellationToken);
+            logger.LogInformation("POST /api/pets завершён, идентификатор: {PetId}", created.Id);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+
+        });
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult<PetDto> Update(int id, PetEditDto dto)
+    [ProducesResponseType(typeof(PetDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PetDto>> Update(int id, PetEditDto dto, CancellationToken cancellationToken)
     {
-        logger.LogInformation("PUT /api/pets/{PetId}", id);
-        var updated = pets.Update(id, dto);
-        logger.LogInformation("PUT /api/pets/{PetId} завершён", id);
-        return Ok(updated);
+        return await Execute("PUT /api/pets/{PetId}", async () =>
+        {
+            logger.LogInformation("PUT /api/pets/{PetId}", id);
+            var updated = await pets.UpdateAsync(id, dto, cancellationToken);
+            logger.LogInformation("PUT /api/pets/{PetId} завершён", id);
+            return Ok(updated);
+
+        });
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DELETE /api/pets/{PetId}", id);
-        pets.Delete(id);
-        logger.LogInformation("DELETE /api/pets/{PetId} завершён", id);
-        return NoContent();
+        return await Execute("DELETE /api/pets/{PetId}", async () =>
+        {
+            logger.LogInformation("DELETE /api/pets/{PetId}", id);
+            await pets.DeleteAsync(id, cancellationToken);
+            logger.LogInformation("DELETE /api/pets/{PetId} завершён", id);
+            return NoContent();
+
+        });
     }
 }

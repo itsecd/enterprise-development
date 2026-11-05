@@ -35,4 +35,3 @@ if (!app.Environment.IsEnvironment("Testing"))
 app.MapControllers();
 app.Run();
 
-public partial class Program;

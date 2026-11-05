@@ -8,15 +8,15 @@ namespace VetClinic.Domain.Interfaces;
 /// </summary>
 public interface IBreedRepository
 {
-    IReadOnlyList<Breed> GetAll();
+    public Task<IReadOnlyList<Breed>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Breed? FindById(int id);
+    public Task<Breed?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Breed> GetBySpecies(AnimalSpecies species);
+    public Task<IReadOnlyList<Breed>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    Breed Add(string name, AnimalSpecies species);
+    public Task<Breed> AddAsync(string name, AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    Breed Update(int id, string name, AnimalSpecies species);
+    public Task<Breed> UpdateAsync(int id, string name, AnimalSpecies species, CancellationToken cancellationToken = default);
 
-    void Remove(int id);
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default);
 }

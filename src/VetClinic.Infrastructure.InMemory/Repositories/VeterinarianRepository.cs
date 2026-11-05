@@ -7,52 +7,56 @@ namespace VetClinic.Infrastructure.InMemory.Repositories;
 
 public sealed class VeterinarianRepository(InMemoryClinicStore store) : IVeterinarianRepository
 {
-    public IReadOnlyList<Veterinarian> GetAll()
+    public Task<IReadOnlyList<Veterinarian>> GetAllAsync(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Veterinarians.ToArray();
+            return Task.FromResult<IReadOnlyList<Veterinarian>>([.. store.Veterinarians]);
         }
     }
 
-    public Veterinarian? FindById(int id)
+    public Task<Veterinarian?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Veterinarians.FirstOrDefault(veterinarian => veterinarian.Id == id);
+            return Task.FromResult(store.Veterinarians.FirstOrDefault(veterinarian => veterinarian.Id == id));
         }
     }
 
-    public IReadOnlyList<Veterinarian> GetBySpecies(AnimalSpecies species)
+    public Task<IReadOnlyList<Veterinarian>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Veterinarians
-                .Where(veterinarian => veterinarian.Specialization.Species == species)
-                .ToArray();
+            return Task.FromResult<IReadOnlyList<Veterinarian>>([.. store.Veterinarians
+                .Where(veterinarian => veterinarian.Specialization.Species == species)]);
         }
     }
 
-    public IReadOnlyList<Veterinarian> GetBySpecialization(int specializationId)
+    public Task<IReadOnlyList<Veterinarian>> GetBySpecializationAsync(int specializationId, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             _ = store.Specializations.FirstOrDefault(specialization => specialization.Id == specializationId)
                 ?? throw new EntityNotFoundException("специализация", specializationId);
 
-            return store.Veterinarians
-                .Where(veterinarian => veterinarian.Specialization.Id == specializationId)
-                .ToArray();
+            return Task.FromResult<IReadOnlyList<Veterinarian>>([.. store.Veterinarians
+                .Where(veterinarian => veterinarian.Specialization.Id == specializationId)]);
         }
     }
 
-    public Veterinarian Add(
+    public Task<Veterinarian> AddAsync(
         string passportNumber,
         string fullName,
         int specializationId,
         int birthYear,
-        int experienceYears)
+        int experienceYears,
+        CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var veterinarian = new Veterinarian
@@ -65,18 +69,20 @@ public sealed class VeterinarianRepository(InMemoryClinicStore store) : IVeterin
                 ExperienceYears = experienceYears
             };
             store.Veterinarians.Add(veterinarian);
-            return veterinarian;
+            return Task.FromResult(veterinarian);
         }
     }
 
-    public Veterinarian Update(
+    public Task<Veterinarian> UpdateAsync(
         int id,
         string passportNumber,
         string fullName,
         int specializationId,
         int birthYear,
-        int experienceYears)
+        int experienceYears,
+        CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var veterinarian = store.Veterinarians.FirstOrDefault(item => item.Id == id)
@@ -96,12 +102,13 @@ public sealed class VeterinarianRepository(InMemoryClinicStore store) : IVeterin
             veterinarian.Specialization = specialization;
             veterinarian.BirthYear = birthYear;
             veterinarian.ExperienceYears = experienceYears;
-            return veterinarian;
+            return Task.FromResult(veterinarian);
         }
     }
 
-    public void Remove(int id)
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var veterinarian = store.Veterinarians.FirstOrDefault(item => item.Id == id)
@@ -115,6 +122,8 @@ public sealed class VeterinarianRepository(InMemoryClinicStore store) : IVeterin
 
             store.Veterinarians.Remove(veterinarian);
         }
+
+        return Task.CompletedTask;
     }
 
     private Specialization FindSpecialization(int specializationId) =>

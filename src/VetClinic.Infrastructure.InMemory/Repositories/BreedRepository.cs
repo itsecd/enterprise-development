@@ -7,32 +7,36 @@ namespace VetClinic.Infrastructure.InMemory.Repositories;
 
 public sealed class BreedRepository(InMemoryClinicStore store) : IBreedRepository
 {
-    public IReadOnlyList<Breed> GetAll()
+    public Task<IReadOnlyList<Breed>> GetAllAsync(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Breeds.ToArray();
+            return Task.FromResult<IReadOnlyList<Breed>>([.. store.Breeds]);
         }
     }
 
-    public Breed? FindById(int id)
+    public Task<Breed?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Breeds.FirstOrDefault(breed => breed.Id == id);
+            return Task.FromResult(store.Breeds.FirstOrDefault(breed => breed.Id == id));
         }
     }
 
-    public IReadOnlyList<Breed> GetBySpecies(AnimalSpecies species)
+    public Task<IReadOnlyList<Breed>> GetBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Breeds.Where(breed => breed.Species == species).ToArray();
+            return Task.FromResult<IReadOnlyList<Breed>>([.. store.Breeds.Where(breed => breed.Species == species)]);
         }
     }
 
-    public Breed Add(string name, AnimalSpecies species)
+    public Task<Breed> AddAsync(string name, AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var breed = new Breed
@@ -42,12 +46,13 @@ public sealed class BreedRepository(InMemoryClinicStore store) : IBreedRepositor
                 Species = species
             };
             store.Breeds.Add(breed);
-            return breed;
+            return Task.FromResult(breed);
         }
     }
 
-    public Breed Update(int id, string name, AnimalSpecies species)
+    public Task<Breed> UpdateAsync(int id, string name, AnimalSpecies species, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var breed = store.Breeds.FirstOrDefault(item => item.Id == id)
@@ -64,12 +69,13 @@ public sealed class BreedRepository(InMemoryClinicStore store) : IBreedRepositor
 
             breed.Name = name;
             breed.Species = species;
-            return breed;
+            return Task.FromResult(breed);
         }
     }
 
-    public void Remove(int id)
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var breed = store.Breeds.FirstOrDefault(item => item.Id == id)
@@ -82,5 +88,7 @@ public sealed class BreedRepository(InMemoryClinicStore store) : IBreedRepositor
 
             store.Breeds.Remove(breed);
         }
+
+        return Task.CompletedTask;
     }
 }

@@ -9,151 +9,157 @@ namespace VetClinic.Tests;
 
 public class ClinicServiceTests
 {
+    private static CancellationToken Cancel => TestContext.Current.CancellationToken;
+
     [Fact]
-    public void VeterinariansOfCat_MatchLabQuery()
+    public async Task VeterinariansOfCat_MatchLabQuery()
     {
         var clinic = new ClinicHarness();
 
-        var ids = clinic.Veterinarians.GetBySpecies(AnimalSpecies.Cat).Select(veterinarian => veterinarian.Id).ToArray();
+        var ids = (await clinic.Veterinarians.GetBySpeciesAsync(AnimalSpecies.Cat, Cancel))
+            .Select(veterinarian => veterinarian.Id)
+            .ToArray();
 
         Assert.Equal([1, 2, 6, 11], ids);
     }
 
     [Fact]
-    public void PetsOfVeterinarian_AreOrderedByName()
+    public async Task PetsOfVeterinarian_AreOrderedByName()
     {
         var clinic = new ClinicHarness();
 
-        var ids = clinic.Pets.GetByVeterinarian(3).Select(pet => pet.Id).ToArray();
+        var ids = (await clinic.Pets.GetByVeterinarianAsync(3, Cancel)).Select(pet => pet.Id).ToArray();
 
         Assert.Equal([4, 3, 15], ids);
     }
 
     [Fact]
-    public void FollowUpsOfBreed_MatchLabQuery()
+    public async Task FollowUpsOfBreed_MatchLabQuery()
     {
         var clinic = new ClinicHarness();
 
-        Assert.Equal(3, clinic.Appointments.CountFollowUps(1).Count);
-        Assert.Equal(0, clinic.Appointments.CountFollowUps(7).Count);
+        Assert.Equal(3, (await clinic.Appointments.CountFollowUpsAsync(1, Cancel)).Count);
+        Assert.Equal(0, (await clinic.Appointments.CountFollowUpsAsync(7, Cancel)).Count);
     }
 
     [Fact]
-    public void OwnersWithSeveralPets_AreOrderedByFullName()
+    public async Task OwnersWithSeveralPets_AreOrderedByFullName()
     {
         var clinic = new ClinicHarness();
 
-        var ids = clinic.Owners.GetWithSeveralPets().Select(owner => owner.Id).ToArray();
+        var ids = (await clinic.Owners.GetWithSeveralPetsAsync(Cancel)).Select(owner => owner.Id).ToArray();
 
         Assert.Equal([2, 5, 7, 1], ids);
     }
 
     [Fact]
-    public void SeptemberAppointmentsInRoom101_MatchLabQuery()
+    public async Task SeptemberAppointmentsInRoom101_MatchLabQuery()
     {
         var clock = new FixedTimeProvider(new DateTimeOffset(2026, 9, 15, 12, 0, 0, TimeSpan.Zero));
         var clinic = new ClinicHarness(clock);
 
-        var ids = clinic.Appointments.GetCurrentMonth("101").Select(appointment => appointment.Id).ToArray();
+        var ids = (await clinic.Appointments.GetCurrentMonthAsync("101", Cancel))
+            .Select(appointment => appointment.Id)
+            .ToArray();
 
         Assert.Equal([13, 15, 23, 24, 28], ids);
     }
 
     [Fact]
-    public void NewBreed_DoesNotReuseDeletedIdentifier()
+    public async Task NewBreed_DoesNotReuseDeletedIdentifier()
     {
         var clinic = new ClinicHarness();
-        var created = clinic.Breeds.Create(new BreedEditDto { Name = "Дворняга", Species = AnimalSpecies.Dog });
+        var created = await clinic.Breeds.CreateAsync(new BreedEditDto { Name = "Дворняга", Species = AnimalSpecies.Dog }, Cancel);
 
-        clinic.Breeds.Delete(created.Id);
-        var next = clinic.Breeds.Create(new BreedEditDto { Name = "Мопс", Species = AnimalSpecies.Dog });
+        await clinic.Breeds.DeleteAsync(created.Id, Cancel);
+        var next = await clinic.Breeds.CreateAsync(new BreedEditDto { Name = "Мопс", Species = AnimalSpecies.Dog }, Cancel);
 
         Assert.NotEqual(created.Id, next.Id);
     }
 
     [Fact]
-    public void DeleteUsedBreed_Throws()
+    public async Task DeleteUsedBreed_Throws()
     {
         var clinic = new ClinicHarness();
 
-        var exception = Assert.Throws<EntityInUseException>(() => clinic.Breeds.Delete(1));
+        var exception = await Assert.ThrowsAsync<EntityInUseException>(() => clinic.Breeds.DeleteAsync(1, Cancel));
 
         Assert.Contains("Мейн-кун", exception.Message);
     }
 
     [Fact]
-    public void CreateAppointment_RejectsSpeciesMismatch()
+    public async Task CreateAppointment_RejectsSpeciesMismatch()
     {
         var clinic = new ClinicHarness();
 
-        var exception = Assert.Throws<DomainRuleException>(() => clinic.Appointments.Create(new AppointmentEditDto
+        var exception = await Assert.ThrowsAsync<DomainRuleException>(() => clinic.Appointments.CreateAsync(new AppointmentEditDto
         {
             PetId = 1,
             VeterinarianId = 3,
             VisitDateTime = new DateTime(2026, 10, 20, 10, 0, 0),
             RoomNumber = "101",
             IsFollowUp = false
-        }));
+        }, Cancel));
 
         Assert.Contains("специализацией", exception.Message);
     }
 
     [Fact]
-    public void CreateBreed_WithoutSpecies_Throws()
+    public async Task CreateBreed_WithoutSpecies_Throws()
     {
         var clinic = new ClinicHarness();
 
-        Assert.Throws<DomainRuleException>(() => clinic.Breeds.Create(new BreedEditDto
+        await Assert.ThrowsAsync<DomainRuleException>(() => clinic.Breeds.CreateAsync(new BreedEditDto
         {
             Name = "Беспородная",
             Species = null
-        }));
+        }, Cancel));
     }
 
     [Fact]
-    public void CreateOwner_RejectsInvalidPhone()
+    public async Task CreateOwner_RejectsInvalidPhone()
     {
         var clinic = new ClinicHarness();
 
-        Assert.Throws<DomainRuleException>(() => clinic.Owners.Create(new OwnerEditDto
+        await Assert.ThrowsAsync<DomainRuleException>(() => clinic.Owners.CreateAsync(new OwnerEditDto
         {
             FullName = "Тестов Тест Тестович",
             PhoneNumber = "не телефон",
             Address = null
-        }));
+        }, Cancel));
     }
 
     [Fact]
-    public void SeedOwnerPhone_PassesValidation()
+    public async Task SeedOwnerPhone_PassesValidation()
     {
         var clinic = new ClinicHarness();
-        var owner = clinic.Owners.GetById(1);
+        var owner = await clinic.Owners.GetByIdAsync(1, Cancel);
 
-        var updated = clinic.Owners.Update(owner.Id, new OwnerEditDto
+        var updated = await clinic.Owners.UpdateAsync(owner.Id, new OwnerEditDto
         {
             FullName = owner.FullName,
             PhoneNumber = owner.PhoneNumber,
             Address = owner.Address
-        });
+        }, Cancel);
 
         Assert.Equal(owner.PhoneNumber, updated.PhoneNumber);
     }
 
     [Fact]
-    public void CreatePet_AppearsInOwnerCollection()
+    public async Task CreatePet_AppearsInOwnerCollection()
     {
         var clinic = new ClinicHarness();
 
-        var created = clinic.Pets.Create(new PetEditDto
+        var created = await clinic.Pets.CreateAsync(new PetEditDto
         {
             Name = "Бобик",
             BreedId = 4,
             OwnerId = 8,
             BirthDate = new DateOnly(2024, 1, 10),
             Weight = 12.5
-        });
+        }, Cancel);
 
-        var pets = clinic.Pets.GetByOwner(8);
+        var pets = await clinic.Pets.GetByOwnerAsync(8, Cancel);
         Assert.Contains(pets, pet => pet.Id == created.Id);
     }
 }

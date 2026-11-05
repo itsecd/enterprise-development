@@ -7,32 +7,34 @@ namespace VetClinic.Domain.Interfaces;
 /// </summary>
 public interface IAppointmentRepository
 {
-    IReadOnlyList<Appointment> GetAll();
+    public Task<IReadOnlyList<Appointment>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Appointment? FindById(int id);
+    public Task<Appointment?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Appointment> GetByVeterinarian(int veterinarianId);
+    public Task<IReadOnlyList<Appointment>> GetByVeterinarianAsync(int veterinarianId, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Appointment> GetByPet(int petId);
+    public Task<IReadOnlyList<Appointment>> GetByPetAsync(int petId, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Appointment> GetByRoom(string roomNumber, DateTime from, DateTime to);
+    public Task<IReadOnlyList<Appointment>> GetByRoomAsync(string roomNumber, DateTime from, DateTime to, CancellationToken cancellationToken = default);
 
-    int CountFollowUps(int breedId);
+    public Task<int> CountFollowUpsAsync(int breedId, CancellationToken cancellationToken = default);
 
-    Appointment Add(
+    public Task<Appointment> AddAsync(
         int petId,
         int veterinarianId,
         DateTime visitDateTime,
         string roomNumber,
-        bool isFollowUp);
+        bool isFollowUp,
+        CancellationToken cancellationToken = default);
 
-    Appointment Update(
+    public Task<Appointment> UpdateAsync(
         int id,
         int petId,
         int veterinarianId,
         DateTime visitDateTime,
         string roomNumber,
-        bool isFollowUp);
+        bool isFollowUp,
+        CancellationToken cancellationToken = default);
 
-    void Remove(int id);
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default);
 }

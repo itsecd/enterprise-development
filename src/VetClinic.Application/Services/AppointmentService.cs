@@ -13,55 +13,55 @@ public sealed class AppointmentService(
     TimeProvider time,
     ILogger<AppointmentService> logger) : IAppointmentService
 {
-    public IReadOnlyList<AppointmentDto> GetAll()
+    public async Task<IReadOnlyList<AppointmentDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение списка записей на приём");
-        var result = appointments.GetAll().Select(ClinicMapper.ToAppointment).ToArray();
+        var result = (await appointments.GetAllAsync(cancellationToken)).Select(ClinicMapper.ToAppointment).ToArray();
         logger.LogInformation("Список записей на приём получен, записей: {Count}", result.Length);
         return result;
     }
 
-    public AppointmentDto GetById(int id)
+    public async Task<AppointmentDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение записи на приём {AppointmentId}", id);
-        var appointment = appointments.FindById(id) ?? throw new EntityNotFoundException("запись на приём", id);
+        var appointment = await appointments.FindByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("запись на приём", id);
         logger.LogInformation("Запись на приём {AppointmentId} получена", id);
         return ClinicMapper.ToAppointment(appointment);
     }
 
-    public IReadOnlyList<AppointmentDto> GetByVeterinarian(int veterinarianId)
+    public async Task<IReadOnlyList<AppointmentDto>> GetByVeterinarianAsync(int veterinarianId, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение приёмов врача {VeterinarianId}", veterinarianId);
-        var result = appointments.GetByVeterinarian(veterinarianId).Select(ClinicMapper.ToAppointment).ToArray();
+        var result = (await appointments.GetByVeterinarianAsync(veterinarianId, cancellationToken)).Select(ClinicMapper.ToAppointment).ToArray();
         logger.LogInformation("Приёмы врача {VeterinarianId} получены, записей: {Count}", veterinarianId, result.Length);
         return result;
     }
 
-    public IReadOnlyList<AppointmentDto> GetByPet(int petId)
+    public async Task<IReadOnlyList<AppointmentDto>> GetByPetAsync(int petId, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение приёмов питомца {PetId}", petId);
-        var result = appointments.GetByPet(petId).Select(ClinicMapper.ToAppointment).ToArray();
+        var result = (await appointments.GetByPetAsync(petId, cancellationToken)).Select(ClinicMapper.ToAppointment).ToArray();
         logger.LogInformation("Приёмы питомца {PetId} получены, записей: {Count}", petId, result.Length);
         return result;
     }
 
-    public IReadOnlyList<AppointmentDto> GetCurrentMonth(string roomNumber)
+    public async Task<IReadOnlyList<AppointmentDto>> GetCurrentMonthAsync(string roomNumber, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение приёмов текущего месяца в кабинете {RoomNumber}", roomNumber);
         var room = DtoValidator.RequireText(roomNumber, "Укажите номер кабинета.");
         var now = time.GetLocalNow().DateTime;
         var monthStart = new DateTime(now.Year, now.Month, 1);
         var nextMonth = monthStart.AddMonths(1);
-        var result = appointments.GetByRoom(room, monthStart, nextMonth).Select(ClinicMapper.ToAppointment).ToArray();
+        var result = (await appointments.GetByRoomAsync(room, monthStart, nextMonth, cancellationToken)).Select(ClinicMapper.ToAppointment).ToArray();
         logger.LogInformation("Приёмы кабинета {RoomNumber} получены, записей: {Count}", room, result.Length);
         return result;
     }
 
-    public FollowUpCountDto CountFollowUps(int breedId)
+    public async Task<FollowUpCountDto> CountFollowUpsAsync(int breedId, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Подсчёт повторных приёмов породы {BreedId}", breedId);
-        var breed = breeds.FindById(breedId) ?? throw new EntityNotFoundException("порода", breedId);
-        var count = appointments.CountFollowUps(breedId);
+        var breed = await breeds.FindByIdAsync(breedId, cancellationToken) ?? throw new EntityNotFoundException("порода", breedId);
+        var count = await appointments.CountFollowUpsAsync(breedId, cancellationToken);
         logger.LogInformation("Повторных приёмов породы {BreedId}: {Count}", breedId, count);
         return new FollowUpCountDto
         {
@@ -71,39 +71,39 @@ public sealed class AppointmentService(
         };
     }
 
-    public AppointmentDto Create(AppointmentEditDto dto)
+    public async Task<AppointmentDto> CreateAsync(AppointmentEditDto dto, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Создание записи на приём");
         var values = Read(dto);
-        var created = appointments.Add(
+        var created = await appointments.AddAsync(
             values.PetId,
             values.VeterinarianId,
             values.VisitDateTime,
             values.RoomNumber,
-            values.IsFollowUp);
+            values.IsFollowUp, cancellationToken);
         logger.LogInformation("Запись на приём {AppointmentId} создана", created.Id);
         return ClinicMapper.ToAppointment(created);
     }
 
-    public AppointmentDto Update(int id, AppointmentEditDto dto)
+    public async Task<AppointmentDto> UpdateAsync(int id, AppointmentEditDto dto, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Обновление записи на приём {AppointmentId}", id);
         var values = Read(dto);
-        var updated = appointments.Update(
+        var updated = await appointments.UpdateAsync(
             id,
             values.PetId,
             values.VeterinarianId,
             values.VisitDateTime,
             values.RoomNumber,
-            values.IsFollowUp);
+            values.IsFollowUp, cancellationToken);
         logger.LogInformation("Запись на приём {AppointmentId} обновлена", id);
         return ClinicMapper.ToAppointment(updated);
     }
 
-    public void Delete(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Удаление записи на приём {AppointmentId}", id);
-        appointments.Remove(id);
+        await appointments.RemoveAsync(id, cancellationToken);
         logger.LogInformation("Запись на приём {AppointmentId} удалена", id);
     }
 

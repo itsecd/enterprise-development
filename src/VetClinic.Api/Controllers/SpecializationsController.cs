@@ -10,62 +10,106 @@ namespace VetClinic.Api.Controllers;
 public class SpecializationsController(
     ISpecializationService specializations,
     IVeterinarianService veterinarians,
-    ILogger<SpecializationsController> logger) : ControllerBase
+    ILogger<SpecializationsController> logger) : ClinicControllerBase(logger)
 {
     [HttpGet]
-    public ActionResult<IReadOnlyList<SpecializationDto>> GetAll()
+    [ProducesResponseType(typeof(IReadOnlyList<SpecializationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> GetAll(CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/specializations");
-        var result = specializations.GetAll();
-        logger.LogInformation("GET /api/specializations завершён, записей: {Count}", result.Count);
-        return Ok(result);
+        return await Execute("GET /api/specializations", async () =>
+        {
+            logger.LogInformation("GET /api/specializations");
+            var result = await specializations.GetAllAsync(cancellationToken);
+            logger.LogInformation("GET /api/specializations завершён, записей: {Count}", result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<SpecializationDto> GetById(int id)
+    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<SpecializationDto>> GetById(int id, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/specializations/{SpecializationId}", id);
-        var result = specializations.GetById(id);
-        logger.LogInformation("GET /api/specializations/{SpecializationId} завершён", id);
-        return Ok(result);
+        return await Execute("GET /api/specializations/{SpecializationId}", async () =>
+        {
+            logger.LogInformation("GET /api/specializations/{SpecializationId}", id);
+            var result = await specializations.GetByIdAsync(id, cancellationToken);
+            logger.LogInformation("GET /api/specializations/{SpecializationId} завершён", id);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("{id:int}/veterinarians")]
-    public ActionResult<IReadOnlyList<VeterinarianDto>> GetVeterinarians(int id)
+    [ProducesResponseType(typeof(IReadOnlyList<VeterinarianDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<VeterinarianDto>>> GetVeterinarians(int id, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/specializations/{SpecializationId}/veterinarians", id);
-        var result = veterinarians.GetBySpecialization(id);
-        logger.LogInformation(
-            "GET /api/specializations/{SpecializationId}/veterinarians завершён, записей: {Count}",
-            id,
-            result.Count);
-        return Ok(result);
+        return await Execute("GET /api/specializations/{SpecializationId}/veterinarians", async () =>
+        {
+            logger.LogInformation("GET /api/specializations/{SpecializationId}/veterinarians", id);
+            var result = await veterinarians.GetBySpecializationAsync(id, cancellationToken);
+            logger.LogInformation(
+                "GET /api/specializations/{SpecializationId}/veterinarians завершён, записей: {Count}",
+                id,
+                result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpPost]
-    public ActionResult<SpecializationDto> Create(SpecializationEditDto dto)
+    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<SpecializationDto>> Create(SpecializationEditDto dto, CancellationToken cancellationToken)
     {
-        logger.LogInformation("POST /api/specializations");
-        var created = specializations.Create(dto);
-        logger.LogInformation("POST /api/specializations завершён, идентификатор: {SpecializationId}", created.Id);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        return await Execute("POST /api/specializations", async () =>
+        {
+            logger.LogInformation("POST /api/specializations");
+            var created = await specializations.CreateAsync(dto, cancellationToken);
+            logger.LogInformation("POST /api/specializations завершён, идентификатор: {SpecializationId}", created.Id);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+
+        });
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult<SpecializationDto> Update(int id, SpecializationEditDto dto)
+    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<SpecializationDto>> Update(int id, SpecializationEditDto dto, CancellationToken cancellationToken)
     {
-        logger.LogInformation("PUT /api/specializations/{SpecializationId}", id);
-        var updated = specializations.Update(id, dto);
-        logger.LogInformation("PUT /api/specializations/{SpecializationId} завершён", id);
-        return Ok(updated);
+        return await Execute("PUT /api/specializations/{SpecializationId}", async () =>
+        {
+            logger.LogInformation("PUT /api/specializations/{SpecializationId}", id);
+            var updated = await specializations.UpdateAsync(id, dto, cancellationToken);
+            logger.LogInformation("PUT /api/specializations/{SpecializationId} завершён", id);
+            return Ok(updated);
+
+        });
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        logger.LogInformation("DELETE /api/specializations/{SpecializationId}", id);
-        specializations.Delete(id);
-        logger.LogInformation("DELETE /api/specializations/{SpecializationId} завершён", id);
-        return NoContent();
+        return await Execute("DELETE /api/specializations/{SpecializationId}", async () =>
+        {
+            logger.LogInformation("DELETE /api/specializations/{SpecializationId}", id);
+            await specializations.DeleteAsync(id, cancellationToken);
+            logger.LogInformation("DELETE /api/specializations/{SpecializationId} завершён", id);
+            return NoContent();
+
+        });
     }
 }

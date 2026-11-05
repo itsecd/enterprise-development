@@ -6,54 +6,57 @@ namespace VetClinic.Infrastructure.InMemory.Repositories;
 
 public sealed class PetRepository(InMemoryClinicStore store) : IPetRepository
 {
-    public IReadOnlyList<Pet> GetAll()
+    public Task<IReadOnlyList<Pet>> GetAllAsync(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Pets.ToArray();
+            return Task.FromResult<IReadOnlyList<Pet>>([.. store.Pets]);
         }
     }
 
-    public Pet? FindById(int id)
+    public Task<Pet?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
-            return store.Pets.FirstOrDefault(pet => pet.Id == id);
+            return Task.FromResult(store.Pets.FirstOrDefault(pet => pet.Id == id));
         }
     }
 
-    public IReadOnlyList<Pet> GetByOwner(int ownerId)
+    public Task<IReadOnlyList<Pet>> GetByOwnerAsync(int ownerId, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             _ = store.Owners.FirstOrDefault(owner => owner.Id == ownerId)
                 ?? throw new EntityNotFoundException("владелец", ownerId);
 
-            return store.Pets
+            return Task.FromResult<IReadOnlyList<Pet>>([.. store.Pets
                 .Where(pet => pet.Owner.Id == ownerId)
-                .OrderBy(pet => pet.Name)
-                .ToArray();
+                .OrderBy(pet => pet.Name)]);
         }
     }
 
-    public IReadOnlyList<Pet> GetByVeterinarian(int veterinarianId)
+    public Task<IReadOnlyList<Pet>> GetByVeterinarianAsync(int veterinarianId, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             _ = store.Veterinarians.FirstOrDefault(veterinarian => veterinarian.Id == veterinarianId)
                 ?? throw new EntityNotFoundException("ветеринар", veterinarianId);
 
-            return store.Appointments
+            return Task.FromResult<IReadOnlyList<Pet>>([.. store.Appointments
                 .Where(appointment => appointment.Veterinarian.Id == veterinarianId)
                 .Select(appointment => appointment.Pet)
                 .Distinct()
-                .OrderBy(pet => pet.Name)
-                .ToArray();
+                .OrderBy(pet => pet.Name)]);
         }
     }
 
-    public Pet Add(string name, int breedId, int ownerId, DateOnly birthDate, double weight)
+    public Task<Pet> AddAsync(string name, int breedId, int ownerId, DateOnly birthDate, double weight, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var breed = FindBreed(breedId);
@@ -69,12 +72,13 @@ public sealed class PetRepository(InMemoryClinicStore store) : IPetRepository
             };
             store.Pets.Add(pet);
             owner.Pets.Add(pet);
-            return pet;
+            return Task.FromResult(pet);
         }
     }
 
-    public Pet Update(int id, string name, int breedId, int ownerId, DateOnly birthDate, double weight)
+    public Task<Pet> UpdateAsync(int id, string name, int breedId, int ownerId, DateOnly birthDate, double weight, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var pet = store.Pets.FirstOrDefault(item => item.Id == id)
@@ -101,12 +105,13 @@ public sealed class PetRepository(InMemoryClinicStore store) : IPetRepository
             pet.Breed = breed;
             pet.BirthDate = birthDate;
             pet.Weight = weight;
-            return pet;
+            return Task.FromResult(pet);
         }
     }
 
-    public void Remove(int id)
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         lock (store.Sync)
         {
             var pet = store.Pets.FirstOrDefault(item => item.Id == id)
@@ -120,6 +125,8 @@ public sealed class PetRepository(InMemoryClinicStore store) : IPetRepository
             pet.Owner.Pets.Remove(pet);
             store.Pets.Remove(pet);
         }
+
+        return Task.CompletedTask;
     }
 
     private Breed FindBreed(int breedId) =>

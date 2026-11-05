@@ -7,15 +7,15 @@ namespace VetClinic.Domain.Interfaces;
 /// </summary>
 public interface IOwnerRepository
 {
-    IReadOnlyList<Owner> GetAll();
+    public Task<IReadOnlyList<Owner>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    Owner? FindById(int id);
+    public Task<Owner?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<Owner> GetWithSeveralPets();
+    public Task<IReadOnlyList<Owner>> GetWithSeveralPetsAsync(CancellationToken cancellationToken = default);
 
-    Owner Add(string fullName, string phoneNumber, string? address);
+    public Task<Owner> AddAsync(string fullName, string phoneNumber, string? address, CancellationToken cancellationToken = default);
 
-    Owner Update(int id, string fullName, string phoneNumber, string? address);
+    public Task<Owner> UpdateAsync(int id, string fullName, string phoneNumber, string? address, CancellationToken cancellationToken = default);
 
-    void Remove(int id);
+    public Task RemoveAsync(int id, CancellationToken cancellationToken = default);
 }

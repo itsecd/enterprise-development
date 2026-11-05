@@ -2,15 +2,15 @@ namespace VetClinic.Contracts.Owners;
 
 public interface IOwnerService
 {
-    IReadOnlyList<OwnerDto> GetAll();
+    public Task<IReadOnlyList<OwnerDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-    OwnerDto GetById(int id);
+    public Task<OwnerDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-    IReadOnlyList<OwnerDto> GetWithSeveralPets();
+    public Task<IReadOnlyList<OwnerDto>> GetWithSeveralPetsAsync(CancellationToken cancellationToken = default);
 
-    OwnerDto Create(OwnerEditDto dto);
+    public Task<OwnerDto> CreateAsync(OwnerEditDto dto, CancellationToken cancellationToken = default);
 
-    OwnerDto Update(int id, OwnerEditDto dto);
+    public Task<OwnerDto> UpdateAsync(int id, OwnerEditDto dto, CancellationToken cancellationToken = default);
 
-    void Delete(int id);
+    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

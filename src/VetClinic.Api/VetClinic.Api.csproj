@@ -16,4 +16,8 @@
     <ProjectReference Include="..\VetClinic.Contracts\VetClinic.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="VetClinic.Tests" />
+  </ItemGroup>
+
 </Project>

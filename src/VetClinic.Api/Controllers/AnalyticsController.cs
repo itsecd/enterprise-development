@@ -15,63 +15,97 @@ public class AnalyticsController(
     IPetService pets,
     IOwnerService owners,
     IAppointmentService appointments,
-    ILogger<AnalyticsController> logger) : ControllerBase
+    ILogger<AnalyticsController> logger) : ClinicControllerBase(logger)
 {
     [HttpGet("veterinarians")]
-    public ActionResult<IReadOnlyList<VeterinarianDto>> Veterinarians([FromQuery] AnimalSpecies? species)
+    [ProducesResponseType(typeof(IReadOnlyList<VeterinarianDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<VeterinarianDto>>> Veterinarians([FromQuery] AnimalSpecies? species, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/analytics/veterinarians, вид: {Species}", species);
-        if (species is not { } selected || !Enum.IsDefined(selected))
+        return await Execute("GET /api/analytics/veterinarians, вид: {Species}", async () =>
         {
-            return BadRequest("Укажите биологический вид.");
-        }
+            logger.LogInformation("GET /api/analytics/veterinarians, вид: {Species}", species);
+            if (species is not { } selected || !Enum.IsDefined(selected))
+            {
+                return BadRequest("Укажите биологический вид.");
+            }
 
-        var result = veterinarians.GetBySpecies(selected);
-        logger.LogInformation("GET /api/analytics/veterinarians завершён, записей: {Count}", result.Count);
-        return Ok(result);
+            var result = await veterinarians.GetBySpeciesAsync(selected, cancellationToken);
+            logger.LogInformation("GET /api/analytics/veterinarians завершён, записей: {Count}", result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("veterinarians/{veterinarianId:int}/pets")]
-    public ActionResult<IReadOnlyList<PetDto>> PetsOfVeterinarian(int veterinarianId)
+    [ProducesResponseType(typeof(IReadOnlyList<PetDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<PetDto>>> PetsOfVeterinarian(int veterinarianId, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/analytics/veterinarians/{VeterinarianId}/pets", veterinarianId);
-        var result = pets.GetByVeterinarian(veterinarianId);
-        logger.LogInformation(
-            "GET /api/analytics/veterinarians/{VeterinarianId}/pets завершён, записей: {Count}",
-            veterinarianId,
-            result.Count);
-        return Ok(result);
+        return await Execute("GET /api/analytics/veterinarians/{VeterinarianId}/pets", async () =>
+        {
+            logger.LogInformation("GET /api/analytics/veterinarians/{VeterinarianId}/pets", veterinarianId);
+            var result = await pets.GetByVeterinarianAsync(veterinarianId, cancellationToken);
+            logger.LogInformation(
+                "GET /api/analytics/veterinarians/{VeterinarianId}/pets завершён, записей: {Count}",
+                veterinarianId,
+                result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("breeds/{breedId:int}/follow-ups")]
-    public ActionResult<FollowUpCountDto> FollowUps(int breedId)
+    [ProducesResponseType(typeof(FollowUpCountDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<FollowUpCountDto>> FollowUps(int breedId, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/analytics/breeds/{BreedId}/follow-ups", breedId);
-        var result = appointments.CountFollowUps(breedId);
-        logger.LogInformation("GET /api/analytics/breeds/{BreedId}/follow-ups завершён, количество: {Count}", breedId, result.Count);
-        return Ok(result);
+        return await Execute("GET /api/analytics/breeds/{BreedId}/follow-ups", async () =>
+        {
+            logger.LogInformation("GET /api/analytics/breeds/{BreedId}/follow-ups", breedId);
+            var result = await appointments.CountFollowUpsAsync(breedId, cancellationToken);
+            logger.LogInformation("GET /api/analytics/breeds/{BreedId}/follow-ups завершён, количество: {Count}", breedId, result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("owners/with-several-pets")]
-    public ActionResult<IReadOnlyList<OwnerDto>> OwnersWithSeveralPets()
+    [ProducesResponseType(typeof(IReadOnlyList<OwnerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<OwnerDto>>> OwnersWithSeveralPets(CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/analytics/owners/with-several-pets");
-        var result = owners.GetWithSeveralPets();
-        logger.LogInformation("GET /api/analytics/owners/with-several-pets завершён, записей: {Count}", result.Count);
-        return Ok(result);
+        return await Execute("GET /api/analytics/owners/with-several-pets", async () =>
+        {
+            logger.LogInformation("GET /api/analytics/owners/with-several-pets");
+            var result = await owners.GetWithSeveralPetsAsync(cancellationToken);
+            logger.LogInformation("GET /api/analytics/owners/with-several-pets завершён, записей: {Count}", result.Count);
+            return Ok(result);
+
+        });
     }
 
     [HttpGet("appointments")]
-    public ActionResult<IReadOnlyList<AppointmentDto>> CurrentMonthAppointments([FromQuery] string? roomNumber)
+    [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> CurrentMonthAppointments([FromQuery] string? roomNumber, CancellationToken cancellationToken)
     {
-        logger.LogInformation("GET /api/analytics/appointments, кабинет: {RoomNumber}", roomNumber);
-        if (string.IsNullOrWhiteSpace(roomNumber))
+        return await Execute("GET /api/analytics/appointments, кабинет: {RoomNumber}", async () =>
         {
-            return BadRequest("Укажите номер кабинета.");
-        }
+            logger.LogInformation("GET /api/analytics/appointments, кабинет: {RoomNumber}", roomNumber);
+            if (string.IsNullOrWhiteSpace(roomNumber))
+            {
+                return BadRequest("Укажите номер кабинета.");
+            }
 
-        var result = appointments.GetCurrentMonth(roomNumber);
-        logger.LogInformation("GET /api/analytics/appointments завершён, записей: {Count}", result.Count);
-        return Ok(result);
+            var result = await appointments.GetCurrentMonthAsync(roomNumber, cancellationToken);
+            logger.LogInformation("GET /api/analytics/appointments завершён, записей: {Count}", result.Count);
+            return Ok(result);
+
+        });
     }
 }
