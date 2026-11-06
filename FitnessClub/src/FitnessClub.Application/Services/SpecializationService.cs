@@ -5,6 +5,7 @@ using FitnessClub.Contracts.Dtos.Read;
 using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessClub.Application.Services;
 
@@ -13,7 +14,8 @@ namespace FitnessClub.Application.Services;
 /// </summary>
 public class SpecializationService(
     IRepository<Specialization> specializationRepository,
-    IRepository<Trainer> trainerRepository) : ICrudService<SpecializationDto, SpecializationEditDto>
+    IRepository<Trainer> trainerRepository,
+    ILogger<SpecializationService> logger) : ICrudService<SpecializationDto, SpecializationEditDto>
 {
     /// <summary>
     /// Получить список специализаций
@@ -37,6 +39,8 @@ public class SpecializationService(
     public async Task<SpecializationDto> AddAsync(SpecializationEditDto editDto)
     {
         var specialization = await specializationRepository.AddAsync(editDto.ToEntity());
+        if (logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Создана специализация {SpecializationId}: {SpecializationName}", specialization.Id, specialization.Name);
         return specialization.ToDto();
     }
     /// <summary>
@@ -46,9 +50,14 @@ public class SpecializationService(
     {
         var specialization = await specializationRepository.GetByIdAsync(id);
         if (specialization is null)
+        {
+            logger.LogWarning("Специализация {SpecializationId} не найдена для обновления", id);
             return null;
+        }
         specialization.UpdateEntity(editDto);
         await specializationRepository.UpdateAsync(specialization);
+        if (logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Обновлена специализация {SpecializationId}: {SpecializationName}", specialization.Id, specialization.Name);
         return specialization.ToDto();
     }
     /// <summary>
@@ -61,6 +70,14 @@ public class SpecializationService(
         {
             throw new ConflictException("Невозможно удалить специализацию, так как она назначена тренерам.");
         }
-        return await specializationRepository.DeleteAsync(id);
+        var deleted = await specializationRepository.DeleteAsync(id);
+        if (deleted)
+        {    
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Удалена специализация {SpecializationId}", id);
+        }
+        else
+            logger.LogWarning("Специализация {SpecializationId} не найдена для удаления", id);
+        return deleted;
     }
 }

@@ -76,9 +76,8 @@ public class BookingService(
         existingBooking.UpdateEntity(editDto, client, trainer, hall);
         await bookingRepository.UpdateAsync(existingBooking);
         if (logger.IsEnabled(LogLevel.Information))
-        {
             logger.LogInformation("Обновлено бронирование {BookingId}", id);
-        }
+
         return existingBooking?.ToDto();
     }
     /// <summary>
@@ -88,16 +87,10 @@ public class BookingService(
     {
         var deleted = await bookingRepository.DeleteAsync(id);
         if (deleted)
-        {
             if (logger.IsEnabled(LogLevel.Information))
-            {
                 logger.LogInformation("Удалено бронирование {BookingId}", id);
-            }
-        }
         else
-        {
             logger.LogWarning("Бронирование {BookingId} не найдено для удаления", id);
-        }
         return deleted;
     }
     /// <summary>

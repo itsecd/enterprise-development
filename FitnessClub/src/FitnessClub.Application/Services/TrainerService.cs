@@ -6,6 +6,7 @@ using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Interfaces;
 using FitnessClub.Application.Validation;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessClub.Application.Services;
 
@@ -16,7 +17,8 @@ public class TrainerService(
     IRepository<Trainer> trainerRepository,
     IRepository<Booking> bookingRepository,
     IRepository<Specialization> specializationRepository,
-    PassportNumberUniquenessValidator passportNumberValidator) : ICrudService<TrainerDto, TrainerEditDto>
+    PassportNumberUniquenessValidator passportNumberValidator,
+    ILogger<TrainerService> logger) : ICrudService<TrainerDto, TrainerEditDto>
 {
     /// <summary>
     /// Получить список тренеров
@@ -42,6 +44,8 @@ public class TrainerService(
         await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber);
         var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId) ?? throw new NotFoundException("Специализация не найдена.");
         var trainer = await trainerRepository.AddAsync(editDto.ToEntity(specialization));
+        if (logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Создан тренер {TrainerId}: {FullName}", trainer.Id, trainer.FullName);
         return trainer.ToDto();
     }
     /// <summary>
@@ -51,11 +55,16 @@ public class TrainerService(
     {
         var trainer = await trainerRepository.GetByIdAsync(id);
         if (trainer is null)
+        {
+            logger.LogWarning("Тренер {TrainerId} не найден для обновления", id);
             return null;
+        }
         await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, trainer);
         var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId) ?? throw new NotFoundException("Специализация не найдена.");
         trainer.UpdateEntity(editDto, specialization);
         await trainerRepository.UpdateAsync(trainer);
+        if (logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Обновлен тренер {TrainerId}: {FullName}", trainer.Id, trainer.FullName);
         return trainer.ToDto();
     }
     /// <summary>
@@ -66,6 +75,14 @@ public class TrainerService(
         var allBookings = await bookingRepository.GetAllAsync();
         if (allBookings.Any(b => b.Trainer.Id == id))
             throw new ConflictException("Невозможно удалить тренера, так как существуют бронирования для него.");
-        return await trainerRepository.DeleteAsync(id);
+        var deleted = await trainerRepository.DeleteAsync(id);
+        if (deleted)
+        {    
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Удален тренер {TrainerId}", id);
+        }
+        else
+            logger.LogWarning("Тренер {TrainerId} не найден для удаления", id);
+        return deleted;
     }
 }
