@@ -7,7 +7,7 @@ namespace FitnessClub.Api.ExceptionHandlers;
 /// <summary>
 /// Превращает исключения приложения в HTTP-ответы
 /// </summary>
-public class ApplicationExceptionHandler : IExceptionHandler
+public class ApplicationExceptionHandler(ILogger logger) : IExceptionHandler
 {
     /// <summary>
     /// Обработать исключение и сформировать HTTP-ответ
@@ -22,7 +22,10 @@ public class ApplicationExceptionHandler : IExceptionHandler
             _ => (0, string.Empty)
         };
         if (status == 0)
-            return false; 
+        {
+            logger.LogError(exception, "Необработанная ошибка при обработке HTTP-запроса");
+            return false;
+        }
         httpContext.Response.StatusCode = status;
         await httpContext.Response.WriteAsJsonAsync(
             new ProblemDetails { Status = status, Title = title, Detail = exception.Message },
