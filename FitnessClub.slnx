@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="FitnessClub.Api/FitnessClub.Api.csproj" Id="0964173f-e663-4ec2-b627-4a573fd6989a" />
+  <Project Path="FitnessClub.Domain/FitnessClub.Domain.csproj" />
+  <Project Path="FitnessClub.Infrastructure.InMemory/FitnessClub.Infrastructure.InMemory.csproj" Id="5908cfe9-e19a-4b33-bb02-828c0b3441fa" />
+  <Project Path="FitnessClub.Tests/FitnessClub.Tests.csproj" />
+</Solution>
