@@ -5,7 +5,7 @@ using FitnessClub.Contracts.Dtos.Read;
 using FitnessClub.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FitnessClub.Api.Controllers;
+namespace FitnessClub.Api.Controllers.Analytics;
 
 /// <summary>
 /// Запросы аналитики фитнес-клуба
