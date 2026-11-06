@@ -49,6 +49,10 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     /// Удалить сущность
     /// </summary>
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id) =>
-        await service.DeleteAsync(id) ? NoContent() : NotFound();
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await service.DeleteAsync(id);
+        return NoContent();
+    }
 }
