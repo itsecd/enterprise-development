@@ -10,9 +10,10 @@ public class DataSeeder(
     IRepository<Trainer> trainerRepository,
     IRepository<Hall> hallRepository,
     IRepository<Booking> bookingRepository,
-    IRepository<Specialization> specializationRepository)
+    IRepository<Specialization> specializationRepository,
+    ILogger<DataSeeder> logger)
 { 
-    public async Task DataSeedingAsync(SeedData data, ILogger logger)
+    public async Task DataSeedingAsync(SeedData data)
     {
         logger.LogInformation("Начало заполнения базы данных начальными данными");
         foreach(var specialization in data.Specializations) await specializationRepository.AddAsync(specialization);
