@@ -5,6 +5,7 @@ using FitnessClub.Contracts.Dtos.Read;
 using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessClub.Application.Services.Analytics;
 
@@ -12,7 +13,8 @@ public class AnalyticsService(
     IRepository<Trainer> trainerRepository,
     IRepository<Client> clientRepository,
     IRepository<Booking> bookingRepository,
-    IRepository<Hall> hallRepository) : IAnalyticsService
+    IRepository<Hall> hallRepository,
+    ILogger<AnalyticsService> logger) : IAnalyticsService
 {
     /// <summary>
     /// Возвращает тренеров, чей стаж не меньше заданного
@@ -26,6 +28,7 @@ public class AnalyticsService(
     public async Task<IReadOnlyList<TrainerDto>> GetExperiencedTrainersAsync(
         int minimumExperience = 5)
     {
+        logger.LogDebug("Поиск тренеров со стажем от {MinimumExperience} лет", minimumExperience);
         var trainers = await trainerRepository.GetAllAsync();
         return [.. trainers
             .Where(trainer => trainer.Experience >= minimumExperience)
@@ -44,6 +47,7 @@ public class AnalyticsService(
     public async Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
         DateOnly asOfDate)
     {
+        logger.LogDebug("Поиск клиентов с просроченной подпиской на дату {AsOfDate}", asOfDate);
         var clients = await clientRepository.GetAllAsync();
         return [.. clients
             .Where(client => client.SubscriptionEnd < asOfDate)
@@ -68,6 +72,7 @@ public class AnalyticsService(
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
+        logger.LogDebug("Поиск {Count} самых популярных тренеров", count);
         var bookings = await bookingRepository.GetAllAsync();
         return [.. bookings
             .GroupBy(booking => booking.Trainer.Id)
@@ -100,6 +105,7 @@ public class AnalyticsService(
     /// </exception>
     public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime)
     {
+        logger.LogDebug("Проверка доступности зала {HallId} на {DateTime}", hallId, dateTime);
         await EnsureHallExistsAsync(hallId);
 
         var bookings = await bookingRepository.GetAllAsync();
@@ -128,6 +134,7 @@ public class AnalyticsService(
         int hallId,
         DateOnly dateInMonth)
     {
+        logger.LogDebug("Поиск бронирований зала {HallId} за месяц {DateInMonth}", hallId, dateInMonth);
         await EnsureHallExistsAsync(hallId);
 
         var bookings = await bookingRepository.GetAllAsync();
@@ -153,6 +160,9 @@ public class AnalyticsService(
     private async Task EnsureHallExistsAsync(int hallId)
     {
         if (await hallRepository.GetByIdAsync(hallId) is null)
+        {
+            logger.LogWarning("Зал {HallId} не найден", hallId);
             throw new NotFoundException($"Зал с ID {hallId} не найден.");
+        }
     }
 }
