@@ -7,7 +7,7 @@ namespace FitnessClub.Api.ExceptionHandlers;
 /// <summary>
 /// Превращает исключения приложения в HTTP-ответы
 /// </summary>
-public class ApplicationExceptionHandler(ILogger logger) : IExceptionHandler
+public class ApplicationExceptionHandler(ILogger<ApplicationExceptionHandler> logger) : IExceptionHandler
 {
     /// <summary>
     /// Обработать исключение и сформировать HTTP-ответ
