@@ -103,9 +103,9 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
         var chosenHallId = fixture.SeedData.Halls[4].Id;
         var expectedBookingIds = new[]
         {
-            fixture.SeedData.Bookings[10].Id,
             fixture.SeedData.Bookings[11].Id,
-            fixture.SeedData.Bookings[12].Id
+            fixture.SeedData.Bookings[12].Id,
+            fixture.SeedData.Bookings[10].Id
         };
         // Act
         var result = await fixture.AnalyticsService

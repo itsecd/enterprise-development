@@ -3,6 +3,8 @@ using FitnessClub.Domain.Seeds;
 using FitnessClub.Infrastructure.InMemory;
 using FitnessClub.Infrastructure.InMemory.Seeding;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FitnessClub.Application.Tests;
 
@@ -19,6 +21,7 @@ public sealed class BookingQueriesFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         var services = new ServiceCollection();
+        services.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
         services.AddInMemoryStorage();
         services.AddApplication();
         _serviceProvider = services.BuildServiceProvider();
