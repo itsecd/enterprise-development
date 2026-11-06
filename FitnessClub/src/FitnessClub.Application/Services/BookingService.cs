@@ -6,6 +6,7 @@ using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Interfaces;
 using FitnessClub.Application.Validation;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessClub.Application.Services;
 
@@ -17,7 +18,8 @@ public class BookingService(
     IRepository<Client> clientRepository,
     IRepository<Trainer> trainerRepository,
     IRepository<Hall> hallRepository,
-    BookingScheduleValidator scheduleValidator
+    BookingScheduleValidator scheduleValidator,
+    ILogger<BookingService> logger
     ) : ICrudService<BookingDto, BookingEditDto>
 {
     /// <summary>
@@ -46,6 +48,15 @@ public class BookingService(
         await scheduleValidator.EnsureAvailableAsync(booking);
 
         var savedBooking = await bookingRepository.AddAsync(booking);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation(
+                "Создано бронирование {BookingId}: клиент {ClientId}, тренер {TrainerId}, зал {HallId}",
+                savedBooking.Id,
+                savedBooking.Client.Id,
+                savedBooking.Trainer.Id,
+                savedBooking.Hall.Id);
+        }
         return savedBooking.ToDto();
     }
     /// <summary>
@@ -55,12 +66,19 @@ public class BookingService(
     {
         var existingBooking = await bookingRepository.GetByIdAsync(id);
         if (existingBooking is null)
+        {
+            logger.LogWarning("Бронирование {BookingId} не найдено для обновления", id);
             return null;
+        }
         var (client, trainer, hall) = await GetBookingReferencesAsync(editDto);
         var candidateBooking = editDto.ToEntity(client, trainer, hall);
         await scheduleValidator.EnsureAvailableAsync(candidateBooking, excludingBookingId: id);
         existingBooking.UpdateEntity(editDto, client, trainer, hall);
         await bookingRepository.UpdateAsync(existingBooking);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Обновлено бронирование {BookingId}", id);
+        }
         return existingBooking?.ToDto();
     }
     /// <summary>
@@ -68,7 +86,19 @@ public class BookingService(
     /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {
-        return await bookingRepository.DeleteAsync(id);
+        var deleted = await bookingRepository.DeleteAsync(id);
+        if (deleted)
+        {
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Удалено бронирование {BookingId}", id);
+            }
+        }
+        else
+        {
+            logger.LogWarning("Бронирование {BookingId} не найдено для удаления", id);
+        }
+        return deleted;
     }
     /// <summary>
     /// Получить клиента, тренера и зал для брони

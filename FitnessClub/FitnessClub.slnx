@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/FitnessClub.AppHost/FitnessClub.AppHost.csproj" />
+    <!-- <Project Path="src/FitnessClub.AppHost/FitnessClub.AppHost.csproj" /> -->
     <Project Path="src/FitnessClub.Api/FitnessClub.Api.csproj" />
     <Project Path="src/FitnessClub.Application/FitnessClub.Application.csproj" />
     <Project Path="src/FitnessClub.Contracts/FitnessClub.Contracts.csproj" />

@@ -42,8 +42,6 @@
 | `GET /api/analytics/halls/{hallId}/availability?dateTime=2026-09-15T10:30:00` | Проверка доступности зала в указанное время |
 | `GET /api/analytics/bookings?hallId=5&dateInMonth=2026-09-01` | Бронирования зала за месяц указанной даты |
 
-Примеры аналитических запросов также находятся в `FitnessClub.Api/Analytics.http`.
-
 ## Структура решения
 
 Исходный код и тестовые проекты расположены в `FitnessClub/`.
@@ -86,7 +84,7 @@ cd FitnessClub/src/FitnessClub.Api
 dotnet run
 ```
 
-После запуска описание OpenAPI доступно по `/openapi/v1.json`, интерактивная документация Scalar — по `/scalar/v1`. Для ручной отправки примеров запросов можно открыть `FitnessClub/src/FitnessClub.Api/Analytics.http`.
+После запуска описание OpenAPI доступно по `/openapi/v1.json`, интерактивная документация Scalar — по `/scalar/v1`. 
 
 Запустить unit-тесты:
 

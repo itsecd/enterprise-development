@@ -136,7 +136,9 @@ public class AnalyticsService(
                 booking.Hall.Id == hallId &&
                 booking.DateTime.Year == dateInMonth.Year &&
                 booking.DateTime.Month == dateInMonth.Month)
-            .Select(booking => booking.ToDto())];
+            .Select(booking => booking.ToDto())
+            .OrderBy(booking => booking.DateTime)
+            .ThenBy(booking => booking.Id)];
     }
 
     /// <summary>
