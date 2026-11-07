@@ -38,12 +38,8 @@ public record BookingEditDto : IValidatableObject
     /// <summary>
     /// Проверяет корректность даты тренировки
     /// </summary>
-    /// <param name="validationContext">
-    /// Контекст проверки
-    /// </param>
-    /// <returns>
-    /// Ошибки валидации, если они есть
-    /// </returns>
+    /// <param name="validationContext">Контекст проверки</param>
+    /// <returns>Ошибки валидации, если они есть</returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (DateTime == default)

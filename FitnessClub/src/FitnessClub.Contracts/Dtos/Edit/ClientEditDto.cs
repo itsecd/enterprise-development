@@ -43,12 +43,8 @@ public record ClientEditDto : IValidatableObject
     /// <summary>
     /// Проверяет даты рождения и абонемента
     /// </summary>
-    /// <param name="validationContext">
-    /// Контекст проверки
-    /// </param>
-    /// <returns>
-    /// Ошибки валидации, если они есть
-    /// </returns>
+    /// <param name="validationContext">Контекст проверки</param>
+    /// <returns>Ошибки валидации, если они есть</returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (BirthDate == default || BirthDate >= DateOnly.FromDateTime(DateTime.Today))
