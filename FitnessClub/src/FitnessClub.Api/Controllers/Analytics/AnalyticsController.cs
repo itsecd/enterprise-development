@@ -3,7 +3,6 @@ using FitnessClub.Contracts.Dtos.Analytics;
 using FitnessClub.Contracts.Dtos.Read;
 using FitnessClub.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FitnessClub.Api.Controllers.Analytics;
 
