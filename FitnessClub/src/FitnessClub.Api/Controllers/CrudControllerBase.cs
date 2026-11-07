@@ -12,9 +12,7 @@ namespace FitnessClub.Api.Controllers;
 /// <typeparam name="TEditDto">
 /// Тип DTO для создания и изменения
 /// </typeparam>
-/// <param name="service">
-/// Сервис управления сущностями
-/// </param>
+/// <param name="service">Сервис управления сущностями</param>
 [ApiController]
 [Route("api/[controller]")]
 public abstract class CrudControllerBase<TDto, TEditDto>
@@ -24,9 +22,7 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     /// <summary>
     /// Получить все сущности
     /// </summary>
-    /// <returns>
-    /// Список сущностей
-    /// </returns>
+    /// <returns>Список сущностей</returns>
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<TDto>>> GetAll() =>
         Ok(await service.GetAllAsync());
@@ -34,12 +30,8 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     /// <summary>
     /// Получить сущность по идентификатору
     /// </summary>
-    /// <param name="id">
-    /// Идентификатор сущности
-    /// </param>
-    /// <returns>
-    /// Найденная сущность или ответ 404
-    /// </returns>
+    /// <param name="id">Идентификатор сущности</param>
+    /// <returns>Найденная сущность или ответ 404</returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TDto>> GetById(int id)
     {
@@ -50,12 +42,8 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     /// <summary>
     /// Создать сущность
     /// </summary>
-    /// <param name="dto">
-    /// Данные для создания сущности
-    /// </param>
-    /// <returns>
-    /// Созданная сущность
-    /// </returns>
+    /// <param name="dto">Данные для создания сущности</param>
+    /// <returns>Созданная сущность</returns>
     [HttpPost]
     [EndpointSummary("Создать сущность")]
     public async Task<ActionResult<TDto>> Create(TEditDto dto)
@@ -67,15 +55,9 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     /// <summary>
     /// Изменить сущность
     /// </summary>
-    /// <param name="id">
-    /// Идентификатор сущности
-    /// </param>
-    /// <param name="dto">
-    /// Новые данные сущности
-    /// </param>
-    /// <returns>
-    /// Обновлённая сущность или ответ 404
-    /// </returns>
+    /// <param name="id">Идентификатор сущности</param>
+    /// <param name="dto">Новые данные сущности</param>
+    /// <returns>Обновлённая сущность или ответ 404</returns>
     [HttpPut("{id:int}")]
     [EndpointSummary("Изменить сущность")]
     public async Task<ActionResult<TDto>> Update(int id, TEditDto dto)
@@ -87,12 +69,8 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     /// <summary>
     /// Удалить сущность
     /// </summary>
-    /// <param name="id">
-    /// Идентификатор сущности
-    /// </param>
-    /// <returns>
-    /// Результат удаления сущности
-    /// </returns>
+    /// <param name="id">Идентификатор сущности</param>
+    /// <returns>Результат удаления сущности</returns>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete(int id)

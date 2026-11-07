@@ -7,7 +7,5 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Управление специализациями
 /// </summary>
-/// <param name="service">
-/// Сервис управления специализациями
-/// </param>
+/// <param name="service">Сервис управления специализациями</param>
 public class SpecializationsController(ICrudService<SpecializationDto, SpecializationEditDto> service) : CrudControllerBase<SpecializationDto, SpecializationEditDto>(service);
