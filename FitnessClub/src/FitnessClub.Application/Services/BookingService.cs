@@ -78,7 +78,7 @@ public class BookingService(
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Обновлено бронирование {BookingId}", id);
 
-        return existingBooking?.ToDto();
+        return existingBooking.ToDto();
     }
     /// <summary>
     /// Удалить бронирование по идентификатору

@@ -19,12 +19,8 @@ public class AnalyticsService(
     /// <summary>
     /// Возвращает тренеров, чей стаж не меньше заданного
     /// </summary>
-    /// <param name="minimumExperience"
-    /// >Минимальный стаж в годах
-    /// </param>
-    /// <returns>
-    /// Список тренеров, удовлетворяющих условию
-    /// </returns>
+    /// <param name="minimumExperience">Минимальный стаж в годах</param>
+    /// <returns>Список тренеров, удовлетворяющих условию</returns>
     public async Task<IReadOnlyList<TrainerDto>> GetExperiencedTrainersAsync(
         int minimumExperience = 5)
     {
@@ -39,12 +35,8 @@ public class AnalyticsService(
     /// <summary>
     /// Возвращает клиентов с просроченной подпиской, отсортированных по ФИО
     /// </summary>
-    /// <param name="asOfDate"
-    /// >Дата, относительно которой проверяется срок подписки
-    /// </param>
-    /// <returns>
-    /// Список клиентов, у которых подписка закончилась до указанной даты
-    /// </returns>
+    /// <param name="asOfDate">Дата, относительно которой проверяется срок подписки</param>
+    /// <returns>Список клиентов, у которых подписка закончилась до указанной даты</returns>
     public async Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
         DateOnly asOfDate)
     {
@@ -60,12 +52,8 @@ public class AnalyticsService(
     /// <summary>
     /// Возвращает тренеров с наибольшим количеством бронирований
     /// </summary>
-    /// <param name="count"
-    /// >Максимальное количество тренеров в результате
-    /// </param>
-    /// <returns>
-    /// Тренеры, отсортированные по числу бронирований по убыванию, затем по идентификатору
-    /// </returns>
+    /// <param name="count">Максимальное количество тренеров в результате</param>
+    /// <returns>Тренеры, отсортированные по числу бронирований по убыванию, затем по идентификатору</returns>
     /// <exception cref="ArgumentOutOfRangeException"
     /// ><paramref name="count"/> меньше или равен нулю
     /// </exception>
@@ -92,16 +80,9 @@ public class AnalyticsService(
     /// Сначала проверяет существование зала, затем ищет бронирование этого зала,
     /// интервал которого включает указанное время
     /// </summary>
-    /// <param name="hallId"
-    /// >Идентификатор зала
-    /// </param>
-    /// <param name="dateTime"
-    /// >Дата и время, для которого проверяется доступность
-    /// </param>
-    /// <returns>
-    /// <see langword="true"/>, если на указанное время нет бронирования,
-    /// иначе <see langword="false"/>
-    /// </returns>
+    /// <param name="hallId">Идентификатор зала</param>
+    /// <param name="dateTime">Дата и время, для которого проверяется доступность</param>
+    /// <returns><see langword="true"/>, если на указанное время нет бронирования, иначе <see langword="false"/></returns>
     /// <exception cref="NotFoundException"
     /// >Зал с указанным идентификатором не найден
     /// </exception>
@@ -121,15 +102,9 @@ public class AnalyticsService(
     /// <summary>
     /// Возвращает бронирования выбранного зала за указанный месяц
     /// </summary>
-    /// <param name="hallId"
-    /// >Идентификатор зала
-    /// </param>
-    /// <param name="dateInMonth"
-    /// >Дата, определяющая месяц и год поиска
-    /// </param>
-    /// <returns>
-    /// Список бронирований зала за указанный месяц
-    /// </returns>
+    /// <param name="hallId">Идентификатор зала</param>
+    /// <param name="dateInMonth">Дата, определяющая месяц и год поиска</param>
+    /// <returns>Список бронирований зала за указанный месяц</returns>
     /// <exception cref="NotFoundException"
     /// >Зал с указанным идентификатором не найден
     /// </exception>
@@ -155,9 +130,7 @@ public class AnalyticsService(
     /// <summary>
     /// Проверяет, существует ли зал с указанным идентификатором
     /// </summary>
-    /// <param name="hallId"
-    /// >Идентификатор зала
-    /// </param>
+    /// <param name="hallId">Идентификатор зала</param>
     /// <exception cref="NotFoundException"
     /// >Зал с указанным идентификатором не найден
     /// </exception>

@@ -16,12 +16,8 @@ public static class DependencyInjection
     /// <summary>
     /// Регистрирует сервисы приложения и валидаторы
     /// </summary>
-    /// <param name="services">
-    /// Коллекция сервисов для регистрации
-    /// </param>
-    /// <returns>
-    /// Та же коллекция сервисов для дальнейшей настройки
-    /// </returns>
+    /// <param name="services">Коллекция сервисов для регистрации</param>
+    /// <returns>Та же коллекция сервисов для дальнейшей настройки</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<PassportNumberUniquenessValidator>();
