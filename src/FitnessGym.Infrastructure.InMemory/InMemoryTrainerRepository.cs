@@ -27,6 +27,7 @@ public class InMemoryTrainerRepository(IReadOnlyList<Trainer> seed)
         target.Gender = source.Gender;
         target.BirthDate = source.BirthDate;
         target.Specialization = source.Specialization;
+        target.SpecializationId = source.SpecializationId;
         target.ExperienceYears = source.ExperienceYears;
     }
 }

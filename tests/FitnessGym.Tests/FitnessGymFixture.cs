@@ -52,7 +52,7 @@ public class FitnessGymFixture
     /// </summary>
     public FitnessGymFixture()
     {
-        Now = DateTime.Now;
+        Now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
         Today = DateOnly.FromDateTime(Now);
         Data = ClubDataSeeder.Create(Now);
     }

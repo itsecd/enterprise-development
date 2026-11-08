@@ -48,6 +48,8 @@ public class InMemoryTrainingSessionRepository(IReadOnlyList<TrainingSession> se
     {
         target.Client = source.Client;
         target.Trainer = source.Trainer;
+        target.ClientId = source.ClientId;
+        target.TrainerId = source.TrainerId;
         target.StartsAt = source.StartsAt;
         target.EndsAt = source.EndsAt;
         target.HallName = source.HallName;

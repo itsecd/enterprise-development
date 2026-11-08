@@ -14,12 +14,22 @@ public class TrainingSession : IIdentified
     /// <summary>
     /// Клиент, записанный на занятие.
     /// </summary>
-    public required Client Client { get; set; }
+    public Client Client { get; set; } = null!;
+
+    /// <summary>
+    /// Идентификатор клиента.
+    /// </summary>
+    public int ClientId { get; set; }
 
     /// <summary>
     /// Тренер, проводящий занятие.
     /// </summary>
-    public required Trainer Trainer { get; set; }
+    public Trainer Trainer { get; set; } = null!;
+
+    /// <summary>
+    /// Идентификатор тренера.
+    /// </summary>
+    public int TrainerId { get; set; }
 
     /// <summary>
     /// Дата и время начала занятия.

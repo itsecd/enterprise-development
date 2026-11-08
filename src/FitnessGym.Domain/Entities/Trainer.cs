@@ -6,9 +6,14 @@ namespace FitnessGym.Domain.Entities;
 public class Trainer : Person
 {
     /// <summary>
+    /// Идентификатор специализации.
+    /// </summary>
+    public int SpecializationId { get; set; }
+
+    /// <summary>
     /// Специализация (справочная сущность).
     /// </summary>
-    public required Specialization Specialization { get; set; }
+    public Specialization Specialization { get; set; } = null!;
 
     /// <summary>
     /// Стаж работы в годах.

@@ -67,8 +67,8 @@ public class TrainingSessionService(
     private static TrainingSessionDto MapToDto(TrainingSession session) => new()
     {
         Id = session.Id,
-        ClientId = session.Client.Id,
-        TrainerId = session.Trainer.Id,
+        ClientId = session.ClientId,
+        TrainerId = session.TrainerId,
         StartsAt = session.StartsAt,
         EndsAt = session.EndsAt,
         HallName = session.HallName,
@@ -80,6 +80,8 @@ public class TrainingSessionService(
         Validator.ValidateObject(dto, new ValidationContext(dto), validateAllProperties: true);
         return new TrainingSession
         {
+            ClientId = dto.ClientId ?? throw new ValidationException("Не указан клиент."),
+            TrainerId = dto.TrainerId ?? throw new ValidationException("Не указан тренер."),
             Client = await clientRepository.GetByIdAsync(
                     dto.ClientId ?? throw new ValidationException("Не указан клиент."))
                     ?? throw new ValidationException("Клиент не найден."),

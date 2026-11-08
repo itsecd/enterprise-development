@@ -188,6 +188,7 @@ public static class ClubDataSeeder
                 FullName = "Соколов Виктор Александрович",
                 Gender = Gender.Male,
                 BirthDate = new(1990, 6, 15),
+                SpecializationId = 2,
                 Specialization = specializations[2],
                 ExperienceYears = 3,
             },
@@ -198,6 +199,7 @@ public static class ClubDataSeeder
                 FullName = "Кузнецова Наталья Сергеевна",
                 Gender = Gender.Female,
                 BirthDate = new(1988, 3, 24),
+                SpecializationId = 1,
                 Specialization = specializations[1],
                 ExperienceYears = 5,
             },
@@ -208,6 +210,7 @@ public static class ClubDataSeeder
                 FullName = "Попов Максим Игоревич",
                 Gender = Gender.Male,
                 BirthDate = new(1998, 11, 2),
+                SpecializationId = 4,
                 Specialization = specializations[4],
                 ExperienceYears = 2,
             },
@@ -218,6 +221,7 @@ public static class ClubDataSeeder
                 FullName = "Лебедева Дарья Александровна",
                 Gender = Gender.Female,
                 BirthDate = new(1985, 7, 19),
+                SpecializationId = 0,
                 Specialization = specializations[0],
                 ExperienceYears = 8,
             },
@@ -228,6 +232,7 @@ public static class ClubDataSeeder
                 FullName = "Новиков Артур Валерьевич",
                 Gender = Gender.Male,
                 BirthDate = new(1980, 1, 30),
+                SpecializationId = 5,
                 Specialization = specializations[5],
                 ExperienceYears = 12,
             },
@@ -238,6 +243,7 @@ public static class ClubDataSeeder
                 FullName = "Фёдорова Ксения Павловна",
                 Gender = Gender.Female,
                 BirthDate = new(1995, 9, 8),
+                SpecializationId = 6,
                 Specialization = specializations[6],
                 ExperienceYears = 4,
             },
@@ -248,6 +254,7 @@ public static class ClubDataSeeder
                 FullName = "Морозов Георгий Львович",
                 Gender = Gender.Male,
                 BirthDate = new(1982, 12, 11),
+                SpecializationId = 3,
                 Specialization = specializations[3],
                 ExperienceYears = 10,
             },
@@ -258,6 +265,7 @@ public static class ClubDataSeeder
                 FullName = "Волкова Ирина Дмитриевна",
                 Gender = Gender.Female,
                 BirthDate = new(1987, 5, 27),
+                SpecializationId = 7,
                 Specialization = specializations[7],
                 ExperienceYears = 7,
             },
@@ -268,6 +276,7 @@ public static class ClubDataSeeder
                 FullName = "Зайцев Роман Олегович",
                 Gender = Gender.Male,
                 BirthDate = new(2000, 2, 14),
+                SpecializationId = 8,
                 Specialization = specializations[8],
                 ExperienceYears = 1,
             },
@@ -278,6 +287,7 @@ public static class ClubDataSeeder
                 FullName = "Павлова Светлана Юрьевна",
                 Gender = Gender.Female,
                 BirthDate = new(1991, 8, 3),
+                SpecializationId = 0,
                 Specialization = specializations[0],
                 ExperienceYears = 6,
             },
@@ -288,6 +298,7 @@ public static class ClubDataSeeder
                 FullName = "Семёнов Кирилл Андреевич",
                 Gender = Gender.Male,
                 BirthDate = new(1979, 4, 21),
+                SpecializationId = 2,
                 Specialization = specializations[2],
                 ExperienceYears = 15,
             },
@@ -298,6 +309,7 @@ public static class ClubDataSeeder
                 FullName = "Голубева Вероника Игоревна",
                 Gender = Gender.Female,
                 BirthDate = new(1993, 10, 16),
+                SpecializationId = 9,
                 Specialization = specializations[9],
                 ExperienceYears = 9,
             },
@@ -309,7 +321,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 0,
+                ClientId = 5,
                 Client = clients[5],
+                TrainerId = 7,
                 Trainer = trainers[7],
                 StartsAt = At(currentMonth, 5, 10),
                 HallName = "Силовой зал",
@@ -318,7 +332,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 1,
+                ClientId = 6,
                 Client = clients[6],
+                TrainerId = 4,
                 Trainer = trainers[4],
                 StartsAt = At(currentMonth, 12, 12),
                 HallName = "Силовой зал",
@@ -327,7 +343,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 2,
+                ClientId = 7,
                 Client = clients[7],
+                TrainerId = 10,
                 Trainer = trainers[10],
                 StartsAt = At(currentMonth, 20, 18),
                 HallName = "Силовой зал",
@@ -337,7 +355,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 3,
+                ClientId = 5,
                 Client = clients[5],
+                TrainerId = 7,
                 Trainer = trainers[7],
                 StartsAt = At(previousMonth, 5, 10),
                 HallName = "Силовой зал",
@@ -346,7 +366,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 4,
+                ClientId = 5,
                 Client = clients[5],
+                TrainerId = 0,
                 Trainer = trainers[0],
                 StartsAt = At(nextMonth, 5, 10),
                 HallName = "Силовой зал",
@@ -357,7 +379,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 5,
+                ClientId = 9,
                 Client = clients[9],
+                TrainerId = 7,
                 Trainer = trainers[7],
                 StartsAt = moment.AddMinutes(-30),
                 EndsAt = moment.AddMinutes(30),
@@ -367,7 +391,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 6,
+                ClientId = 0,
                 Client = clients[0],
+                TrainerId = 6,
                 Trainer = trainers[6],
                 StartsAt = moment.AddMinutes(-70),
                 EndsAt = moment.AddMinutes(-10),
@@ -378,7 +404,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 7,
+                ClientId = 6,
                 Client = clients[6],
+                TrainerId = 7,
                 Trainer = trainers[7],
                 StartsAt = At(currentMonth, 8, 10),
                 HallName = "Бассейн",
@@ -387,7 +415,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 8,
+                ClientId = 9,
                 Client = clients[9],
+                TrainerId = 4,
                 Trainer = trainers[4],
                 StartsAt = At(currentMonth, 14, 19),
                 HallName = "Зал единоборств",
@@ -396,7 +426,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 9,
+                ClientId = 8,
                 Client = clients[8],
+                TrainerId = 10,
                 Trainer = trainers[10],
                 StartsAt = At(previousMonth, 15, 8),
                 HallName = "Бассейн",
@@ -405,7 +437,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 10,
+                ClientId = 5,
                 Client = clients[5],
+                TrainerId = 1,
                 Trainer = trainers[1],
                 StartsAt = At(currentMonth, 22, 9),
                 HallName = "Зал групповых занятий",
@@ -414,7 +448,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 11,
+                ClientId = 6,
                 Client = clients[6],
+                TrainerId = 7,
                 Trainer = trainers[7],
                 StartsAt = At(previousMonth, 18, 17),
                 HallName = "Силовой зал",
@@ -423,7 +459,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 12,
+                ClientId = 7,
                 Client = clients[7],
+                TrainerId = 4,
                 Trainer = trainers[4],
                 StartsAt = At(nextMonth, 10, 11),
                 HallName = "Кардио-зал",
@@ -432,7 +470,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 13,
+                ClientId = 11,
                 Client = clients[11],
+                TrainerId = 10,
                 Trainer = trainers[10],
                 StartsAt = At(nextMonth, 3, 7),
                 HallName = "Бассейн",
@@ -441,7 +481,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 14,
+                ClientId = 1,
                 Client = clients[1],
+                TrainerId = 1,
                 Trainer = trainers[1],
                 StartsAt = At(previousMonth, 22, 20),
                 HallName = "Зал единоборств",
@@ -450,7 +492,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 15,
+                ClientId = 2,
                 Client = clients[2],
+                TrainerId = 6,
                 Trainer = trainers[6],
                 StartsAt = At(previousMonth, 28, 18),
                 HallName = "Зал групповых занятий",
@@ -459,7 +503,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 16,
+                ClientId = 8,
                 Client = clients[8],
+                TrainerId = 7,
                 Trainer = trainers[7],
                 StartsAt = At(currentMonth, 25, 8),
                 HallName = "Бассейн",
@@ -468,7 +514,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 17,
+                ClientId = 0,
                 Client = clients[0],
+                TrainerId = 4,
                 Trainer = trainers[4],
                 StartsAt = At(previousMonth, 10, 19),
                 HallName = "Кардио-зал",
@@ -477,7 +525,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 18,
+                ClientId = 5,
                 Client = clients[5],
+                TrainerId = 10,
                 Trainer = trainers[10],
                 StartsAt = At(currentMonth, 9, 21),
                 HallName = "Зал единоборств",
@@ -486,7 +536,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 19,
+                ClientId = 9,
                 Client = clients[9],
+                TrainerId = 1,
                 Trainer = trainers[1],
                 StartsAt = At(currentMonth, 16, 7),
                 HallName = "Кардио-зал",
@@ -495,7 +547,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 20,
+                ClientId = 7,
                 Client = clients[7],
+                TrainerId = 8,
                 Trainer = trainers[8],
                 StartsAt = At(previousMonth, 3, 18),
                 HallName = "Бассейн",
@@ -504,7 +558,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 21,
+                ClientId = 6,
                 Client = clients[6],
+                TrainerId = 4,
                 Trainer = trainers[4],
                 StartsAt = At(nextMonth, 14, 18),
                 HallName = "Зал единоборств",
@@ -513,7 +569,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 22,
+                ClientId = 1,
                 Client = clients[1],
+                TrainerId = 2,
                 Trainer = trainers[2],
                 StartsAt = At(previousMonth, 8, 8),
                 HallName = "Кардио-зал",
@@ -522,7 +580,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 23,
+                ClientId = 8,
                 Client = clients[8],
+                TrainerId = 9,
                 Trainer = trainers[9],
                 StartsAt = At(currentMonth, 17, 20),
                 HallName = "Бассейн",
@@ -531,7 +591,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 24,
+                ClientId = 9,
                 Client = clients[9],
+                TrainerId = 3,
                 Trainer = trainers[3],
                 StartsAt = At(nextMonth, 21, 10),
                 HallName = "Зал групповых занятий",
@@ -540,7 +602,9 @@ public static class ClubDataSeeder
             new()
             {
                 Id = 25,
+                ClientId = 5,
                 Client = clients[5],
+                TrainerId = 11,
                 Trainer = trainers[11],
                 StartsAt = At(currentMonth, 27, 8),
                 HallName = "Кардио-зал",

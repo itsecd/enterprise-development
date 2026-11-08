@@ -88,7 +88,7 @@ public class TrainerService(
         FullName = trainer.FullName,
         Gender = trainer.Gender,
         BirthDate = trainer.BirthDate,
-        SpecializationId = trainer.Specialization.Id,
+        SpecializationId = trainer.SpecializationId,
         SpecializationName = trainer.Specialization.Name,
         ExperienceYears = trainer.ExperienceYears,
     };
@@ -104,6 +104,7 @@ public class TrainerService(
                 ?? throw new ValidationException("Пол обязателен."),
             BirthDate = dto.BirthDate
                 ?? throw new ValidationException("Дата рождения обязательна."),
+            SpecializationId = dto.SpecializationId ?? throw new ValidationException("Специализация обязательна."),
             Specialization = await specializationRepository.GetByIdAsync(
                     dto.SpecializationId ?? throw new ValidationException("Специализация обязательна."))
                     ?? throw new ValidationException("Специализация не найдена."),

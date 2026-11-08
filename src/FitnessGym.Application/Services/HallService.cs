@@ -24,6 +24,12 @@ public class HallService(ITrainingSessionRepository sessionRepository, Func<Date
             throw new ValidationException("Не указано название зала.");
         }
 
-        return sessionRepository.IsHallAvailableAsync(hallName, at ?? _clock());
+        if (at is { Kind: not DateTimeKind.Unspecified })
+        {
+            throw new ValidationException("Укажите местное время клуба без часового пояса.");
+        }
+
+        return sessionRepository.IsHallAvailableAsync(hallName,
+            at ?? DateTime.SpecifyKind(_clock(), DateTimeKind.Unspecified));
     }
 }

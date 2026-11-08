@@ -46,6 +46,13 @@ public class UpsertTrainingSessionDto : IValidatableObject
     /// <inheritdoc/>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (StartsAt is { Kind: not DateTimeKind.Unspecified } || EndsAt is { Kind: not DateTimeKind.Unspecified })
+        {
+            yield return new ValidationResult(
+                "Укажите местное время клуба без часового пояса (без Z или смещения).",
+                [nameof(StartsAt), nameof(EndsAt)]);
+        }
+
         if (EndsAt <= StartsAt)
         {
             yield return new ValidationResult(
