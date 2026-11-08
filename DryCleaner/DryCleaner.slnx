@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="DryCleaner.Api/DryCleaner.Api.csproj" Id="bd341b7e-6059-4340-ab59-dc3da884aed7" />
+  <Project Path="DryCleaner.AppHost/DryCleaner.AppHost.csproj" Id="b3cc4bba-dac4-40aa-9e73-c6193434df5f" />
+  <Project Path="DryCleaner.Application.Contracts/DryCleaner.Application.Contracts.csproj" Id="1356e688-59ec-41e0-a6f8-a8263585c772" />
+  <Project Path="DryCleaner.Application/DryCleaner.Application.csproj" Id="b16af7cf-7e5b-408b-9755-425db8a8279b" />
+  <Project Path="DryCleaner.Domain/DryCleaner.Domain.csproj" />
+  <Project Path="DryCleaner.Infrastructure.EFCore/DryCleaner.Infrastructure.EfCore.csproj" Id="468f560a-26a8-4f58-b715-2215e2a7fbab" />
+  <Project Path="DryCleaner.Infrastructure.InMemory/DryCleaner.Infrastructure.InMemory.csproj" Id="d5605efc-3c6f-4dcc-8afa-3c3300ecd263" />
+  <Project Path="DryCleaner.ServiceDefaults/DryCleaner.ServiceDefaults.csproj" Id="1e1b488f-8631-4585-b228-073ffe29777a" />
+  <Project Path="DryCleaner.Tests/DryCleaner.Tests.csproj" />
+  <Project Path="Shared/DryCleaner.Shared.csproj" Id="a2aa0df2-678a-45e0-a436-5916bd0912d1" />
+</Solution>
