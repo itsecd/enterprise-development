@@ -116,6 +116,10 @@ public class ApiTests(InMemoryApiFactory factory)
     [InlineData("trainers", "specializationId", "999999")]
     [InlineData("sessions", "endsAt", "\"2026-11-01T09:00:00\"")]
     [InlineData("sessions", "endsAt", "\"2026-11-01T10:00:00\"")]
+    [InlineData("sessions", "startsAt", "\"2026-11-01T10:00:00Z\"")]
+    [InlineData("sessions", "endsAt", "\"2026-11-01T11:00:00Z\"")]
+    [InlineData("sessions", "startsAt", "\"2026-11-01T10:00:00+04:00\"")]
+    [InlineData("sessions", "endsAt", "\"2026-11-01T11:00:00+04:00\"")]
     [InlineData("sessions", "clientId", "-1")]
     [InlineData("sessions", "clientId", "999999")]
     [InlineData("sessions", "trainerId", "999999")]
@@ -160,6 +164,8 @@ public class ApiTests(InMemoryApiFactory factory)
     [InlineData("/api/sessions/current-month")]
     [InlineData("/api/sessions/current-month?hallName=%20%20")]
     [InlineData("/api/halls/Test/availability?at=invalid")]
+    [InlineData("/api/halls/Test/availability?at=2026-11-01T10:00:00Z")]
+    [InlineData("/api/halls/Test/availability?at=2026-11-01T10:00:00%2B04:00")]
     public async Task InvalidQueryShouldReturnBadRequest(string url)
     {
         var cancellationToken = TestContext.Current.CancellationToken;
@@ -220,5 +226,40 @@ public class ApiTests(InMemoryApiFactory factory)
                 Assert.True(operation.Value!["responses"]!.AsObject().ContainsKey("500"));
             }
         }
+    }
+
+    /// <summary>
+    /// Примеры и схемы времени соответствуют формату, который принимается API и хранится в PostgreSQL.
+    /// </summary>
+    [Fact]
+    public async Task OpenApiShouldDescribeLocalTimestampsWithoutOffsets()
+    {
+        using var client = factory.CreateClient();
+        var document = (await client.GetFromJsonAsync<JsonObject>("/openapi/v1.json",
+            TestContext.Current.CancellationToken))!;
+        var schemas = document["components"]!["schemas"]!.AsObject();
+        foreach (var name in new[] { "UpsertTrainingSessionDto", "TrainingSessionDto" })
+        {
+            foreach (var field in new[] { "startsAt", "endsAt" })
+            {
+                AssertLocalTimeSchema(schemas[name]!["properties"]![field]!,
+                    field == "endsAt" ? "2026-11-08T13:00:00" : "2026-11-08T12:00:00");
+            }
+        }
+
+        var parameters = document["paths"]!["/api/halls/{hallName}/availability"]!["get"]!["parameters"]!.AsArray();
+        var at = Assert.Single(parameters, parameter => parameter!["name"]!.GetValue<string>() == "at");
+        AssertLocalTimeSchema(at!["schema"]!);
+    }
+
+    private static void AssertLocalTimeSchema(JsonNode schema, string example = "2026-11-08T12:00:00")
+    {
+        Assert.Null(schema["format"]);
+        var pattern = schema["pattern"]!.GetValue<string>();
+        Assert.Matches(pattern, "2026-11-08T12:00:00");
+        Assert.Matches(pattern, "2026-11-08T12:00:00.123456");
+        Assert.DoesNotMatch(pattern, "2026-11-08T12:00:00Z");
+        Assert.DoesNotMatch(pattern, "2026-11-08T12:00:00+04:00");
+        Assert.Equal(example, schema["examples"]![0]!.GetValue<string>());
     }
 }

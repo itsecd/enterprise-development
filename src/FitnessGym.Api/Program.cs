@@ -13,7 +13,7 @@ builder.AddNpgsqlDbContext<FitnessGymDbContext>("fitnessgym");
 builder.Services
     .AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddSchemaTransformer<LocalDateTimeSchemaTransformer>());
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddHttpLogging(options =>
