@@ -14,8 +14,8 @@ namespace FitnessGym.Tests;
 /// <summary>
 /// Проверки API через HTTP: CRUD, валидация, ошибки и документация.
 /// </summary>
-public class ApiTests(WebApplicationFactory<ClientsController> factory)
-    : IClassFixture<WebApplicationFactory<ClientsController>>
+public class ApiTests(InMemoryApiFactory factory)
+    : IClassFixture<InMemoryApiFactory>
 {
     private static readonly Dictionary<string, string> _payloads = new()
     {
@@ -34,6 +34,8 @@ public class ApiTests(WebApplicationFactory<ClientsController> factory)
              "endsAt":"2026-11-01T11:00:00","hallName":"Тестовый зал","isTrial":false}
             """,
     };
+
+    internal static JsonObject CreatePayload(string resource) => JsonNode.Parse(_payloads[resource])!.AsObject();
 
     /// <summary>
     /// Идентификатор формируется сервером, Location доступен, PUT возвращает обновлённый DTO.

@@ -1,10 +1,14 @@
 using System.Text.Json.Serialization;
 using FitnessGym.Api.Extensions;
 using FitnessGym.Api.Infrastructure;
+using FitnessGym.Infrastructure.PostgreSql;
+using FitnessGym.ServiceDefaults;
 using Microsoft.AspNetCore.HttpLogging;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
+builder.AddNpgsqlDbContext<FitnessGymDbContext>("fitnessgym");
 
 builder.Services
     .AddControllers()
@@ -19,7 +23,7 @@ builder.Services.AddHttpLogging(options =>
                             | HttpLoggingFields.ResponseStatusCode;
     options.CombineLogs = true;
 });
-builder.Services.AddInMemoryRepositories();
+builder.Services.AddPostgreSqlRepositories();
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
@@ -29,5 +33,6 @@ app.UseExceptionHandler();
 app.MapOpenApi();
 app.MapScalarApiReference();
 app.MapControllers();
+app.MapDefaultEndpoints();
 
 app.Run();

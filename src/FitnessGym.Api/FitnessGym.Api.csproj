@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.5.4" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.18.7" />
     </ItemGroup>
 
@@ -15,7 +16,8 @@
         <ProjectReference Include="..\FitnessGym.Application\FitnessGym.Application.csproj" />
         <ProjectReference Include="..\FitnessGym.Contracts\FitnessGym.Contracts.csproj" />
         <ProjectReference Include="..\FitnessGym.Domain\FitnessGym.Domain.csproj" />
-        <ProjectReference Include="..\FitnessGym.Infrastructure.InMemory\FitnessGym.Infrastructure.InMemory.csproj" />
+        <ProjectReference Include="..\FitnessGym.Infrastructure.PostgreSql\FitnessGym.Infrastructure.PostgreSql.csproj" />
+        <ProjectReference Include="../FitnessGym.ServiceDefaults/FitnessGym.ServiceDefaults.csproj" />
     </ItemGroup>
 
 </Project>
