@@ -1,4 +1,4 @@
-
+using Museum.Api.Services;
 using Museum.Domain.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<MuseumContext>(_ => DataSeeder.Seed());
+builder.Services.AddScoped<MuseumAnalyticsService>();
 
 var app = builder.Build();
 
