@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.19.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseDevelopment.Application\EnterpriseDevelopment.Application.csproj" />
+    <ProjectReference Include="..\EnterpriseDevelopment.Domain\EnterpriseDevelopment.Domain.csproj" />
+    <ProjectReference Include="..\EnterpriseDevelopment.Infrastructure\EnterpriseDevelopment.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
