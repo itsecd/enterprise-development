@@ -1,0 +1,28 @@
+using Museum.Api.Services;
+using Museum.Domain.Data;
+using Scalar.AspNetCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<MuseumContext>(_ => DataSeeder.Seed());
+builder.Services.AddScoped<MuseumAnalyticsService>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.MapGet("/", () => "Museum API is running");
+
+app.Run();
