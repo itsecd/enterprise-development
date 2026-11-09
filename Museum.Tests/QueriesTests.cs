@@ -8,7 +8,6 @@ namespace Museum.Tests;
 /// </summary>
 public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
 {
-
     /// <summary>
     /// Проверяет получение пяти выставок с наибольшим количеством посетителей.
     /// </summary>
@@ -16,6 +15,15 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
     public void TopFiveExhibitionsByVisitorCount()
     {
         var context = fixture.Context;
+
+        var expected = new[]
+        {
+            (1, 4),
+            (2, 3),
+            (3, 3),
+            (5, 2),
+            (4, 1)
+        };
 
         var result = context.Exhibitions
             .Select(exhibition => new
@@ -33,18 +41,8 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
             .Select(x => (x.Id, x.VisitorCount))
             .ToArray();
 
-        var expected = new[]
-        {
-            (1, 4),
-            (2, 3),
-            (3, 3),
-            (5, 2),
-            (4, 1)
-        };
-
         Assert.Equal(expected, result);
     }
-
 
 
     /// <summary>
@@ -54,6 +52,12 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
     public void ToursWithMinimumParticipantCount()
     {
         var context = fixture.Context;
+
+        var expected = new[]
+        {
+            (9, 0),
+            (10, 0)
+        };
 
         var participantCounts = context.Tours
             .Select(tour => new
@@ -75,14 +79,9 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
             .Select(x => (x.Id, x.ParticipantCount))
             .ToArray();
 
-        var expected = new[]
-        {
-            (9, 0),
-            (10, 0)
-        };
-
         Assert.Equal(expected, result);
     }
+
 
 
     /// <summary>
@@ -96,50 +95,6 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
         var periodStart = new DateOnly(2026, 1, 10);
         var periodEnd = new DateOnly(2026, 1, 11);
 
-        var result = context.Exhibitions
-            .Select(exhibition => exhibition.Theme)
-            .Distinct()
-            .OrderBy(theme => theme)
-            .Select(theme =>
-            {
-                var tickets = context.Exhibitions
-                    .Where(exhibition => exhibition.Theme == theme)
-                    .SelectMany(exhibition => exhibition.TourExhibitions)
-                    .Where(relation =>
-                        DateOnly.FromDateTime(relation.Tour.StartDateTime)
-                            >= periodStart &&
-                        DateOnly.FromDateTime(relation.Tour.StartDateTime)
-                            <= periodEnd)
-                    .SelectMany(relation => relation.Tour.Tickets)
-                    .DistinctBy(ticket => ticket.Id)
-                    .ToArray();
-
-                var visitorsPerDay = Enumerable
-                    .Range(0, periodEnd.DayNumber - periodStart.DayNumber + 1)
-                    .Select(offset => periodStart.AddDays(offset))
-                    .Select(date => tickets
-                        .Where(ticket =>
-                            DateOnly.FromDateTime(ticket.Tour.StartDateTime)
-                                == date)
-                        .Select(ticket => ticket.VisitorId)
-                        .Distinct()
-                        .Count())
-                    .ToArray();
-
-                return (
-                    Theme: theme,
-                    TotalVisitors: tickets
-                        .Select(ticket => ticket.VisitorId)
-                        .Distinct()
-                        .Count(),
-                    TotalTicketCost: tickets.Sum(ticket => ticket.Price),
-                    AverageVisitorsPerDay: visitorsPerDay.Average(),
-                    MinVisitorsPerDay: visitorsPerDay.Min(),
-                    MaxVisitorsPerDay: visitorsPerDay.Max()
-                );
-            })
-            .ToArray();
-
         var expected = new[]
         {
             (ExhibitionTheme.History, 5, 600m, 2.5, 1, 4),
@@ -149,8 +104,45 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
             (ExhibitionTheme.Ethnography, 0, 0m, 0.0, 0, 0)
         };
 
+        var result = context.Exhibitions
+            .GroupBy(exhibition => exhibition.Theme)
+            .OrderBy(group => group.Key)
+            .Select(group =>
+            {
+                var tickets = group
+                    .SelectMany(exhibition => exhibition.TourExhibitions)
+                    .Where(relation =>
+                        DateOnly.FromDateTime(relation.Tour.StartDateTime) >= periodStart &&
+                        DateOnly.FromDateTime(relation.Tour.StartDateTime) <= periodEnd)
+                    .SelectMany(relation => relation.Tour.Tickets)
+                    .DistinctBy(ticket => ticket.Id)
+                    .ToArray();
+
+                var visitorsPerDay = Enumerable
+                    .Range(0, periodEnd.DayNumber - periodStart.DayNumber + 1)
+                    .Select(offset => periodStart.AddDays(offset))
+                    .Select(date => tickets
+                        .Where(ticket =>
+                            DateOnly.FromDateTime(ticket.Tour.StartDateTime) == date)
+                        .Select(ticket => ticket.VisitorId)
+                        .Distinct()
+                        .Count())
+                    .ToArray();
+
+                return (
+                    Theme: group.Key,
+                    TotalVisitors: tickets.Select(t => t.VisitorId).Distinct().Count(),
+                    TotalTicketCost: tickets.Sum(t => t.Price),
+                    AverageVisitorsPerDay: visitorsPerDay.Average(),
+                    MinVisitorsPerDay: visitorsPerDay.Min(),
+                    MaxVisitorsPerDay: visitorsPerDay.Max()
+                );
+            })
+            .ToArray();
+
         Assert.Equal(expected, result);
     }
+
 
 
     /// <summary>
@@ -164,6 +156,16 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
         const int selectedHall = 1;
         var periodStart = new DateOnly(2026, 1, 10);
         var periodEnd = new DateOnly(2026, 1, 12);
+
+        var expected = new[]
+        {
+            (1, new DateTime(2026, 1, 10, 10, 0, 0),
+                TimeSpan.FromMinutes(60)),
+            (2, new DateTime(2026, 1, 10, 10, 0, 0),
+                TimeSpan.FromMinutes(60)),
+            (3, new DateTime(2026, 1, 11, 10, 0, 0),
+                TimeSpan.FromMinutes(60))
+        };
 
         var result = context.Tours
             .Where(tour =>
@@ -180,23 +182,13 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
             ))
             .ToArray();
 
-        var expected = new[]
-        {
-            (1, new DateTime(2026, 1, 10, 10, 0, 0),
-                TimeSpan.FromMinutes(60)),
-            (2, new DateTime(2026, 1, 10, 10, 0, 0),
-                TimeSpan.FromMinutes(60)),
-            (3, new DateTime(2026, 1, 11, 10, 0, 0),
-                TimeSpan.FromMinutes(60))
-        };
-
         Assert.Equal(expected, result);
     }
 
 
+
     /// <summary>
-    /// Проверяет получение посетителей выбранной экскурсии
-    /// с сортировкой по ФИО.
+    /// Проверяет получение посетителей выбранной экскурсии с сортировкой по ФИО.
     /// </summary>
     [Fact]
     public void VisitorsOfSelectedTourSortedByFullName()
@@ -204,19 +196,6 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
         var context = fixture.Context;
 
         const int selectedTourId = 1;
-
-        var result = context.Tickets
-            .Where(ticket => ticket.TourId == selectedTourId)
-            .Select(ticket => ticket.Visitor)
-            .DistinctBy(visitor => visitor.Id)
-            .OrderBy(visitor => visitor.FullName, StringComparer.Ordinal)
-            .Select(visitor => (
-                visitor.Id,
-                visitor.FullName,
-                visitor.Phone,
-                visitor.BirthDate
-            ))
-            .ToArray();
 
         var expected = new[]
         {
@@ -240,7 +219,19 @@ public class QueriesTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
             )
         };
 
+        var result = context.Tickets
+            .Where(ticket => ticket.TourId == selectedTourId)
+            .Select(ticket => ticket.Visitor)
+            .DistinctBy(visitor => visitor.Id)
+            .OrderBy(visitor => visitor.FullName, StringComparer.Ordinal)
+            .Select(visitor => (
+                visitor.Id,
+                visitor.FullName,
+                visitor.Phone,
+                visitor.BirthDate
+            ))
+            .ToArray();
+
         Assert.Equal(expected, result);
     }
-
 }
