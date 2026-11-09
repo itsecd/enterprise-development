@@ -1,6 +1,6 @@
-﻿using EnterpriseDevelopment.Application.Services;
+using EnterpriseDevelopment.Contracts.DTOs.Restaurants;
+using EnterpriseDevelopment.Application.Services;
 using EnterpriseDevelopment.Domain;
-using EnterpriseDevelopment.Domain.Entities;
 using Xunit;
 
 namespace EnterpriseDevelopment.Application.Tests;
@@ -19,7 +19,9 @@ public class RestaurantServiceTests
     public RestaurantServiceTests()
     {
         _data = new DataSeeder();
-        _service = new RestaurantService(_data);
+        var repositories = new TestRepositories(_data);
+        _service = new RestaurantService(
+            repositories.Restaurants, repositories.Dishes, repositories.Orders);
     }
 
     /// <summary>
@@ -85,12 +87,9 @@ public class RestaurantServiceTests
     [Fact]
     public void Create_ValidRestaurant_AddsRestaurant()
     {
-        var restaurant = new Restaurant
-        {
-            Name = "Новый ресторан",
-            Address = "Самара, ул. Тестовая, 1",
-            Rating = 4.5
-        };
+        var restaurant = new CreateRestaurantDto(
+            "Новый ресторан", "Самара, ул. Тестовая, 1", 4.5,
+            new TimeOnly(9, 0), new TimeOnly(22, 0));
 
         var created = _service.Create(restaurant);
 
@@ -109,14 +108,9 @@ public class RestaurantServiceTests
 
         Assert.NotNull(restaurant);
 
-        var updated = new Restaurant
-        {
-            Name = "Обновлённый ресторан",
-            Address = restaurant.Address,
-            Rating = restaurant.Rating,
-            OpeningTime = restaurant.OpeningTime,
-            ClosingTime = restaurant.ClosingTime
-        };
+        var updated = new UpdateRestaurantDto(
+            "Обновлённый ресторан", restaurant.Address, restaurant.Rating,
+            restaurant.OpeningTime, restaurant.ClosingTime);
 
         var result = _service.Update(1, updated);
 
@@ -132,12 +126,9 @@ public class RestaurantServiceTests
     [Fact]
     public void Delete_NewRestaurant_RemovesRestaurant()
     {
-        var restaurant = new Restaurant
-        {
-            Name = "Ресторан для удаления",
-            Address = "Самара, ул. Тестовая, 2",
-            Rating = 4.0
-        };
+        var restaurant = new CreateRestaurantDto(
+            "Ресторан для удаления", "Самара, ул. Тестовая, 2", 4.0,
+            new TimeOnly(9, 0), new TimeOnly(22, 0));
 
         var created = _service.Create(restaurant);
 

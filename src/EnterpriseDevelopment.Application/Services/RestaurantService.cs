@@ -1,5 +1,6 @@
-﻿using EnterpriseDevelopment.Application.Interfaces;
-using EnterpriseDevelopment.Domain;
+using EnterpriseDevelopment.Application.Interfaces;
+using EnterpriseDevelopment.Application.Repositories;
+using EnterpriseDevelopment.Contracts.DTOs.Restaurants;
 using EnterpriseDevelopment.Domain.Entities;
 
 namespace EnterpriseDevelopment.Application.Services;
@@ -7,95 +8,132 @@ namespace EnterpriseDevelopment.Application.Services;
 /// <summary>
 /// Сервис для управления ресторанами
 /// </summary>
-public class RestaurantService : IRestaurantService
+public class RestaurantService(
+    IRestaurantRepository repository,
+    IDishRepository dishRepository,
+    IOrderRepository orderRepository) : IRestaurantService
 {
-    private readonly DataSeeder _data;
-
     /// <summary>
-    /// Создаёт сервис ресторанов с указанным хранилищем данных
-    /// </summary>
-    public RestaurantService(DataSeeder data)
-    {
-        _data = data;
-    }
-
-    /// <summary>
-    /// Получает список всех ресторанов
+    /// Получает все рестораны
     /// </summary>
     /// <returns>Коллекция ресторанов</returns>
-    public IEnumerable<Restaurant> GetAll()
+    public IEnumerable<RestaurantDto> GetAll()
     {
-        return _data.Restaurants;
+        return repository.GetAll().Select(ToDto);
     }
 
     /// <summary>
-    /// Получает ресторан по его идентификатору
+    /// Получает ресторан по идентификатору
     /// </summary>
-    /// <returns>Найденный ресторан или null, если ресторан отсутствует</returns>
-    public Restaurant? GetById(int id)
+    /// <returns>Данные ресторана или null</returns>
+    public RestaurantDto? GetById(int id)
     {
-        return _data.Restaurants.FirstOrDefault(r => r.Id == id);
+        var restaurant = repository.GetById(id);
+        return restaurant is null ? null : ToDto(restaurant);
     }
 
     /// <summary>
-    /// Создаёт новый ресторан и добавляет его в хранилище данных
+    /// Создаёт новый ресторан
     /// </summary>
-    /// <returns>Созданный ресторан</returns>
-    public Restaurant Create(Restaurant restaurant)
+    /// <returns>Данные созданного ресторана</returns>
+    public RestaurantDto Create(CreateRestaurantDto dto)
     {
-        restaurant.Id = _data.Restaurants
-            .Select(r => r.Id)
-            .DefaultIfEmpty(0)
-            .Max() + 1;
+        Validate(dto.Name, dto.Address, dto.Rating, dto.OpeningTime, dto.ClosingTime);
 
-        _data.Restaurants.Add(restaurant);
+        var restaurant = new Restaurant
+        {
+            Name = dto.Name,
+            Address = dto.Address,
+            Rating = dto.Rating,
+            OpeningTime = dto.OpeningTime,
+            ClosingTime = dto.ClosingTime
+        };
 
-        return restaurant;
+        return ToDto(repository.Add(restaurant));
     }
 
     /// <summary>
-    /// Обновляет данные существующего ресторана
+    /// Обновляет существующий ресторан
     /// </summary>
-    /// <returns>True при успешном обновлении, иначе false</returns>
-    public bool Update(int id, Restaurant updatedRestaurant)
+    /// <returns>true, если ресторан обновлён, иначе false</returns>
+    public bool Update(int id, UpdateRestaurantDto dto)
     {
-        var restaurant = GetById(id);
-
-        if (restaurant == null)
+        var restaurant = repository.GetById(id);
+        if (restaurant is null)
         {
             return false;
         }
 
-        restaurant.Name = updatedRestaurant.Name;
-        restaurant.Address = updatedRestaurant.Address;
-        restaurant.Rating = updatedRestaurant.Rating;
-        restaurant.OpeningTime = updatedRestaurant.OpeningTime;
-        restaurant.ClosingTime = updatedRestaurant.ClosingTime;
+        Validate(dto.Name, dto.Address, dto.Rating, dto.OpeningTime, dto.ClosingTime);
+
+        restaurant.Name = dto.Name;
+        restaurant.Address = dto.Address;
+        restaurant.Rating = dto.Rating;
+        restaurant.OpeningTime = dto.OpeningTime;
+        restaurant.ClosingTime = dto.ClosingTime;
+        repository.Update(restaurant);
 
         return true;
     }
 
     /// <summary>
-    /// Удаляет ресторан, если с ним не связаны блюда или заказы
+    /// Удаляет ресторан без связанных блюд и заказов
     /// </summary>
-    /// <returns>True при успешном удалении, иначе false</returns>
+    /// <returns>true, если ресторан удалён, иначе false</returns>
     public bool Delete(int id)
     {
-        var restaurant = GetById(id);
-
-        if (restaurant == null)
+        var restaurant = repository.GetById(id);
+        if (restaurant is null)
         {
             return false;
         }
 
-        if (_data.Dishes.Any(d => d.RestaurantId == id) ||
-            _data.Orders.Any(o => o.RestaurantId == id))
+        if (dishRepository.GetAll().Any(dish => dish.RestaurantId == id) ||
+            orderRepository.GetAll().Any(order => order.RestaurantId == id))
         {
             return false;
         }
 
-        _data.Restaurants.Remove(restaurant);
-
+        repository.Delete(restaurant);
         return true;
+    }
+
+    private static RestaurantDto ToDto(Restaurant restaurant)
+    {
+        return new RestaurantDto(
+            restaurant.Id,
+            restaurant.Name,
+            restaurant.Address,
+            restaurant.Rating,
+            restaurant.OpeningTime,
+            restaurant.ClosingTime);
+    }
+
+    private static void Validate(
+        string name,
+        string address,
+        double rating,
+        TimeOnly openingTime,
+        TimeOnly closingTime)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Название ресторана не может быть пустым");
+        }
+
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            throw new ArgumentException("Адрес ресторана не может быть пустым");
+        }
+
+        if (rating < 0 || rating > 5 || double.IsNaN(rating))
+        {
+            throw new ArgumentException("Рейтинг ресторана должен быть от 0 до 5");
+        }
+
+        if (openingTime >= closingTime)
+        {
+            throw new ArgumentException("Время открытия должно быть раньше времени закрытия");
+        }
     }
 }

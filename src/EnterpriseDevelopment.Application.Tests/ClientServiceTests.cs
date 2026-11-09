@@ -1,6 +1,6 @@
-﻿using EnterpriseDevelopment.Application.Services;
+using EnterpriseDevelopment.Contracts.DTOs.Clients;
+using EnterpriseDevelopment.Application.Services;
 using EnterpriseDevelopment.Domain;
-using EnterpriseDevelopment.Domain.Entities;
 using Xunit;
 
 namespace EnterpriseDevelopment.Application.Tests;
@@ -17,7 +17,8 @@ public class ClientServiceTests
     /// </summary>
     public ClientServiceTests()
     {
-        _service = new ClientService(new DataSeeder());
+        var repositories = new TestRepositories();
+        _service = new ClientService(repositories.Clients, repositories.Orders);
     }
 
     /// <summary>
@@ -53,12 +54,8 @@ public class ClientServiceTests
     [Fact]
     public void Create_ValidClient_AddsClient()
     {
-        var client = new Client
-        {
-            FullName = "Тестовый Клиент",
-            PhoneNumber = "+79990000000",
-            DeliveryAddress = "Самара, ул. Тестовая, 1"
-        };
+        var client = new CreateClientDto(
+            "Тестовый Клиент", "+79990000000", "Самара, ул. Тестовая, 1");
 
         var created = _service.Create(client);
 
@@ -72,12 +69,8 @@ public class ClientServiceTests
     [Fact]
     public void Update_ExistingClient_ChangesName()
     {
-        var updated = new Client
-        {
-            FullName = "Новое имя",
-            PhoneNumber = "+79990000001",
-            DeliveryAddress = "Самара, ул. Тестовая, 2"
-        };
+        var updated = new UpdateClientDto(
+            "Новое имя", "+79990000001", "Самара, ул. Тестовая, 2");
 
         Assert.True(_service.Update(1, updated));
         Assert.Equal("Новое имя", _service.GetById(1)?.FullName);
@@ -98,12 +91,7 @@ public class ClientServiceTests
     [Fact]
     public void Delete_NewClient_RemovesClient()
     {
-        var created = _service.Create(new Client
-        {
-            FullName = "Для удаления",
-            PhoneNumber = "+79990000002",
-            DeliveryAddress = "Самара"
-        });
+        var created = _service.Create(new CreateClientDto("Для удаления", "+79990000002", "Самара"));
 
         Assert.True(_service.Delete(created.Id));
         Assert.Null(_service.GetById(created.Id));

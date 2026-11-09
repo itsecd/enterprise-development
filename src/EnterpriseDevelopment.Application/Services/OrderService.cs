@@ -1,195 +1,161 @@
 ﻿using EnterpriseDevelopment.Application.Interfaces;
-using EnterpriseDevelopment.Domain;
+using EnterpriseDevelopment.Application.Repositories;
+using EnterpriseDevelopment.Contracts.DTOs.Orders;
 using EnterpriseDevelopment.Domain.Entities;
 
 namespace EnterpriseDevelopment.Application.Services;
 
 /// <summary>
-/// Сервис для управления заказами службы доставки еды
+/// Сервис для управления заказами
 /// </summary>
-public class OrderService : IOrderService
+public class OrderService(
+    IOrderRepository repository,
+    IClientRepository clientRepository,
+    IRestaurantRepository restaurantRepository,
+    IDishRepository dishRepository) : IOrderService
 {
-    private readonly DataSeeder _data;
-
     /// <summary>
-    /// Создаёт сервис заказов с указанным хранилищем данных
-    /// </summary>
-    public OrderService(DataSeeder data)
-    {
-        _data = data;
-    }
-
-    /// <summary>
-    /// Получает список всех заказов
+    /// Получает все заказы
     /// </summary>
     /// <returns>Коллекция заказов</returns>
-    public IEnumerable<Order> GetAll()
+    public IEnumerable<OrderDto> GetAll()
     {
-        return _data.Orders;
+        return repository.GetAll().Select(ToDto);
     }
 
     /// <summary>
-    /// Получает заказ по его идентификатору
+    /// Получает заказ по идентификатору
     /// </summary>
-    /// <returns>Найденный заказ или null, если заказ отсутствует</returns>
-    public Order? GetById(int id)
+    /// <returns>Данные заказа или null</returns>
+    public OrderDto? GetById(int id)
     {
-        return _data.Orders.FirstOrDefault(o => o.Id == id);
+        var order = repository.GetById(id);
+
+        return order is null ? null : ToDto(order);
     }
 
     /// <summary>
-    /// Создаёт новый заказ после проверки клиента, ресторана, списка блюд и времени доставки
+    /// Создаёт новый заказ
     /// </summary>
-    /// <returns>Созданный заказ</returns>
-    public Order Create(
-        int clientId,
-        int restaurantId,
-        List<int> dishIds,
-        DateTimeOffset createdAt,
-        DateTimeOffset deliveredAt)
+    /// <returns>Данные созданного заказа</returns>
+    public OrderDto Create(CreateOrderDto dto)
     {
-        var (client, restaurant, dishes) =
-            ValidateOrder(
-                clientId,
-                restaurantId,
-                dishIds,
-                createdAt,
-                deliveredAt);
+        var (client, restaurant, dishes) = Validate(
+            dto.ClientId,
+            dto.RestaurantId,
+            dto.DishIds,
+            dto.CreatedAt,
+            dto.DeliveredAt);
 
         var order = new Order
         {
-            Id = _data.Orders
-                .Select(o => o.Id)
-                .DefaultIfEmpty(0)
-                .Max() + 1,
-
-            ClientId = client.Id,
+            ClientId = dto.ClientId,
+            RestaurantId = dto.RestaurantId,
             Client = client,
-
-            RestaurantId = restaurant.Id,
             Restaurant = restaurant,
-
             Dishes = dishes,
-
-            CreatedAt = createdAt,
-            DeliveredAt = deliveredAt
+            CreatedAt = dto.CreatedAt,
+            DeliveredAt = dto.DeliveredAt
         };
 
-        _data.Orders.Add(order);
-
-        return order;
+        return ToDto(repository.Add(order));
     }
 
     /// <summary>
-    /// Обновляет данные существующего заказа после проверки
+    /// Обновляет существующий заказ
     /// </summary>
-    /// <returns>True при успешном обновлении, иначе false</returns>
-    public bool Update(
-        int id,
+    /// <returns>true, если заказ обновлён, иначе false</returns>
+    public bool Update(int id, UpdateOrderDto dto)
+    {
+        var order = repository.GetById(id);
+
+        if (order is null)
+        {
+            return false;
+        }
+
+        var (client, restaurant, dishes) = Validate(
+            dto.ClientId,
+            dto.RestaurantId,
+            dto.DishIds,
+            dto.CreatedAt,
+            dto.DeliveredAt);
+
+        order.ClientId = dto.ClientId;
+        order.RestaurantId = dto.RestaurantId;
+        order.Client = client;
+        order.Restaurant = restaurant;
+        order.Dishes = dishes;
+        order.CreatedAt = dto.CreatedAt;
+        order.DeliveredAt = dto.DeliveredAt;
+
+        repository.Update(order);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Удаляет заказ
+    /// </summary>
+    /// <returns>true, если заказ существовал, иначе false</returns>
+    public bool Delete(int id)
+    {
+        var order = repository.GetById(id);
+
+        if (order is null)
+        {
+            return false;
+        }
+
+        repository.Delete(order);
+
+        return true;
+    }
+
+    private static OrderDto ToDto(Order order)
+    {
+        return new OrderDto(
+            order.Id,
+            order.ClientId,
+            order.RestaurantId,
+            order.Dishes.Select(dish => dish.Id).ToList(),
+            order.CreatedAt,
+            order.DeliveredAt,
+            order.TotalAmount,
+            order.DeliveryTime);
+    }
+
+    private (Client Client, Restaurant Restaurant, List<Dish> Dishes) Validate(
         int clientId,
         int restaurantId,
         List<int> dishIds,
         DateTimeOffset createdAt,
-        DateTimeOffset deliveredAt)
+        DateTimeOffset? deliveredAt)
     {
-        var order = GetById(id);
+        var client = clientRepository.GetById(clientId)
+            ?? throw new KeyNotFoundException("Клиент не найден");
 
-        if (order == null)
-        {
-            return false;
-        }
+        var restaurant = restaurantRepository.GetById(restaurantId)
+            ?? throw new KeyNotFoundException("Ресторан не найден");
 
-        var (client, restaurant, dishes) =
-            ValidateOrder(
-                clientId,
-                restaurantId,
-                dishIds,
-                createdAt,
-                deliveredAt);
-
-        order.ClientId = client.Id;
-        order.Client = client;
-
-        order.RestaurantId = restaurant.Id;
-        order.Restaurant = restaurant;
-
-        order.Dishes = dishes;
-
-        order.CreatedAt = createdAt;
-        order.DeliveredAt = deliveredAt;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Удаляет заказ по его идентификатору
-    /// </summary>
-    /// <returns>True при успешном удалении, иначе false</returns>
-    public bool Delete(int id)
-    {
-        var order = GetById(id);
-
-        if (order == null)
-        {
-            return false;
-        }
-
-        _data.Orders.Remove(order);
-
-        return true;
-    }
-
-    /// <summary>
-    /// Проверяет наличие клиента, ресторана и блюд, принадлежность блюд ресторану и корректность времени доставки
-    /// </summary>
-    /// <returns>Клиент, ресторан и список блюд проверенного заказа</returns>
-    private (Client Client, Restaurant Restaurant, List<Dish> Dishes)
-        ValidateOrder(
-            int clientId,
-            int restaurantId,
-            List<int> dishIds,
-            DateTimeOffset createdAt,
-            DateTimeOffset deliveredAt)
-    {
-        var client = _data.Clients
-            .FirstOrDefault(c => c.Id == clientId);
-
-        if (client == null)
-        {
-            throw new ArgumentException("Клиент не найден");
-        }
-
-        var restaurant = _data.Restaurants
-            .FirstOrDefault(r => r.Id == restaurantId);
-
-        if (restaurant == null)
-        {
-            throw new ArgumentException("Ресторан не найден");
-        }
-
-        if (dishIds == null || dishIds.Count == 0)
+        if (dishIds is null || dishIds.Count == 0)
         {
             throw new ArgumentException(
-                "Заказ должен содержать блюда");
+                "Заказ должен содержать хотя бы одно блюдо");
         }
 
         var dishes = new List<Dish>();
 
         foreach (var dishId in dishIds)
         {
-            var dish = _data.Dishes
-                .FirstOrDefault(d => d.Id == dishId);
-
-            if (dish == null)
-            {
-                throw new ArgumentException(
-                    $"Блюдо с ID {dishId} не найдено");
-            }
+            var dish = dishRepository.GetById(dishId)
+                ?? throw new KeyNotFoundException(
+                    $"Блюдо с идентификатором {dishId} не найдено");
 
             if (dish.RestaurantId != restaurantId)
             {
-                throw new ArgumentException(
-                    "Все блюда должны принадлежать выбранному ресторану");
+                throw new InvalidOperationException(
+                    "Все блюда заказа должны принадлежать выбранному ресторану");
             }
 
             dishes.Add(dish);
@@ -198,7 +164,7 @@ public class OrderService : IOrderService
         if (deliveredAt < createdAt)
         {
             throw new ArgumentException(
-                "Время доставки не может быть раньше времени создания заказа");
+                "Дата доставки не может быть раньше даты создания заказа");
         }
 
         return (client, restaurant, dishes);

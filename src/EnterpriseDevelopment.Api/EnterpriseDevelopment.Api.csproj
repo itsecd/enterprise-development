@@ -8,16 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.19.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EnterpriseDevelopment.Application\EnterpriseDevelopment.Application.csproj" />
-    <ProjectReference Include="..\EnterpriseDevelopment.Domain\EnterpriseDevelopment.Domain\EnterpriseDevelopment.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Requests\" />
+    <ProjectReference Include="..\EnterpriseDevelopment.Domain\EnterpriseDevelopment.Domain.csproj" />
+    <ProjectReference Include="..\EnterpriseDevelopment.Infrastructure\EnterpriseDevelopment.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

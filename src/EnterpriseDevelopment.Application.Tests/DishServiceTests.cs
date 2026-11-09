@@ -1,6 +1,6 @@
-﻿using EnterpriseDevelopment.Application.Services;
+using EnterpriseDevelopment.Contracts.DTOs.Dishes;
+using EnterpriseDevelopment.Application.Services;
 using EnterpriseDevelopment.Domain;
-using EnterpriseDevelopment.Domain.Entities;
 using Xunit;
 
 namespace EnterpriseDevelopment.Application.Tests;
@@ -17,7 +17,10 @@ public class DishServiceTests
     /// </summary>
     public DishServiceTests()
     {
-        _service = new DishService(new DataSeeder());
+        var repositories = new TestRepositories();
+        _service = new DishService(
+            repositories.Dishes, repositories.Categories,
+            repositories.Restaurants, repositories.Orders);
     }
 
     /// <summary>
@@ -53,19 +56,12 @@ public class DishServiceTests
     [Fact]
     public void Create_ValidDish_AddsDish()
     {
-        var created = _service.Create(new Dish
-        {
-            Name = "Тестовая пицца",
-            Weight = 400,
-            Price = 500,
-            CategoryId = 1,
-            RestaurantId = 1
-        });
+        var created = _service.Create(new CreateDishDto("Тестовая пицца", 400, 500m, 1, 1));
 
         Assert.True(created.Id > 0);
         Assert.NotNull(_service.GetById(created.Id));
-        Assert.NotNull(created.Category);
-        Assert.NotNull(created.Restaurant);
+        Assert.Equal(1, created.CategoryId);
+        Assert.Equal(1, created.RestaurantId);
     }
 
     /// <summary>
@@ -74,14 +70,7 @@ public class DishServiceTests
     [Fact]
     public void Update_ExistingDish_ChangesName()
     {
-        var updated = new Dish
-        {
-            Name = "Обновлённое блюдо",
-            Weight = 350,
-            Price = 450,
-            CategoryId = 1,
-            RestaurantId = 1
-        };
+        var updated = new UpdateDishDto("Обновлённое блюдо", 350, 450m, 1, 1);
 
         Assert.True(_service.Update(1, updated));
         Assert.Equal("Обновлённое блюдо", _service.GetById(1)?.Name);
@@ -91,16 +80,18 @@ public class DishServiceTests
     /// Проверяет запрет удаления блюда, входящего в заказ
     /// </summary>
     [Fact]
-    public void Delete_DishUsedInOrder_ReturnsFalse()
+    public void Delete_DishUsedInOrder_ThrowsInvalidOperationException()
     {
-        var data = new DataSeeder();
-        var service = new DishService(data);
+        var repositories = new TestRepositories();
+        var service = new DishService(
+            repositories.Dishes, repositories.Categories,
+            repositories.Restaurants, repositories.Orders);
 
-        var dishId = data.Orders
+        var dishId = repositories.Store.Orders
             .SelectMany(o => o.Dishes)
             .First().Id;
 
-        Assert.False(service.Delete(dishId));
+        Assert.Throws<InvalidOperationException>(() => service.Delete(dishId));
     }
 
     /// <summary>
@@ -109,14 +100,7 @@ public class DishServiceTests
     [Fact]
     public void Delete_NewDish_RemovesDish()
     {
-        var created = _service.Create(new Dish
-        {
-            Name = "Блюдо для удаления",
-            Weight = 200,
-            Price = 250,
-            CategoryId = 1,
-            RestaurantId = 1
-        });
+        var created = _service.Create(new CreateDishDto("Блюдо для удаления", 200, 250m, 1, 1));
 
         Assert.True(_service.Delete(created.Id));
         Assert.Null(_service.GetById(created.Id));

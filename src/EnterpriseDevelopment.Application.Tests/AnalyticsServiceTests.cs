@@ -1,4 +1,4 @@
-﻿using EnterpriseDevelopment.Application.Services;
+using EnterpriseDevelopment.Application.Services;
 using EnterpriseDevelopment.Domain;
 using Xunit;
 
@@ -18,7 +18,12 @@ public class AnalyticsServiceTests
     public AnalyticsServiceTests()
     {
         _data = new DataSeeder();
-        _service = new AnalyticsService(_data);
+        var repositories = new TestRepositories(_data);
+        _service = new AnalyticsService(
+            repositories.Restaurants,
+            repositories.Clients,
+            repositories.Categories,
+            repositories.Orders);
     }
 
     /// <summary>
@@ -107,14 +112,13 @@ public class AnalyticsServiceTests
     }
 
     /// <summary>
-    /// Проверяет отсутствие клиентов у несуществующего ресторана
+    /// Проверяет ошибку при запросе клиентов несуществующего ресторана
     /// </summary>
     [Fact]
-    public void GetRestaurantClients_UnknownRestaurant_ReturnsEmptyCollection()
+    public void GetRestaurantClients_UnknownRestaurant_ThrowsKeyNotFoundException()
     {
-        var result = _service.GetRestaurantClients(999).ToList();
-
-        Assert.Empty(result);
+        Assert.Throws<KeyNotFoundException>(() =>
+            _service.GetRestaurantClients(999).ToList());
     }
 
     /// <summary>

@@ -1,140 +1,164 @@
 ﻿using EnterpriseDevelopment.Application.Interfaces;
-using EnterpriseDevelopment.Domain;
+using EnterpriseDevelopment.Application.Repositories;
+using EnterpriseDevelopment.Contracts.DTOs.Dishes;
 using EnterpriseDevelopment.Domain.Entities;
 
 namespace EnterpriseDevelopment.Application.Services;
 
 /// <summary>
-/// Сервис для управления блюдами ресторанов
+/// Сервис для управления блюдами
 /// </summary>
-public class DishService : IDishService
+public class DishService(
+    IDishRepository repository,
+    ICategoryRepository categoryRepository,
+    IRestaurantRepository restaurantRepository,
+    IOrderRepository orderRepository) : IDishService
 {
-    private readonly DataSeeder _data;
-
     /// <summary>
-    /// Создаёт сервис блюд с указанным хранилищем данных
-    /// </summary>
-    public DishService(DataSeeder data)
-    {
-        _data = data;
-    }
-
-    /// <summary>
-    /// Получает список всех блюд
+    /// Получает все блюда
     /// </summary>
     /// <returns>Коллекция блюд</returns>
-    public IEnumerable<Dish> GetAll()
+    public IEnumerable<DishDto> GetAll()
     {
-        return _data.Dishes;
+        return repository.GetAll().Select(ToDto);
     }
 
     /// <summary>
-    /// Получает блюдо по его идентификатору
+    /// Получает блюдо по идентификатору
     /// </summary>
-    /// <returns>Найденное блюдо или null, если блюдо отсутствует</returns>
-    public Dish? GetById(int id)
+    /// <returns>Данные блюда или null</returns>
+    public DishDto? GetById(int id)
     {
-        return _data.Dishes.FirstOrDefault(d => d.Id == id);
+        var dish = repository.GetById(id);
+
+        return dish is null ? null : ToDto(dish);
     }
 
     /// <summary>
-    /// Создаёт новое блюдо после проверки его данных
+    /// Создаёт новое блюдо
     /// </summary>
-    /// <returns>Созданное блюдо</returns>
-    public Dish Create(Dish dish)
+    /// <returns>Данные созданного блюда</returns>
+    public DishDto Create(CreateDishDto dto)
     {
-        ValidateDish(dish);
+        Validate(
+            dto.Name,
+            dto.Weight,
+            dto.Price,
+            dto.CategoryId,
+            dto.RestaurantId);
 
-        dish.Id = _data.Dishes
-            .Select(d => d.Id)
-            .DefaultIfEmpty(0)
-            .Max() + 1;
+        var dish = new Dish
+        {
+            Name = dto.Name,
+            Weight = dto.Weight,
+            Price = dto.Price,
+            CategoryId = dto.CategoryId,
+            RestaurantId = dto.RestaurantId,
+            Category = categoryRepository.GetById(dto.CategoryId)!,
+            Restaurant = restaurantRepository.GetById(dto.RestaurantId)!
+        };
 
-        dish.Category = _data.Categories
-            .First(c => c.Id == dish.CategoryId);
-
-        dish.Restaurant = _data.Restaurants
-            .First(r => r.Id == dish.RestaurantId);
-
-        _data.Dishes.Add(dish);
-
-        return dish;
+        return ToDto(repository.Add(dish));
     }
 
     /// <summary>
-    /// Обновляет данные существующего блюда после проверки
+    /// Обновляет существующее блюдо
     /// </summary>
-    /// <returns>True при успешном обновлении, иначе false</returns>
-    public bool Update(int id, Dish updatedDish)
+    /// <returns>true, если блюдо обновлено, иначе false</returns>
+    public bool Update(int id, UpdateDishDto dto)
     {
-        var dish = GetById(id);
+        var dish = repository.GetById(id);
 
-        if (dish == null)
+        if (dish is null)
         {
             return false;
         }
 
-        ValidateDish(updatedDish);
+        Validate(
+            dto.Name,
+            dto.Weight,
+            dto.Price,
+            dto.CategoryId,
+            dto.RestaurantId);
 
-        dish.Name = updatedDish.Name;
-        dish.Weight = updatedDish.Weight;
-        dish.Price = updatedDish.Price;
-        dish.CategoryId = updatedDish.CategoryId;
-        dish.RestaurantId = updatedDish.RestaurantId;
+        dish.Name = dto.Name;
+        dish.Weight = dto.Weight;
+        dish.Price = dto.Price;
+        dish.CategoryId = dto.CategoryId;
+        dish.RestaurantId = dto.RestaurantId;
+        dish.Category = categoryRepository.GetById(dto.CategoryId)!;
+        dish.Restaurant = restaurantRepository.GetById(dto.RestaurantId)!;
 
-        dish.Category = _data.Categories
-            .First(c => c.Id == dish.CategoryId);
-
-        dish.Restaurant = _data.Restaurants
-            .First(r => r.Id == dish.RestaurantId);
+        repository.Update(dish);
 
         return true;
     }
 
     /// <summary>
-    /// Удаляет блюдо, если оно не используется в заказах
+    /// Удаляет блюдо
     /// </summary>
-    /// <returns>True при успешном удалении, иначе false</returns>
+    /// <returns>true, если блюдо существовало, иначе false</returns>
     public bool Delete(int id)
     {
-        var dish = GetById(id);
+        var dish = repository.GetById(id);
 
-        if (dish == null)
+        if (dish is null)
         {
             return false;
         }
 
-        if (_data.Orders.Any(o => o.Dishes.Any(d => d.Id == id)))
+        if (orderRepository.GetAll().Any(order =>
+            order.Dishes.Any(orderedDish => orderedDish.Id == id)))
         {
-            return false;
+            throw new InvalidOperationException(
+                "Нельзя удалить блюдо, которое входит в заказ");
         }
 
-        _data.Dishes.Remove(dish);
+        repository.Delete(dish);
 
         return true;
     }
 
-    /// <summary>
-    /// Проверяет корректность данных блюда и наличие связанных
-    /// категории и ресторана
-    /// </summary>
-    private void ValidateDish(Dish dish)
+    private static DishDto ToDto(Dish dish)
     {
-        if (string.IsNullOrWhiteSpace(dish.Name) ||
-            dish.Weight <= 0 ||
-            dish.Price <= 0)
+        return new DishDto(
+            dish.Id,
+            dish.Name,
+            dish.Weight,
+            dish.Price,
+            dish.CategoryId,
+            dish.RestaurantId);
+    }
+    private void Validate(
+        string name,
+        int weight,
+        decimal price,
+        int categoryId,
+        int restaurantId)
+    {
+        if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentException("Некорректные данные блюда");
+            throw new ArgumentException("Название блюда не может быть пустым");
         }
 
-        if (!_data.Categories.Any(c => c.Id == dish.CategoryId))
+        if (weight <= 0)
         {
-            throw new ArgumentException("Категория не найдена");
+            throw new ArgumentException("Вес блюда должен быть положительным");
         }
 
-        if (!_data.Restaurants.Any(r => r.Id == dish.RestaurantId))
+        if (price <= 0)
         {
-            throw new ArgumentException("Ресторан не найден");
+            throw new ArgumentException("Цена блюда должна быть положительной");
+        }
+
+        if (categoryRepository.GetById(categoryId) is null)
+        {
+            throw new KeyNotFoundException("Категория блюда не найдена");
+        }
+
+        if (restaurantRepository.GetById(restaurantId) is null)
+        {
+            throw new KeyNotFoundException("Ресторан блюда не найден");
         }
     }
 }

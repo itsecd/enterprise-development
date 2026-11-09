@@ -1,4 +1,4 @@
-﻿using EnterpriseDevelopment.Application.DTOs;
+﻿using EnterpriseDevelopment.Contracts.DTOs.Analytics;
 
 namespace EnterpriseDevelopment.Application.Interfaces;
 

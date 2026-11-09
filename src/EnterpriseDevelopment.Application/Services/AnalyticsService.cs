@@ -1,38 +1,32 @@
-﻿using EnterpriseDevelopment.Application.DTOs;
-using EnterpriseDevelopment.Application.Interfaces;
-using EnterpriseDevelopment.Domain;
+﻿using EnterpriseDevelopment.Application.Interfaces;
+using EnterpriseDevelopment.Application.Repositories;
+using EnterpriseDevelopment.Contracts.DTOs.Analytics;
 
 namespace EnterpriseDevelopment.Application.Services;
 
 /// <summary>
-/// Сервис для получения аналитических данных
-/// о ресторанах, заказах, клиентах и категориях блюд
+/// Сервис аналитики заказов и ресторанов
 /// </summary>
-public class AnalyticsService : IAnalyticsService
+public class AnalyticsService(
+    IRestaurantRepository restaurantRepository,
+    IClientRepository clientRepository,
+    ICategoryRepository categoryRepository,
+    IOrderRepository orderRepository) : IAnalyticsService
 {
-    private readonly DataSeeder _data;
-
-    /// <summary>
-    /// Создаёт сервис аналитики с указанным хранилищем данных
-    /// </summary>
-    public AnalyticsService(DataSeeder data)
-    {
-        _data = data;
-    }
-
     /// <summary>
     /// Получает пять ресторанов с наибольшим количеством заказов
     /// </summary>
     /// <returns>Коллекция ресторанов с количеством заказов</returns>
     public IEnumerable<TopRestaurantDto> GetTopRestaurants()
     {
-        return _data.Orders
-            .GroupBy(o => o.RestaurantId)
-            .Select(g => new TopRestaurantDto(
-                g.Key,
-                _data.Restaurants.First(r => r.Id == g.Key).Name,
-                g.Count()))
-            .OrderByDescending(x => x.OrderCount)
+        return orderRepository.GetAll()
+            .GroupBy(order => order.RestaurantId)
+            .Select(group => new TopRestaurantDto(
+                group.Key,
+                restaurantRepository.GetById(group.Key)?.Name ?? string.Empty,
+                group.Count()))
+            .OrderByDescending(item => item.OrderCount)
+            .ThenBy(item => item.RestaurantId)
             .Take(5)
             .ToList();
     }
@@ -43,22 +37,22 @@ public class AnalyticsService : IAnalyticsService
     /// <returns>Коллекция заказов с минимальным временем доставки</returns>
     public IEnumerable<FastestOrderDto> GetFastestOrders()
     {
-        var orders = _data.Orders.ToList();
+        var orders = orderRepository.GetAll().ToList();
 
         if (orders.Count == 0)
         {
             return [];
         }
 
-        var minTime = orders.Min(o => o.DeliveryTime);
+        var minTime = orders.Min(order => order.DeliveryTime);
 
         return orders
-            .Where(o => o.DeliveryTime == minTime)
-            .Select(o => new FastestOrderDto(
-                o.Id,
-                o.ClientId,
-                o.RestaurantId,
-                o.DeliveryTime))
+            .Where(order => order.DeliveryTime == minTime)
+            .Select(order => new FastestOrderDto(
+                order.Id,
+                order.ClientId,
+                order.RestaurantId,
+                order.DeliveryTime))
             .ToList();
     }
 
@@ -66,59 +60,77 @@ public class AnalyticsService : IAnalyticsService
     /// Получает уникальных клиентов указанного ресторана
     /// </summary>
     /// <returns>Коллекция клиентов ресторана</returns>
-    public IEnumerable<RestaurantClientDto> GetRestaurantClients(
-        int restaurantId)
+    public IEnumerable<RestaurantClientDto> GetRestaurantClients(int restaurantId)
     {
-        return _data.Orders
-            .Where(o => o.RestaurantId == restaurantId)
-            .Select(o => o.ClientId)
+        if (restaurantRepository.GetById(restaurantId) is null)
+        {
+            throw new KeyNotFoundException("Ресторан не найден");
+        }
+
+        var clientIds = orderRepository.GetAll()
+            .Where(order => order.RestaurantId == restaurantId)
+            .Select(order => order.ClientId)
             .Distinct()
-            .Join(
-                _data.Clients,
-                id => id,
-                client => client.Id,
-                (id, client) => new RestaurantClientDto(
-                    client.Id,
-                    client.FullName,
-                    client.PhoneNumber))
+            .ToHashSet();
+
+        return clientRepository.GetAll()
+            .Where(client => clientIds.Contains(client.Id))
+            .Select(client => new RestaurantClientDto(
+                client.Id,
+                client.FullName,
+                client.PhoneNumber))
             .ToList();
     }
 
     /// <summary>
-    /// Получает статистику заказанных блюд по категориям за указанный период времени
+    /// Получает статистику заказанных блюд по категориям за указанный период
     /// </summary>
     /// <returns>Коллекция категорий с количеством заказанных блюд</returns>
     public IEnumerable<CategoryStatisticsDto> GetCategoryStatistics(
         DateTimeOffset startDate,
         DateTimeOffset endDate)
     {
-        return _data.Orders
-            .Where(o => o.CreatedAt >= startDate &&
-                        o.CreatedAt <= endDate)
-            .SelectMany(o => o.Dishes)
-            .GroupBy(d => d.CategoryId)
-            .Select(g => new CategoryStatisticsDto(
-                g.Key,
-                _data.Categories.First(c => c.Id == g.Key).Name,
-                g.Count()))
-            .OrderByDescending(x => x.OrderCount)
+        if (startDate > endDate)
+        {
+            throw new ArgumentException(
+                "Начальная дата не может быть позже конечной");
+        }
+
+        return orderRepository.GetAll()
+            .Where(order =>
+                order.CreatedAt >= startDate &&
+                order.CreatedAt <= endDate)
+            .SelectMany(order => order.Dishes)
+            .GroupBy(dish => dish.CategoryId)
+            .Select(group => new CategoryStatisticsDto(
+                group.Key,
+                categoryRepository.GetById(group.Key)?.Name ?? string.Empty,
+                group.Count()))
+            .OrderByDescending(item => item.OrderCount)
+            .ThenBy(item => item.CategoryId)
             .ToList();
     }
 
     /// <summary>
-    /// Получает клиента с наибольшей общей суммой заказов
+    /// Получает клиента с наибольшей суммой заказов
     /// </summary>
     /// <returns>Коллекция клиентов с максимальной суммой заказов</returns>
     public IEnumerable<TopClientDto> GetTopClients()
     {
-        return _data.Orders
-            .GroupBy(o => o.ClientId)
-            .Select(g => new TopClientDto(
-                g.Key,
-                _data.Clients.First(c => c.Id == g.Key).FullName,
-                g.Sum(o => o.TotalAmount)))
-            .OrderByDescending(x => x.TotalSpent)
+        return orderRepository.GetAll()
+            .GroupBy(order => order.ClientId)
+            .Select(group => new
+            {
+                ClientId = group.Key,
+                TotalSpent = group.Sum(order => order.TotalAmount)
+            })
+            .OrderByDescending(item => item.TotalSpent)
+            .ThenBy(item => item.ClientId)
             .Take(1)
+            .Select(item => new TopClientDto(
+                item.ClientId,
+                clientRepository.GetById(item.ClientId)?.FullName ?? string.Empty,
+                item.TotalSpent))
             .ToList();
     }
 }

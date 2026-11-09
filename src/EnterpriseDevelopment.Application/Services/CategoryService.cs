@@ -1,5 +1,6 @@
 ﻿using EnterpriseDevelopment.Application.Interfaces;
-using EnterpriseDevelopment.Domain;
+using EnterpriseDevelopment.Application.Repositories;
+using EnterpriseDevelopment.Contracts.DTOs.Categories;
 using EnterpriseDevelopment.Domain.Entities;
 
 namespace EnterpriseDevelopment.Application.Services;
@@ -7,90 +8,105 @@ namespace EnterpriseDevelopment.Application.Services;
 /// <summary>
 /// Сервис для управления категориями блюд
 /// </summary>
-public class CategoryService : ICategoryService
+public class CategoryService(
+    ICategoryRepository repository,
+    IDishRepository dishRepository) : ICategoryService
 {
-    private readonly DataSeeder _data;
-
     /// <summary>
-    /// Создаёт сервис категорий с указанным хранилищем данных
-    /// </summary>
-    public CategoryService(DataSeeder data)
-    {
-        _data = data;
-    }
-
-    /// <summary>
-    /// Получает список всех категорий блюд
+    /// Получает все категории блюд
     /// </summary>
     /// <returns>Коллекция категорий блюд</returns>
-    public IEnumerable<DishCategory> GetAll()
+    public IEnumerable<CategoryDto> GetAll()
     {
-        return _data.Categories;
+        return repository.GetAll().Select(ToDto);
     }
 
     /// <summary>
-    /// Получает категорию блюда по её идентификатору
+    /// Получает категорию по идентификатору
     /// </summary>
-    /// <returns>Найденная категория или null, если категория отсутствует</returns>
-    public DishCategory? GetById(int id)
+    /// <returns>Данные категории или null</returns>
+    public CategoryDto? GetById(int id)
     {
-        return _data.Categories.FirstOrDefault(c => c.Id == id);
+        var category = repository.GetById(id);
+
+        return category is null ? null : ToDto(category);
     }
 
     /// <summary>
     /// Создаёт новую категорию блюд
     /// </summary>
-    /// <returns>Созданная категория</returns>
-    public DishCategory Create(DishCategory category)
+    /// <returns>Данные созданной категории</returns>
+    public CategoryDto Create(CreateCategoryDto dto)
     {
-        category.Id = _data.Categories
-            .Select(c => c.Id)
-            .DefaultIfEmpty(0)
-            .Max() + 1;
+        Validate(dto.Name);
 
-        _data.Categories.Add(category);
+        var category = new DishCategory
+        {
+            Name = dto.Name
+        };
 
-        return category;
+        return ToDto(repository.Add(category));
     }
 
     /// <summary>
-    /// Обновляет название существующей категории
+    /// Обновляет существующую категорию
     /// </summary>
-    /// <returns>True при успешном обновлении, иначе false</returns>
-    public bool Update(int id, DishCategory updatedCategory)
+    /// <returns>true, если категория обновлена, иначе false</returns>
+    public bool Update(int id, UpdateCategoryDto dto)
     {
-        var category = GetById(id);
+        var category = repository.GetById(id);
 
-        if (category == null)
+        if (category is null)
         {
             return false;
         }
 
-        category.Name = updatedCategory.Name;
+        Validate(dto.Name);
+
+        category.Name = dto.Name;
+
+        repository.Update(category);
 
         return true;
     }
 
     /// <summary>
-    /// Удаляет категорию, если в ней отсутствуют блюда
+    /// Удаляет категорию блюд
     /// </summary>
-    /// <returns>True при успешном удалении, иначе false</returns>
+    /// <returns>true, если категория существовала, иначе false</returns>
     public bool Delete(int id)
     {
-        var category = GetById(id);
+        var category = repository.GetById(id);
 
-        if (category == null)
+        if (category is null)
         {
             return false;
         }
 
-        if (_data.Dishes.Any(d => d.CategoryId == id))
+        if (dishRepository.GetAll().Any(dish => dish.CategoryId == id))
         {
-            return false;
+            throw new InvalidOperationException(
+                "Нельзя удалить категорию, к которой привязаны блюда");
         }
 
-        _data.Categories.Remove(category);
+        repository.Delete(category);
 
         return true;
+    }
+
+    private static CategoryDto ToDto(DishCategory category)
+    {
+        return new CategoryDto(
+            category.Id,
+            category.Name);
+    }
+
+    private static void Validate(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException(
+                "Название категории не может быть пустым");
+        }
     }
 }

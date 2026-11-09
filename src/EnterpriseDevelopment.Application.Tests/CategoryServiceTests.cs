@@ -1,6 +1,6 @@
-﻿using EnterpriseDevelopment.Application.Services;
+using EnterpriseDevelopment.Contracts.DTOs.Categories;
+using EnterpriseDevelopment.Application.Services;
 using EnterpriseDevelopment.Domain;
-using EnterpriseDevelopment.Domain.Entities;
 using Xunit;
 
 namespace EnterpriseDevelopment.Application.Tests;
@@ -17,7 +17,9 @@ public class CategoryServiceTests
     /// </summary>
     public CategoryServiceTests()
     {
-        _service = new CategoryService(new DataSeeder());
+        var repositories = new TestRepositories();
+        _service = new CategoryService(
+            repositories.Categories, repositories.Dishes);
     }
 
     /// <summary>
@@ -53,10 +55,7 @@ public class CategoryServiceTests
     [Fact]
     public void Create_ValidCategory_AddsCategory()
     {
-        var created = _service.Create(new DishCategory
-        {
-            Name = "Тестовая категория"
-        });
+        var created = _service.Create(new CreateCategoryDto("Тестовая категория"));
 
         Assert.True(created.Id > 0);
         Assert.NotNull(_service.GetById(created.Id));
@@ -68,10 +67,7 @@ public class CategoryServiceTests
     [Fact]
     public void Update_ExistingCategory_ChangesName()
     {
-        Assert.True(_service.Update(1, new DishCategory
-        {
-            Name = "Обновлённая категория"
-        }));
+        Assert.True(_service.Update(1, new UpdateCategoryDto("Обновлённая категория")));
 
         Assert.Equal(
             "Обновлённая категория",
@@ -82,9 +78,9 @@ public class CategoryServiceTests
     /// Проверяет запрет удаления категории с блюдами
     /// </summary>
     [Fact]
-    public void Delete_CategoryWithDishes_ReturnsFalse()
+    public void Delete_CategoryWithDishes_ThrowsInvalidOperationException()
     {
-        Assert.False(_service.Delete(1));
+        Assert.Throws<InvalidOperationException>(() => _service.Delete(1));
     }
 
     /// <summary>
@@ -93,10 +89,7 @@ public class CategoryServiceTests
     [Fact]
     public void Delete_NewCategory_RemovesCategory()
     {
-        var created = _service.Create(new DishCategory
-        {
-            Name = "Категория для удаления"
-        });
+        var created = _service.Create(new CreateCategoryDto("Категория для удаления"));
 
         Assert.True(_service.Delete(created.Id));
         Assert.Null(_service.GetById(created.Id));

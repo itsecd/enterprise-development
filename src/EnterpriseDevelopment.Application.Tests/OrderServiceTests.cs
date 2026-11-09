@@ -1,4 +1,5 @@
-﻿using EnterpriseDevelopment.Application.Services;
+using EnterpriseDevelopment.Contracts.DTOs.Orders;
+using EnterpriseDevelopment.Application.Services;
 using EnterpriseDevelopment.Domain;
 using Xunit;
 
@@ -18,7 +19,10 @@ public class OrderServiceTests
     public OrderServiceTests()
     {
         _data = new DataSeeder();
-        _service = new OrderService(_data);
+        var repositories = new TestRepositories(_data);
+        _service = new OrderService(
+            repositories.Orders, repositories.Clients,
+            repositories.Restaurants, repositories.Dishes);
     }
 
     /// <summary>
@@ -62,16 +66,12 @@ public class OrderServiceTests
         var dishId = _data.Dishes
             .First(d => d.RestaurantId == 1).Id;
 
-        var created = _service.Create(
-            1,
-            1,
-            new List<int> { dishId },
-            createdAt,
-            deliveredAt);
+        var created = _service.Create(new CreateOrderDto(
+            1, 1, new List<int> { dishId }, createdAt, deliveredAt));
 
         Assert.True(created.Id > 0);
         Assert.NotNull(_service.GetById(created.Id));
-        Assert.Single(created.Dishes);
+        Assert.Single(created.DishIds);
         Assert.Equal(TimeSpan.FromMinutes(35), created.DeliveryTime);
     }
 
@@ -89,13 +89,8 @@ public class OrderServiceTests
         var dishId = _data.Dishes
             .First(d => d.RestaurantId == 1).Id;
 
-        var result = _service.Update(
-            1,
-            1,
-            1,
-            new List<int> { dishId },
-            createdAt,
-            deliveredAt);
+        var result = _service.Update(1, new UpdateOrderDto(
+            1, 1, new List<int> { dishId }, createdAt, deliveredAt));
 
         Assert.True(result);
         Assert.Equal(
@@ -127,7 +122,7 @@ public class OrderServiceTests
     /// с несуществующим клиентом
     /// </summary>
     [Fact]
-    public void Create_UnknownClient_ThrowsArgumentException()
+    public void Create_UnknownClient_ThrowsKeyNotFoundException()
     {
         var createdAt = new DateTimeOffset(
             2026, 10, 20, 12, 0, 0, TimeSpan.Zero);
@@ -135,12 +130,9 @@ public class OrderServiceTests
         var dishId = _data.Dishes
             .First(d => d.RestaurantId == 1).Id;
 
-        Assert.Throws<ArgumentException>(() =>
-            _service.Create(
-                999,
-                1,
-                new List<int> { dishId },
-                createdAt,
-                createdAt.AddMinutes(30)));
+        Assert.Throws<KeyNotFoundException>(() =>
+            _service.Create(new CreateOrderDto(
+                999, 1, new List<int> { dishId },
+                createdAt, createdAt.AddMinutes(30))));
     }
 }
