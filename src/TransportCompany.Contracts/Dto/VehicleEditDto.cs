@@ -12,7 +12,7 @@ public class VehicleEditDto
     /// </summary>
     /// <example>А123БВ77</example>
     [Required(ErrorMessage = "Гос. номер обязателен")]
-    [MaxLength(8, ErrorMessage = "Гос. номер не может превышать 8 символов")]
+    [MaxLength(9, ErrorMessage = "Гос. номер не может превышать 9 символов")]
     public required string LicensePlate { get; init; }
 
     /// <summary>
