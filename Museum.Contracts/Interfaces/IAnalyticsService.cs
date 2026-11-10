@@ -10,24 +10,24 @@ public interface IAnalyticsService
     /// <summary>
     /// Возвращает пять самых посещаемых выставок
     /// </summary>
-    Task<IReadOnlyList<TopExhibitionDto>> GetTopExhibitionsAsync();
+    public Task<IReadOnlyList<TopExhibitionDto>> GetTopExhibitionsAsync();
 
     /// <summary>
     /// Возвращает экскурсии с наименьшим количеством участников
     /// </summary>
-    Task<IReadOnlyList<TourWithVisitorCountDto>> GetToursWithMinVisitorsAsync();
+    public Task<IReadOnlyList<TourWithVisitorCountDto>> GetToursWithMinVisitorsAsync();
 
     /// <summary>
     /// Возвращает статистику посещаемости по тематикам за период
     /// </summary>
-    Task<IReadOnlyList<AttendanceSummaryDto>> GetAttendanceSummaryAsync(
+    public Task<IReadOnlyList<AttendanceSummaryDto>> GetAttendanceSummaryAsync(
         DateTime from,
         DateTime to);
 
     /// <summary>
     /// Возвращает экскурсии в выбранном зале за указанный период
     /// </summary>
-    Task<IReadOnlyList<TourDto>> GetToursInHallAsync(
+    public Task<IReadOnlyList<TourDto>> GetToursInHallAsync(
         int hall,
         DateTime from,
         DateTime to);
@@ -35,5 +35,5 @@ public interface IAnalyticsService
     /// <summary>
     /// Возвращает посетителей выбранной экскурсии
     /// </summary>
-    Task<IReadOnlyList<VisitorDto>?> GetVisitorsByTourAsync(int tourId);
+    public Task<IReadOnlyList<VisitorDto>?> GetVisitorsByTourAsync(int tourId);
 }

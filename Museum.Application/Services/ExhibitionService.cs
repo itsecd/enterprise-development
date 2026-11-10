@@ -8,28 +8,16 @@ namespace Museum.Application.Services;
 /// <summary>
 /// Управляет выставками музея
 /// </summary>
-public sealed class ExhibitionService : IExhibitionService
+public sealed class ExhibitionService(
+    IExhibitionRepository exhibitionRepository,
+    ITourRepository tourRepository) : IExhibitionService
 {
-    private readonly IExhibitionRepository _exhibitionRepository;
-    private readonly ITourRepository _tourRepository;
-
-    /// <summary>
-    /// Создаёт сервис для работы с выставками
-    /// </summary>
-    public ExhibitionService(
-        IExhibitionRepository exhibitionRepository,
-        ITourRepository tourRepository)
-    {
-        _exhibitionRepository = exhibitionRepository;
-        _tourRepository = tourRepository;
-    }
-
     /// <summary>
     /// Возвращает все выставки музея
     /// </summary>
     public async Task<IReadOnlyList<ExhibitionDto>> GetAllAsync()
     {
-        var exhibitions = await _exhibitionRepository.GetAllAsync();
+        var exhibitions = await exhibitionRepository.GetAllAsync();
 
         return exhibitions.Select(ExhibitionMapper.ToDto).ToList();
     }
@@ -39,7 +27,7 @@ public sealed class ExhibitionService : IExhibitionService
     /// </summary>
     public async Task<ExhibitionDto?> GetByIdAsync(int id)
     {
-        var exhibition = await _exhibitionRepository.GetByIdAsync(id);
+        var exhibition = await exhibitionRepository.GetByIdAsync(id);
 
         return exhibition is null ? null : ExhibitionMapper.ToDto(exhibition);
     }
@@ -50,7 +38,7 @@ public sealed class ExhibitionService : IExhibitionService
     public async Task<ExhibitionDto> CreateAsync(ExhibitionEditDto dto)
     {
         var exhibition = ExhibitionMapper.ToEntity(dto);
-        var created = await _exhibitionRepository.AddAsync(exhibition);
+        var created = await exhibitionRepository.AddAsync(exhibition);
 
         return ExhibitionMapper.ToDto(created);
     }
@@ -60,7 +48,7 @@ public sealed class ExhibitionService : IExhibitionService
     /// </summary>
     public async Task<bool> UpdateAsync(int id, ExhibitionEditDto dto)
     {
-        var existing = await _exhibitionRepository.GetByIdAsync(id);
+        var existing = await exhibitionRepository.GetByIdAsync(id);
 
         if (existing is null)
         {
@@ -70,7 +58,7 @@ public sealed class ExhibitionService : IExhibitionService
         var exhibition = ExhibitionMapper.ToEntity(dto);
         exhibition.Id = id;
 
-        return await _exhibitionRepository.UpdateAsync(exhibition);
+        return await exhibitionRepository.UpdateAsync(exhibition);
     }
 
     /// <summary>
@@ -78,14 +66,14 @@ public sealed class ExhibitionService : IExhibitionService
     /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {
-        var exhibition = await _exhibitionRepository.GetByIdAsync(id);
+        var exhibition = await exhibitionRepository.GetByIdAsync(id);
 
         if (exhibition is null)
         {
             return false;
         }
 
-        var tours = await _tourRepository.GetAllAsync();
+        var tours = await tourRepository.GetAllAsync();
 
         if (tours.Any(tour =>
                 tour.Exhibitions.Any(item => item.Id == id)))
@@ -94,6 +82,6 @@ public sealed class ExhibitionService : IExhibitionService
                 "Выставка используется в экскурсиях");
         }
 
-        return await _exhibitionRepository.DeleteAsync(id);
+        return await exhibitionRepository.DeleteAsync(id);
     }
 }

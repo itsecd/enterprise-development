@@ -1,4 +1,5 @@
 using Museum.Domain;
+using Museum.Shared;
 
 namespace Museum.Tests;
 

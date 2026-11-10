@@ -6,30 +6,14 @@ using Museum.Domain.Interfaces;
 namespace Museum.Application.Services;
 
 /// <summary>Выполняет аналитические запросы по выставкам, экскурсиям и посетителям</summary>
-public sealed class AnalyticsService : IAnalyticsService
+public sealed class AnalyticsService(
+    ITourRepository tourRepository,
+    ITicketRepository ticketRepository) : IAnalyticsService
 {
-    private readonly IExhibitionRepository _exhibitionRepository;
-    private readonly ITourRepository _tourRepository;
-    private readonly ITicketRepository _ticketRepository;
-    private readonly IVisitorRepository _visitorRepository;
-
-    /// <summary>Создаёт сервис аналитики с необходимыми репозиториями</summary>
-    public AnalyticsService(
-        IExhibitionRepository exhibitionRepository,
-        ITourRepository tourRepository,
-        ITicketRepository ticketRepository,
-        IVisitorRepository visitorRepository)
-    {
-        _exhibitionRepository = exhibitionRepository;
-        _tourRepository = tourRepository;
-        _ticketRepository = ticketRepository;
-        _visitorRepository = visitorRepository;
-    }
-
     /// <summary>Возвращает пять выставок с наибольшим количеством посетителей</summary>
     public async Task<IReadOnlyList<TopExhibitionDto>> GetTopExhibitionsAsync()
     {
-        var tickets = await _ticketRepository.GetAllAsync();
+        var tickets = await ticketRepository.GetAllAsync();
 
         return tickets
             .SelectMany(ticket => ticket.Tour.Exhibitions)
@@ -47,7 +31,7 @@ public sealed class AnalyticsService : IAnalyticsService
     /// <summary>Возвращает экскурсии с наименьшим количеством участников среди экскурсий с билетами</summary>
     public async Task<IReadOnlyList<TourWithVisitorCountDto>> GetToursWithMinVisitorsAsync()
     {
-        var tickets = await _ticketRepository.GetAllAsync();
+        var tickets = await ticketRepository.GetAllAsync();
 
         var visitorCounts = tickets
             .GroupBy(ticket => ticket.Tour.Id)
@@ -62,7 +46,7 @@ public sealed class AnalyticsService : IAnalyticsService
             return [];
 
         var minVisitorCount = visitorCounts.Min(item => item.VisitorCount);
-        var tours = await _tourRepository.GetAllAsync();
+        var tours = await tourRepository.GetAllAsync();
 
         return visitorCounts
             .Where(item => item.VisitorCount == minVisitorCount)
@@ -83,7 +67,7 @@ public sealed class AnalyticsService : IAnalyticsService
         DateTime from,
         DateTime to)
     {
-        var tickets = await _ticketRepository.GetAllAsync();
+        var tickets = await ticketRepository.GetAllAsync();
 
         var entries = tickets
             .Where(ticket => ticket.Tour.Date >= from && ticket.Tour.Date <= to)
@@ -122,7 +106,7 @@ public sealed class AnalyticsService : IAnalyticsService
         DateTime from,
         DateTime to)
     {
-        var tours = await _tourRepository.GetAllAsync();
+        var tours = await tourRepository.GetAllAsync();
 
         return tours
             .Where(tour =>
@@ -136,12 +120,12 @@ public sealed class AnalyticsService : IAnalyticsService
     /// <summary>Возвращает отсортированный по имени список посетителей выбранной экскурсии</summary>
     public async Task<IReadOnlyList<VisitorDto>?> GetVisitorsByTourAsync(int tourId)
     {
-        var tour = await _tourRepository.GetByIdAsync(tourId);
+        var tour = await tourRepository.GetByIdAsync(tourId);
 
         if (tour is null)
             return null;
 
-        var tickets = await _ticketRepository.GetAllAsync();
+        var tickets = await ticketRepository.GetAllAsync();
 
         return tickets
             .Where(ticket => ticket.Tour.Id == tourId)

@@ -8,25 +8,25 @@ public interface IEntityService<TDto, TEditDto>
     /// <summary>
     /// Возвращает список всех сущностей
     /// </summary>
-    Task<IReadOnlyList<TDto>> GetAllAsync();
+    public Task<IReadOnlyList<TDto>> GetAllAsync();
 
     /// <summary>
     /// Находит сущность по идентификатору
     /// </summary>
-    Task<TDto?> GetByIdAsync(int id);
+    public Task<TDto?> GetByIdAsync(int id);
 
     /// <summary>
     /// Создаёт новую сущность
     /// </summary>
-    Task<TDto> CreateAsync(TEditDto dto);
+    public Task<TDto> CreateAsync(TEditDto dto);
 
     /// <summary>
     /// Обновляет существующую сущность
     /// </summary>
-    Task<bool> UpdateAsync(int id, TEditDto dto);
+    public Task<bool> UpdateAsync(int id, TEditDto dto);
 
     /// <summary>
     /// Удаляет сущность по идентификатору
     /// </summary>
-    Task<bool> DeleteAsync(int id);
+    public Task<bool> DeleteAsync(int id);
 }

@@ -31,7 +31,8 @@
 - Платформа: .NET 10.0
 - Веб-фреймворк: ASP.NET Core Web API
 - Маппинг: ручной маппинг Domain ↔ DTO
-- Документация API: OpenAPI
+- Документация API: OpenAPI + Scalar (интерактивный интерфейс по адресу `/scalar`)
+- Логирование: `ILogger` в контроллерах
 - Фреймворк тестирования: xUnit v3
 - Continuous Integration: GitHub Actions
 - Хранение данных: In-memory storage
@@ -47,14 +48,16 @@ Museum.slnx
 │   └── workflows/
 │       └── dotnet-tests.yml                 — CI: сборка и запуск тестов
 │
-├── Museum.Domain/                           — доменная модель
-│   ├── DataSeeder.cs                        — начальные данные
-│   ├── Exhibition.cs                        — выставка
+├── Museum.Shared/                           — общие типы для всех слоёв
 │   ├── ExhibitionTheme.cs                   — тематика выставки
+│   └── TicketType.cs                        — тип билета
+│
+├── Museum.Domain/                           — доменная модель
+│   ├── DataSeeder.cs                        — начальные данные и связи между сущностями
+│   ├── Exhibition.cs                        — выставка
 │   ├── Ticket.cs                            — билет
-│   ├── TicketType.cs                        — тип билета
 │   ├── Tour.cs                              — экскурсия
-│   ├── Visitor.cs                            — посетитель
+│   ├── Visitor.cs                           — посетитель
 │   └── Interfaces/                          — интерфейсы репозиториев
 │
 ├── Museum.Contracts/                        — контракты приложения
@@ -67,7 +70,6 @@ Museum.slnx
 │   └── DependencyInjection/                 — регистрация сервисов
 │
 ├── Museum.Infrastructure.InMemory/          — хранение данных в памяти
-│   ├── MuseumInMemoryStore.cs               — общее хранилище
 │   ├── Repositories/                        — реализации репозиториев
 │   └── DependencyInjection/                 — регистрация репозиториев
 │
@@ -80,4 +82,4 @@ Museum.slnx
     └── MuseumFixture.cs
 ~~~
 
-В `DataSeeder` находятся начальные данные для доменных сущностей. Хранилище `MuseumInMemoryStore` загружает их при запуске приложения и связывает сущности между собой.
+В `DataSeeder` находятся начальные данные для доменных сущностей, а связи между ними (экскурсия — выставки, билет — экскурсия и посетитель) проставляются прямо в сидере. Репозитории получают коллекции из `DataSeeder`, который регистрируется в контейнере зависимостей как singleton. Перечисления `ExhibitionTheme` и `TicketType` вынесены в проект `Museum.Shared`, чтобы `Museum.Contracts` не зависел от `Museum.Domain`.

@@ -1,4 +1,4 @@
-using Museum.Domain;
+using Museum.Shared;
 
 namespace Museum.Contracts.Dto;
 
@@ -15,7 +15,7 @@ public sealed class ExhibitionDto
     /// <summary>
     /// Название выставки
     /// </summary>
-    public string Name { get; init; } = string.Empty;
+    public required string Name { get; init; }
 
     /// <summary>
     /// Тематика выставки

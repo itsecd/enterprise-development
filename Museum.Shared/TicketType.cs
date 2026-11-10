@@ -1,4 +1,4 @@
-namespace Museum.Domain;
+namespace Museum.Shared;
 
 /// <summary>
 /// Тип билета
@@ -6,12 +6,12 @@ namespace Museum.Domain;
 public enum TicketType
 {
     /// <summary>
-    /// Взрослый 
+    /// Взрослый
     /// </summary>
     Adult,
 
     /// <summary>
-    /// Льготный 
+    /// Льготный
     /// </summary>
     Concession
 }

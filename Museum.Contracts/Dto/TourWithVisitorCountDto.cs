@@ -8,7 +8,7 @@ public sealed class TourWithVisitorCountDto
     /// <summary>
     /// Информация об экскурсии
     /// </summary>
-    public TourDto Tour { get; init; } = null!;
+    public required TourDto Tour { get; init; }
 
     /// <summary>
     /// Количество участников экскурсии

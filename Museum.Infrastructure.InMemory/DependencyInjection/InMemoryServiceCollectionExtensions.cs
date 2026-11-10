@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Museum.Domain;
 using Museum.Domain.Interfaces;
 using Museum.Infrastructure.InMemory.Repositories;
 
@@ -15,7 +16,8 @@ public static class InMemoryServiceCollectionExtensions
     public static IServiceCollection AddInMemoryPersistence(
         this IServiceCollection services)
     {
-        services.AddSingleton<MuseumInMemoryStore>();
+        // Один набор связанных данных на всё приложение
+        services.AddSingleton<DataSeeder>();
 
         services.AddScoped<IExhibitionRepository, InMemoryExhibitionRepository>();
         services.AddScoped<ITourRepository, InMemoryTourRepository>();

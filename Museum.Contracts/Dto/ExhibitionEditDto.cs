@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Museum.Domain;
+using Museum.Shared;
 
 namespace Museum.Contracts.Dto;
 
@@ -13,7 +13,7 @@ public sealed class ExhibitionEditDto : IValidatableObject
     /// </summary>
     [Required]
     [StringLength(100, MinimumLength = 1)]
-    public string Name { get; init; } = string.Empty;
+    public required string Name { get; init; }
 
     /// <summary>
     /// Тематика выставки

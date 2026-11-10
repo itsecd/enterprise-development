@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Museum.Domain;
+using Museum.Shared;
 
 namespace Museum.Contracts.Dto;
 

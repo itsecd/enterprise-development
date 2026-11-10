@@ -8,7 +8,7 @@ public sealed class TopExhibitionDto
     /// <summary>
     /// Информация о выставке
     /// </summary>
-    public ExhibitionDto Exhibition { get; init; } = null!;
+    public required ExhibitionDto Exhibition { get; init; }
 
     /// <summary>
     /// Количество посетителей выставки

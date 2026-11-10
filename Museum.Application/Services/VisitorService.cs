@@ -8,28 +8,16 @@ namespace Museum.Application.Services;
 /// <summary>
 /// Управляет посетителями музея
 /// </summary>
-public sealed class VisitorService : IVisitorService
+public sealed class VisitorService(
+    IVisitorRepository visitorRepository,
+    ITicketRepository ticketRepository) : IVisitorService
 {
-    private readonly IVisitorRepository _visitorRepository;
-    private readonly ITicketRepository _ticketRepository;
-
-    /// <summary>
-    /// Создаёт сервис для работы с посетителями
-    /// </summary>
-    public VisitorService(
-        IVisitorRepository visitorRepository,
-        ITicketRepository ticketRepository)
-    {
-        _visitorRepository = visitorRepository;
-        _ticketRepository = ticketRepository;
-    }
-
     /// <summary>
     /// Возвращает всех посетителей музея
     /// </summary>
     public async Task<IReadOnlyList<VisitorDto>> GetAllAsync()
     {
-        var visitors = await _visitorRepository.GetAllAsync();
+        var visitors = await visitorRepository.GetAllAsync();
 
         return visitors.Select(VisitorMapper.ToDto).ToList();
     }
@@ -39,7 +27,7 @@ public sealed class VisitorService : IVisitorService
     /// </summary>
     public async Task<VisitorDto?> GetByIdAsync(int id)
     {
-        var visitor = await _visitorRepository.GetByIdAsync(id);
+        var visitor = await visitorRepository.GetByIdAsync(id);
 
         return visitor is null ? null : VisitorMapper.ToDto(visitor);
     }
@@ -50,7 +38,7 @@ public sealed class VisitorService : IVisitorService
     public async Task<VisitorDto> CreateAsync(VisitorEditDto dto)
     {
         var visitor = VisitorMapper.ToEntity(dto);
-        var created = await _visitorRepository.AddAsync(visitor);
+        var created = await visitorRepository.AddAsync(visitor);
 
         return VisitorMapper.ToDto(created);
     }
@@ -60,7 +48,7 @@ public sealed class VisitorService : IVisitorService
     /// </summary>
     public async Task<bool> UpdateAsync(int id, VisitorEditDto dto)
     {
-        var existing = await _visitorRepository.GetByIdAsync(id);
+        var existing = await visitorRepository.GetByIdAsync(id);
 
         if (existing is null)
         {
@@ -70,7 +58,7 @@ public sealed class VisitorService : IVisitorService
         var visitor = VisitorMapper.ToEntity(dto);
         visitor.Id = id;
 
-        return await _visitorRepository.UpdateAsync(visitor);
+        return await visitorRepository.UpdateAsync(visitor);
     }
 
     /// <summary>
@@ -78,14 +66,14 @@ public sealed class VisitorService : IVisitorService
     /// </summary>
     public async Task<bool> DeleteAsync(int id)
     {
-        var visitor = await _visitorRepository.GetByIdAsync(id);
+        var visitor = await visitorRepository.GetByIdAsync(id);
 
         if (visitor is null)
         {
             return false;
         }
 
-        var tickets = await _ticketRepository.GetAllAsync();
+        var tickets = await ticketRepository.GetAllAsync();
 
         if (tickets.Any(ticket => ticket.Visitor.Id == id))
         {
@@ -93,6 +81,6 @@ public sealed class VisitorService : IVisitorService
                 "У посетителя есть билеты");
         }
 
-        return await _visitorRepository.DeleteAsync(id);
+        return await visitorRepository.DeleteAsync(id);
     }
 }

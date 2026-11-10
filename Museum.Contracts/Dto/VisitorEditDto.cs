@@ -12,14 +12,14 @@ public sealed class VisitorEditDto
     /// </summary>
     [Required]
     [StringLength(200, MinimumLength = 2)]
-    public string FullName { get; init; } = string.Empty;
+    public required string FullName { get; init; }
 
     /// <summary>
     /// Номер телефона посетителя
     /// </summary>
     [Required]
     [Phone]
-    public string Phone { get; init; } = string.Empty;
+    public required string Phone { get; init; }
 
     /// <summary>
     /// Дата рождения посетителя

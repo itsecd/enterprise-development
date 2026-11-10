@@ -1,3 +1,5 @@
+using Museum.Shared;
+
 namespace Museum.Domain;
 
 /// <summary>

@@ -1,4 +1,4 @@
-namespace Museum.Domain;
+namespace Museum.Shared;
 
 /// <summary>
 /// Тематика выставки
