@@ -32,6 +32,7 @@ builder.Services.AddApplication();
 builder.Services.AddInMemoryInfrastructure();
 
 var app = builder.Build();
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
@@ -46,5 +47,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapDefaultEndpoints();
-
 app.Run();
