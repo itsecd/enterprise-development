@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VetClinic.Application\VetClinic.Application.csproj" />
-    <ProjectReference Include="..\VetClinic.Infrastructure\VetClinic.Infrastructure.csproj" />
+    <ProjectReference Include="..\VetClinic.Infrastructure.InMemory\VetClinic.Infrastructure.InMemory.csproj" />
   </ItemGroup>
 
 </Project>

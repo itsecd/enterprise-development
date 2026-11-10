@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using VetClinic.Application.DTOs;
+using VetClinic.Application.Dto;
+using VetClinic.Application.Mapping;
 using VetClinic.Domain.Entities;
 using VetClinic.Domain.Interfaces;
 
@@ -10,91 +11,131 @@ namespace VetClinic.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class BreedsController(IRepository<Breed> repository) : ControllerBase
+public class BreedsController(
+    IRepository<Breed> repository,
+    ILogger<BreedsController> logger) : ControllerBase
 {
     /// <summary>
     /// Получить все породы
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<BreedDto>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<BreedDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<BreedDto>>> GetAll()
     {
-        var breeds = repository.GetAll().Select(b => new BreedDto
+        try
         {
-            Id = b.Id,
-            Name = b.Name,
-            Species = b.Species
-        });
-
-        return Ok(breeds);
+            var breeds = await repository.GetAllAsync();
+            return Ok(breeds.Select(b => b.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка пород");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Получить породу по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<BreedDto> GetById(int id)
+    [ProducesResponseType(typeof(BreedDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<BreedDto>> GetById(int id)
     {
-        var breed = repository.GetById(id);
-        if (breed is null)
+        try
         {
-            return NotFound();
-        }
+            var breed = await repository.GetByIdAsync(id);
+            if (breed is null)
+            {
+                return NotFound();
+            }
 
-        return Ok(new BreedDto
+            return Ok(breed.ToDto());
+        }
+        catch (Exception ex)
         {
-            Id = breed.Id,
-            Name = breed.Name,
-            Species = breed.Species
-        });
+            logger.LogError(ex, "Ошибка при получении породы с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Добавить новую породу
     /// </summary>
     [HttpPost]
-    public ActionResult<BreedDto> Create([FromBody] CreateBreedDto dto)
+    [ProducesResponseType(typeof(BreedDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<BreedDto>> Create([FromBody] CreateBreedDto dto)
     {
-        var breed = new Breed
+        try
         {
-            Name = dto.Name,
-            Species = dto.Species
-        };
+            var breed = new Breed
+            {
+                Name = dto.Name,
+                Species = dto.Species!.Value
+            };
 
-        repository.Add(breed);
+            await repository.AddAsync(breed);
 
-        return CreatedAtAction(nameof(GetById), new { id = breed.Id }, new BreedDto
+            return CreatedAtAction(nameof(GetById), new { id = breed.Id }, breed.ToDto());
+        }
+        catch (Exception ex)
         {
-            Id = breed.Id,
-            Name = breed.Name,
-            Species = breed.Species
-        });
+            logger.LogError(ex, "Ошибка при добавлении породы");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Обновить существующую породу
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] CreateBreedDto dto)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Update(int id, [FromBody] CreateBreedDto dto)
     {
-        var breed = repository.GetById(id);
-        if (breed is null)
+        try
         {
-            return NotFound();
+            var breed = await repository.GetByIdAsync(id);
+            if (breed is null)
+            {
+                return NotFound();
+            }
+
+            breed.Name = dto.Name;
+            breed.Species = dto.Species!.Value;
+            await repository.UpdateAsync(breed);
+
+            return NoContent();
         }
-
-        breed.Name = dto.Name;
-        breed.Species = dto.Species;
-        repository.Update(breed);
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении породы с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Удалить породу
     /// </summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int id)
     {
-        return repository.Delete(id) ? NoContent() : NotFound();
+        try
+        {
+            var deleted = await repository.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении породы с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 }

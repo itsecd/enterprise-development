@@ -2,7 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/VetClinic.Application/VetClinic.Application.csproj" />
     <Project Path="src/VetClinic.Domain/VetClinic.Domain.csproj" />
-    <Project Path="src/VetClinic.Infrastructure/VetClinic.Infrastructure.csproj" />
+    <Project Path="src/VetClinic.Infrastructure.InMemory/VetClinic.Infrastructure.InMemory.csproj" />
     <Project Path="src/VetClinic.WebApi/VetClinic.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">

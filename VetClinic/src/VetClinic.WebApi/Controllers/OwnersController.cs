@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using VetClinic.Application.DTOs;
+using VetClinic.Application.Dto;
+using VetClinic.Application.Mapping;
 using VetClinic.Domain.Entities;
 using VetClinic.Domain.Interfaces;
 
@@ -12,118 +13,153 @@ namespace VetClinic.WebApi.Controllers;
 [Route("api/[controller]")]
 public class OwnersController(
     IRepository<Owner> repository,
-    IVetClinicService clinicService) : ControllerBase
+    IVetClinicService clinicService,
+    ILogger<OwnersController> logger) : ControllerBase
 {
     /// <summary>
     /// Получить список всех владельцев
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<OwnerDto>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<OwnerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<OwnerDto>>> GetAll()
     {
-        var owners = repository.GetAll().Select(o => new OwnerDto
+        try
         {
-            Id = o.Id,
-            FullName = o.FullName,
-            Phone = o.Phone,
-            Address = o.Address,
-            PetsCount = o.Pets.Count
-        });
-
-        return Ok(owners);
+            var owners = await repository.GetAllAsync();
+            return Ok(owners.Select(o => o.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка владельцев");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Получить владельцев с более чем одним питомцем
     /// </summary>
     [HttpGet("multiple-pets")]
-    public ActionResult<IEnumerable<OwnerDto>> GetOwnersWithMultiplePets()
+    [ProducesResponseType(typeof(IEnumerable<OwnerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<OwnerDto>>> GetOwnersWithMultiplePets()
     {
-        var owners = clinicService.GetOwnersWithMultiplePetsOrderedByName().Select(o => new OwnerDto
+        try
         {
-            Id = o.Id,
-            FullName = o.FullName,
-            Phone = o.Phone,
-            Address = o.Address,
-            PetsCount = o.Pets.Count
-        });
-
-        return Ok(owners);
+            var owners = await clinicService.GetOwnersWithMultiplePetsOrderedByNameAsync();
+            return Ok(owners.Select(o => o.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка владельцев с несколькими питомцами");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Получить владельца по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<OwnerDto> GetById(int id)
+    [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<OwnerDto>> GetById(int id)
     {
-        var owner = repository.GetById(id);
-        if (owner is null)
+        try
         {
-            return NotFound();
-        }
+            var owner = await repository.GetByIdAsync(id);
+            if (owner is null)
+            {
+                return NotFound();
+            }
 
-        return Ok(new OwnerDto
+            return Ok(owner.ToDto());
+        }
+        catch (Exception ex)
         {
-            Id = owner.Id,
-            FullName = owner.FullName,
-            Phone = owner.Phone,
-            Address = owner.Address,
-            PetsCount = owner.Pets.Count
-        });
+            logger.LogError(ex, "Ошибка при получении владельца с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Добавить владельца
     /// </summary>
     [HttpPost]
-    public ActionResult<OwnerDto> Create([FromBody] CreateOwnerDto dto)
+    [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<OwnerDto>> Create([FromBody] CreateOwnerDto dto)
     {
-        var owner = new Owner
+        try
         {
-            FullName = dto.FullName,
-            Phone = dto.Phone,
-            Address = dto.Address
-        };
+            var owner = new Owner
+            {
+                FullName = dto.FullName,
+                Phone = dto.Phone,
+                Address = dto.Address
+            };
 
-        repository.Add(owner);
+            await repository.AddAsync(owner);
 
-        return CreatedAtAction(nameof(GetById), new { id = owner.Id }, new OwnerDto
+            return CreatedAtAction(nameof(GetById), new { id = owner.Id }, owner.ToDto());
+        }
+        catch (Exception ex)
         {
-            Id = owner.Id,
-            FullName = owner.FullName,
-            Phone = owner.Phone,
-            Address = owner.Address,
-            PetsCount = 0
-        });
+            logger.LogError(ex, "Ошибка при добавлении владельца");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Обновить данные владельца
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] CreateOwnerDto dto)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Update(int id, [FromBody] CreateOwnerDto dto)
     {
-        var owner = repository.GetById(id);
-        if (owner is null)
+        try
         {
-            return NotFound();
+            var owner = await repository.GetByIdAsync(id);
+            if (owner is null)
+            {
+                return NotFound();
+            }
+
+            owner.FullName = dto.FullName;
+            owner.Phone = dto.Phone;
+            owner.Address = dto.Address;
+
+            await repository.UpdateAsync(owner);
+
+            return NoContent();
         }
-
-        owner.FullName = dto.FullName;
-        owner.Phone = dto.Phone;
-        owner.Address = dto.Address;
-
-        repository.Update(owner);
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении владельца с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Удалить владельца
     /// </summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int id)
     {
-        return repository.Delete(id) ? NoContent() : NotFound();
+        try
+        {
+            var deleted = await repository.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении владельца с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 }

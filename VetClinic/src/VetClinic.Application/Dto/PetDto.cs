@@ -1,6 +1,6 @@
 using VetClinic.Domain.Enums;
 
-namespace VetClinic.Application.DTOs;
+namespace VetClinic.Application.Dto;
 
 /// <summary>
 /// DTO питомца

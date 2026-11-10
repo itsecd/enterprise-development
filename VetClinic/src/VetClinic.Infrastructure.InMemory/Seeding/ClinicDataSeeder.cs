@@ -1,7 +1,7 @@
 using VetClinic.Domain.Entities;
 using VetClinic.Domain.Enums;
 
-namespace VetClinic.Infrastructure.Seeding;
+namespace VetClinic.Infrastructure.InMemory.Seeding;
 
 /// <summary>
 /// Класс детерминированной инициализации тестовых данных
@@ -11,32 +11,32 @@ public class ClinicDataSeeder
     /// <summary>
     /// Список пород
     /// </summary>
-    public List<Breed> Breeds { get; }
+    public IReadOnlyList<Breed> Breeds { get; }
 
     /// <summary>
     /// Список специализаций врачей
     /// </summary>
-    public List<Specialization> Specializations { get; }
+    public IReadOnlyList<Specialization> Specializations { get; }
 
     /// <summary>
     /// Список владельцев питомцев
     /// </summary>
-    public List<Owner> Owners { get; }
+    public IReadOnlyList<Owner> Owners { get; }
 
     /// <summary>
     /// Список питомцев
     /// </summary>
-    public List<Pet> Pets { get; }
+    public IReadOnlyList<Pet> Pets { get; }
 
     /// <summary>
     /// Список ветеринаров
     /// </summary>
-    public List<Veterinarian> Veterinarians { get; }
+    public IReadOnlyList<Veterinarian> Veterinarians { get; }
 
     /// <summary>
     /// Список приемов
     /// </summary>
-    public List<Appointment> Appointments { get; }
+    public IReadOnlyList<Appointment> Appointments { get; }
 
     /// <summary>
     /// Инициализирует фиксированные тестовые данные ветеринарной клиники

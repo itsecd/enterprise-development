@@ -7,49 +7,23 @@ namespace VetClinic.Application.Services;
 /// <summary>
 /// Реализация сервиса аналитических запросов к данным ветеринарной клиники
 /// </summary>
-public class VetClinicService : IVetClinicService
+public class VetClinicService(
+    IRepository<Veterinarian> veterinarianRepository,
+    IRepository<Appointment> appointmentRepository,
+    IRepository<Owner> ownerRepository) : IVetClinicService
 {
-    private readonly Func<IEnumerable<Veterinarian>> _getVeterinarians;
-    private readonly Func<IEnumerable<Appointment>> _getAppointments;
-    private readonly Func<IEnumerable<Owner>> _getOwners;
-
-    /// <summary>
-    /// Конструктор для использования через Dependency Injection с живыми репозиториями
-    /// </summary>
-    public VetClinicService(
-        IRepository<Veterinarian> vetRepo,
-        IRepository<Appointment> appRepo,
-        IRepository<Owner> ownerRepo)
+    /// <inheritdoc />
+    public async Task<IEnumerable<Veterinarian>> GetVeterinariansBySpeciesAsync(AnimalSpecies species)
     {
-        _getVeterinarians = vetRepo.GetAll;
-        _getAppointments = appRepo.GetAll;
-        _getOwners = ownerRepo.GetAll;
-    }
-
-    /// <summary>
-    /// Конструктор для юнит-тестов первой лабораторной работы
-    /// </summary>
-    public VetClinicService(
-        IEnumerable<Veterinarian> veterinarians,
-        IEnumerable<Appointment> appointments,
-        IEnumerable<Owner> owners)
-    {
-        _getVeterinarians = () => veterinarians;
-        _getAppointments = () => appointments;
-        _getOwners = () => owners;
+        var vets = await veterinarianRepository.GetAllAsync();
+        return vets.Where(v => v.Specialization?.TargetSpecies == species);
     }
 
     /// <inheritdoc />
-    public IEnumerable<Veterinarian> GetVeterinariansBySpecies(AnimalSpecies species)
+    public async Task<IEnumerable<Pet>> GetPetsByDoctorOrderedByNameAsync(int doctorId)
     {
-        return _getVeterinarians()
-            .Where(v => v.Specialization?.TargetSpecies == species);
-    }
-
-    /// <inheritdoc />
-    public IEnumerable<Pet> GetPetsByDoctorOrderedByName(int doctorId)
-    {
-        return _getAppointments()
+        var appointments = await appointmentRepository.GetAllAsync();
+        return appointments
             .Where(a => a.VeterinarianId == doctorId && a.Pet is not null)
             .Select(a => a.Pet!)
             .DistinctBy(p => p.Id)
@@ -57,24 +31,27 @@ public class VetClinicService : IVetClinicService
     }
 
     /// <inheritdoc />
-    public int GetFollowUpAppointmentsCountByBreed(int breedId)
+    public async Task<int> GetFollowUpAppointmentsCountByBreedAsync(int breedId)
     {
-        return _getAppointments()
+        var appointments = await appointmentRepository.GetAllAsync();
+        return appointments
             .Count(a => a.Pet?.BreedId == breedId && a.IsFollowUp);
     }
 
     /// <inheritdoc />
-    public IEnumerable<Owner> GetOwnersWithMultiplePetsOrderedByName()
+    public async Task<IEnumerable<Owner>> GetOwnersWithMultiplePetsOrderedByNameAsync()
     {
-        return _getOwners()
+        var owners = await ownerRepository.GetAllAsync();
+        return owners
             .Where(o => o.Pets.Count > 1)
             .OrderBy(o => o.FullName);
     }
 
     /// <inheritdoc />
-    public IEnumerable<Appointment> GetCurrentMonthAppointmentsByRoom(int roomNumber, DateTime currentDate)
+    public async Task<IEnumerable<Appointment>> GetCurrentMonthAppointmentsByRoomAsync(int roomNumber, DateTime currentDate)
     {
-        return _getAppointments()
+        var appointments = await appointmentRepository.GetAllAsync();
+        return appointments
             .Where(a => a.RoomNumber == roomNumber
                         && a.DateTime.Year == currentDate.Year
                         && a.DateTime.Month == currentDate.Month);

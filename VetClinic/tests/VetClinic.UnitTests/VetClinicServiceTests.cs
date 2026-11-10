@@ -1,7 +1,9 @@
 using VetClinic.Application.Services;
+using VetClinic.Domain.Entities;
 using VetClinic.Domain.Enums;
 using VetClinic.Domain.Interfaces;
-using VetClinic.Infrastructure.Seeding;
+using VetClinic.Infrastructure.InMemory.Repositories;
+using VetClinic.Infrastructure.InMemory.Seeding;
 using Xunit;
 
 namespace VetClinic.UnitTests;
@@ -14,24 +16,23 @@ public class VetClinicServiceTests
     private readonly IVetClinicService _service;
 
     /// <summary>
-    /// Инициализация сервиса с фиксированными тестовыми данными.
+    /// Инициализация сервиса с фиксированными тестовыми данными
     /// </summary>
     public VetClinicServiceTests()
     {
         var seeder = new ClinicDataSeeder();
-        _service = new VetClinicService(
-            seeder.Veterinarians,
-            seeder.Appointments,
-            seeder.Owners
-        );
+        var vetRepo = new InMemoryRepository<Veterinarian>(seeder.Veterinarians);
+        var appointmentRepo = new InMemoryRepository<Appointment>(seeder.Appointments);
+        var ownerRepo = new InMemoryRepository<Owner>(seeder.Owners);
+
+        _service = new VetClinicService(vetRepo, appointmentRepo, ownerRepo);
     }
 
     /// <summary>
     /// Проверка: Вывод всех ветеринаров, специализирующихся на кошках
-    /// Ожидаем ровно 3 конкретных врачей
     /// </summary>
     [Fact]
-    public void GetVeterinariansBySpecies_ReturnsExactVeterinariansForCatSpecies()
+    public async Task GetVeterinariansBySpecies_ReturnsExactVeterinariansForCatSpecies()
     {
         // Arrange
         const AnimalSpecies targetSpecies = AnimalSpecies.Cat;
@@ -44,7 +45,7 @@ public class VetClinicServiceTests
         };
 
         // Act
-        var result = _service.GetVeterinariansBySpecies(targetSpecies).ToList();
+        var result = (await _service.GetVeterinariansBySpeciesAsync(targetSpecies)).ToList();
 
         // Assert
         Assert.Equal(expectedCount, result.Count);
@@ -56,10 +57,9 @@ public class VetClinicServiceTests
 
     /// <summary>
     /// Проверка: Вывод всех питомцев, записанных к врачу Поповой - Id = 4 - упорядоченных по кличке
-    /// Записаны питомцы: Рекс и Шарик. Ожидаем 2 питомца в алфавитном порядке
     /// </summary>
     [Fact]
-    public void GetPetsByDoctorOrderedByName_ReturnsUniquePetsSortedAlphabetically()
+    public async Task GetPetsByDoctorOrderedByName_ReturnsUniquePetsSortedAlphabetically()
     {
         // Arrange
         const int doctorId = 4;
@@ -67,7 +67,7 @@ public class VetClinicServiceTests
         var expectedPetNames = new List<string> { "Рекс", "Шарик" };
 
         // Act
-        var result = _service.GetPetsByDoctorOrderedByName(doctorId).ToList();
+        var result = (await _service.GetPetsByDoctorOrderedByNameAsync(doctorId)).ToList();
 
         // Assert
         Assert.Equal(expectedCount, result.Count);
@@ -80,14 +80,14 @@ public class VetClinicServiceTests
     /// Из 4 приемов для лабрадора повторными являются ровно 2 приема - Appointments 2 и 8
     /// </summary>
     [Fact]
-    public void GetFollowUpAppointmentsCountByBreed_ReturnsExactCountOfFollowUps()
+    public async Task GetFollowUpAppointmentsCountByBreed_ReturnsExactCountOfFollowUps()
     {
         // Arrange
         const int labradorBreedId = 1;
         const int expectedFollowUpCount = 2;
 
         // Act
-        var actualCount = _service.GetFollowUpAppointmentsCountByBreed(labradorBreedId);
+        var actualCount = await _service.GetFollowUpAppointmentsCountByBreedAsync(labradorBreedId);
 
         // Assert
         Assert.Equal(expectedFollowUpCount, actualCount);
@@ -99,7 +99,7 @@ public class VetClinicServiceTests
     /// Ожидаем ровно 2 владельца в алфавитном порядке
     /// </summary>
     [Fact]
-    public void GetOwnersWithMultiplePetsOrderedByName_ReturnsFilteredAndAlphabeticallySortedOwners()
+    public async Task GetOwnersWithMultiplePetsOrderedByName_ReturnsFilteredAndAlphabeticallySortedOwners()
     {
         // Arrange
         const int expectedCount = 2;
@@ -110,7 +110,7 @@ public class VetClinicServiceTests
         };
 
         // Act
-        var result = _service.GetOwnersWithMultiplePetsOrderedByName().ToList();
+        var result = (await _service.GetOwnersWithMultiplePetsOrderedByNameAsync()).ToList();
 
         // Assert
         Assert.Equal(expectedCount, result.Count);
@@ -125,16 +125,16 @@ public class VetClinicServiceTests
     /// Ожидаем 3 приема, относящихся к сентябрю
     /// </summary>
     [Fact]
-    public void GetCurrentMonthAppointmentsByRoom_ReturnsOnlyAppointmentsForSpecifiedMonthAndRoom()
+    public async Task GetCurrentMonthAppointmentsByRoom_ReturnsOnlyAppointmentsForSpecifiedMonthAndRoom()
     {
         // Arrange
         const int targetRoom = 101;
-        var testDate = new DateTime(2026, 9, 1);
+        var testDate = new DateTime(2026, 9, 15);
         const int expectedCount = 3;
         var expectedAppointmentIds = new HashSet<int> { 1, 2, 3 };
 
         // Act
-        var result = _service.GetCurrentMonthAppointmentsByRoom(targetRoom, testDate).ToList();
+        var result = (await _service.GetCurrentMonthAppointmentsByRoomAsync(targetRoom, testDate)).ToList();
 
         // Assert
         Assert.Equal(expectedCount, result.Count);

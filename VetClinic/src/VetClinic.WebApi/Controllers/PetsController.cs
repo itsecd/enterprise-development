@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using VetClinic.Application.DTOs;
+using VetClinic.Application.Dto;
+using VetClinic.Application.Mapping;
 using VetClinic.Domain.Entities;
 using VetClinic.Domain.Interfaces;
 
@@ -14,161 +15,182 @@ public class PetsController(
     IRepository<Pet> repository,
     IRepository<Breed> breedRepository,
     IRepository<Owner> ownerRepository,
-    IVetClinicService clinicService) : ControllerBase
+    IVetClinicService clinicService,
+    ILogger<PetsController> logger) : ControllerBase
 {
     /// <summary>
     /// Получить список всех питомцев
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<PetDto>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<PetDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<PetDto>>> GetAll()
     {
-        var pets = repository.GetAll().Select(p => new PetDto
+        try
         {
-            Id = p.Id,
-            Name = p.Name,
-            Species = p.Species,
-            BreedId = p.BreedId,
-            BreedName = p.Breed?.Name,
-            BirthDate = p.BirthDate,
-            WeightKg = p.WeightKg,
-            OwnerId = p.OwnerId,
-            OwnerName = p.Owner?.FullName
-        });
-
-        return Ok(pets);
+            var pets = await repository.GetAllAsync();
+            return Ok(pets.Select(p => p.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка питомцев");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Получить питомцев записанных к выбранному врачу
     /// </summary>
     [HttpGet("by-doctor/{doctorId:int}")]
-    public ActionResult<IEnumerable<PetDto>> GetPetsByDoctor(int doctorId)
+    [ProducesResponseType(typeof(IEnumerable<PetDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<PetDto>>> GetPetsByDoctor(int doctorId)
     {
-        var pets = clinicService.GetPetsByDoctorOrderedByName(doctorId).Select(p => new PetDto
+        try
         {
-            Id = p.Id,
-            Name = p.Name,
-            Species = p.Species,
-            BreedId = p.BreedId,
-            BreedName = p.Breed?.Name,
-            BirthDate = p.BirthDate,
-            WeightKg = p.WeightKg,
-            OwnerId = p.OwnerId,
-            OwnerName = p.Owner?.FullName
-        });
-
-        return Ok(pets);
+            var pets = await clinicService.GetPetsByDoctorOrderedByNameAsync(doctorId);
+            return Ok(pets.Select(p => p.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении питомцев врача с идентификатором {DoctorId}", doctorId);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Получить питомца по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<PetDto> GetById(int id)
+    [ProducesResponseType(typeof(PetDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PetDto>> GetById(int id)
     {
-        var p = repository.GetById(id);
-        if (p is null)
+        try
         {
-            return NotFound();
+            var pet = await repository.GetByIdAsync(id);
+            if (pet is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(pet.ToDto());
         }
-
-        return Ok(new PetDto
+        catch (Exception ex)
         {
-            Id = p.Id,
-            Name = p.Name,
-            Species = p.Species,
-            BreedId = p.BreedId,
-            BreedName = p.Breed?.Name,
-            BirthDate = p.BirthDate,
-            WeightKg = p.WeightKg,
-            OwnerId = p.OwnerId,
-            OwnerName = p.Owner?.FullName
-        });
-    }
-
-    /// <summary>
-    /// Обновить данные питомца
-    /// </summary>
-    [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] CreatePetDto dto)
-    {
-        var pet = repository.GetById(id);
-        if (pet is null)
-        {
-            return NotFound();
+            logger.LogError(ex, "Ошибка при получении питомца с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
         }
-
-        var breed = breedRepository.GetById(dto.BreedId);
-        var owner = ownerRepository.GetById(dto.OwnerId);
-
-        if (breed is null || owner is null)
-        {
-            return BadRequest();
-        }
-
-        pet.Name = dto.Name;
-        pet.Species = dto.Species;
-        pet.BreedId = dto.BreedId;
-        pet.Breed = breed;
-        pet.BirthDate = dto.BirthDate;
-        pet.WeightKg = dto.WeightKg;
-        pet.OwnerId = dto.OwnerId;
-        pet.Owner = owner;
-
-        repository.Update(pet);
-
-        return NoContent();
     }
 
     /// <summary>
     /// Зарегистрировать нового питомца
     /// </summary>
     [HttpPost]
-    public ActionResult<PetDto> Create([FromBody] CreatePetDto dto)
+    [ProducesResponseType(typeof(PetDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PetDto>> Create([FromBody] CreatePetDto dto)
     {
-        var breed = breedRepository.GetById(dto.BreedId);
-        var owner = ownerRepository.GetById(dto.OwnerId);
-
-        if (breed is null || owner is null)
+        try
         {
-            return BadRequest();
+            var breed = await breedRepository.GetByIdAsync(dto.BreedId);
+            var owner = await ownerRepository.GetByIdAsync(dto.OwnerId);
+
+            if (breed is null || owner is null)
+            {
+                return BadRequest("Указанная порода или владелец не найдены");
+            }
+
+            var pet = new Pet
+            {
+                Name = dto.Name,
+                Species = dto.Species!.Value,
+                BreedId = dto.BreedId,
+                Breed = breed,
+                BirthDate = dto.BirthDate!.Value,
+                WeightKg = dto.WeightKg,
+                OwnerId = dto.OwnerId,
+                Owner = owner
+            };
+
+            await repository.AddAsync(pet);
+            owner.Pets.Add(pet);
+
+            return CreatedAtAction(nameof(GetById), new { id = pet.Id }, pet.ToDto());
         }
-
-        var pet = new Pet
+        catch (Exception ex)
         {
-            Name = dto.Name,
-            Species = dto.Species,
-            BreedId = dto.BreedId,
-            Breed = breed,
-            BirthDate = dto.BirthDate,
-            WeightKg = dto.WeightKg,
-            OwnerId = dto.OwnerId,
-            Owner = owner
-        };
+            logger.LogError(ex, "Ошибка при регистрации питомца");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
+    }
 
-        repository.Add(pet);
-        owner.Pets.Add(pet);
-
-        return Ok(new PetDto
+    /// <summary>
+    /// Обновить данные питомца
+    /// </summary>
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Update(int id, [FromBody] CreatePetDto dto)
+    {
+        try
         {
-            Id = pet.Id,
-            Name = pet.Name,
-            Species = pet.Species,
-            BreedId = pet.BreedId,
-            BreedName = breed.Name,
-            BirthDate = pet.BirthDate,
-            WeightKg = pet.WeightKg,
-            OwnerId = pet.OwnerId,
-            OwnerName = owner.FullName
-        });
+            var pet = await repository.GetByIdAsync(id);
+            if (pet is null)
+            {
+                return NotFound();
+            }
+
+            var breed = await breedRepository.GetByIdAsync(dto.BreedId);
+            var owner = await ownerRepository.GetByIdAsync(dto.OwnerId);
+
+            if (breed is null || owner is null)
+            {
+                return BadRequest("Указанная порода или владелец не найдены");
+            }
+
+            pet.Name = dto.Name;
+            pet.Species = dto.Species!.Value;
+            pet.BreedId = dto.BreedId;
+            pet.Breed = breed;
+            pet.BirthDate = dto.BirthDate!.Value;
+            pet.WeightKg = dto.WeightKg;
+            pet.OwnerId = dto.OwnerId;
+            pet.Owner = owner;
+
+            await repository.UpdateAsync(pet);
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении питомца с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Удалить питомца
     /// </summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int id)
     {
-        return repository.Delete(id) ? NoContent() : NotFound();
+        try
+        {
+            var deleted = await repository.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении питомца с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 }

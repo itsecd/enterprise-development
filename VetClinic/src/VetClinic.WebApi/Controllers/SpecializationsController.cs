@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using VetClinic.Application.DTOs;
+using VetClinic.Application.Dto;
+using VetClinic.Application.Mapping;
 using VetClinic.Domain.Entities;
 using VetClinic.Domain.Interfaces;
 
@@ -10,91 +11,131 @@ namespace VetClinic.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class SpecializationsController(IRepository<Specialization> repository) : ControllerBase
+public class SpecializationsController(
+    IRepository<Specialization> repository,
+    ILogger<SpecializationsController> logger) : ControllerBase
 {
     /// <summary>
     /// Получить список всех специализаций
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<SpecializationDto>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<SpecializationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<SpecializationDto>>> GetAll()
     {
-        var specializations = repository.GetAll().Select(s => new SpecializationDto
+        try
         {
-            Id = s.Id,
-            Name = s.Name,
-            TargetSpecies = s.TargetSpecies
-        });
-
-        return Ok(specializations);
+            var specializations = await repository.GetAllAsync();
+            return Ok(specializations.Select(s => s.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка специализаций");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Получить специализацию по идентификатору
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<SpecializationDto> GetById(int id)
+    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<SpecializationDto>> GetById(int id)
     {
-        var specialization = repository.GetById(id);
-        if (specialization is null)
+        try
         {
-            return NotFound();
-        }
+            var specialization = await repository.GetByIdAsync(id);
+            if (specialization is null)
+            {
+                return NotFound();
+            }
 
-        return Ok(new SpecializationDto
+            return Ok(specialization.ToDto());
+        }
+        catch (Exception ex)
         {
-            Id = specialization.Id,
-            Name = specialization.Name,
-            TargetSpecies = specialization.TargetSpecies
-        });
+            logger.LogError(ex, "Ошибка при получении специализации с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Добавить новую специализацию
     /// </summary>
     [HttpPost]
-    public ActionResult<SpecializationDto> Create([FromBody] CreateSpecializationDto dto)
+    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<SpecializationDto>> Create([FromBody] CreateSpecializationDto dto)
     {
-        var specialization = new Specialization
+        try
         {
-            Name = dto.Name,
-            TargetSpecies = dto.TargetSpecies
-        };
+            var specialization = new Specialization
+            {
+                Name = dto.Name,
+                TargetSpecies = dto.TargetSpecies!.Value
+            };
 
-        repository.Add(specialization);
+            await repository.AddAsync(specialization);
 
-        return CreatedAtAction(nameof(GetById), new { id = specialization.Id }, new SpecializationDto
+            return CreatedAtAction(nameof(GetById), new { id = specialization.Id }, specialization.ToDto());
+        }
+        catch (Exception ex)
         {
-            Id = specialization.Id,
-            Name = specialization.Name,
-            TargetSpecies = specialization.TargetSpecies
-        });
+            logger.LogError(ex, "Ошибка при создании специализации");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Обновить специализацию
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] CreateSpecializationDto dto)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Update(int id, [FromBody] CreateSpecializationDto dto)
     {
-        var specialization = repository.GetById(id);
-        if (specialization is null)
+        try
         {
-            return NotFound();
+            var specialization = await repository.GetByIdAsync(id);
+            if (specialization is null)
+            {
+                return NotFound();
+            }
+
+            specialization.Name = dto.Name;
+            specialization.TargetSpecies = dto.TargetSpecies!.Value;
+            await repository.UpdateAsync(specialization);
+
+            return NoContent();
         }
-
-        specialization.Name = dto.Name;
-        specialization.TargetSpecies = dto.TargetSpecies;
-        repository.Update(specialization);
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении специализации с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 
     /// <summary>
     /// Удалить специализацию
     /// </summary>
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int id)
     {
-        return repository.Delete(id) ? NoContent() : NotFound();
+        try
+        {
+            var deleted = await repository.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении специализации с идентификатором {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Внутренняя ошибка сервера");
+        }
     }
 }

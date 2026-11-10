@@ -2,7 +2,6 @@ using VetClinic.Domain.Interfaces;
 
 namespace VetClinic.Domain.Entities;
 
-
 /// <summary>
 /// Ветеринар
 /// </summary>
