@@ -1,4 +1,5 @@
 using System.Reflection;
+using Vet.Api;
 using Vet.Application;
 using Vet.Infrastructure.InMemory;
 using Vet.ServiceDefaults;
@@ -26,7 +27,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddProblemDetails();
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddApplication();
 builder.Services.AddInMemoryInfrastructure();
 
