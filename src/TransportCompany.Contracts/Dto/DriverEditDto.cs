@@ -33,5 +33,6 @@ public class DriverEditDto
     /// <summary>
     /// Водительское удостоверение
     /// </summary>
+    [Range(0, 15, ErrorMessage = "Номер категории водительского удостоверения должен быть от 0 до 15")]
     public required DrivingLicense License { get; init; }
 }
