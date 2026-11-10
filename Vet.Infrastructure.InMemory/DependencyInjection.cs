@@ -6,8 +6,16 @@ using Vet.Infrastructure.InMemory.Repositories;
 
 namespace Vet.Infrastructure.InMemory;
 
+/// <summary>
+/// Внедрение зависимостей слоя inmemory
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Регистрирует тестовые данные и репозитории в контейнере зависимостей
+    /// </summary>
+    /// <param name="services">Коллекция сервисов приложения</param>
+    /// <returns>Коллекция сервисов приложения</returns>
     public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
     {
         var fixture = new VetClinicTestFixture();
