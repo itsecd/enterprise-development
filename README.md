@@ -134,3 +134,113 @@
 
 Чтобы задать вопрос по лабораторной, воспользуйтесь [соотвествующим разделом дискуссий](https://github.com/itsecd/enterprise-development/discussions/categories/questions) или заведите [ишью](https://github.com/itsecd/enterprise-development/issues/new).  
 Если у вас появились идеи/пожелания/прочие полезные мысли по преподаваемой дисциплине, их можно оставить [здесь](https://github.com/itsecd/enterprise-development/discussions/categories/ideas).
+
+
+# Лабораторная работа №3 — ORM «Химчистка»
+
+Учебный проект по дисциплине «Разработка корпоративных приложений» на платформе .NET 10.
+
+## Предметная область
+
+В базе данных химчистки хранятся сведения о принятых изделиях, клиентах и заказах.
+- **Изделие** — наименование, категория, материал.
+- **Категория изделия** — справочник: название, рекомендуемый вид чистки, стоимость.
+- **Клиент** — ФИО, телефон.
+- **Заказ** — клиент, изделие, дата приёма, срок выполнения, статус.
+
+Данные хранятся в **базе данных MySQL**. Для работы с БД используется **Entity Framework Core**.
+
+## Технологии
+
+- .NET 10
+- ASP.NET Core Web API
+- **Entity Framework Core** (ORM)
+- **MySQL** (база данных)
+- **.NET Aspire** (оркестрация)
+- **Docker** (контейнеризация БД)
+- JWT
+- OpenAPI
+- Scalar UI
+- xUnit v3
+- LINQ
+- GitHub Actions
+
+## Архитектура
+
+Проект разделён на слои (Clean Architecture):
+
+- **Domain** — доменные сущности (`Client`, `Order`, `Item`, `Category`), интерфейсы репозиториев, тестовые данные (`DataSeed`).
+- **Contracts** — DTO для чтения и записи, интерфейсы сервисов (`IApplicationService`, `IAnalyticsService`).
+- **Application** — бизнес-логика (сервисы `ClientService`, `OrderService` и т.д., `AnalyticsService`, `Mapper`).
+- **Infrastructure.EFCore** — реализация репозиториев через EF Core (`ClientEfCoreRepository` и т.д.), `DryCleanerDbContext`, миграции.
+- **Api** — контроллеры (`CrudControllerBase`, `AnalyticsController`, `AuthController`), глобальный `ExceptionHandlingMiddleware`, настройка DI в `Program.cs`.
+- **AppHost** — проект Aspire для оркестрации базы данных и API.
+- **ServiceDefaults** — общие настройки для API (OpenTelemetry, HealthChecks).
+- **Tests** — xUnit-тесты аналитических запросов.
+
+## Структура
+
+```text
+enterprise-development/
+├── .github/
+│   └── workflows/
+│       └── tests.yml
+├── docs/
+│   ├── tests_results.png
+│   ├── auth_login.jpg
+│   ├── auth_token.jpg
+│   └── scalar_example.jpg
+├── DryCleaner/
+│   ├── src/
+│   │   ├── DryCleaner.Domain/
+│   │   ├── DryCleaner.Contracts/
+│   │   ├── DryCleaner.Application/
+│   │   ├── DryCleaner.Infrastructure.EFCore/
+│   │   ├── DryCleaner.Api/
+│   │   ├── DryCleaner.AppHost/
+│   │   └── DryCleaner.ServiceDefaults/
+│   ├── tests/
+│   │   └── DryCleaner.Tests/
+│   └── DryCleaner.slnx
+└── README.md
+```
+
+## Функциональность
+
+- **CRUD для всех сущностей** (реализован через базовый класс `CrudControllerBase`).
+- **Аналитика** (5 запросов из первой лабораторной):
+  - Заказы в обработке, упорядоченные по дате.
+  - Топ-5 клиентов по количеству заказов за период.
+  - Клиенты с самыми долгими заказами.
+  - Топ-5 популярных/непопулярных категорий за год.
+  - Клиент, потративший наибольшую сумму.
+- **Авторизация** — JWT-токены. Все контроллеры (кроме `Auth`) защищены атрибутом `[Authorize]`.
+- **Документация** — OpenAPI + Scalar UI.
+- **База данных** — MySQL, развернутая в Docker-контейнере через Aspire.
+- **Миграции** — создание таблиц и заполнение начальными данными (`HasData`).
+
+## Запуск
+
+> **Требования:** Установленный **Docker Desktop** (должен быть запущен) и **.NET 10 SDK**.
+
+1. Перейти в папку `DryCleaner/src/DryCleaner.AppHost`.
+2. Запустить проект Aspire:
+   ```bash
+   dotnet run
+   ```
+*(Или нажать F5 в Visual Studio, выбрав проект `DryCleaner.AppHost` как запускаемый).*
+
+3. Aspire автоматически:
+   - Поднимет контейнер с MySQL.
+   - Создаст базу данных `drycleanerdb`.
+   - Запустит API и применит миграции (таблицы создадутся автоматически, данные из `DataSeed` засеются).
+4. Открыть **Aspire Dashboard** (ссылка появится в консоли,`https://localhost:17005`).
+5. Открыть в браузере страницу **Scalar** (ссылка будет в Dashboard на строке `drycleanerapi`, `https://localhost:51203/scalar`).
+6. Авторизоваться (метод `POST /api/Auth/login`):
+   - **Username:** `admin`
+   - **Password:** `password`
+7. Скопировать полученный токен и вставить его в поле **Bearer Token** в Scalar.
+
+![auth_login](./docs/aspire_dashboard.jpg)
+
+![auth_token](./docs/aspire_urls.jpg)
