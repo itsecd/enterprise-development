@@ -1,4 +1,5 @@
-﻿using Vet.Application.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
 using Vet.Domain.Entities;
 using Vet.Domain.Interfaces;
@@ -9,7 +10,12 @@ namespace Vet.Application.Services;
 /// Сервис для управления породами
 /// </summary>
 /// <param name="breedRepository">Репозиторий пород</param>
-public class BreedService(IRepository<Breed, int> breedRepository)
+/// <param name="petRepository">Репозиторий питомцев</param>
+/// <param name="logger">Логгер сервиса</param>
+public class BreedService(
+    IRepository<Breed, int> breedRepository,
+    IRepository<Pet, int> petRepository,
+    ILogger<BreedService> logger)
     : IApplicationService<BreedDto, BreedCreateUpdateDto, int>
 {
     /// <inheritdoc />
@@ -31,6 +37,7 @@ public class BreedService(IRepository<Breed, int> breedRepository)
     {
         var breed = dto.ToEntity();
         var created = await breedRepository.AddAsync(breed);
+        logger.LogInformation("Создана новая порода с Id {Id} ({Name})", created.Id, created.Name);
         return created.ToDto();
     }
 
@@ -40,18 +47,43 @@ public class BreedService(IRepository<Breed, int> breedRepository)
         var existing = await breedRepository.GetByIdAsync(id);
         if (existing is null)
         {
+            logger.LogWarning("Попытка обновления несуществующей породы с Id {Id}", id);
             return false;
         }
 
         existing.Name = dto.Name;
         existing.Species = dto.Species;
 
-        return await breedRepository.UpdateAsync(existing);
+        var result = await breedRepository.UpdateAsync(existing);
+        if (result)
+        {
+            logger.LogInformation("Порода с Id {Id} успешно обновлена", id);
+        }
+        return result;
     }
 
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        return await breedRepository.DeleteAsync(id);
+        var existing = await breedRepository.GetByIdAsync(id);
+        if (existing is null)
+        {
+            logger.LogWarning("Попытка удаления несуществующей породы с Id {Id}", id);
+            return false;
+        }
+
+        var pets = await petRepository.GetAllAsync();
+        if (pets.Any(p => p.Breed.Id == id))
+        {
+            logger.LogWarning("Невозможно удалить породу с Id {Id}, так как на неё ссылаются питомцы", id);
+            throw new InvalidOperationException($"Невозможно удалить породу с Id {id}, так как на неё ссылаются питомцы");
+        }
+
+        var result = await breedRepository.DeleteAsync(id);
+        if (result)
+        {
+            logger.LogInformation("Порода с Id {Id} успешно удалена", id);
+        }
+        return result;
     }
 }

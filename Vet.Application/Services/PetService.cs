@@ -1,4 +1,5 @@
-﻿using Vet.Application.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
 using Vet.Domain.Entities;
 using Vet.Domain.Interfaces;
@@ -8,15 +9,17 @@ namespace Vet.Application.Services;
 /// <summary>
 /// Сервис для управления питомцами
 /// </summary>
-/// <param name="petRepository">репозиторий питомцев</param>
+/// <param name="petRepository">Репозиторий питомцев</param>
 /// <param name="ownerRepository">Репозиторий владельцев</param>
 /// <param name="breedRepository">Репозиторий пород</param>
 /// <param name="appointmentRepository">Репозиторий приемов</param>
+/// <param name="logger">Логгер сервиса</param>
 public class PetService(
     IRepository<Pet, int> petRepository,
     IRepository<Owner, int> ownerRepository,
     IRepository<Breed, int> breedRepository,
-    IRepository<Appointment, int> appointmentRepository)
+    IRepository<Appointment, int> appointmentRepository,
+    ILogger<PetService> logger)
     : IApplicationService<PetDto, PetCreateUpdateDto, int>
 {
     /// <inheritdoc />
@@ -36,14 +39,23 @@ public class PetService(
     /// <inheritdoc />
     public async Task<PetDto> CreateAsync(PetCreateUpdateDto dto)
     {
-        var owner = await ownerRepository.GetByIdAsync(dto.OwnerId)
-            ?? throw new KeyNotFoundException($"Владелец с Id {dto.OwnerId} не найден");
+        var owner = await ownerRepository.GetByIdAsync(dto.OwnerId);
+        if (owner is null)
+        {
+            logger.LogWarning("Ошибка создания питомца: Владелец с Id {OwnerId} не найден", dto.OwnerId);
+            throw new KeyNotFoundException($"Владелец с Id {dto.OwnerId} не найден");
+        }
 
-        var breed = await breedRepository.GetByIdAsync(dto.BreedId)
-            ?? throw new KeyNotFoundException($"Порода с Id {dto.BreedId} не найдена");
+        var breed = await breedRepository.GetByIdAsync(dto.BreedId);
+        if (breed is null)
+        {
+            logger.LogWarning("Ошибка создания питомца: Порода с Id {BreedId} не найдена", dto.BreedId);
+            throw new KeyNotFoundException($"Порода с Id {dto.BreedId} не найдена");
+        }
 
         if (breed.Species != dto.Species)
         {
+            logger.LogWarning("Несоответствие вида животного: передано {DtoSpecies}, а у породы {BreedSpecies}", dto.Species, breed.Species);
             throw new ArgumentException($"Вид животного '{dto.Species}' не соответствует виду выбранной породы '{breed.Species}'");
         }
 
@@ -51,6 +63,7 @@ public class PetService(
         var created = await petRepository.AddAsync(pet);
 
         owner.Pets.Add(created);
+        logger.LogInformation("Создан новый питомец с Id {Id} ({Name})", created.Id, created.Name);
 
         return created.ToDto();
     }
@@ -61,17 +74,27 @@ public class PetService(
         var existing = await petRepository.GetByIdAsync(id);
         if (existing is null)
         {
+            logger.LogWarning("Попытка обновления несуществующего питомца с Id {Id}", id);
             return false;
         }
 
-        var owner = await ownerRepository.GetByIdAsync(dto.OwnerId)
-            ?? throw new KeyNotFoundException($"Владелец с Id {dto.OwnerId} не найден");
+        var owner = await ownerRepository.GetByIdAsync(dto.OwnerId);
+        if (owner is null)
+        {
+            logger.LogWarning("Ошибка обновления питомца {Id}: Владелец с Id {OwnerId} не найден", id, dto.OwnerId);
+            throw new KeyNotFoundException($"Владелец с Id {dto.OwnerId} не найден");
+        }
 
-        var breed = await breedRepository.GetByIdAsync(dto.BreedId)
-            ?? throw new KeyNotFoundException($"Порода с Id {dto.BreedId} не найдена");
+        var breed = await breedRepository.GetByIdAsync(dto.BreedId);
+        if (breed is null)
+        {
+            logger.LogWarning("Ошибка обновления питомца {Id}: Порода с Id {BreedId} не найдена", id, dto.BreedId);
+            throw new KeyNotFoundException($"Порода с Id {dto.BreedId} не найдена");
+        }
 
         if (breed.Species != dto.Species)
         {
+            logger.LogWarning("Несоответствие вида при обновлении питомца {Id}: {DtoSpecies} != {BreedSpecies}", id, dto.Species, breed.Species);
             throw new ArgumentException($"Вид животного '{dto.Species}' не соответствует виду выбранной породы '{breed.Species}'");
         }
 
@@ -88,7 +111,12 @@ public class PetService(
         existing.BodyWeight = dto.BodyWeight;
         existing.Owner = owner;
 
-        return await petRepository.UpdateAsync(existing);
+        var result = await petRepository.UpdateAsync(existing);
+        if (result)
+        {
+            logger.LogInformation("Питомец с Id {Id} успешно обновлен", id);
+        }
+        return result;
     }
 
     /// <inheritdoc />
@@ -97,6 +125,7 @@ public class PetService(
         var pet = await petRepository.GetByIdAsync(id);
         if (pet is null)
         {
+            logger.LogWarning("Попытка удаления несуществующего питомца с Id {Id}", id);
             return false;
         }
 
@@ -106,9 +135,15 @@ public class PetService(
         var petAppointments = allAppointments.Where(a => a.Pet.Id == id).ToList();
         foreach (var appt in petAppointments)
         {
+            appt.Veterinarian.Appointments.Remove(appt);
             await appointmentRepository.DeleteAsync(appt.Id);
         }
 
-        return await petRepository.DeleteAsync(id);
+        var result = await petRepository.DeleteAsync(id);
+        if (result)
+        {
+            logger.LogInformation("Питомец с Id {Id} и все связанные приемы успешно удалены", id);
+        }
+        return result;
     }
 }

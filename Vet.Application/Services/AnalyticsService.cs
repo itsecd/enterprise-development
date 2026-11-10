@@ -1,4 +1,5 @@
-﻿using Vet.Application.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
 using Vet.Domain.Entities;
 using Vet.Domain.Enums;
@@ -13,15 +14,18 @@ namespace Vet.Application.Services;
 /// <param name="appointmentRepository">Репозиторий приемов</param>
 /// <param name="ownerRepository">Репозиторий владельцев</param>
 /// <param name="breedRepository">Репозиторий пород</param>
+/// <param name="logger">Логгер сервиса</param>
 public class AnalyticsService(
     IRepository<Veterinarian, int> veterinarianRepository,
     IRepository<Appointment, int> appointmentRepository,
     IRepository<Owner, int> ownerRepository,
-    IRepository<Breed, int> breedRepository) : IAnalyticsService
+    IRepository<Breed, int> breedRepository,
+    ILogger<AnalyticsService> logger) : IAnalyticsService
 {
     /// <inheritdoc />
     public async Task<IReadOnlyList<VeterinarianDto>> GetVeterinariansBySpeciesAsync(Species species)
     {
+        logger.LogInformation("Запрос на получение ветеринаров по виду животного: {Species}", species);
         var vets = await veterinarianRepository.GetAllAsync();
 
         return [.. vets
@@ -33,8 +37,13 @@ public class AnalyticsService(
     /// <inheritdoc />
     public async Task<IReadOnlyList<PetDto>> GetPetsByVeterinarianAsync(int veterinarianId)
     {
-        var vet = await veterinarianRepository.GetByIdAsync(veterinarianId)
-            ?? throw new KeyNotFoundException($"Ветеринар с идентификатором {veterinarianId} не найден в клинике");
+        logger.LogInformation("Запрос на получение питомцев ветеринара с Id {VetId}", veterinarianId);
+        var vet = await veterinarianRepository.GetByIdAsync(veterinarianId);
+        if (vet is null)
+        {
+            logger.LogWarning("Ветеринар с идентификатором {VetId} не найден в клинике", veterinarianId);
+            throw new KeyNotFoundException($"Ветеринар с идентификатором {veterinarianId} не найден в клинике");
+        }
 
         var appointments = await appointmentRepository.GetAllAsync();
 
@@ -49,8 +58,13 @@ public class AnalyticsService(
     /// <inheritdoc />
     public async Task<int> GetRepeatAppointmentsCountByBreedAsync(int breedId)
     {
-        var breed = await breedRepository.GetByIdAsync(breedId)
-            ?? throw new KeyNotFoundException($"Порода с идентификатором {breedId} не найдена в справочнике");
+        logger.LogInformation("Запрос на подсчет повторных приемов для породы с Id {BreedId}", breedId);
+        var breed = await breedRepository.GetByIdAsync(breedId);
+        if (breed is null)
+        {
+            logger.LogWarning("Порода с идентификатором {BreedId} не найдена в справочнике", breedId);
+            throw new KeyNotFoundException($"Порода с идентификатором {breedId} не найдена в справочнике");
+        }
 
         var appointments = await appointmentRepository.GetAllAsync();
         return appointments.Count(a => a.IsRepeat && a.Pet.Breed.Id == breed.Id);
@@ -59,6 +73,7 @@ public class AnalyticsService(
     /// <inheritdoc />
     public async Task<IReadOnlyList<OwnerDto>> GetOwnersWithMultiplePetsAsync()
     {
+        logger.LogInformation("Запрос на получение владельцев с более чем одним питомцем");
         var owners = await ownerRepository.GetAllAsync();
 
         return [.. owners
@@ -70,6 +85,7 @@ public class AnalyticsService(
     /// <inheritdoc />
     public async Task<IReadOnlyList<AppointmentDto>> GetAppointmentsByRoomAsync(int roomNumber, int year, int month)
     {
+        logger.LogInformation("Запрос на получение приемов в кабинете {Room} за {Month}.{Year}", roomNumber, month, year);
         var appointments = await appointmentRepository.GetAllAsync();
 
         return [.. appointments

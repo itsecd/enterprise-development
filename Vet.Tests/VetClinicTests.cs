@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Vet.Application.Services;
 using Vet.Domain.DataSeed;
 using Vet.Domain.Enums;
@@ -28,7 +29,8 @@ public class VetClinicTest : IClassFixture<VetClinicTestFixture>
             veterinarianRepository,
             appointmentRepository,
             ownerRepository,
-            breedRepository);
+            breedRepository,
+            NullLogger<AnalyticsService>.Instance);
     }
 
     /// <summary>
