@@ -9,10 +9,10 @@ namespace TransportCompany.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class VehiclesController(IVehicleService service, ILogger<VehiclesController> logger) : ControllerBase
+public class VehicleController(IVehicleService service, ILogger<VehicleController> logger) : ControllerBase
 {
     private readonly IVehicleService _service = service;
-    private readonly ILogger<VehiclesController> _logger = logger;
+    private readonly ILogger<VehicleController> _logger = logger;
 
     /// <summary>
     /// Получить список всех транспортных средств
