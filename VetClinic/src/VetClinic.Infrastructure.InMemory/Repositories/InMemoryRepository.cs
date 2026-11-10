@@ -1,7 +1,6 @@
-using VetClinic.Domain.Entities;
 using VetClinic.Domain.Interfaces;
 
-namespace VetClinic.Infrastructure.Repositories;
+namespace VetClinic.Infrastructure.InMemory.Repositories;
 
 /// <summary>
 /// Реализация репозитория для хранения данных в памяти
@@ -10,7 +9,7 @@ namespace VetClinic.Infrastructure.Repositories;
 public class InMemoryRepository<T> : IRepository<T> where T : class, IEntity
 {
     private readonly List<T> _items;
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
     private int _currentId;
 
     /// <summary>
@@ -24,35 +23,36 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IEntity
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> GetAll()
+    public Task<IEnumerable<T>> GetAllAsync()
     {
         lock (_lock)
         {
-            return [.. _items];
+            return Task.FromResult<IEnumerable<T>>([.. _items]);
         }
     }
 
     /// <inheritdoc />
-    public T? GetById(int id)
+    public Task<T?> GetByIdAsync(int id)
     {
         lock (_lock)
         {
-            return _items.FirstOrDefault(x => x.Id == id);
+            return Task.FromResult(_items.FirstOrDefault(x => x.Id == id));
         }
     }
 
     /// <inheritdoc />
-    public void Add(T entity)
+    public Task AddAsync(T entity)
     {
         lock (_lock)
         {
             entity.Id = ++_currentId;
             _items.Add(entity);
+            return Task.CompletedTask;
         }
     }
 
     /// <inheritdoc />
-    public void Update(T entity)
+    public Task UpdateAsync(T entity)
     {
         lock (_lock)
         {
@@ -61,16 +61,18 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IEntity
             {
                 _items[index] = entity;
             }
+
+            return Task.CompletedTask;
         }
     }
 
     /// <inheritdoc />
-    public bool Delete(int id)
+    public Task<bool> DeleteAsync(int id)
     {
         lock (_lock)
         {
             var item = _items.FirstOrDefault(x => x.Id == id);
-            return item is not null && _items.Remove(item);
+            return Task.FromResult(item is not null && _items.Remove(item));
         }
     }
 }
