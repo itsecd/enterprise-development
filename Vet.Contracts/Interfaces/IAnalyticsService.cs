@@ -1,7 +1,7 @@
 ﻿using Vet.Contracts.Dtos;
 using Vet.Domain.Enums;
 
-namespace Vet.Application.Interfaces;
+namespace Vet.Contracts.Interfaces;
 
 /// <summary>
 /// Интерфейс сервиса аналитических запросов ветеринарной клиники

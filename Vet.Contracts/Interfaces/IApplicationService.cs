@@ -1,4 +1,4 @@
-﻿namespace Vet.Application.Interfaces;
+﻿namespace Vet.Contracts.Interfaces;
 
 /// <summary>
 /// Базовый интерфейс сервиса приложения для выполнения CRUD-операций
