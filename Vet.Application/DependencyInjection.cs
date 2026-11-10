@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vet.Application.Interfaces;
 using Vet.Application.Services;
 using Vet.Contracts.Dtos;
+using Vet.Contracts.Interfaces;
 
 namespace Vet.Application;
 
