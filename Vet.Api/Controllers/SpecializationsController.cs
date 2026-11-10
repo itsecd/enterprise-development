@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
+using Vet.Contracts.Interfaces;
 
 namespace Vet.Api.Controllers;
 
@@ -20,25 +20,12 @@ public sealed class SpecializationsController(
     /// </summary>
     /// <returns>Список всех специализаций</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<SpecializationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAll()
+    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> GetAll()
     {
-        try
-        {
-            logger.LogInformation("Запрос на получение всех специализаций");
-            var specs = await service.GetAllAsync();
-            return Ok(specs);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении всех специализаций");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var specs = await service.GetAllAsync();
+        return Ok(specs);
     }
 
     /// <summary>
@@ -47,37 +34,24 @@ public sealed class SpecializationsController(
     /// <param name="id">Идентификатор специализации</param>
     /// <returns>Данные специализации</returns>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<ActionResult<SpecializationDto>> GetById(int id)
     {
-        try
+        var spec = await service.GetByIdAsync(id);
+        if (spec is null)
         {
-            logger.LogInformation("Запрос специализации с Id {Id}", id);
-            var spec = await service.GetByIdAsync(id);
-            if (spec is null)
+            logger.LogWarning("Специализация с Id {Id} не найдена", id);
+            return NotFound(new ProblemDetails
             {
-                logger.LogWarning("Специализация с Id {Id} не найдена", id);
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Ресурс не найден",
-                    Detail = $"Специализация с идентификатором {id} не найдена"
-                });
-            }
-
-            return Ok(spec);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении специализации с Id {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
+                Status = StatusCodes.Status404NotFound,
+                Title = "Ресурс не найден",
+                Detail = $"Специализация с идентификатором {id} не найдена"
             });
         }
+
+        return Ok(spec);
     }
 
     /// <summary>
@@ -86,35 +60,13 @@ public sealed class SpecializationsController(
     /// <param name="dto">Данные для создания специализации</param>
     /// <returns>Созданная специализация</returns>
     [HttpPost]
-    [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Create([FromBody] SpecializationCreateUpdateDto dto)
+    public async Task<ActionResult<SpecializationDto>> Create([FromBody] SpecializationCreateUpdateDto dto)
     {
-        try
-        {
-            logger.LogInformation("Создание новой специализации {Name}", dto.Name);
-            var created = await service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-        }
-        catch (ArgumentException ex)
-        {
-            logger.LogWarning(ex, "Ошибка валидации при создании специализации");
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Некорректный запрос"
-            });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка сервера при создании специализации");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var created = await service.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     /// <summary>
@@ -130,41 +82,19 @@ public sealed class SpecializationsController(
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update(int id, [FromBody] SpecializationCreateUpdateDto dto)
     {
-        try
+        var updated = await service.UpdateAsync(id, dto);
+        if (!updated)
         {
-            logger.LogInformation("Обновление специализации с Id {Id}", id);
-            var updated = await service.UpdateAsync(id, dto);
-            if (!updated)
+            logger.LogWarning("Специализация с Id {Id} не найдена для обновления", id);
+            return NotFound(new ProblemDetails
             {
-                logger.LogWarning("Специализация с Id {Id} не найдена для обновления", id);
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Ресурс не найден",
-                    Detail = $"Специализация с идентификатором {id} не найдена"
-                });
-            }
+                Status = StatusCodes.Status404NotFound,
+                Title = "Ресурс не найден",
+                Detail = $"Специализация с идентификатором {id} не найдена"
+            });
+        }
 
-            return NoContent();
-        }
-        catch (ArgumentException ex)
-        {
-            logger.LogWarning(ex, "Ошибка валидации при обновлении специализации с Id {Id}", id);
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Некорректный запрос"
-            });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка сервера при обновлении специализации с Id {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        return NoContent();
     }
 
     /// <summary>
@@ -175,34 +105,22 @@ public sealed class SpecializationsController(
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(int id)
     {
-        try
+        var deleted = await service.DeleteAsync(id);
+        if (!deleted)
         {
-            logger.LogInformation("Удаление специализации с Id {Id}", id);
-            var deleted = await service.DeleteAsync(id);
-            if (!deleted)
+            logger.LogWarning("Специализация с Id {Id} не найдена для удаления", id);
+            return NotFound(new ProblemDetails
             {
-                logger.LogWarning("Специализация с Id {Id} не найдена для удаления", id);
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Ресурс не найден",
-                    Detail = $"Специализация с идентификатором {id} не найдена"
-                });
-            }
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка сервера при удалении специализации с Id {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
+                Status = StatusCodes.Status404NotFound,
+                Title = "Ресурс не найден",
+                Detail = $"Специализация с идентификатором {id} не найдена"
             });
         }
+
+        return NoContent();
     }
 }

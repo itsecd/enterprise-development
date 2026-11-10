@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
+using Vet.Contracts.Interfaces;
 
 namespace Vet.Api.Controllers;
 
@@ -20,25 +20,12 @@ public sealed class PetsController(
     /// </summary>
     /// <returns>Список всех питомцев</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<PetDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAll()
+    public async Task<ActionResult<IReadOnlyList<PetDto>>> GetAll()
     {
-        try
-        {
-            logger.LogInformation("Запрос на получение всех питомцев");
-            var pets = await service.GetAllAsync();
-            return Ok(pets);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении всех питомцев");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var pets = await service.GetAllAsync();
+        return Ok(pets);
     }
 
     /// <summary>
@@ -47,37 +34,24 @@ public sealed class PetsController(
     /// <param name="id">Идентификатор питомца</param>
     /// <returns>Данные питомца</returns>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(PetDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<ActionResult<PetDto>> GetById(int id)
     {
-        try
+        var pet = await service.GetByIdAsync(id);
+        if (pet is null)
         {
-            logger.LogInformation("Запрос питомца с Id {Id}", id);
-            var pet = await service.GetByIdAsync(id);
-            if (pet is null)
+            logger.LogWarning("Питомец с Id {Id} не найден", id);
+            return NotFound(new ProblemDetails
             {
-                logger.LogWarning("Питомец с Id {Id} не найден", id);
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Ресурс не найден",
-                    Detail = $"Питомец с идентификатором {id} не найден"
-                });
-            }
-
-            return Ok(pet);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении питомца с Id {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
+                Status = StatusCodes.Status404NotFound,
+                Title = "Ресурс не найден",
+                Detail = $"Питомец с идентификатором {id} не найден"
             });
         }
+
+        return Ok(pet);
     }
 
     /// <summary>
@@ -86,45 +60,14 @@ public sealed class PetsController(
     /// <param name="dto">Данные для создания питомца</param>
     /// <returns>Созданный питомец</returns>
     [HttpPost]
-    [ProducesResponseType(typeof(PetDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Create([FromBody] PetCreateUpdateDto dto)
+    public async Task<ActionResult<PetDto>> Create([FromBody] PetCreateUpdateDto dto)
     {
-        try
-        {
-            logger.LogInformation("Создание нового питомца {Name}", dto.Name);
-            var created = await service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            logger.LogWarning(ex, "Связанная сущность не найдена при создании питомца");
-            return NotFound(new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Ресурс не найден"
-            });
-        }
-        catch (ArgumentException ex)
-        {
-            logger.LogWarning(ex, "Ошибка валидации при создании питомца");
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Некорректный запрос"
-            });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка сервера при создании питомца");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var created = await service.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     /// <summary>
@@ -140,50 +83,19 @@ public sealed class PetsController(
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update(int id, [FromBody] PetCreateUpdateDto dto)
     {
-        try
+        var updated = await service.UpdateAsync(id, dto);
+        if (!updated)
         {
-            logger.LogInformation("Обновление питомца с Id {Id}", id);
-            var updated = await service.UpdateAsync(id, dto);
-            if (!updated)
-            {
-                logger.LogWarning("Питомец с Id {Id} не найден для обновления", id);
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Ресурс не найден",
-                    Detail = $"Питомец с идентификатором {id} не найден"
-                });
-            }
-
-            return NoContent();
-        }
-        catch (KeyNotFoundException ex)
-        {
-            logger.LogWarning(ex, "Связанная сущность не найдена при обновлении питомца с Id {Id}", id);
+            logger.LogWarning("Питомец с Id {Id} не найден для обновления", id);
             return NotFound(new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = "Ресурс не найден"
+                Title = "Ресурс не найден",
+                Detail = $"Питомец с идентификатором {id} не найден"
             });
         }
-        catch (ArgumentException ex)
-        {
-            logger.LogWarning(ex, "Ошибка валидации при обновлении питомца с Id {Id}", id);
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Некорректный запрос"
-            });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка сервера при обновлении питомца с Id {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+
+        return NoContent();
     }
 
     /// <summary>
@@ -197,32 +109,19 @@ public sealed class PetsController(
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(int id)
     {
-        try
+        var deleted = await service.DeleteAsync(id);
+        if (!deleted)
         {
-            logger.LogInformation("Удаление питомца с Id {Id}", id);
-            var deleted = await service.DeleteAsync(id);
-            if (!deleted)
+            logger.LogWarning("Питомец с Id {Id} не найден для удаления", id);
+            return NotFound(new ProblemDetails
             {
-                logger.LogWarning("Питомец с Id {Id} не найден для удаления", id);
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Ресурс не найден",
-                    Detail = $"Питомец с идентификатором {id} не найден"
-                });
-            }
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка сервера при удалении питомца с Id {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
+                Status = StatusCodes.Status404NotFound,
+                Title = "Ресурс не найден",
+                Detail = $"Питомец с идентификатором {id} не найден"
             });
         }
+
+        return NoContent();
     }
 
     /// <summary>
@@ -232,9 +131,9 @@ public sealed class PetsController(
     /// <param name="appointmentService">Сервис записей на прием</param>
     /// <returns>История приемов питомца</returns>
     [HttpGet("{id:int}/appointments")]
-    [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAppointmentsByPet(
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointmentsByPet(
         int id,
         [FromServices] IApplicationService<AppointmentDto, AppointmentCreateUpdateDto, int> appointmentService)
     {

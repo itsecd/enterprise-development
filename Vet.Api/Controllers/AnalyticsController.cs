@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
+using Vet.Contracts.Interfaces;
 using Vet.Domain.Enums;
 
 namespace Vet.Api.Controllers;
@@ -22,37 +22,19 @@ public sealed class AnalyticsController(
     /// <param name="species">Вид животного</param>
     /// <returns>Список ветеринаров</returns>
     [HttpGet("veterinarians-by-species")]
-    [ProducesResponseType(typeof(IReadOnlyList<VeterinarianDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetVeterinariansBySpecies([FromQuery] Species species)
+    public async Task<ActionResult<IReadOnlyList<VeterinarianDto>>> GetVeterinariansBySpecies([FromQuery] Species species)
     {
-        try
+        if (!Enum.IsDefined(species))
         {
-            if (!Enum.IsDefined(typeof(Species), species))
-            {
-                logger.LogWarning("Передан недопустимый вид животного {Species}", species);
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Некорректный запрос",
-                    Detail = $"Значение {species} не является допустимым видом животного"
-                });
-            }
+            logger.LogWarning("Передан недопустимый вид животного {Species}", species);
+            throw new ArgumentException($"Значение {species} не является допустимым видом животного", nameof(species));
+        }
 
-            logger.LogInformation("Аналитика получение врачей по виду {Species}", species);
-            var vets = await analyticsService.GetVeterinariansBySpeciesAsync(species);
-            return Ok(vets);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении ветеринаров по виду {Species}", species);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var vets = await analyticsService.GetVeterinariansBySpeciesAsync(species);
+        return Ok(vets);
     }
 
     /// <summary>
@@ -61,96 +43,40 @@ public sealed class AnalyticsController(
     /// <param name="veterinarianId">Идентификатор ветеринара</param>
     /// <returns>Список питомцев</returns>
     [HttpGet("pets-by-veterinarian/{veterinarianId:int}")]
-    [ProducesResponseType(typeof(IReadOnlyList<PetDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetPetsByVeterinarian(int veterinarianId)
+    public async Task<ActionResult<IReadOnlyList<PetDto>>> GetPetsByVeterinarian(int veterinarianId)
     {
-        try
+        if (veterinarianId <= 0)
         {
-            if (veterinarianId < 0)
-            {
-                logger.LogWarning("Передан отрицательный идентификатор ветеринара {VetId}", veterinarianId);
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Некорректный запрос",
-                    Detail = "Идентификатор ветеринара не может быть отрицательным числом"
-                });
-            }
+            throw new ArgumentException("Идентификатор ветеринара должен быть положительным числом", nameof(veterinarianId));
+        }
 
-            logger.LogInformation("Аналитика получение питомцев ветеринара с Id {VetId}", veterinarianId);
-            var pets = await analyticsService.GetPetsByVeterinarianAsync(veterinarianId);
-            return Ok(pets);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            logger.LogWarning(ex, "Ветеринар с Id {VetId} не найден", veterinarianId);
-            return NotFound(new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Ресурс не найден"
-            });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении питомцев врача с Id {VetId}", veterinarianId);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var pets = await analyticsService.GetPetsByVeterinarianAsync(veterinarianId);
+        return Ok(pets);
     }
 
     /// <summary>
     /// Запрос 3 Количество повторных приемов для породы
     /// </summary>
     /// <param name="breedId">Идентификатор породы</param>
-    /// <returns>Количество повторных приемов</returns>
+    /// <returns>DTO количества повторных приемов</returns>
     [HttpGet("repeat-appointments-count/by-breed/{breedId:int}")]
-    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetRepeatCountByBreed(int breedId)
+    public async Task<ActionResult<RepeatAppointmentsCountDto>> GetRepeatCountByBreed(int breedId)
     {
-        try
+        if (breedId <= 0)
         {
-            if (breedId < 0)
-            {
-                logger.LogWarning("Передан отрицательный идентификатор породы {BreedId}", breedId);
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Некорректный запрос",
-                    Detail = "Идентификатор породы не может быть отрицательным числом"
-                });
-            }
+            throw new ArgumentException("Идентификатор породы должен быть положительным числом", nameof(breedId));
+        }
 
-            logger.LogInformation("Аналитика подсчет повторных приемов для породы с Id {BreedId}", breedId);
-            var count = await analyticsService.GetRepeatAppointmentsCountByBreedAsync(breedId);
-            return Ok(new { BreedId = breedId, RepeatAppointmentsCount = count });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            logger.LogWarning(ex, "Порода с Id {BreedId} не найдена", breedId);
-            return NotFound(new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Ресурс не найден"
-            });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при подсчете повторных приемов породы с Id {BreedId}", breedId);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var count = await analyticsService.GetRepeatAppointmentsCountByBreedAsync(breedId);
+        return Ok(new RepeatAppointmentsCountDto(breedId, count));
     }
 
     /// <summary>
@@ -158,25 +84,12 @@ public sealed class AnalyticsController(
     /// </summary>
     /// <returns>Список владельцев</returns>
     [HttpGet("owners-with-multiple-pets")]
-    [ProducesResponseType(typeof(IReadOnlyList<OwnerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetOwnersWithMultiplePets()
+    public async Task<ActionResult<IReadOnlyList<OwnerDto>>> GetOwnersWithMultiplePets()
     {
-        try
-        {
-            logger.LogInformation("Аналитика получение владельцев с несколькими питомцами");
-            var owners = await analyticsService.GetOwnersWithMultiplePetsAsync();
-            return Ok(owners);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Ошибка при получении владельцев с несколькими питомцами");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
-        }
+        var owners = await analyticsService.GetOwnersWithMultiplePetsAsync();
+        return Ok(owners);
     }
 
     /// <summary>
@@ -187,61 +100,30 @@ public sealed class AnalyticsController(
     /// <param name="month">Месяц от 1 до 12</param>
     /// <returns>Список записей на прием</returns>
     [HttpGet("appointments-by-room")]
-    [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAppointmentsByRoom(
+    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointmentsByRoom(
         [FromQuery] int roomNumber,
         [FromQuery] int year,
         [FromQuery] int month)
     {
-        try
+        if (roomNumber <= 0)
         {
-            if (roomNumber <= 0)
-            {
-                logger.LogWarning("Передан некорректный номер кабинета {Room}", roomNumber);
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Некорректный запрос",
-                    Detail = "Номер кабинета должен быть положительным числом больше нуля"
-                });
-            }
-
-            if (month is < 1 or > 12)
-            {
-                logger.LogWarning("Передан некорректный месяц {Month}", month);
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Некорректный запрос",
-                    Detail = "Месяц должен быть в диапазоне от 1 до 12"
-                });
-            }
-
-            if (year is < 2000 or > 2100)
-            {
-                logger.LogWarning("Передан некорректный год {Year}", year);
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Некорректный запрос",
-                    Detail = "Год должен находиться в диапазоне от 2000 до 2100"
-                });
-            }
-
-            logger.LogInformation("Аналитика приемы в кабинете {Room} за {Month} {Year}", roomNumber, month, year);
-            var appointments = await analyticsService.GetAppointmentsByRoomAsync(roomNumber, year, month);
-            return Ok(appointments);
+            throw new ArgumentException("Номер кабинета должен быть положительным числом больше нуля", nameof(roomNumber));
         }
-        catch (Exception ex)
+
+        if (month is < 1 or > 12)
         {
-            logger.LogError(ex, "Ошибка при получении приемов в кабинете {Room} за {Month} {Year}", roomNumber, month, year);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка сервера"
-            });
+            throw new ArgumentException("Месяц должен быть в диапазоне от 1 до 12", nameof(month));
         }
+
+        if (year is < 2000 or > 2100)
+        {
+            throw new ArgumentException("Год должен находиться в диапазоне от 2000 до 2100", nameof(year));
+        }
+
+        var appointments = await analyticsService.GetAppointmentsByRoomAsync(roomNumber, year, month);
+        return Ok(appointments);
     }
 }
