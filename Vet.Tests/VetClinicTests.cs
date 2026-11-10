@@ -40,8 +40,8 @@ public class VetClinicTest : IClassFixture<VetClinicTestFixture>
     public async Task GetVeterinariansBySpecies_ReturnsVetsSpecializedOnCat()
     {
         var targetSpecies = Species.Cat;
-        var expectedIds = new HashSet<int> { 0, 3, 4, 7, 8 };
-        var excludedIds = new HashSet<int> { 1, 2, 5, 6, 9 };
+        var expectedIds = new HashSet<int> { 1, 4, 5, 8, 9 };
+        var excludedIds = new HashSet<int> { 2, 3, 6, 7, 10 };
 
         var resultVets = await _analyticsService.GetVeterinariansBySpeciesAsync(targetSpecies);
 
@@ -56,7 +56,7 @@ public class VetClinicTest : IClassFixture<VetClinicTestFixture>
     [Fact]
     public async Task GetPetsByVeterinarian_OrderedByName_DistinctByPet()
     {
-        var targetVetId = 0;
+        var targetVetId = 1;
         var firstExpectedName = "Барсик";
         var secondExpectedName = "Рекс";
 
@@ -73,8 +73,8 @@ public class VetClinicTest : IClassFixture<VetClinicTestFixture>
     [Fact]
     public async Task GetRepeatAppointmentsCountByBreed_ReturnsExpected()
     {
-        var labradorBreedId = 0;
-        var corellaBreedId = 5;
+        var labradorBreedId = 1;
+        var corellaBreedId = 6;
         var expectedLabradorCount = 3;
         var expectedCorellaRepeatCount = 0;
 
@@ -116,7 +116,7 @@ public class VetClinicTest : IClassFixture<VetClinicTestFixture>
         var targetRoom = 101;
         var referenceDate = VetClinicTestFixture.ReferenceDate;
         var expectedCount = 8;
-        var expectedFirstAppointmentId = 0;
+        var expectedFirstAppointmentId = 1;
 
         var resultAppointments = await _analyticsService.GetAppointmentsByRoomAsync(
             targetRoom,
