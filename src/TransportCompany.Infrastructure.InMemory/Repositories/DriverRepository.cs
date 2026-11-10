@@ -27,7 +27,7 @@ public class DriverRepository(InMemoryDbContext context) : IDriverRepository
         return Task.FromResult(entity);
     }
 
-    public Task UpdateAsync(Driver entity, CancellationToken cancellationToken = default)
+    public Task<Driver?> UpdateAsync(Driver entity, CancellationToken cancellationToken = default)
     {
         var existing = _context.Drivers.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null)
@@ -36,17 +36,19 @@ public class DriverRepository(InMemoryDbContext context) : IDriverRepository
             existing.FullName = entity.FullName;
             existing.Experience = entity.Experience;
             existing.License = entity.License;
+            return Task.FromResult<Driver?>(existing);
         }
-        return Task.CompletedTask;
+        return Task.FromResult<Driver?>(null);
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var existing = _context.Drivers.FirstOrDefault(c => c.Id == id);
         if (existing != null)
         {
             _context.Drivers.Remove(existing);
+            return Task.FromResult(true);
         }
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 }

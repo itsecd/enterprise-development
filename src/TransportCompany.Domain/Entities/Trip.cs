@@ -31,13 +31,13 @@ public class Trip
     /// Пункт отправления
     /// </summary>
     /// <example>Москва</example>
-    public string? Origin { get; set; }
+    public required string Origin { get; set; }
 
     /// <summary>
     /// Пункт назначения
     /// </summary>
     /// <example>Санкт-Петербург</example>
-    public string? Destination { get; set; }
+    public required string Destination { get; set; }
 
     /// <summary>
     /// Дата рейса

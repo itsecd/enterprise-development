@@ -11,7 +11,7 @@ namespace TransportCompany.Api.Controllers;
 [Route("api/[controller]")]
 public class ClientController(IClientService clientService, ILogger<ClientController> logger) : ControllerBase
 {
-    private readonly IClientService _clientService = clientService;
+    private readonly IClientService _service = clientService;
     private readonly ILogger<ClientController> _logger = logger;
 
     /// <summary>
@@ -24,7 +24,7 @@ public class ClientController(IClientService clientService, ILogger<ClientContro
     {
         try
         {
-            var clients = await _clientService.GetAllAsync(cancellationToken);
+            var clients = await _service.GetAllAsync(cancellationToken);
             return Ok(clients);
         }
         catch (Exception ex)
@@ -45,7 +45,7 @@ public class ClientController(IClientService clientService, ILogger<ClientContro
     {
         try
         {
-            var client = await _clientService.GetByIdAsync(id, cancellationToken);
+            var client = await _service.GetByIdAsync(id, cancellationToken);
             if (client == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ public class ClientController(IClientService clientService, ILogger<ClientContro
     {
         try
         {
-            var createdClient = await _clientService.CreateAsync(dto, cancellationToken);
+            var createdClient = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = createdClient.Id }, createdClient);
         }
         catch (Exception ex)
@@ -81,42 +81,52 @@ public class ClientController(IClientService clientService, ILogger<ClientContro
     }
 
     /// <summary>
-    /// Обновить данные клиента
+    /// Обновить данные
     /// </summary>
     [HttpPut("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] ClientEditDto dto, CancellationToken cancellationToken)
     {
         try
         {
-            await _clientService.UpdateAsync(id, dto, cancellationToken);
+            var updated = await _service.UpdateAsync(id, dto, cancellationToken);
+            if (updated == null)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при обновлении клиента с Id {Id}", id);
+            _logger.LogError(ex, "Ошибка при обновлении сущности с Id {Id}", id);
             return StatusCode(500, "Внутренняя ошибка сервера");
         }
     }
 
     /// <summary>
-    /// Удалить клиента
+    /// Удалить сущность
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         try
         {
-            await _clientService.DeleteAsync(id, cancellationToken);
+            var isDeleted = await _service.DeleteAsync(id, cancellationToken);
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при удалении клиента с Id {Id}", id);
+            _logger.LogError(ex, "Ошибка при удалении сущности с Id {Id}", id);
             return StatusCode(500, "Внутренняя ошибка сервера");
         }
     }

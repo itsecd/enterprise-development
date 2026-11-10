@@ -3,14 +3,8 @@ using TransportCompany.Domain.Enums;
 
 namespace TransportCompany.Domain.Seeds;
 
-/// <summary>
-/// Тестовые данные
-/// </summary>
 public static class TestData
 {
-    /// <summary>
-    /// Создаёт список моделей транспортных средств
-    /// </summary>
     public static List<VehicleModel> GetVehicleModels() =>
     [
         new VehicleModel { Id = 0, BodyType = BodyType.Sedan, BodyVolume = 82 },
@@ -25,9 +19,6 @@ public static class TestData
         new VehicleModel { Id = 9, BodyType = BodyType.PickupTruck, BodyVolume = 180 }
     ];
 
-    /// <summary>
-    /// Создаёт список клиентов
-    /// </summary>
     public static List<Client> GetClients() =>
     [
         new Client { Id = 0, Name = "Donald Truck", Phone = "88005553535" },
@@ -42,26 +33,20 @@ public static class TestData
         new Client { Id = 9, Name = "Maria Garcia", Phone = "89778901234" }
     ];
 
-    /// <summary>
-    /// Создаёт список водителей
-    /// </summary>
     public static List<Driver> GetDrivers() =>
     [
         new Driver { Id = 0, PassportNumber = "1234 567890", FullName = "John Johnson", Experience = 5, License = DrivingLicense.C },
-        new Driver { Id = 1, PassportNumber = "2345 678901", FullName = "Mike Tyson", Experience = 8, License = DrivingLicense.B },
-        new Driver { Id = 2, PassportNumber = "3456 789012", FullName = "Conor McGregor", Experience = 3, License = DrivingLicense.A },
+        new Driver { Id = 1, PassportNumber = "2345 678901", FullName = "Mike Tyson", Experience = 8, License = DrivingLicense.CE },
+        new Driver { Id = 2, PassportNumber = "3456 789012", FullName = "Conor McGregor", Experience = 3, License = DrivingLicense.CE },
         new Driver { Id = 3, PassportNumber = "4567 890123", FullName = "Anderson Silva", Experience = 15, License = DrivingLicense.CE },
-        new Driver { Id = 4, PassportNumber = "5678 901234", FullName = "Georges St-Pierre", Experience = 10, License = DrivingLicense.D },
-        new Driver { Id = 5, PassportNumber = "6789 012345", FullName = "Jon Jones", Experience = 7, License = DrivingLicense.BE },
+        new Driver { Id = 4, PassportNumber = "5678 901234", FullName = "Georges St-Pierre", Experience = 10, License = DrivingLicense.CE },
+        new Driver { Id = 5, PassportNumber = "6789 012345", FullName = "Jon Jones", Experience = 7, License = DrivingLicense.CE },
         new Driver { Id = 6, PassportNumber = "7890 123456", FullName = "Daniel Cormier", Experience = 20, License = DrivingLicense.C1 },
-        new Driver { Id = 7, PassportNumber = "8901 234567", FullName = "Stipe Miocic", Experience = 6, License = DrivingLicense.A1 },
-        new Driver { Id = 8, PassportNumber = "9012 345678", FullName = "Israel Adesanya", Experience = 4, License = DrivingLicense.M },
-        new Driver { Id = 9, PassportNumber = "1111 345678", FullName = "Aaaaaa Uuuuuuuu", Experience = 1, License = DrivingLicense.M }
+        new Driver { Id = 7, PassportNumber = "8901 234567", FullName = "Stipe Miocic", Experience = 6, License = DrivingLicense.C },
+        new Driver { Id = 8, PassportNumber = "9012 345678", FullName = "Israel Adesanya", Experience = 4, License = DrivingLicense.M }, 
+        new Driver { Id = 9, PassportNumber = "1111 345678", FullName = "Aaaaaa Uuuuuuuu", Experience = 1, License = DrivingLicense.M }  
     ];
 
-    /// <summary>
-    /// Создаёт список транспортных средств
-    /// </summary>
     public static List<Vehicle> GetVehicles(List<VehicleModel> models) =>
     [
         new Vehicle { Id = 0, LicensePlate = "X005XX05", LoadCapacity = 20.0, ModelId = 0, Model = models[0] },
@@ -76,20 +61,17 @@ public static class TestData
         new Vehicle { Id = 9, LicensePlate = "H234PQ00", LoadCapacity = 35.0, ModelId = 9, Model = models[9] }
     ];
 
-    /// <summary>
-    /// Создаёт список рейсов
-    /// </summary>
     public static List<Trip> GetTrips(List<Vehicle> vehicles, List<Driver> drivers, List<Client> clients) =>
     [
-        new Trip { Id = 0, DriverId = 0, VehicleId = 0, ClientId = 0, Driver = drivers[0], Vehicle = vehicles[0], Client = clients[0], Date = DateTime.Now.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
-        new Trip { Id = 1, DriverId = 1, VehicleId = 1, ClientId = 1, Driver = drivers[1], Vehicle = vehicles[1], Client = clients[1], Date = DateTime.Now.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
-        new Trip { Id = 2, DriverId = 1, VehicleId = 1, ClientId = 2, Driver = drivers[1], Vehicle = vehicles[1], Client = clients[2], Date = DateTime.Now.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
-        new Trip { Id = 3, DriverId = 2, VehicleId = 3, ClientId = 3, Driver = drivers[2], Vehicle = vehicles[3], Client = clients[3], Date = DateTime.Now.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
-        new Trip { Id = 4, DriverId = 2, VehicleId = 2, ClientId = 4, Driver = drivers[2], Vehicle = vehicles[2], Client = clients[4], Date = DateTime.Now.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
-        new Trip { Id = 5, DriverId = 3, VehicleId = 5, ClientId = 5, Driver = drivers[3], Vehicle = vehicles[5], Client = clients[5], Date = DateTime.Now.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
-        new Trip { Id = 6, DriverId = 3, VehicleId = 6, ClientId = 6, Driver = drivers[3], Vehicle = vehicles[6], Client = clients[6], Date = DateTime.Now.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
-        new Trip { Id = 7, DriverId = 3, VehicleId = 6, ClientId = 7, Driver = drivers[3], Vehicle = vehicles[6], Client = clients[7], Date = DateTime.Now.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
-        new Trip { Id = 8, DriverId = 4, VehicleId = 6, ClientId = 8, Driver = drivers[4], Vehicle = vehicles[6], Client = clients[8], Date = DateTime.Now.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
-        new Trip { Id = 9, DriverId = 5, VehicleId = 9, ClientId = 9, Driver = drivers[5], Vehicle = vehicles[9], Client = clients[9], Date = DateTime.Now.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
+        new Trip { Id = 0, DriverId = 0, VehicleId = 0, ClientId = 0, Origin = "Москва", Destination = "Казань", Driver = drivers[0], Vehicle = vehicles[0], Client = clients[0], Date = DateTime.Now.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
+        new Trip { Id = 1, DriverId = 1, VehicleId = 1, ClientId = 1, Origin = "Самара", Destination = "Уфа", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[1], Date = DateTime.Now.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
+        new Trip { Id = 2, DriverId = 1, VehicleId = 1, ClientId = 2, Origin = "Уфа", Destination = "Пермь", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[2], Date = DateTime.Now.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
+        new Trip { Id = 3, DriverId = 2, VehicleId = 3, ClientId = 3, Origin = "Ростов", Destination = "Краснодар", Driver = drivers[2], Vehicle = vehicles[3], Client = clients[3], Date = DateTime.Now.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
+        new Trip { Id = 4, DriverId = 2, VehicleId = 2, ClientId = 4, Origin = "Сочи", Destination = "Москва", Driver = drivers[2], Vehicle = vehicles[2], Client = clients[4], Date = DateTime.Now.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
+        new Trip { Id = 5, DriverId = 3, VehicleId = 5, ClientId = 5, Origin = "Новосибирск", Destination = "Омск", Driver = drivers[3], Vehicle = vehicles[5], Client = clients[5], Date = DateTime.Now.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
+        new Trip { Id = 6, DriverId = 3, VehicleId = 6, ClientId = 6, Origin = "Омск", Destination = "Тюмень", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[6], Date = DateTime.Now.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
+        new Trip { Id = 7, DriverId = 3, VehicleId = 6, ClientId = 7, Origin = "Тюмень", Destination = "Екатеринбург", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[7], Date = DateTime.Now.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
+        new Trip { Id = 8, DriverId = 4, VehicleId = 6, ClientId = 8, Origin = "Екатеринбург", Destination = "Челябинск", Driver = drivers[4], Vehicle = vehicles[6], Client = clients[8], Date = DateTime.Now.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
+        new Trip { Id = 9, DriverId = 5, VehicleId = 9, ClientId = 9, Origin = "Волгоград", Destination = "Астрахань", Driver = drivers[5], Vehicle = vehicles[9], Client = clients[9], Date = DateTime.Now.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
     ];
 }

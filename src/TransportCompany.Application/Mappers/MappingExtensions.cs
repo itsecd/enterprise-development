@@ -104,6 +104,8 @@ public static class MappingExtensions
         VehicleId = entity.VehicleId,
         ClientId = entity.ClientId,
         Date = entity.Date,
+        Origin = entity.Origin,
+        Destination = entity.Destination,
         CargoWeight = entity.CargoWeight,
         TransportationCost = entity.TransportationCost,
         Status = entity.Status
@@ -119,6 +121,8 @@ public static class MappingExtensions
         VehicleId = dto.VehicleId,
         ClientId = dto.ClientId,
         Date = dto.Date,
+        Origin = dto.Origin,
+        Destination = dto.Destination,
         CargoWeight = dto.CargoWeight,
         TransportationCost = dto.TransportationCost,
         Status = dto.Status

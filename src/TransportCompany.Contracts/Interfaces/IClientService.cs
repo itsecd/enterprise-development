@@ -36,12 +36,12 @@ public interface IClientService
     /// <param name="id">Идентификатор клиента</param>
     /// <param name="dto">Новые данные клиента</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task UpdateAsync(int id, ClientEditDto dto, CancellationToken cancellationToken = default);
+    public Task<ClientDto?> UpdateAsync(int id, ClientEditDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить клиента
     /// </summary>
     /// <param name="id">Идентификатор клиента</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

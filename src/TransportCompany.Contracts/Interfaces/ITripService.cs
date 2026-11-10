@@ -36,12 +36,12 @@ public interface ITripService
     /// <param name="id">Идентификатор рейса</param>
     /// <param name="dto">Новые данные рейса</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task UpdateAsync(int id, TripEditDto dto, CancellationToken cancellationToken = default);
+    public Task<TripDto?> UpdateAsync(int id, TripEditDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить рейс
     /// </summary>
     /// <param name="id">Идентификатор рейса</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

@@ -11,7 +11,7 @@ namespace TransportCompany.Api.Controllers;
 [Route("api/[controller]")]
 public class TripController(ITripService tripService, ILogger<TripController> logger) : ControllerBase
 {
-    private readonly ITripService _tripService = tripService;
+    private readonly ITripService _service = tripService;
     private readonly ILogger<TripController> _logger = logger;
 
     /// <summary>
@@ -24,7 +24,7 @@ public class TripController(ITripService tripService, ILogger<TripController> lo
     {
         try
         {
-            var trips = await _tripService.GetAllAsync(cancellationToken);
+            var trips = await _service.GetAllAsync(cancellationToken);
             return Ok(trips);
         }
         catch (Exception ex)
@@ -45,7 +45,7 @@ public class TripController(ITripService tripService, ILogger<TripController> lo
     {
         try
         {
-            var trip = await _tripService.GetByIdAsync(id, cancellationToken);
+            var trip = await _service.GetByIdAsync(id, cancellationToken);
             if (trip == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ public class TripController(ITripService tripService, ILogger<TripController> lo
     {
         try
         {
-            var createdTrip = await _tripService.CreateAsync(dto, cancellationToken);
+            var createdTrip = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = createdTrip.Id }, createdTrip);
         }
         catch (Exception ex)
@@ -92,7 +92,11 @@ public class TripController(ITripService tripService, ILogger<TripController> lo
     {
         try
         {
-            await _tripService.UpdateAsync(id, dto, cancellationToken);
+            var updated = await _service.UpdateAsync(id, dto, cancellationToken);
+            if (updated == null)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         catch (Exception ex)
@@ -113,7 +117,11 @@ public class TripController(ITripService tripService, ILogger<TripController> lo
     {
         try
         {
-            await _tripService.DeleteAsync(id, cancellationToken);
+            var isDeleted = await _service.DeleteAsync(id, cancellationToken);
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         catch (Exception ex)

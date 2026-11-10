@@ -36,12 +36,12 @@ public interface IVehicleModelService
     /// <param name="id">Идентификатор модели ТС</param>
     /// <param name="dto">Новые данные модели ТС</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task UpdateAsync(int id, VehicleModelEditDto dto, CancellationToken cancellationToken = default);
+    public Task<VehicleModelDto?> UpdateAsync(int id, VehicleModelEditDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить модель транспортного средства
     /// </summary>
     /// <param name="id">Идентификатор модели ТС</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

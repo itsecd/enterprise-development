@@ -28,7 +28,7 @@ public class TripRepository(InMemoryDbContext context) : ITripRepository
     }
 
 
-    public Task UpdateAsync(Trip entity, CancellationToken cancellationToken = default)
+    public Task<Trip?> UpdateAsync(Trip entity, CancellationToken cancellationToken = default)
     {
         var existing = _context.Trips.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null)
@@ -36,21 +36,26 @@ public class TripRepository(InMemoryDbContext context) : ITripRepository
             existing.DriverId = entity.DriverId;
             existing.VehicleId = entity.VehicleId;
             existing.ClientId = entity.ClientId;
+            existing.Origin = entity.Origin;           
+            existing.Destination = entity.Destination; 
             existing.Date = entity.Date;
             existing.CargoWeight = entity.CargoWeight;
             existing.TransportationCost = entity.TransportationCost;
             existing.Status = entity.Status;
+            
+            return Task.FromResult<Trip?>(existing);
         }
-        return Task.CompletedTask;
+        return Task.FromResult<Trip?>(null);
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var existing = _context.Trips.FirstOrDefault(c => c.Id == id);
         if (existing != null)
         {
             _context.Trips.Remove(existing);
+            return Task.FromResult(true);
         }
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 }

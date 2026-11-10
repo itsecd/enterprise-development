@@ -28,24 +28,26 @@ public class VehicleModelRepository(InMemoryDbContext context) : IVehicleModelRe
     }
 
 
-    public Task UpdateAsync(VehicleModel entity, CancellationToken cancellationToken = default)
+    public Task<VehicleModel?> UpdateAsync(VehicleModel entity, CancellationToken cancellationToken = default)
     {
         var existing = _context.Models.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null)
         {
             existing.BodyType = entity.BodyType;
             existing.BodyVolume = entity.BodyVolume;
+            return Task.FromResult<VehicleModel?>(existing);
         }
-        return Task.CompletedTask;
+        return Task.FromResult<VehicleModel?>(null);
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var existing = _context.Models.FirstOrDefault(c => c.Id == id);
         if (existing != null)
         {
             _context.Models.Remove(existing);
+            return Task.FromResult(true);
         }
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 }

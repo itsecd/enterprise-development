@@ -25,24 +25,26 @@ public class ClientRepository(InMemoryDbContext context) : IClientRepository
         return Task.FromResult(entity);
     }
 
-    public Task UpdateAsync(Client entity, CancellationToken cancellationToken = default)
+    public Task<Client?> UpdateAsync(Client entity, CancellationToken cancellationToken = default)
     {
         var existing = context.Clients.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null)
         {
             existing.Name = entity.Name;
             existing.Phone = entity.Phone;
+            return Task.FromResult<Client?>(existing);
         }
-        return Task.CompletedTask;
+        return Task.FromResult<Client?>(null);
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var existing = context.Clients.FirstOrDefault(c => c.Id == id);
         if (existing != null)
         {
             context.Clients.Remove(existing);
+            return Task.FromResult(true);
         }
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 }

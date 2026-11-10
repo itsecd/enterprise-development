@@ -16,7 +16,6 @@ public class AnalyticsQueriesTests(QueriesTestFixture data) : IClassFixture<Quer
     public void ClientsByVehicleModelAreSortedByName()
     {
         var targetModelId = 1;
-        int[] expectedIds = [1, 4, 6];
 
         // Act
         var targetVehicleIds = data.Vehicles

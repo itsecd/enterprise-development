@@ -24,5 +24,5 @@ public class VehicleDto
     /// <summary>
     /// Идентификатор модели
     /// </summary>
-    public int? ModelId { get; init; }
+    public required int ModelId { get; init; }
 }

@@ -54,11 +54,12 @@ public class VehicleModelService(IVehicleModelRepository repository) : IVehicleM
     /// <param name="id">Идентификатор модели ТС</param>
     /// <param name="dto">Новые данные модели ТС</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public async Task UpdateAsync(int id, VehicleModelEditDto dto, CancellationToken cancellationToken = default)
+    public async Task<VehicleModelDto?> UpdateAsync(int id, VehicleModelEditDto dto, CancellationToken cancellationToken = default)
     {
         var entity = dto.ToEntity();
         entity.Id = id;
-        await _repository.UpdateAsync(entity, cancellationToken);
+        var updatedEntity = await _repository.UpdateAsync(entity, cancellationToken);
+        return updatedEntity?.ToDto();
     }
 
     /// <summary>
@@ -66,8 +67,8 @@ public class VehicleModelService(IVehicleModelRepository repository) : IVehicleM
     /// </summary>
     /// <param name="id">Идентификатор модели ТС</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        await _repository.DeleteAsync(id, cancellationToken);
+        return await _repository.DeleteAsync(id, cancellationToken);
     }
 }

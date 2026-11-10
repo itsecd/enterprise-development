@@ -51,4 +51,18 @@ public class TripEditDto
     /// Статус рейса
     /// </summary>
     public required TripStatus Status { get; init; }
+
+    /// <summary>
+    /// Пункт отправления
+    /// </summary>
+    [Required(ErrorMessage = "Пункт отправления обязателен")]
+    [MaxLength(100)]
+    public required string Origin { get; init; }
+
+    /// <summary>
+    /// Пункт назначения
+    /// </summary>
+    [Required(ErrorMessage = "Пункт назначения обязателен")]
+    [MaxLength(100)]
+    public required string Destination { get; init; }
 }

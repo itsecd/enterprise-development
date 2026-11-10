@@ -88,7 +88,11 @@ public class VehicleModelController(IVehicleModelService service, ILogger<Vehicl
     {
         try
         {
-            await _service.UpdateAsync(id, dto, cancellationToken);
+            var updated = await _service.UpdateAsync(id, dto, cancellationToken);
+            if (updated == null)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         catch (Exception ex)
@@ -108,7 +112,11 @@ public class VehicleModelController(IVehicleModelService service, ILogger<Vehicl
     {
         try
         {
-            await _service.DeleteAsync(id, cancellationToken);
+            var isDeleted = await _service.DeleteAsync(id, cancellationToken);
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         catch (Exception ex)

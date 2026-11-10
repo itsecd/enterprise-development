@@ -27,8 +27,7 @@ public class VehicleRepository(InMemoryDbContext context) : IVehicleRepository
         return Task.FromResult(entity);
     }
 
-
-    public Task UpdateAsync(Vehicle entity, CancellationToken cancellationToken = default)
+    public Task<Vehicle?> UpdateAsync(Vehicle entity, CancellationToken cancellationToken = default)
     {
         var existing = _context.Vehicles.FirstOrDefault(c => c.Id == entity.Id);
         if (existing != null)
@@ -36,17 +35,19 @@ public class VehicleRepository(InMemoryDbContext context) : IVehicleRepository
             existing.LicensePlate = entity.LicensePlate;
             existing.LoadCapacity = entity.LoadCapacity;
             existing.ModelId = entity.ModelId;
+            return Task.FromResult<Vehicle?>(existing);
         }
-        return Task.CompletedTask;
+        return Task.FromResult<Vehicle?>(null);
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var existing = _context.Vehicles.FirstOrDefault(c => c.Id == id);
         if (existing != null)
         {
             _context.Vehicles.Remove(existing);
+            return Task.FromResult(true);
         }
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 }

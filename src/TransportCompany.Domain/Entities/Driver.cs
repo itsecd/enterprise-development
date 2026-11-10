@@ -27,7 +27,7 @@ public class Driver
     /// <summary>
     /// Стаж вождения в годах
     /// </summary>
-    public int? Experience { get; set; }
+    public required int Experience { get; set; }
 
     /// <summary>
     /// Водительское удостоверение

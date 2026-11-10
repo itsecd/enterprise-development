@@ -46,4 +46,14 @@ public class TripDto
     /// Статус рейса
     /// </summary>
     public TripStatus? Status { get; init; }
+
+    /// <summary>
+    /// Место отправления
+    /// </summary>
+    public required string Origin { get; init; }
+
+    /// <summary>
+    /// Место назначения
+    /// </summary>
+    public required string Destination { get; init; }
 }
