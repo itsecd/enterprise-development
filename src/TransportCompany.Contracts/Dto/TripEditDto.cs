@@ -11,17 +11,23 @@ public class TripEditDto
     /// <summary>
     /// Идентификатор водителя
     /// </summary>
-    [Required] public required int DriverId { get; init; }
+    [Required]
+    [Range(1, int.MaxValue)]
+    public required int DriverId { get; init; }
 
     /// <summary>
     /// Идентификатор транспортного средства
     /// </summary>
-    [Required] public required int VehicleId { get; init; }
+    [Required]
+    [Range(1, int.MaxValue)]
+    public required int VehicleId { get; init; }
 
     /// <summary>
     /// Идентификатор клиента
     /// </summary>
-    [Required] public required int ClientId { get; init; }
+    [Required]
+    [Range(1, int.MaxValue)]
+    public required int ClientId { get; init; }
 
     /// <summary>
     /// Дата рейса
