@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vet.Application.Interfaces;
 using Vet.Contracts.Dtos;
+using Vet.Contracts.Interfaces;
 using Vet.Domain.Entities;
 using Vet.Domain.Interfaces;
 
