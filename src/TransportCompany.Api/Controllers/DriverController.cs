@@ -9,10 +9,10 @@ namespace TransportCompany.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class DriversController(IDriverService service, ILogger<DriversController> logger) : ControllerBase
+public class DriverController(IDriverService service, ILogger<DriverController> logger) : ControllerBase
 {
     private readonly IDriverService _service = service;
-    private readonly ILogger<DriversController> _logger = logger;
+    private readonly ILogger<DriverController> _logger = logger;
 
     /// <summary>
     /// Получить список всех водителей

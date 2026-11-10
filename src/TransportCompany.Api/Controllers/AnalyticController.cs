@@ -9,10 +9,10 @@ namespace TransportCompany.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class AnalyticsController(IAnalyticsService analyticsService, ILogger<AnalyticsController> logger) : ControllerBase
+public class AnalyticController(IAnalyticsService analyticsService, ILogger<AnalyticController> logger) : ControllerBase
 {
     private readonly IAnalyticsService _analyticsService = analyticsService;
-    private readonly ILogger<AnalyticsController> _logger = logger;
+    private readonly ILogger<AnalyticController> _logger = logger;
 
     /// <summary>
     /// Вывести информацию обо всех клиентах, заказывавших перевозку на транспорте указанной модели
