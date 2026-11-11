@@ -1,0 +1,31 @@
+name: .NET Build and Test
+
+on:
+  push:
+    branches: [ "lab1", "lab2" ]
+  pull_request:
+    branches: [ "lab1", "lab2", "main" ]
+
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore DryCleaner/DryCleaner.Tests/DryCleaner.Tests.csproj
+
+      - name: Build
+        run: dotnet build DryCleaner/DryCleaner.Tests/DryCleaner.Tests.csproj --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test DryCleaner/DryCleaner.Tests/DryCleaner.Tests.csproj --no-build --configuration Release
+
