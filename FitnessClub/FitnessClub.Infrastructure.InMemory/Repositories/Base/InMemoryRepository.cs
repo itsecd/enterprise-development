@@ -1,4 +1,4 @@
-﻿using FitnessClub.Domain.Interfaces;
+using FitnessClub.Domain.Interfaces;
 
 namespace FitnessClub.Infrastructure.InMemory.Repositories.Base;
 
@@ -31,7 +31,7 @@ public class InMemoryRepository<TEntity> : IRepository<TEntity>
     /// <returns>Коллекция сущностей.</returns>
     public Task<IReadOnlyCollection<TEntity>> GetAllAsync()
     {
-        IReadOnlyCollection<TEntity> result = Entities.ToList();
+        IReadOnlyCollection<TEntity> result = [.. Entities];
 
         return Task.FromResult(result);
     }

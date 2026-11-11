@@ -1,4 +1,4 @@
-﻿using FitnessClub.Contracts.DTOs.Halls;
+using FitnessClub.Contracts.Dtos;
 using FitnessClub.Domain.Entities;
 
 namespace FitnessClub.Application.Mapping;

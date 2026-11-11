@@ -1,4 +1,4 @@
-﻿using FitnessClub.Domain.Entities;
+using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Enums;
 
 namespace FitnessClub.Infrastructure.InMemory.Data;
@@ -9,8 +9,7 @@ namespace FitnessClub.Infrastructure.InMemory.Data;
 public static class FitnessClubDataSeeder
 {
     /// <summary>
-    /// Добавляет тестовые специализации, залы, клиентов,
-    /// тренеров и тренировки, если хранилище пустое.
+    /// Добавляет тестовые данные, если хранилище пустое.
     /// </summary>
     /// <param name="store">Хранилище фитнес-клуба.</param>
     public static void Seed(FitnessClubDataStore store)
@@ -26,110 +25,101 @@ public static class FitnessClubDataSeeder
             return;
         }
 
-        var strength = new Specialization
-        {
-            Id = 1,
-            Name = "Силовой тренинг",
-            Description = "Развитие силы и мышечной массы."
-        };
+        string[] specializationNames =
+        [
+            "Силовой тренинг",
+            "Общий фитнес",
+            "Йога",
+            "Пилатес",
+            "Кардио",
+            "Бокс",
+            "Плавание",
+            "Стретчинг",
+            "Кроссфит",
+            "Функциональный тренинг"
+        ];
 
-        var fitness = new Specialization
-        {
-            Id = 2,
-            Name = "Общий фитнес",
-            Description = "Общая физическая подготовка."
-        };
+        Specialization[] specializations = [.. specializationNames
+            .Select((name, index) => new Specialization
+            {
+                Id = index + 1,
+                Name = name,
+                Description = $"Направление тренировок: {name.ToLowerInvariant()}."
+            })];
 
-        store.Specializations.AddRange([strength, fitness]);
+        store.Specializations.AddRange(specializations);
 
-        var hall1 = new Hall
-        {
-            Id = 1,
-            Name = "Тренажёрный зал",
-            Capacity = 20
-        };
+        Hall[] halls = [.. Enumerable.Range(1, 10)
+            .Select(id => new Hall
+            {
+                Id = id,
+                Name = $"Зал №{id}",
+                Capacity = 10 + id * 2
+            })];
 
-        var hall2 = new Hall
-        {
-            Id = 2,
-            Name = "Зал групповых занятий",
-            Capacity = 15
-        };
+        store.Halls.AddRange(halls);
 
-        store.Halls.AddRange([hall1, hall2]);
+        string[] firstNames =
+        [
+            "Иван", "Анна", "Алексей", "Мария", "Дмитрий",
+            "Елена", "Сергей", "Ольга", "Андрей", "Наталья"
+        ];
 
-        var client1 = new Client
-        {
-            Id = 1,
-            PassportNumber = "1234 567890",
-            FullName = "Иванов Иван Иванович",
-            Gender = Gender.Male,
-            BirthDate = new DateTime(1998, 5, 10),
-            Phone = "+79991111111",
-            SubscriptionStartDate = DateTime.Today.AddMonths(-2),
-            SubscriptionEndDate = DateTime.Today.AddMonths(1)
-        };
+        string[] lastNames =
+        [
+            "Иванов", "Петрова", "Смирнов", "Кузнецова", "Соколов",
+            "Попова", "Лебедев", "Волкова", "Козлов", "Новикова"
+        ];
 
-        var client2 = new Client
-        {
-            Id = 2,
-            PassportNumber = "4321 098765",
-            FullName = "Петрова Анна Сергеевна",
-            Gender = Gender.Female,
-            BirthDate = new DateTime(2000, 8, 20),
-            Phone = "+79992222222",
-            SubscriptionStartDate = DateTime.Today.AddMonths(-6),
-            SubscriptionEndDate = DateTime.Today.AddDays(-10)
-        };
+        Client[] clients = [.. Enumerable.Range(1, 10)
+            .Select(id => new Client
+            {
+                Id = id,
+                PassportNumber = $"1000 {100000 + id}",
+                FullName = $"{lastNames[id - 1]} {firstNames[id - 1]} "
+                    + "Александрович",
+                Gender = id % 2 == 0 ? Gender.Female : Gender.Male,
+                BirthDate = new DateTime(1990 + id, id, Math.Min(id + 5, 28)),
+                Phone = $"+799900000{id:D2}",
+                SubscriptionStartDate = DateTime.Today.AddMonths(-3),
+                SubscriptionEndDate = id % 3 == 0
+                    ? DateTime.Today.AddDays(-10)
+                    : DateTime.Today.AddMonths(2)
+            })];
 
-        store.Clients.AddRange([client1, client2]);
+        store.Clients.AddRange(clients);
 
-        var trainer1 = new Trainer
-        {
-            Id = 1,
-            PassportNumber = "1111 222233",
-            FullName = "Смирнов Алексей Олегович",
-            Gender = Gender.Male,
-            BirthDate = new DateTime(1988, 3, 12),
-            Specialization = strength,
-            WorkExperience = 8
-        };
+        Trainer[] trainers = [.. Enumerable.Range(1, 10)
+            .Select(id => new Trainer
+            {
+                Id = id,
+                PassportNumber = $"2000 {200000 + id}",
+                FullName = $"Тренер {id}",
+                Gender = id % 2 == 0 ? Gender.Female : Gender.Male,
+                BirthDate = new DateTime(1985 + id, id, Math.Min(id + 5, 28)),
+                Specialization = specializations[id - 1],
+                WorkExperience = id
+            })];
 
-        var trainer2 = new Trainer
-        {
-            Id = 2,
-            PassportNumber = "2222 333344",
-            FullName = "Кузнецова Мария Игоревна",
-            Gender = Gender.Female,
-            BirthDate = new DateTime(1995, 11, 2),
-            Specialization = fitness,
-            WorkExperience = 3
-        };
+        store.Trainers.AddRange(trainers);
 
-        store.Trainers.AddRange([trainer1, trainer2]);
+        var today = DateTime.Today;
+        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
 
-        var training1 = new Training
-        {
-            Id = 1,
-            Client = client1,
-            Trainer = trainer1,
-            Hall = hall1,
-            StartTime = DateTime.Now.AddHours(-1),
-            DurationMinutes = 60,
-            IsTrial = false
-        };
+        Training[] trainings = [.. Enumerable.Range(1, 10)
+            .Select(id => new Training
+            {
+                Id = id,
+                Client = clients[id - 1],
+                Trainer = trainers[id - 1],
+                Hall = halls[id - 1],
+                StartTime = id == 1
+                    ? DateTime.Now.AddMinutes(-30)
+                    : firstDayOfMonth.AddDays(id - 1).AddHours(10),
+                DurationMinutes = 60,
+                IsTrial = id % 2 == 0
+            })];
 
-        var training2 = new Training
-        {
-            Id = 2,
-            Client = client2,
-            Trainer = trainer2,
-            Hall = hall2,
-            StartTime = DateTime.Today.AddDays(2).AddHours(12),
-            DurationMinutes = 60,
-            IsTrial = true
-        };
-
-        store.Trainings.AddRange([training1, training2]);
+        store.Trainings.AddRange(trainings);
     }
 }

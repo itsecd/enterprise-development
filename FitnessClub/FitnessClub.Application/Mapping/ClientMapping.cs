@@ -1,4 +1,4 @@
-﻿using FitnessClub.Contracts.DTOs.Clients;
+﻿using FitnessClub.Contracts.Dtos;
 using FitnessClub.Domain.Entities;
 
 namespace FitnessClub.Application.Mapping;
@@ -22,7 +22,7 @@ public static class ClientMapping
             Id = client.Id,
             PassportNumber = client.PassportNumber,
             FullName = client.FullName,
-            Gender = client.Gender.ToString(),
+            Gender = (GenderDto)client.Gender,
             BirthDate = client.BirthDate,
             Phone = client.Phone,
             SubscriptionStartDate = client.SubscriptionStartDate,

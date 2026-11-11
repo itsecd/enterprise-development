@@ -1,10 +1,8 @@
-﻿using FitnessClub.Domain.Entities;
+using FitnessClub.Domain.Entities;
 
 namespace FitnessClub.Domain.Interfaces;
 
 /// <summary>
 /// Интерфейс репозитория клиентов фитнес-клуба.
 /// </summary>
-public interface IClientRepository : IRepository<Client>
-{
-}
+public interface IClientRepository : IRepository<Client>;

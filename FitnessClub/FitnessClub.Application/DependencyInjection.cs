@@ -1,16 +1,6 @@
-﻿using FitnessClub.Application.Services.Clients;
-using FitnessClub.Application.Services.Trainers;
-using FitnessClub.Contracts.Services.Clients;
-using FitnessClub.Contracts.Services.Trainers;
 using Microsoft.Extensions.DependencyInjection;
-using FitnessClub.Application.Services.Specializations;
-using FitnessClub.Contracts.Services.Specializations;
-using FitnessClub.Application.Services.Halls;
-using FitnessClub.Contracts.Services.Halls;
-using FitnessClub.Application.Services.Trainings;
-using FitnessClub.Contracts.Services.Trainings;
-using FitnessClub.Application.Services.Analytics;
-using FitnessClub.Contracts.Services.Analytics;
+using FitnessClub.Application.Services;
+using FitnessClub.Contracts.Services;
 
 namespace FitnessClub.Application;
 
