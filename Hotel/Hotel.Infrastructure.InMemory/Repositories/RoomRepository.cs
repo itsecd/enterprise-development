@@ -26,35 +26,35 @@ public class RoomRepository : IRepository<Room, int>
     /// <summary>
     /// Получить все номера
     /// </summary>
-    public IReadOnlyList<Room> GetAll()
+    public Task<IReadOnlyList<Room>> GetAll()
     {
-        return _rooms.AsReadOnly();
+        return Task.FromResult<IReadOnlyList<Room>>(_rooms.AsReadOnly());
     }
 
     /// <summary>
     /// Получить номер по идентификатору
     /// </summary>
-    public Room? GetById(int id)
+    public Task<Room?> GetById(int id)
     {
-        return _rooms.FirstOrDefault(room => room.Id == id);
+        return Task.FromResult(_rooms.FirstOrDefault(room => room.Id == id));
     }
 
     /// <summary>
     /// Добавить новый номер
     /// </summary>
-    public Room Add(Room room)
+    public Task<Room> Add(Room room)
     {
         _rooms.Add(room);
 
-        return room;
+        return Task.FromResult(room);
     }
 
     /// <summary>
     /// Обновить существующий номер
     /// </summary>
-    public Room? Update(Room room)
+    public async Task<Room?> Update(Room room)
     {
-        var existingRoom = GetById(room.Id);
+        var existingRoom = await GetById(room.Id);
 
         if (existingRoom is null) return null;
 
@@ -69,9 +69,9 @@ public class RoomRepository : IRepository<Room, int>
     /// <summary>
     /// Удалить номер по идентификатору
     /// </summary>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var room = GetById(id);
+        var room = await GetById(id);
 
         if (room is null) return false;
 
