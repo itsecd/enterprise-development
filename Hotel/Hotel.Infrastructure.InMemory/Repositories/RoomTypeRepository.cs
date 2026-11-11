@@ -25,35 +25,37 @@ public class RoomTypeRepository : IRepository<RoomType, int>
     /// <summary>
     /// Получить все типы номеров
     /// </summary>
-    public IReadOnlyList<RoomType> GetAll()
+    public Task<IReadOnlyList<RoomType>> GetAll()
     {
-        return _roomTypes.AsReadOnly();
+        return Task.FromResult<IReadOnlyList<RoomType>>(_roomTypes.AsReadOnly());
     }
 
     /// <summary>
     /// Получить тип номера по идентификатору
     /// </summary>
-    public RoomType? GetById(int id)
+    public Task<RoomType?> GetById(int id)
     {
-        return _roomTypes.FirstOrDefault(roomType => roomType.Id == id);
+        var roomType = _roomTypes.FirstOrDefault(roomType => roomType.Id == id);
+
+        return Task.FromResult(roomType);
     }
 
     /// <summary>
     /// Добавить новый тип номера
     /// </summary>
-    public RoomType Add(RoomType roomType)
+    public Task<RoomType> Add(RoomType roomType)
     {
         _roomTypes.Add(roomType);
 
-        return roomType;
+        return Task.FromResult(roomType);
     }
 
     /// <summary>
     /// Обновить существующий тип номера
     /// </summary>
-    public RoomType? Update(RoomType roomType)
+    public async Task<RoomType?> Update(RoomType roomType)
     {
-        var existingRoomType = GetById(roomType.Id);
+        var existingRoomType = await GetById(roomType.Id);
 
         if (existingRoomType is null) return null;
 
@@ -69,9 +71,9 @@ public class RoomTypeRepository : IRepository<RoomType, int>
     /// <summary>
     /// Удалить тип номера по идентификатору
     /// </summary>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var roomType = GetById(id);
+        var roomType = await GetById(id);
 
         if (roomType is null) return false;
 
