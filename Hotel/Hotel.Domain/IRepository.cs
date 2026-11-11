@@ -1,4 +1,6 @@
-﻿namespace Hotel.Domain;
+﻿using System.Threading.Tasks;
+
+namespace Hotel.Domain;
 
 /// <summary>
 /// Обобщённый интерфейс репозитория
@@ -12,25 +14,25 @@ public interface IRepository<TEntity, TKey>
     /// <summary>
     /// Получить все сущности
     /// </summary>
-    public IReadOnlyList<TEntity> GetAll();
+    public Task<IReadOnlyList<TEntity>> GetAll();
 
     /// <summary>
     /// Получить сущность по идентификатору
     /// </summary>
-    public TEntity? GetById(TKey id);
+    public Task<TEntity?> GetById(TKey id);
 
     /// <summary>
     /// Добавить новую сущность
     /// </summary>
-    public TEntity Add(TEntity entity);
+    public Task<TEntity> Add(TEntity entity);
 
     /// <summary>
     /// Обновить существующую сущность
     /// </summary>
-    public TEntity? Update(TEntity entity);
+    public Task <TEntity?> Update(TEntity entity);
 
     /// <summary>
     /// Удалить сущность по идентификатору
     /// </summary>
-    public bool Delete(TKey id);
+    public Task<bool> Delete(TKey id);
 }
