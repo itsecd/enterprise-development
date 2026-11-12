@@ -4,6 +4,7 @@
   <Project Path="Hotel.Application/Hotel.Application.csproj" Id="f8a62683-d4e9-4550-9d4f-968db172d3e0" />
   <Project Path="Hotel.Domain.Shared/Hotel.Domain.Shared.csproj" Id="2b7da4dc-3c5f-4780-addc-9eada690f692" />
   <Project Path="Hotel.Domain/Hotel.Domain.csproj" />
+  <Project Path="Hotel.Infrastructure.EfCore/Hotel.Infrastructure.EfCore.csproj" Id="eb106f3c-4173-4053-81dc-05570111d3a1" />
   <Project Path="Hotel.Infrastructure.InMemory/Hotel.Infrastructure.InMemory.csproj" Id="e0e20132-81ad-444b-9470-79231a36dc27" />
   <Project Path="Hotel.Tests/Hotel.Tests.csproj" Id="b1f0b4f0-6257-4918-b438-35d0660d917d" />
 </Solution>
