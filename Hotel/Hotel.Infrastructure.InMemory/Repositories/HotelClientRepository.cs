@@ -25,35 +25,35 @@ public class HotelClientRepository : IRepository<HotelClient, int>
     /// <summary>
     /// Получить всех клиентов
     /// </summary>
-    public IReadOnlyList<HotelClient> GetAll()
+    public Task<IReadOnlyList<HotelClient>> GetAll()
     {
-        return _clients.AsReadOnly();
+        return Task.FromResult<IReadOnlyList<HotelClient>>(_clients.AsReadOnly());
     }
 
     /// <summary>
     /// Получить клиента по идентификатору
     /// </summary>
-    public HotelClient? GetById(int id)
+    public Task<HotelClient?> GetById(int id)
     {
-        return _clients.FirstOrDefault(client => client.Id == id);
+        return Task.FromResult(_clients.FirstOrDefault(client => client.Id == id));
     }
 
     /// <summary>
     /// Добавить нового клиента
     /// </summary>
-    public HotelClient Add(HotelClient client)
+    public Task<HotelClient> Add(HotelClient client)
     {
         _clients.Add(client);
 
-        return client;
+        return Task.FromResult(client);
     }
 
     /// <summary>
     /// Обновить существующего клиента
     /// </summary>
-    public HotelClient? Update(HotelClient client)
+    public async Task<HotelClient?> Update(HotelClient client)
     {
-        var existingClient = GetById(client.Id);
+        var existingClient = await GetById(client.Id);
 
         if (existingClient is null) return null;
 
@@ -70,9 +70,9 @@ public class HotelClientRepository : IRepository<HotelClient, int>
     /// <summary>
     /// Удалить клиента по идентификатору
     /// </summary>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var client = GetById(id);
+        var client = await GetById(id);
 
         if (client is null) return false;
 
