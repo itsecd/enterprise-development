@@ -25,47 +25,49 @@ public class BookingRepository : IRepository<Booking, int>
     /// <summary>
     /// Получить все бронирования
     /// </summary>
-    public IReadOnlyList<Booking> GetAll()
+    public Task<IReadOnlyList<Booking>> GetAll()
     {
-        return _bookings.AsReadOnly();
+        return Task.FromResult<IReadOnlyList<Booking>>(_bookings.AsReadOnly());
     }
 
     /// <summary>
     /// Получить бронирование по идентификатору
     /// </summary>
-    public Booking? GetById(int id)
+    public Task<Booking?> GetById(int id)
     {
-        return _bookings.FirstOrDefault(booking => booking.Id == id);
+        return Task.FromResult(_bookings.FirstOrDefault(booking => booking.Id == id));
     }
 
     /// <summary>
     /// Добавить новое бронирование
     /// </summary>
-    public Booking Add(Booking booking)
+    public Task<Booking> Add(Booking booking)
     {
         _bookings.Add(booking);
-        return booking;
+
+        return Task.FromResult(booking);
     }
 
     /// <summary>
     /// Обновить существующее бронирование
     /// </summary>
-    public Booking? Update(Booking booking)
+    public Task<Booking?> Update(Booking booking)
     {
         var index = _bookings.FindIndex(item => item.Id == booking.Id);
 
-        if (index == -1) return null;
+        if (index == -1) return Task.FromResult<Booking?>(null);
+
         _bookings[index] = booking;
 
-        return booking;
+        return Task.FromResult<Booking?>(booking);
     }
 
     /// <summary>
     /// Удалить бронирование по идентификатору
     /// </summary>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var booking = GetById(id);
+        var booking = await GetById(id);
 
         if (booking is null) return false;
 
