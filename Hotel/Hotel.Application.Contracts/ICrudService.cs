@@ -12,25 +12,25 @@ public interface ICrudService<TDto, TInputDto, TKey>
     /// <summary>
     /// Получить список всех объектов
     /// </summary>
-    public IReadOnlyList<TDto> GetAll();
+    public Task<IReadOnlyList<TDto>> GetAll();
 
     /// <summary>
     /// Получить объект по идентификатору
     /// </summary>
-    public TDto? GetById(TKey id);
+    public Task<TDto?> GetById(TKey id);
 
     /// <summary>
     /// Создать объект
     /// </summary>
-    public TDto Create(TInputDto dto);
+    public Task<TDto> Create(TInputDto dto);
 
     /// <summary>
     /// Обновить существующий объект
     /// </summary>
-    public TDto? Update(TKey id, TInputDto dto);
+    public Task<TDto?> Update(TKey id, TInputDto dto);
 
     /// <summary>
     /// Удалить объект по идентификатору
     /// </summary>
-    public bool Delete(TKey id);
+    public Task<bool> Delete(TKey id);
 }
