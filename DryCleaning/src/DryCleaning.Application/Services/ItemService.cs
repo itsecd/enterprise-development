@@ -50,6 +50,7 @@ public class ItemService(
         {
             Name= item.Name,
             Material = item.Material,
+            CategoryId = category.CategoryId,
             Category = category
         });
         return MapToDto(createdItem);
@@ -111,7 +112,7 @@ public class ItemService(
             ItemId = id,
             Name = item.Name,
             Material = item.Material,
-            Category = category
+            CategoryId = category.CategoryId,
         };
         return await _itemRepository.UpdateAsync(updatedItem);
     }

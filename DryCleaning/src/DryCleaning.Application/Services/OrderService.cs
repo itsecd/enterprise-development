@@ -75,7 +75,9 @@ public class OrderService(
 
         var newOrder = new Order
         {
+            ClientId = client.ClientId,
             Client = client,
+            ItemId = item.ItemId,
             Item = item,
             ProcessingDays = order.ProcessingDays,
             Status = OrderStatus.Accepted,
@@ -111,8 +113,8 @@ public class OrderService(
         var updatedOrder = new Order
         {
             Id = id,
-            Client = client,
-            Item = item,
+            ClientId = client.ClientId,
+            ItemId = item.ItemId,
             Status = order.Status,
             ProcessingDays = order.ProcessingDays,
             AcceptDate = existingOrder.AcceptDate,

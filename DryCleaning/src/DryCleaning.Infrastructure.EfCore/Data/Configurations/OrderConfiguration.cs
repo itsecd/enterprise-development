@@ -11,7 +11,7 @@ namespace DryCleaning.Infrastructure.EfCore.Data.Configurations;
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     /// <summary>
-    /// Задаёт ключ заказа, связи с клиентом и изделием через теневые ключи,
+    /// Задаёт ключ заказа, связи с клиентом и изделием через внешние ключи,
     /// хранение дат в UTC и добавляет начальные данные из TestData
     /// </summary>
     /// <param name="builder">Построитель конфигурации таблицы</param>
@@ -21,13 +21,13 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasOne(o => o.Client)
             .WithMany()
-            .HasForeignKey("ClientId")
+            .HasForeignKey(o => o.ClientId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
 
         builder.HasOne(o => o.Item)
             .WithMany()
-            .HasForeignKey("ItemId")
+            .HasForeignKey(o => o.ItemId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
 

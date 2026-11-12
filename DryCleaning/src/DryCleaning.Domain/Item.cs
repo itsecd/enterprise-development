@@ -19,7 +19,11 @@ public class Item
     /// </summary>
     public required string Material { get; set; }
     /// <summary>
+    /// Идентификатор категории изделия
+    /// </summary>
+    public int CategoryId { get; set; }
+    /// <summary>
     /// Категория изделия
     /// </summary>  
-    public required ItemCategory Category { get; set; }
+    public ItemCategory Category { get; set; } = null!;
 }

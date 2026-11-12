@@ -36,7 +36,7 @@ public class OrderRepository(DryCleaningDbContext context) : IOrderRepository
             .Include(o => o.Client)
             .Include(o => o.Item)
                 .ThenInclude(i => i.Category)
-            .Where(o => o.Client.ClientId == clientId)
+            .Where(o => o.ClientId == clientId)
             .ToListAsync();
     }
 
@@ -56,7 +56,7 @@ public class OrderRepository(DryCleaningDbContext context) : IOrderRepository
 
     /// <summary>
     /// Добавляет заказ в базу.
-    /// Идентификатор назначает база, внешние ключи EF берёт из order.Client и order.Item
+    /// Идентификатор назначает база, внешние ключи берутся из ClientId и ItemId
     /// </summary>
     /// <param name="order">Новый заказ с загруженными клиентом и изделием</param>
     /// <returns>Заказ с назначенным идентификатором</returns>
@@ -81,8 +81,8 @@ public class OrderRepository(DryCleaningDbContext context) : IOrderRepository
             return false;
         }
 
-        existing.Client = order.Client;
-        existing.Item = order.Item;
+        existing.ClientId = order.ClientId;
+        existing.ItemId = order.ItemId;
         existing.Status = order.Status;
         existing.ProcessingDays = order.ProcessingDays;
         existing.AcceptDate = order.AcceptDate;
@@ -117,7 +117,7 @@ public class OrderRepository(DryCleaningDbContext context) : IOrderRepository
     /// <returns>True — заказы есть, False — заказов нет</returns>
     public async Task<bool> HasOrdersForClientAsync(int clientId)
     {
-        return await context.Orders.AnyAsync(o => o.Client.ClientId == clientId);
+        return await context.Orders.AnyAsync(o => o.ClientId == clientId);
     }
 
     /// <summary>
@@ -128,6 +128,6 @@ public class OrderRepository(DryCleaningDbContext context) : IOrderRepository
     /// <returns>True — заказы есть, False — заказов нет</returns>
     public async Task<bool> HasOrdersForItemAsync(int itemId)
     {
-        return await context.Orders.AnyAsync(o => o.Item.ItemId == itemId);
+        return await context.Orders.AnyAsync(o => o.ItemId == itemId);
     }
 }

@@ -15,13 +15,21 @@ public class Order
     /// </summary>
     public int Id { get; set; }
     /// <summary>
+    /// Идентификатор клиента, оформившего заказ
+    /// </summary>
+    public int ClientId { get; set; }
+    /// <summary>
     /// Клиент 
     /// </summary>
-    public required Client Client { get; set; }
+    public Client Client { get; set; } = null!;
+    /// <summary>
+    /// Идентификатор изделия
+    /// </summary>
+    public int ItemId { get; set; }
     /// <summary>
     /// Изделие
     /// </summary>
-    public required Item Item { get; set; }
+    public Item Item { get; set; } = null!;
     /// <summary>
     /// Статус заказа
     /// </summary>

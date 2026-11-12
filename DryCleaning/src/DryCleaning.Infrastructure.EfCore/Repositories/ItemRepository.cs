@@ -32,7 +32,7 @@ public class ItemRepository(DryCleaningDbContext context) : IItemRepository
     {
         return await context.Items
             .Include(i => i.Category)
-            .Where(i => i.Category.CategoryId == categoryId)
+            .Where(i => i.CategoryId == categoryId)
             .ToListAsync();
     }
 
@@ -50,7 +50,7 @@ public class ItemRepository(DryCleaningDbContext context) : IItemRepository
 
     /// <summary>
     /// Добавляет изделие в базу
-    /// Идентификатор назначает база, внешний ключ категории EF берёт из item.Category
+    /// Идентификатор назначает база, внешний ключ категории берётся из CategoryId
     /// </summary>
     /// <param name="item">Новое изделие с загруженной категорией</param>
     /// <returns>Изделие с назначенным идентификатором</returns>
@@ -76,7 +76,7 @@ public class ItemRepository(DryCleaningDbContext context) : IItemRepository
 
         existing.Name = item.Name;
         existing.Material = item.Material;
-        existing.Category = item.Category;
+        existing.CategoryId = item.CategoryId;
         await context.SaveChangesAsync();
         return true;
     }
@@ -107,6 +107,6 @@ public class ItemRepository(DryCleaningDbContext context) : IItemRepository
     /// <returns>True — изделия есть, False — изделий нет</returns>
     public async Task<bool> HasItemsForCategoryAsync(int categoryId)
     {
-        return await context.Items.AnyAsync(i => i.Category.CategoryId == categoryId);
+        return await context.Items.AnyAsync(i => i.CategoryId == categoryId);
     }
 }

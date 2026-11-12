@@ -12,7 +12,7 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 {
     /// <summary>
     /// Задаёт ключ и ограничения полей изделия, связь с категорией
-    /// через теневой ключ CategoryId и добавляет начальные данные из TestData
+    /// через внешний ключ CategoryId и добавляет начальные данные из TestData
     /// </summary>
     /// <param name="builder">Построитель конфигурации таблицы</param>
     public void Configure(EntityTypeBuilder<Item> builder)
@@ -21,7 +21,7 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 
         builder.HasOne(i => i.Category)
             .WithMany()
-            .HasForeignKey("CategoryId")
+            .HasForeignKey(i => i.CategoryId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
 
