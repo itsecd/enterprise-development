@@ -27,4 +27,28 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
     /// Бронирования номеров
     /// </summary>
     public DbSet<Booking> Bookings => Set<Booking>();
+    
+    /// <inheritdoc/>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Room>()
+            .HasOne(room => room.RoomType)
+            .WithMany()
+            .HasForeignKey(room => room.RoomTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Booking>()
+            .HasOne(booking => booking.Client)
+            .WithMany()
+            .HasForeignKey(booking => booking.ClientId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Booking>()
+            .HasOne(booking => booking.Room)
+            .WithMany()
+            .HasForeignKey(booking => booking.RoomId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
 }
