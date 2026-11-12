@@ -7,11 +7,11 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Предоставляет REST API для управления специализациями тренеров.
 /// </summary>
+/// <param name="specializationService">Сервис специализаций.</param>
+/// <param name="logger">Журнал событий.</param>
 [ApiController]
 [Route("api/specializations")]
 [Produces("application/json")]
-/// <param name="specializationService">Сервис специализаций.</param>
-/// <param name="logger">Журнал событий.</param>
 public class SpecializationsController(
     ISpecializationService specializationService,
     ILogger<SpecializationsController> logger) : ControllerBase

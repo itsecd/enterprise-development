@@ -7,10 +7,10 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Предоставляет HTTP-операции аналитики фитнес-клуба.
 /// </summary>
+/// <param name="service">Сервис аналитики.</param>
 [ApiController]
 [Route("api/analytics")]
 [Produces("application/json")]
-/// <param name="service">Сервис аналитики.</param>
 public class AnalyticsController(IAnalyticsService service) : ControllerBase
 {
     /// <summary>

@@ -7,10 +7,10 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Предоставляет HTTP-операции для работы с залами.
 /// </summary>
+/// <param name="service">Сервис залов.</param>
 [ApiController]
 [Route("api/halls")]
 [Produces("application/json")]
-/// <param name="service">Сервис залов.</param>
 public class HallsController(IHallService service) : ControllerBase
 {
     /// <summary>Возвращает все залы.</summary>

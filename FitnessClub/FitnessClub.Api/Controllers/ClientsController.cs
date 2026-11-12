@@ -7,11 +7,11 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Предоставляет HTTP-операции для работы с клиентами фитнес-клуба.
 /// </summary>
+/// <param name="clientService">Сервис работы с клиентами.</param>
+/// <param name="logger">Журнал событий контроллера.</param>
 [ApiController]
 [Route("api/clients")]
 [Produces("application/json")]
-/// <param name="clientService">Сервис работы с клиентами.</param>
-/// <param name="logger">Журнал событий контроллера.</param>
 public class ClientsController(
     IClientService clientService,
     ILogger<ClientsController> logger) : ControllerBase

@@ -7,11 +7,11 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Предоставляет REST API для управления тренерами фитнес-клуба.
 /// </summary>
+/// /// <param name="trainerService">Сервис управления тренерами.</param>
+/// <param name="logger">Журнал событий.</param>
 [ApiController]
 [Route("api/trainers")]
 [Produces("application/json")]
-/// <param name="trainerService">Сервис управления тренерами.</param>
-/// <param name="logger">Журнал событий.</param>
 public class TrainersController(
     ITrainerService trainerService,
     ILogger<TrainersController> logger) : ControllerBase

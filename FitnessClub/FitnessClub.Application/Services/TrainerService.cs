@@ -34,14 +34,9 @@ public class TrainerService(
         ArgumentNullException.ThrowIfNull(dto);
 
         var specialization = await specializationRepository
-            .GetByIdAsync(dto.SpecializationId);
-
-        if (specialization is null)
-        {
-            throw new ArgumentException(
+            .GetByIdAsync(dto.SpecializationId) ?? throw new ArgumentException(
                 "Указанная специализация не найдена.",
                 nameof(dto));
-        }
 
         var trainer = new Trainer
         {

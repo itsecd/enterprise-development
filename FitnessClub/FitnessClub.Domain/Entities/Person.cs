@@ -8,7 +8,7 @@ namespace FitnessClub.Domain.Entities;
 /// </summary>
 public abstract class Person : IEntity
 {
-    /// <summary>
+/// <summary>
 /// ID человека.
 /// </summary>
 public int Id { get; set; }
