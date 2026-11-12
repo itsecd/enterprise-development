@@ -18,13 +18,13 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<BookingDto>> GetBookingsByRoomId(int id)
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetBookingsByRoomId(int id)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetBookingsByRoomId), GetType().Name);
 
         try
         {
-            var result = roomService.GetBookingsByRoomId(id);
+            var result = await roomService.GetBookingsByRoomId(id);
 
             if (result is null)
             {
@@ -51,13 +51,13 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
     [HttpGet("top-five-most-booked")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms()
+    public async Task<ActionResult<IReadOnlyList<RoomBookingCountDto>>> GetTopFiveMostBookedRooms()
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetTopFiveMostBookedRooms), GetType().Name);
 
         try
         {
-            var result = roomService.GetTopFiveMostBookedRooms();
+            var result = await roomService.GetTopFiveMostBookedRooms();
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetTopFiveMostBookedRooms), GetType().Name);
 
@@ -78,13 +78,13 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
     [HttpGet("booking-counts")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom()
+    public async Task<ActionResult<IReadOnlyList<RoomBookingCountDto>>> GetBookingCountForEachRoom()
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetBookingCountForEachRoom), GetType().Name);
 
         try
         {
-            var result = roomService.GetBookingCountForEachRoom();
+            var result = await roomService.GetBookingCountForEachRoom();
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetBookingCountForEachRoom), GetType().Name);
 

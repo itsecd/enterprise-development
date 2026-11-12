@@ -19,13 +19,13 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<BookingDto>> GetBookingsByClientId(int id)
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetBookingsByClientId(int id)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetBookingsByClientId), GetType().Name);
 
         try
         {
-            var result = hotelClientService.GetBookingsByClientId(id);
+            var result = await hotelClientService.GetBookingsByClientId(id);
 
             if (result is null)
             {
@@ -52,13 +52,13 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
     [HttpGet("top-five-by-total-stay-cost")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost()
+    public async Task<ActionResult<IReadOnlyList<HotelClientStayCostDto>>> GetTopFiveClientsByTotalStayCost()
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetTopFiveClientsByTotalStayCost), GetType().Name);
 
         try
         {
-            var result = hotelClientService.GetTopFiveClientsByTotalStayCost();
+            var result = await hotelClientService.GetTopFiveClientsByTotalStayCost();
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetTopFiveClientsByTotalStayCost), GetType().Name);
 
@@ -82,14 +82,14 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(
+    public async Task<ActionResult<IReadOnlyList<HotelClientDto>>> GetClientsByRoomCategory(
         RoomCategory category)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}. Категория комнаты: {Category}", nameof(GetClientsByRoomCategory), GetType().Name, category);
 
         try
         {
-            var result = hotelClientService.GetClientsByRoomCategory(category);
+            var result = await hotelClientService.GetClientsByRoomCategory(category);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetClientsByRoomCategory), GetType().Name);
 

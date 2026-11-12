@@ -16,13 +16,13 @@ public class BookingsController(IBookingService bookingService, ILogger<Bookings
     [HttpGet("current")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<BookingDto>> GetCurrentBookings()
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetCurrentBookings()
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetCurrentBookings), GetType().Name);
 
         try
         {
-            var result = bookingService.GetBookedRooms();
+            var result = await bookingService.GetBookedRooms();
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetCurrentBookings), GetType().Name);
 
