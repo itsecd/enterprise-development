@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="Carwash.Api/Carwash.Api.csproj" Id="bbe988fa-9c95-4d94-8c9b-578b54ec41d1" />
+  <Project Path="Carwash.AppHost/Carwash.AppHost.csproj" Id="e7db2f85-9e47-46f2-a77a-0aeed1c0ff5e" />
+  <Project Path="Carwash.Application.Contracts/Carwash.Application.Contracts.csproj" Id="2a8cf0ff-b7bb-4c08-96aa-411cb9dd53a8" />
+  <Project Path="Carwash.Application/Carwash.Application.csproj" Id="cf477393-1563-4825-94de-3bb5b698b849" />
+  <Project Path="Carwash.Domain/Carwash.Domain.csproj" />
+  <Project Path="Carwash.Infrastructure.EfCore/Carwash.Infrastructure.EfCore.csproj" Id="ffb9cd63-ea64-4468-9580-8d948c984bc7" />
+  <Project Path="Carwash.Infrastructure.InMemory/Carwash.Infrastructure.InMemory.csproj" Id="7a29897b-743d-4f45-9254-6e98aa7aad74" />
+  <Project Path="Carwash.ServiceDefaults/Carwash.ServiceDefaults.csproj" Id="be3ec337-a474-4022-aa83-dfeea91cb48d" />
+  <Project Path="Carwash.Shared/Carwash.Shared.csproj" Id="f2450427-6a87-4d80-8403-61722cbca900" />
+  <Project Path="Carwash.Tests/Carwash.Tests.csproj" />
+</Solution>
