@@ -28,7 +28,7 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
     /// Бронирования номеров
     /// </summary>
     public DbSet<Booking> Bookings => Set<Booking>();
-    
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
