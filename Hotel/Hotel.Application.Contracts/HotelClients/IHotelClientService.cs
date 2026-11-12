@@ -12,15 +12,15 @@ public interface IHotelClientService
     /// <summary>
     /// Получить бронирования указанного клиента
     /// </summary>
-    public IReadOnlyList<BookingDto>? GetBookingsByClientId(int clientId);
+    public Task<IReadOnlyList<BookingDto>?> GetBookingsByClientId(int clientId);
 
     /// <summary>
     /// Получить топ пять клиентов по общей стоимости проживания
     /// </summary>
-    public IReadOnlyList<HotelClientStayCostDto> GetTopFiveClientsByTotalStayCost();
+    public Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost();
 
     /// <summary>
     /// Получить клиентов, бронировавших номера указанной категории
     /// </summary>
-    public IReadOnlyList<HotelClientDto> GetClientsByRoomCategory(RoomCategory category);
+    public Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category);
 }

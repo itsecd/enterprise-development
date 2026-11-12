@@ -14,9 +14,11 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить всех клиентов
     /// </summary>
-    public IReadOnlyList<HotelClientDto> GetAll()
+    public async Task<IReadOnlyList<HotelClientDto>> GetAll()
     {
-        return clientRepository.GetAll()
+        var clients = await clientRepository.GetAll();
+
+        return clients
             .Select(ToDto)
             .ToList();
     }
@@ -24,9 +26,9 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить клиента по идентификатору
     /// </summary>
-    public HotelClientDto? GetById(int id)
+    public async Task<HotelClientDto?> GetById(int id)
     {
-        var client = clientRepository.GetById(id);
+        var client = await clientRepository.GetById(id);
 
         return client is null ? null : ToDto(client);
     }
@@ -34,9 +36,9 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Создать клиента
     /// </summary>
-    public HotelClientDto Create(CreateHotelClientDto dto)
+    public async Task<HotelClientDto> Create(CreateHotelClientDto dto)
     {
-        var clients = clientRepository.GetAll();
+        var clients = await clientRepository.GetAll();
 
         var newId = clients.Count == 0
             ? 1
@@ -53,13 +55,15 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
             Citizenship = dto.Citizenship
         };
 
-        return ToDto(clientRepository.Add(client));
+        var createdClient = await clientRepository.Add(client);
+
+        return ToDto(createdClient);
     }
 
     /// <summary>
     /// Обновить клиента
     /// </summary>
-    public HotelClientDto? Update(int id, CreateHotelClientDto dto)
+    public async Task<HotelClientDto?> Update(int id, CreateHotelClientDto dto)
     {
         var client = new HotelClient
         {
@@ -72,7 +76,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
             Citizenship = dto.Citizenship
         };
 
-        var updatedClient = clientRepository.Update(client);
+        var updatedClient = await clientRepository.Update(client);
 
         return updatedClient is null ? null : ToDto(updatedClient);
     }
@@ -80,7 +84,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Удалить клиента
     /// </summary>
-    public bool Delete(int id)
+    public Task<bool> Delete(int id)
     {
         return clientRepository.Delete(id);
     }
@@ -88,11 +92,15 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить бронирования указанного клиента
     /// </summary>
-    public IReadOnlyList<BookingDto>? GetBookingsByClientId(int clientId)
+    public async Task<IReadOnlyList<BookingDto>?> GetBookingsByClientId(int clientId)
     {
-        if (clientRepository.GetById(clientId) is null) return null;
+        var client = await clientRepository.GetById(clientId);
 
-        return bookingRepository.GetAll()
+        if (client is null) return null;
+
+        var bookings = await bookingRepository.GetAll();
+
+        return bookings
             .Where(booking => booking.Client.Id == clientId)
             .Select(booking => new BookingDto(
                 booking.Id,
@@ -106,9 +114,11 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить пять клиентов с наибольшей общей стоимостью проживания
     /// </summary>
-    public IReadOnlyList<HotelClientStayCostDto> GetTopFiveClientsByTotalStayCost()
+    public async Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost()
     {
-        return bookingRepository.GetAll()
+        var bookings = await bookingRepository.GetAll();
+
+        return bookings
             .GroupBy(booking => booking.Client.Id)
             .Select(group => new HotelClientStayCostDto(
                 ToDto(group.First().Client),
@@ -123,11 +133,12 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить клиентов, бронировавших номер указанной категории
     /// </summary>
-    public IReadOnlyList<HotelClientDto> GetClientsByRoomCategory(RoomCategory category)
+    public async Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category)
     {
-        var bookings = bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll();
+        var clients = await clientRepository.GetAll();
 
-        return clientRepository.GetAll()
+        return clients
             .Where(client => bookings.Any(booking =>
                 booking.Client.Id == client.Id &&
                 booking.Room.RoomType.Category == category))
