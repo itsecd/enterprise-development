@@ -3,6 +3,7 @@ using DryCleaning.Contracts.Interfaces;
 using DryCleaning.Domain.Interfaces;
 using DryCleaning.Infrastructure.EfCore.Data;
 using DryCleaning.Infrastructure.EfCore.Repositories;
+using DryCleaning.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
