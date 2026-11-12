@@ -2,9 +2,7 @@ name: DryCleaning CI
 
 on:
   push:
-    branches: [main, lab1]
   pull_request:
-    branches: [main]
 
 permissions:
   contents: read
