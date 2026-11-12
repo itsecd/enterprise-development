@@ -3,6 +3,7 @@ using DryCleaning.Contracts.Dto;
 using DryCleaning.Contracts.Exceptions;
 using DryCleaning.Contracts.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DryCleaning.Api.Controllers;
@@ -114,7 +115,12 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
         {
             return InvalidItem(exception, nameof(Create));
         }
-        catch (DbUpdateException exception)
+        catch (DbUpdateConcurrencyException exception)
+        {
+            return ConcurrencyConflict(exception, nameof(Create));
+        }
+        // Номер 547 — нарушение внешнего ключа в SQL Server
+        catch (DbUpdateException exception) when (exception.InnerException is SqlException { Number: 547 })
         {
             return RelatedDataConflict(exception, nameof(Create));
         }
@@ -153,7 +159,12 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
         {
             return InvalidItem(exception, nameof(Update));
         }
-        catch (DbUpdateException exception)
+        catch (DbUpdateConcurrencyException exception)
+        {
+            return ConcurrencyConflict(exception, nameof(Update));
+        }
+        // Номер 547 — нарушение внешнего ключа в SQL Server
+        catch (DbUpdateException exception) when (exception.InnerException is SqlException { Number: 547 })
         {
             return RelatedDataConflict(exception, nameof(Update));
         }
@@ -196,7 +207,12 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
                 Detail = "С изделием связаны заказы."
             });
         }
-        catch (DbUpdateException exception)
+        catch (DbUpdateConcurrencyException exception)
+        {
+            return ConcurrencyConflict(exception, nameof(Delete));
+        }
+        // Номер 547 — нарушение внешнего ключа в SQL Server
+        catch (DbUpdateException exception) when (exception.InnerException is SqlException { Number: 547 })
         {
             return RelatedDataConflict(exception, nameof(Delete));
         }
@@ -220,13 +236,31 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
     }
 
     /// <summary>
+    /// Записывает в журнал конфликт одновременного изменения и возвращает ответ 409.
+    /// Возникает, если запись была изменена или удалена другим запросом во время операции
+    /// </summary>
+    /// <param name="exception">Ошибка одновременного изменения данных</param>
+    /// <param name="operation">Название операции</param>
+    /// <returns>Ответ с кодом 409</returns>
+    private ConflictObjectResult ConcurrencyConflict(DbUpdateConcurrencyException exception, string operation)
+    {
+        _logger.LogWarning(exception, "Запись была изменена или удалена другим запросом при выполнении операции {Operation}", operation);
+        return Conflict(new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Запись была изменена или удалена другим запросом.",
+            Detail = "Повторите запрос."
+        });
+    }
+
+    /// <summary>
     /// Записывает в журнал отказ базы данных из-за связей между записями и возвращает ответ 409.
-    /// Возникает, если связанная запись была создана или удалена одновременно с запросом
+    /// Возникает при нарушении внешнего ключа: связанная запись была создана или удалена одновременно с запросом
     /// </summary>
     /// <param name="exception">Ошибка сохранения изменений в базе</param>
     /// <param name="operation">Название операции</param>
     /// <returns>Ответ с кодом 409</returns>
-    private ObjectResult RelatedDataConflict(DbUpdateException exception, string operation)
+    private ConflictObjectResult RelatedDataConflict(DbUpdateException exception, string operation)
     {
         _logger.LogWarning(exception, "База данных отклонила операцию {Operation} из-за связанных данных", operation);
         return Conflict(new ProblemDetails
