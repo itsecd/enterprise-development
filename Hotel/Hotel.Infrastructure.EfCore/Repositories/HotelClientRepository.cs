@@ -22,7 +22,7 @@ public class HotelClientRepository(HotelDbContext context) : IRepository<HotelCl
     {
         return await context.HotelClients.FindAsync(id);
     }
- 
+
     /// <inheritdoc/>
     public async Task<HotelClient> Add(HotelClient client)
     {
