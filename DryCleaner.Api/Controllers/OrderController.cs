@@ -41,7 +41,7 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [ProducesResponseType(typeof(OrderDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> Get(int id)
+    public ActionResult<OrderDto> Get(int id)
     {
         try
         {
@@ -65,7 +65,7 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [ProducesResponseType(typeof(OrderDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> Create([FromBody] OrderCreateUpdateDto dto)
+    public ActionResult<OrderDto> Create([FromBody] OrderCreateUpdateDto dto)
     {
         try
         {
@@ -77,7 +77,7 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
         }
         catch (KeyNotFoundException ex)
         {
-            return BadRequest(new { Message = ex.Message });
+            return NotFound(new { Message = ex.Message });
         }
         catch (Exception ex)
         {
@@ -94,7 +94,7 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> Update(int id, [FromBody] OrderCreateUpdateDto dto)
+    public ActionResult<OrderDto> Update(int id, [FromBody] OrderCreateUpdateDto dto)
     {
         try
         {
@@ -119,15 +119,17 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> Delete(int id)
+    public IActionResult Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Удаление заказа");
 
-            if (!service.Delete(id)) return NotFound();
+            if (!service.Delete(id))
+            {
+                logger.LogWarning("Заказ не существует или уже удален");
+            }
             return NoContent();
         }
         catch (Exception ex)

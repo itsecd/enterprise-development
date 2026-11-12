@@ -125,7 +125,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [ProducesResponseType(typeof(TotalSpentCustomerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<TotalSpentCustomerDto>> GetTopSpender()
+    public ActionResult<TotalSpentCustomerDto> GetTopSpender()
     {
         try
         {

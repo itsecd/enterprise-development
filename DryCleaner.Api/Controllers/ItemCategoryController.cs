@@ -41,7 +41,7 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemCategoryDto>> Get(int id)
+    public ActionResult<ItemCategoryDto> Get(int id)
     {
         try
         {
@@ -62,7 +62,7 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     /// Получение списка изделий в конкретной категории
     /// </summary>
     [HttpGet("{id:int}/items")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<ItemDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IList<ItemDto>> GetCategoryItems(int id)
@@ -95,7 +95,7 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemCategoryDto>> Create([FromBody] ItemCategoryCreateUpdateDto dto)
+    public ActionResult<ItemCategoryDto> Create([FromBody] ItemCategoryCreateUpdateDto dto)
     {
         try
         {
@@ -120,7 +120,7 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemCategoryDto>> Update(int id, [FromBody] ItemCategoryCreateUpdateDto dto)
+    public ActionResult<ItemCategoryDto> Update(int id, [FromBody] ItemCategoryCreateUpdateDto dto)
     {
         try
         {
@@ -145,15 +145,17 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemCategoryDto>> Delete(int id)
+    public IActionResult Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Удаление категории");
 
-            if (!service.Delete(id)) return NotFound();
+            if (!service.Delete(id))
+            {
+                logger.LogWarning("Категория изделия не существует или уже удалена");
+            }
             return NoContent();
         }
         catch (Exception ex)

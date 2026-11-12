@@ -41,7 +41,7 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(typeof(ItemDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemDto>> Get(int id)
+    public ActionResult<ItemDto> Get(int id)
     {
         try
         {
@@ -62,7 +62,7 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     /// Получение списка заказов, в которых используется конкретное изделие
     /// </summary>
     [HttpGet("{id:int}/orders")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<OrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IList<OrderDto>> GetItemOrders(int id)
@@ -95,7 +95,7 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(typeof(ItemDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemDto>> Create([FromBody] ItemCreateUpdateDto dto)
+    public ActionResult<ItemDto> Create([FromBody] ItemCreateUpdateDto dto)
     {
         try
         {
@@ -107,7 +107,7 @@ public class ItemController(IItemService service, IOrderService orderService, IL
         }
         catch (KeyNotFoundException ex)
         {
-            return BadRequest(new { Message = ex.Message });
+            return NotFound(new { Message = ex.Message });
         }
         catch (Exception ex)
         {
@@ -124,7 +124,7 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemDto>> Update(int id, [FromBody] ItemCreateUpdateDto dto)
+    public ActionResult<ItemDto> Update(int id, [FromBody] ItemCreateUpdateDto dto)
     {
         try
         {
@@ -149,15 +149,17 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemDto>> Delete(int id)
+    public IActionResult Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Удаление изделия");
 
-            if (!service.Delete(id)) return NotFound();
+            if (!service.Delete(id))
+            {
+                logger.LogWarning("Изделие не существует или уже удалено");
+            }
             return NoContent();
         }
         catch (Exception ex)

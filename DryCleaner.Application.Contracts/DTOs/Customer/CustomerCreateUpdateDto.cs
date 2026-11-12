@@ -18,6 +18,7 @@ public record CustomerCreateUpdateDto(
     [Required(ErrorMessage = "Фамилия клиента обязательна для заполнения!")]
     string LastName,
 
+    [Required(ErrorMessage = "Номер телефона обязателен для заполнения!")]
     [Phone(ErrorMessage = "Некорректный формат номера телефона!")]
     string PhoneNumber
 );

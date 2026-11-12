@@ -42,7 +42,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CustomerDto>> Get(int id)
+    public ActionResult<CustomerDto> Get(int id)
     {
         try
         {
@@ -67,7 +67,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     /// Получение списка заказов клиента по его идентификатору
     /// </summary>
     [HttpGet("{id:int}/orders")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<OrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IList<OrderDto>> GetCustomerOrders(int id)
@@ -100,7 +100,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CustomerDto>> Create([FromBody] CustomerCreateUpdateDto dto)
+    public ActionResult<CustomerDto> Create([FromBody] CustomerCreateUpdateDto dto)
     {
         try
         {
@@ -126,7 +126,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CustomerDto>> Update(int id, [FromBody] CustomerCreateUpdateDto dto)
+    public ActionResult<CustomerDto> Update(int id, [FromBody] CustomerCreateUpdateDto dto)
     {
         try
         {
@@ -154,16 +154,18 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CustomerDto>> Delete(int id)
+    public IActionResult Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос на удаление клиента");
 
             var deleted = service.Delete(id);
-            if (!deleted) return NotFound("Клиент с указанным идентификатором не найден");
+            if (!deleted)
+            {
+                logger.LogWarning("Клиент не существует или уже удален");
+            }
             return NoContent();
         }
         catch (Exception ex)
