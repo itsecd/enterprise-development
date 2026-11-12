@@ -11,15 +11,15 @@ public interface IRoomService
     /// <summary>
     /// Получить пять номеров с наибольшим количеством бронирований
     /// </summary>
-    public IReadOnlyList<RoomBookingCountDto> GetTopFiveMostBookedRooms();
+    public Task<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms();
 
     /// <summary>
     /// Получить количество бронирований для каждого номера
     /// </summary>
-    public IReadOnlyList<RoomBookingCountDto> GetBookingCountForEachRoom();
+    public Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom();
 
     /// <summary>
     /// Получить бронирования указанного номера
     /// </summary>
-    public IReadOnlyList<BookingDto>? GetBookingsByRoomId(int roomId);
+    public Task<IReadOnlyList<BookingDto>?> GetBookingsByRoomId(int roomId);
 }

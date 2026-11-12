@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Hotel.Domain;
+﻿namespace Hotel.Domain;
 
 /// <summary>
 /// Обобщённый интерфейс репозитория
@@ -29,7 +27,7 @@ public interface IRepository<TEntity, TKey>
     /// <summary>
     /// Обновить существующую сущность
     /// </summary>
-    public Task <TEntity?> Update(TEntity entity);
+    public Task<TEntity?> Update(TEntity entity);
 
     /// <summary>
     /// Удалить сущность по идентификатору

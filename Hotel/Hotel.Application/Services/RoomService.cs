@@ -13,9 +13,11 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить все номера
     /// </summary>
-    public IReadOnlyList<RoomDto> GetAll()
+    public async Task<IReadOnlyList<RoomDto>> GetAll()
     {
-        return roomRepository.GetAll()
+        var rooms = await roomRepository.GetAll();
+
+        return rooms
             .Select(ToDto)
             .ToList();
     }
@@ -23,9 +25,9 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить номер по идентификатору
     /// </summary>
-    public RoomDto? GetById(int id)
+    public async Task<RoomDto?> GetById(int id)
     {
-        var room = roomRepository.GetById(id);
+        var room = await roomRepository.GetById(id);
 
         return room is null ? null : ToDto(room);
     }
@@ -33,14 +35,14 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Создать номер
     /// </summary>
-    public RoomDto Create(CreateRoomDto dto)
+    public async Task<RoomDto> Create(CreateRoomDto dto)
     {
-        var roomType = roomTypeRepository.GetById(dto.RoomTypeId);
+        var roomType = await roomTypeRepository.GetById(dto.RoomTypeId);
 
         if (roomType is null) throw new ArgumentException(
             $"Не удалось найти тип номера с идентификатором {dto.RoomTypeId}");
 
-        var rooms = roomRepository.GetAll();
+        var rooms = await roomRepository.GetAll();
 
         var newId = rooms.Count == 0
             ? 1
@@ -55,19 +57,21 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
             RoomType = roomType
         };
 
-        return ToDto(roomRepository.Add(room));
+        var createdRoom = await roomRepository.Add(room);
+
+        return ToDto(createdRoom);
     }
 
     /// <summary>
     /// Обновить номер
     /// </summary>
-    public RoomDto? Update(int id, CreateRoomDto dto)
+    public async Task<RoomDto?> Update(int id, CreateRoomDto dto)
     {
-        var existingRoom = roomRepository.GetById(id);
+        var existingRoom = await roomRepository.GetById(id);
 
         if (existingRoom is null) return null;
 
-        var roomType = roomTypeRepository.GetById(dto.RoomTypeId);
+        var roomType = await roomTypeRepository.GetById(dto.RoomTypeId);
 
         if (roomType is null) throw new ArgumentException(
             $"Не удалось найти тип номера с идентификатором {dto.RoomTypeId}");
@@ -81,7 +85,7 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
             RoomType = roomType
         };
 
-        var updatedRoom = roomRepository.Update(room);
+        var updatedRoom = await roomRepository.Update(room);
 
         return updatedRoom is null ? null : ToDto(updatedRoom);
     }
@@ -89,7 +93,7 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Удалить номер
     /// </summary>
-    public bool Delete(int id)
+    public Task<bool> Delete(int id)
     {
         return roomRepository.Delete(id);
     }
@@ -97,14 +101,15 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить бронирования указанного номера
     /// </summary>
-    public IReadOnlyList<BookingDto>? GetBookingsByRoomId(int roomId)
+    public async Task<IReadOnlyList<BookingDto>?> GetBookingsByRoomId(int roomId)
     {
-        if (roomRepository.GetById(roomId) is null)
-        {
-            return null;
-        }
+        var room = await roomRepository.GetById(roomId);
 
-        return bookingRepository.GetAll()
+        if (room is null) return null;
+
+        var bookings = await bookingRepository.GetAll();
+
+        return bookings
             .Where(booking => booking.Room.Id == roomId)
             .Select(booking => new BookingDto(
                 booking.Id,
@@ -118,11 +123,12 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить пять самых часто бронируемых номеров
     /// </summary>
-    public IReadOnlyList<RoomBookingCountDto> GetTopFiveMostBookedRooms()
+    public async Task<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms()
     {
-        var bookings = bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll();
+        var rooms = await roomRepository.GetAll();
 
-        return roomRepository.GetAll()
+        return rooms
             .Select(room => new RoomBookingCountDto(
                 ToDto(room),
                 bookings.Count(booking => booking.Room.Id == room.Id)))
@@ -135,11 +141,12 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить количество бронирований каждого номера
     /// </summary>
-    public IReadOnlyList<RoomBookingCountDto> GetBookingCountForEachRoom()
+    public async Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom()
     {
-        var bookings = bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll();
+        var rooms = await roomRepository.GetAll();
 
-        return roomRepository.GetAll()
+        return rooms
             .Select(room => new RoomBookingCountDto(
                 ToDto(room),
                 bookings.Count(booking => booking.Room.Id == room.Id)))
