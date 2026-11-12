@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="DryCleaner.Api/DryCleaner.Api.csproj" />
+  <Project Path="DryCleaner.Application.Contracts/DryCleaner.Application.Contracts.csproj" />
+  <Project Path="DryCleaner.Application/DryCleaner.Application.csproj" />
+  <Project Path="DryCleaner.Domain/DryCleaner.Domain.csproj" />
+  <Project Path="DryCleaner.Infrastructure.InMemory/DryCleaner.Infrastructure.InMemory.csproj" />
+  <Project Path="DryCleaner.Shared/DryCleaner.Shared.csproj" />
+  <Project Path="DryCleaner.Tests/DryCleaner.Tests.csproj" />
+</Solution>
