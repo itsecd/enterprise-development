@@ -70,9 +70,8 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
     /// Возвращает изделие по идентификатору или 404, если оно не найдено
     /// </summary>
     /// <param name="id">Идентификатор изделия</param>
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ItemDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ItemDto>> GetById(int id)
@@ -135,7 +134,7 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
     /// </summary>
     /// <param name="id">Идентификатор изменяемого изделия</param>
     /// <param name="request">Новые название, материал и идентификатор категории</param>
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -178,9 +177,8 @@ public class ItemsController(IItemService service, ILogger<ItemsController> logg
     /// Удаляет изделие, если с ним не связаны заказы
     /// </summary>
     /// <param name="id">Идентификатор удаляемого изделия</param>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
