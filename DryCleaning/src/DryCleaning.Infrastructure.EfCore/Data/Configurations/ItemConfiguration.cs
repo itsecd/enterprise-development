@@ -33,7 +33,7 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.HasData(new TestData().Items.Select(i => new
+        builder.HasData(TestData.Instance.Items.Select(i => new
         {
             i.ItemId,
             i.Name,

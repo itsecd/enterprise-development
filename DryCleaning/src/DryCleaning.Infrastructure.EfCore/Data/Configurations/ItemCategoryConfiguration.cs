@@ -26,6 +26,6 @@ public class ItemCategoryConfiguration : IEntityTypeConfiguration<ItemCategory>
         builder.Property(c => c.Price)
             .HasPrecision(18, 2);
 
-        builder.HasData(new TestData().ItemCategories);
+        builder.HasData(TestData.Instance.ItemCategories);
     }
 }

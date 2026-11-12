@@ -41,7 +41,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
                 v => v,
                 v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
 
-        builder.HasData(new TestData().Orders.Select(o => new
+        builder.HasData(TestData.Instance.Orders.Select(o => new
         {
             o.Id,
             o.Client.ClientId,

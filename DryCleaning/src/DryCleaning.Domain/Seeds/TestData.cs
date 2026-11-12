@@ -5,6 +5,9 @@ namespace DryCleaning.Domain.Seeds;
 /// <summary>Класс создаёт тестовые данные для химчистки.</summary>
 public class TestData
 {
+    /// <summary>Общий экземпляр исходных данных для заполнения базы.</summary>
+    public static TestData Instance { get; } = new();
+
     /// <summary>Клиенты химчистки.</summary>
     public List<Client> Clients { get; } =
     [

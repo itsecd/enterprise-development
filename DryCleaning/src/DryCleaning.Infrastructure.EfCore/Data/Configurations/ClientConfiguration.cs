@@ -27,6 +27,6 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .IsRequired()
             .HasMaxLength(20);
 
-        builder.HasData(new TestData().Clients);
+        builder.HasData(TestData.Instance.Clients);
     }
 }

@@ -1,9 +1,9 @@
 using DryCleaning.Contracts.Dto;
+using DryCleaning.Contracts.Exceptions;
 using DryCleaning.Contracts.Interfaces;
 using DryCleaning.Domain;
 using DryCleaning.Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using DryCleaning.Contracts.Exceptions;
 
 namespace DryCleaning.Application.Services;
 
@@ -48,7 +48,7 @@ public class ItemService(
         var category = await _categoryRepository.GetByIdAsync(item.CategoryId) ?? throw new ValidationException("Категория не найдена");
         var createdItem = await _itemRepository.AddAsync(new Item
         {
-            Name= item.Name,
+            Name = item.Name,
             Material = item.Material,
             CategoryId = category.CategoryId,
             Category = category

@@ -148,18 +148,16 @@ public class ItemCategoryService(
 
         return new CategoryPopularityDto
         {
-            MostPopular = entries
+            MostPopular = [.. entries
                 .OrderByDescending(entry => entry.ItemCount)
                 .ThenBy(entry => entry.CategoryName, StringComparer.Ordinal)
                 .ThenBy(entry => entry.CategoryId)
-                .Take(5)
-                .ToList(),
-            LeastPopular = entries
+                .Take(5)],
+            LeastPopular = [.. entries
                 .OrderBy(entry => entry.ItemCount)
                 .ThenBy(entry => entry.CategoryName, StringComparer.Ordinal)
                 .ThenBy(entry => entry.CategoryId)
-                .Take(5)
-                .ToList()
+                .Take(5)]
         };
     }
 

@@ -103,11 +103,11 @@ public class ClientService(
         }
 
         var orders = await _orderRepository.GetAllAsync();
-        return orders
+        return [.. orders
             .Where(order => order.AcceptDate >= start && order.AcceptDate < end)
             .Where(order => order.Status != OrderStatus.Cancelled)
             .GroupBy(order => order.Client.ClientId)
-            .Select(group => new { Client = group.First().Client, ItemCount = group.Count() })
+            .Select(group => new { group.First().Client, ItemCount = group.Count() })
             .OrderByDescending(result => result.ItemCount)
             .ThenBy(result => result.Client.FullName, StringComparer.Ordinal)
             .ThenBy(result => result.Client.ClientId)
@@ -118,8 +118,7 @@ public class ClientService(
                 FullName = result.Client.FullName,
                 PhoneNumber = result.Client.PhoneNumber,
                 ItemCount = result.ItemCount
-            })
-            .ToList();
+            })];
     }
 
     /// <summary>Возвращает клиента с наибольшей суммой выданных заказов по текущим тарифам.</summary>
@@ -132,7 +131,7 @@ public class ClientService(
             .GroupBy(order => order.Client.ClientId)
             .Select(group => new
             {
-                Client = group.First().Client,
+                group.First().Client,
                 TotalSpent = group.Sum(order => order.Item.Category.Price)
             })
             .OrderByDescending(result => result.TotalSpent)
