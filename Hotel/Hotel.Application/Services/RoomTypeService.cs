@@ -12,9 +12,11 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Получить все типы номеров
     /// </summary>
-    public IReadOnlyList<RoomTypeDto> GetAll()
+    public async Task<IReadOnlyList<RoomTypeDto>> GetAll()
     {
-        return repository.GetAll()
+        var roomTypes = await repository.GetAll();
+
+        return roomTypes
             .Select(ToDto)
             .ToList();
     }
@@ -22,9 +24,9 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Получить тип номера по идентификатору
     /// </summary>
-    public RoomTypeDto? GetById(int id)
+    public async Task<RoomTypeDto?> GetById(int id)
     {
-        var roomType = repository.GetById(id);
+        var roomType = await repository.GetById(id);
 
         return roomType is null ? null : ToDto(roomType);
     }
@@ -32,9 +34,9 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Создать тип номера
     /// </summary>
-    public RoomTypeDto Create(CreateRoomTypeDto dto)
+    public async Task<RoomTypeDto> Create(CreateRoomTypeDto dto)
     {
-        var roomTypes = repository.GetAll();
+        var roomTypes = await repository.GetAll();
 
         var newId = roomTypes.Count == 0
             ? 1
@@ -50,13 +52,15 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
             PricePerDay = dto.PricePerDay
         };
 
-        return ToDto(repository.Add(roomType));
+        var createdRoomType = await repository.Add(roomType);
+
+        return ToDto(createdRoomType);
     }
 
     /// <summary>
     /// Обновить тип номера
     /// </summary>
-    public RoomTypeDto? Update(int id, CreateRoomTypeDto dto)
+    public async Task<RoomTypeDto?> Update(int id, CreateRoomTypeDto dto)
     {
         var roomType = new RoomType
         {
@@ -68,7 +72,7 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
             PricePerDay = dto.PricePerDay
         };
 
-        var updatedRoomType = repository.Update(roomType);
+        var updatedRoomType = await repository.Update(roomType);
 
         return updatedRoomType is null ? null : ToDto(updatedRoomType);
     }
@@ -76,7 +80,7 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Удалить тип номера
     /// </summary>
-    public bool Delete(int id)
+    public Task<bool> Delete(int id)
     {
         return repository.Delete(id);
     }
