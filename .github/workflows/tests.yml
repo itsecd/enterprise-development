@@ -1,0 +1,33 @@
+name: Run tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore BeautySalon.slnx
+
+      - name: Build solution
+        run: dotnet build BeautySalon.slnx --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build
