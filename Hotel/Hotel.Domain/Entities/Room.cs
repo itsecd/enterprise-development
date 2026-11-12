@@ -26,6 +26,11 @@ public class Room
     public bool HasBalcony { get; set; }
 
     /// <summary>
+    /// Идентификатор типа номера
+    /// </summary>
+    public int RoomTypeId { get; set; }
+
+    /// <summary>
     /// Тип номера
     /// </summary>
     public required RoomType RoomType { get; set; }
