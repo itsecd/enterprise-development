@@ -1,28 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
-using FoodDelivery.Application.Repositories;
 using FoodDelivery.Contracts.Clients;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Repositories;
 
 namespace FoodDelivery.Application.Services;
 
-public class ClientService : IClientService
+/// <summary>
+/// Сервис для управления клиентами.
+/// </summary>
+public class ClientService(IRepository<Client> clientRepo, ILogger<ClientService> logger) : IClientService
 {
-    private readonly IRepository<Client> _repository;
-    private readonly ILogger<ClientService> _logger;
-
-    public ClientService(IRepository<Client> repository, ILogger<ClientService> logger)
-    {
-        _repository = repository;
-        _logger = logger;
-    }
-
     public IReadOnlyList<ClientDto> GetAll() =>
-        _repository.GetAll().Select(c => new ClientDto(c.Id, c.FullName, c.Phone, c.DeliveryAddress)).ToList();
+        [.. clientRepo.GetAll().Select(MapToDto)];
 
     public ClientDto? GetById(int id)
     {
-        var entity = _repository.GetById(id);
-        return entity is null ? null : new ClientDto(entity.Id, entity.FullName, entity.Phone, entity.DeliveryAddress);
+        var client = clientRepo.GetById(id);
+        return client is null ? null : MapToDto(client);
     }
 
     public ClientDto Create(ClientCreateUpdateDto dto)
@@ -33,28 +27,30 @@ public class ClientService : IClientService
             Phone = dto.Phone,
             DeliveryAddress = dto.DeliveryAddress
         };
-        var created = _repository.Create(entity);
-        _logger.LogInformation("Создан клиент с Id = {Id}", created.Id);
-        return new ClientDto(created.Id, created.FullName, created.Phone, created.DeliveryAddress);
+        var created = clientRepo.Create(entity);
+        logger.LogInformation("Создан клиент с Id = {Id}", created.Id);
+        return MapToDto(created);
     }
 
     public bool Update(int id, ClientCreateUpdateDto dto)
     {
-        var existing = _repository.GetById(id);
+        var existing = clientRepo.GetById(id);
         if (existing is null) return false;
 
         existing.FullName = dto.FullName;
         existing.Phone = dto.Phone;
         existing.DeliveryAddress = dto.DeliveryAddress;
-
-        var result = _repository.Update(existing);
-        _logger.LogInformation("Обновлен клиент с Id = {Id}", id);
+        var result = clientRepo.Update(existing);
+        logger.LogInformation("Обновлён клиент с Id = {Id}", id);
         return result;
     }
 
     public void Delete(int id)
     {
-        _repository.Delete(id);
-        _logger.LogInformation("Удален клиент с Id = {Id}", id);
+        clientRepo.Delete(id);
+        logger.LogInformation("Удалён клиент с Id = {Id}", id);
     }
+
+    private static ClientDto MapToDto(Client c) =>
+        new(c.Id, c.FullName, c.Phone, c.DeliveryAddress);
 }

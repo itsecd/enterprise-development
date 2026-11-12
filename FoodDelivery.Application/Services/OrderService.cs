@@ -1,89 +1,109 @@
 ﻿using Microsoft.Extensions.Logging;
-using FoodDelivery.Application.Repositories;
 using FoodDelivery.Contracts.Orders;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Repositories;
 
 namespace FoodDelivery.Application.Services;
 
-public class OrderService : IOrderService
+/// <summary>
+/// Сервис управления заказами.
+/// </summary>
+public class OrderService(
+    IRepository<Order> orderRepo,
+    IRepository<Client> clientRepo,
+    IRepository<Restaurant> restaurantRepo,
+    IRepository<Dish> dishRepo,
+    ILogger<OrderService> logger) : IOrderService
 {
-    private readonly IRepository<Order> _orderRepo;
-    private readonly IRepository<Client> _clientRepo;
-    private readonly IRepository<Restaurant> _restaurantRepo;
-    private readonly IRepository<Dish> _dishRepo;
-    private readonly ILogger<OrderService> _logger;
-
-    public OrderService(
-        IRepository<Order> orderRepo,
-        IRepository<Client> clientRepo,
-        IRepository<Restaurant> restaurantRepo,
-        IRepository<Dish> dishRepo,
-        ILogger<OrderService> logger)
-    {
-        _orderRepo = orderRepo;
-        _clientRepo = clientRepo;
-        _restaurantRepo = restaurantRepo;
-        _dishRepo = dishRepo;
-        _logger = logger;
-    }
-
     public IReadOnlyList<OrderDto> GetAll() =>
-        _orderRepo.GetAll().Select(MapToDto).ToList();
+        [.. orderRepo.GetAll().Select(MapToDto)];
 
     public OrderDto? GetById(int id)
     {
-        var order = _orderRepo.GetById(id);
+        var order = orderRepo.GetById(id);
         return order is null ? null : MapToDto(order);
     }
 
     public OrderDto Create(OrderCreateUpdateDto dto)
     {
-        var client = _clientRepo.GetById(dto.ClientId);
-        var restaurant = _restaurantRepo.GetById(dto.RestaurantId);
-        var dishes = _dishRepo.GetAll().Where(d => dto.DishIds.Contains(d.Id)).ToList();
+        var dishes = ValidateAndResolveOrderEntities(dto);
 
-        var order = new Order
+        var entity = new Order
         {
             ClientId = dto.ClientId,
-            Client = client,
+            Client = clientRepo.GetById(dto.ClientId),
             RestaurantId = dto.RestaurantId,
-            Restaurant = restaurant,
-            OrderTime = dto.OrderTime,
-            DeliveryTime = dto.DeliveryTime,
+            Restaurant = restaurantRepo.GetById(dto.RestaurantId),
+            OrderDateTime = dto.OrderDateTime,
+            DeliveryDateTime = dto.DeliveryDateTime,
             TotalPrice = dto.TotalPrice,
             Dishes = dishes
         };
 
-        var created = _orderRepo.Create(order);
-        _logger.LogInformation("Создан новый заказ с Id = {Id}", created.Id);
+        var created = orderRepo.Create(entity);
+        logger.LogInformation("Создан заказ с Id = {Id} для ресторана {RestaurantId}", created.Id, created.RestaurantId);
         return MapToDto(created);
     }
 
     public bool Update(int id, OrderCreateUpdateDto dto)
     {
-        var existing = _orderRepo.GetById(id);
-        if (existing is null) return false;
+        var existing = orderRepo.GetById(id);
+        if (existing is null)
+            return false;
+
+        var dishes = ValidateAndResolveOrderEntities(dto);
 
         existing.ClientId = dto.ClientId;
-        existing.Client = _clientRepo.GetById(dto.ClientId);
+        existing.Client = clientRepo.GetById(dto.ClientId);
         existing.RestaurantId = dto.RestaurantId;
-        existing.Restaurant = _restaurantRepo.GetById(dto.RestaurantId);
-        existing.OrderTime = dto.OrderTime;
-        existing.DeliveryTime = dto.DeliveryTime;
+        existing.Restaurant = restaurantRepo.GetById(dto.RestaurantId);
+        existing.OrderDateTime = dto.OrderDateTime;
+        existing.DeliveryDateTime = dto.DeliveryDateTime;
         existing.TotalPrice = dto.TotalPrice;
-        existing.Dishes = _dishRepo.GetAll().Where(d => dto.DishIds.Contains(d.Id)).ToList();
+        existing.Dishes = dishes;
 
-        var result = _orderRepo.Update(existing);
-        _logger.LogInformation("Обновлен заказ с Id = {Id}", id);
+        var result = orderRepo.Update(existing);
+        logger.LogInformation("Обновлён заказ с Id = {Id}", id);
         return result;
     }
 
     public void Delete(int id)
     {
-        _orderRepo.Delete(id);
-        _logger.LogInformation("Удален заказ с Id = {Id}", id);
+        orderRepo.Delete(id);
+        logger.LogInformation("Удалён заказ с Id = {Id}", id);
     }
 
-    private static OrderDto MapToDto(Order o) =>
-        new(o.Id, o.ClientId, o.RestaurantId, o.OrderTime, o.DeliveryTime, o.TotalPrice, o.Dishes.Select(d => d.Id).ToList());
+    private List<Dish> ValidateAndResolveOrderEntities(OrderCreateUpdateDto dto)
+    {
+        if (clientRepo.GetById(dto.ClientId) is null)
+            throw new ArgumentException($"Клиент с Id = {dto.ClientId} не найден.");
+
+        if (restaurantRepo.GetById(dto.RestaurantId) is null)
+            throw new ArgumentException($"Ресторан с Id = {dto.RestaurantId} не найден.");
+
+        var resolvedDishes = new List<Dish>();
+        foreach (var dishId in dto.DishIds)
+        {
+            var dish = dishRepo.GetById(dishId);
+            if (dish is null)
+                throw new ArgumentException($"Блюдо с Id = {dishId} не найдено.");
+
+            if (dish.RestaurantId != dto.RestaurantId)
+                throw new ArgumentException(
+                    $"Блюдо «{dish.Name}» (Id = {dish.Id}) принадлежит ресторану Id = {dish.RestaurantId}, а заказ оформляется в ресторан Id = {dto.RestaurantId}.");
+
+            resolvedDishes.Add(dish);
+        }
+
+        return resolvedDishes;
+    }
+
+    private static OrderDto MapToDto(Order o) => new(
+        o.Id,
+        o.ClientId,
+        o.RestaurantId,
+        o.OrderDateTime,
+        o.DeliveryDateTime,
+        o.TotalPrice,
+        [.. o.Dishes.Select(d => d.Id)]);
 }

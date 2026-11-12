@@ -7,9 +7,9 @@ namespace FoodDelivery.Domain.Data;
 /// </summary>
 public class FoodDeliveryContext
 {
-    public List<Client> Clients { get; set; } = new();
-    public List<Restaurant> Restaurants { get; set; } = new();
-    public List<DishCategory> Categories { get; set; } = new();
-    public List<Dish> Dishes { get; set; } = new();
-    public List<Order> Orders { get; set; } = new();
+    public List<Client> Clients { get; set; } = [];
+    public List<Restaurant> Restaurants { get; set; } = [];
+    public List<DishCategory> Categories { get; set; } = [];
+    public List<Dish> Dishes { get; set; } = [];
+    public List<Order> Orders { get; set; } = [];
 }

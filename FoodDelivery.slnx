@@ -3,5 +3,6 @@
   <Project Path="FoodDelivery.Application/FoodDelivery.Application.csproj" Id="99b1948b-eced-4b35-a3ee-90d3cac69ac2" />
   <Project Path="FoodDelivery.Contracts/FoodDelivery.Contracts.csproj" Id="d360a060-f6ce-447c-b69d-9e65957e9faa" />
   <Project Path="FoodDelivery.Domain/FoodDelivery.Domain.csproj" Id="32d488e0-ce32-4507-8a49-b40cdae70a40" />
+  <Project Path="FoodDelivery.Infrastructure/FoodDelivery.Infrastructure.csproj" Id="db9e6de7-59e9-446f-af60-49e6b6c8a49f" />
   <Project Path="FoodDelivery.Tests/FoodDelivery.Tests.csproj" Id="77bd08c6-755e-44b2-8a6a-bc8927c6cc84" />
 </Solution>

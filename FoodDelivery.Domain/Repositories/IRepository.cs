@@ -1,7 +1,10 @@
 ﻿using FoodDelivery.Domain.Entities;
 
-namespace FoodDelivery.Application.Repositories;
+namespace FoodDelivery.Domain.Repositories;
 
+/// <summary>
+/// Обобщённый интерфейс репозитория для базовых операций CRUD с доменными сущностями.
+/// </summary>
 public interface IRepository<TEntity> where TEntity : class, IEntity
 {
     public IReadOnlyList<TEntity> GetAll();

@@ -4,51 +4,125 @@ using FoodDelivery.Contracts.Clients;
 
 namespace FoodDelivery.Api.Controllers;
 
+/// <summary>
+/// Контроллер для управления клиентами службы доставки.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ClientsController : ControllerBase
+public class ClientsController(IClientService clientService, ILogger<ClientsController> logger) : ControllerBase
 {
-    private readonly IClientService _clientService;
-
-    public ClientsController(IClientService clientService)
-    {
-        _clientService = clientService;
-    }
-
+    /// <summary>
+    /// Получить список всех клиентов.
+    /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<ClientDto>), StatusCodes.Status200OK)]
-    public IActionResult GetAll() => Ok(_clientService.GetAll());
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IReadOnlyList<ClientDto>> GetAll()
+    {
+        try
+        {
+            logger.LogInformation("Запрос списка всех клиентов");
+            return Ok(clientService.GetAll());
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка клиентов");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Внутренняя ошибка сервера." });
+        }
+    }
 
+    /// <summary>
+    /// Получить клиента по идентификатору.
+    /// </summary>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(ClientDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetById(int id)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<ClientDto> GetById(int id)
     {
-        var client = _clientService.GetById(id);
-        return client is null ? NotFound(new { Message = $"Клиент с Id = {id} не найден." }) : Ok(client);
+        try
+        {
+            logger.LogInformation("Запрос клиента с Id = {Id}", id);
+            var client = clientService.GetById(id);
+            if (client is null)
+            {
+                logger.LogWarning("Клиент с Id = {Id} не найден", id);
+                return NotFound(new { Message = $"Клиент с Id = {id} не найден." });
+            }
+            return Ok(client);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении клиента с Id = {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Внутренняя ошибка сервера." });
+        }
     }
 
+    /// <summary>
+    /// Зарегистрировать нового клиента.
+    /// </summary>
     [HttpPost]
-    [ProducesResponseType(typeof(ClientDto), StatusCodes.Status201Created)]
-    public IActionResult Create([FromBody] ClientCreateUpdateDto dto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<ClientDto> Create([FromBody] ClientCreateUpdateDto dto)
     {
-        var created = _clientService.Create(dto);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        try
+        {
+            logger.LogInformation("Создание нового клиента: {FullName}", dto.FullName);
+            var created = clientService.Create(dto);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при создании клиента");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Внутренняя ошибка сервера." });
+        }
     }
 
+    /// <summary>
+    /// Обновить данные клиента.
+    /// </summary>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Update(int id, [FromBody] ClientCreateUpdateDto dto)
     {
-        return _clientService.Update(id, dto) ? NoContent() : NotFound(new { Message = $"Клиент с Id = {id} не найден." });
+        try
+        {
+            logger.LogInformation("Обновление клиента с Id = {Id}", id);
+            if (!clientService.Update(id, dto))
+            {
+                logger.LogWarning("Клиент с Id = {Id} не найден для обновления", id);
+                return NotFound(new { Message = $"Клиент с Id = {id} не найден." });
+            }
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении клиента с Id = {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Внутренняя ошибка сервера." });
+        }
     }
 
+    /// <summary>
+    /// Удалить клиента по идентификатору.
+    /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int id)
     {
-        _clientService.Delete(id);
-        return NoContent();
+        try
+        {
+            logger.LogInformation("Удаление клиента с Id = {Id}", id);
+            clientService.Delete(id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении клиента с Id = {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Внутренняя ошибка сервера." });
+        }
     }
 }

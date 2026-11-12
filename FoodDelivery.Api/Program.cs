@@ -1,7 +1,8 @@
-using FoodDelivery.Application.Repositories;
 using FoodDelivery.Application.Services;
 using FoodDelivery.Domain.Data;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Repositories;
+using FoodDelivery.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ builder.Services.AddOpenApi();
 // Контекст с данными
 builder.Services.AddSingleton(DataSeeder.Seed());
 
-// Обобщенные репозитории
+// Обобщённые репозитории
 builder.Services.AddSingleton<IRepository<Client>>(sp =>
     new InMemoryRepository<Client>(sp.GetRequiredService<FoodDeliveryContext>().Clients));
 builder.Services.AddSingleton<IRepository<Restaurant>>(sp =>

@@ -63,15 +63,15 @@ public class QueriesTest(
         var expectedDeliveryTime = TimeSpan.FromMinutes(25);
 
         var deliveredOrders = fixture.Orders
-            .Where(order => order.DeliveryTime.HasValue)
+            .Where(order => order.DeliveryDateTime.HasValue)
             .ToList();
 
         var minimumDeliveryTime = deliveredOrders
-            .Min(order => order.DeliveryTime!.Value - order.OrderTime);
+            .Min(order => order.DeliveryDateTime!.Value - order.OrderDateTime);
 
         var result = deliveredOrders
             .Where(order =>
-                order.DeliveryTime!.Value - order.OrderTime == minimumDeliveryTime)
+                order.DeliveryDateTime!.Value - order.OrderDateTime == minimumDeliveryTime)
             .ToList();
 
         var order = Assert.Single(result);
@@ -124,8 +124,8 @@ public class QueriesTest(
         var expectedTotalOrderPrice = 1520m;
 
         var result = fixture.Orders
-            .Where(order => order.OrderTime >= startDate &&
-                            order.OrderTime < endDate)
+            .Where(order => order.OrderDateTime >= startDate &&
+                            order.OrderDateTime < endDate)
             .SelectMany(order => order.Dishes
                 .Select(dish => new
                 {

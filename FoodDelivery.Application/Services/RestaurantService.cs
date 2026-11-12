@@ -1,27 +1,21 @@
 ﻿using Microsoft.Extensions.Logging;
-using FoodDelivery.Application.Repositories;
 using FoodDelivery.Contracts.Restaurants;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Repositories;
 
 namespace FoodDelivery.Application.Services;
 
-public class RestaurantService : IRestaurantService
+/// <summary>
+/// Сервис для управления ресторанами-партнёрами.
+/// </summary>
+public class RestaurantService(IRepository<Restaurant> repository, ILogger<RestaurantService> logger) : IRestaurantService
 {
-    private readonly IRepository<Restaurant> _repository;
-    private readonly ILogger<RestaurantService> _logger;
-
-    public RestaurantService(IRepository<Restaurant> repository, ILogger<RestaurantService> logger)
-    {
-        _repository = repository;
-        _logger = logger;
-    }
-
     public IReadOnlyList<RestaurantDto> GetAll() =>
-        _repository.GetAll().Select(r => new RestaurantDto(r.Id, r.Name, r.Address, r.Rating, r.OpenTime, r.CloseTime)).ToList();
+        [.. repository.GetAll().Select(r => new RestaurantDto(r.Id, r.Name, r.Address, r.Rating, r.OpenTime, r.CloseTime))];
 
     public RestaurantDto? GetById(int id)
     {
-        var r = _repository.GetById(id);
+        var r = repository.GetById(id);
         return r is null ? null : new RestaurantDto(r.Id, r.Name, r.Address, r.Rating, r.OpenTime, r.CloseTime);
     }
 
@@ -35,14 +29,14 @@ public class RestaurantService : IRestaurantService
             OpenTime = dto.OpenTime,
             CloseTime = dto.CloseTime
         };
-        var created = _repository.Create(entity);
-        _logger.LogInformation("Создан ресторан с Id = {Id}", created.Id);
+        var created = repository.Create(entity);
+        logger.LogInformation("Создан ресторан с Id = {Id}", created.Id);
         return new RestaurantDto(created.Id, created.Name, created.Address, created.Rating, created.OpenTime, created.CloseTime);
     }
 
     public bool Update(int id, RestaurantCreateUpdateDto dto)
     {
-        var existing = _repository.GetById(id);
+        var existing = repository.GetById(id);
         if (existing is null) return false;
 
         existing.Name = dto.Name;
@@ -51,14 +45,14 @@ public class RestaurantService : IRestaurantService
         existing.OpenTime = dto.OpenTime;
         existing.CloseTime = dto.CloseTime;
 
-        var result = _repository.Update(existing);
-        _logger.LogInformation("Обновлен ресторан с Id = {Id}", id);
+        var result = repository.Update(existing);
+        logger.LogInformation("Обновлен ресторан с Id = {Id}", id);
         return result;
     }
 
     public void Delete(int id)
     {
-        _repository.Delete(id);
-        _logger.LogInformation("Удален ресторан с Id = {Id}", id);
+        repository.Delete(id);
+        logger.LogInformation("Удален ресторан с Id = {Id}", id);
     }
 }

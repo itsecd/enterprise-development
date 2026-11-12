@@ -33,12 +33,12 @@ public class Order : IEntity
     /// <summary>
     /// Время оформления заказа.
     /// </summary>
-    public required DateTime OrderTime { get; set; }
+    public required DateTime OrderDateTime { get; set; }
 
     /// <summary>
     /// Время доставки заказа.
     /// </summary>
-    public DateTime? DeliveryTime { get; set; }
+    public DateTime? DeliveryDateTime { get; set; }
 
     /// <summary>
     /// Итоговая стоимость заказа.
