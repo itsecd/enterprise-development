@@ -30,16 +30,16 @@ public static class HotelData
     /// </summary>
     public static IReadOnlyList<Room> Rooms { get; } =
     [
-        new Room { Id = 1, RoomNumber = 101, Floor = 1, HasBalcony = false, RoomType = RoomTypes[0] },
-        new Room { Id = 2, RoomNumber = 102, Floor = 1, HasBalcony = true, RoomType = RoomTypes[1] },
-        new Room { Id = 3, RoomNumber = 201, Floor = 2, HasBalcony = false, RoomType = RoomTypes[2] },
-        new Room { Id = 4, RoomNumber = 202, Floor = 2, HasBalcony = true, RoomType = RoomTypes[3] },
-        new Room { Id = 5, RoomNumber = 301, Floor = 3, HasBalcony = true, RoomType = RoomTypes[4] },
-        new Room { Id = 6, RoomNumber = 302, Floor = 3, HasBalcony = false, RoomType = RoomTypes[5] },
-        new Room { Id = 7, RoomNumber = 401, Floor = 4, HasBalcony = true, RoomType = RoomTypes[6] },
-        new Room { Id = 8, RoomNumber = 402, Floor = 4, HasBalcony = true, RoomType = RoomTypes[7] },
-        new Room { Id = 9, RoomNumber = 501, Floor = 5, HasBalcony = false, RoomType = RoomTypes[8] },
-        new Room { Id = 10, RoomNumber = 502, Floor = 5, HasBalcony = true, RoomType = RoomTypes[9] }
+        new Room { Id = 1, RoomNumber = 101, Floor = 1, HasBalcony = false, RoomTypeId = RoomTypes[0].Id, RoomType = RoomTypes[0] },
+        new Room { Id = 2, RoomNumber = 102, Floor = 1, HasBalcony = true, RoomTypeId = RoomTypes[1].Id, RoomType = RoomTypes[1] },
+        new Room { Id = 3, RoomNumber = 201, Floor = 2, HasBalcony = false, RoomTypeId = RoomTypes[2].Id, RoomType = RoomTypes[2] },
+        new Room { Id = 4, RoomNumber = 202, Floor = 2, HasBalcony = true, RoomTypeId = RoomTypes[3].Id, RoomType = RoomTypes[3] },
+        new Room { Id = 5, RoomNumber = 301, Floor = 3, HasBalcony = true, RoomTypeId = RoomTypes[4].Id, RoomType = RoomTypes[4] },
+        new Room { Id = 6, RoomNumber = 302, Floor = 3, HasBalcony = false, RoomTypeId = RoomTypes[5].Id, RoomType = RoomTypes[5] },
+        new Room { Id = 7, RoomNumber = 401, Floor = 4, HasBalcony = true, RoomTypeId = RoomTypes[6].Id, RoomType = RoomTypes[6] },
+        new Room { Id = 8, RoomNumber = 402, Floor = 4, HasBalcony = true, RoomTypeId = RoomTypes[7].Id, RoomType = RoomTypes[7] },
+        new Room { Id = 9, RoomNumber = 501, Floor = 5, HasBalcony = false, RoomTypeId = RoomTypes[8].Id, RoomType = RoomTypes[8] },
+        new Room { Id = 10, RoomNumber = 502, Floor = 5, HasBalcony = true, RoomTypeId = RoomTypes[9].Id, RoomType = RoomTypes[9] }
     ];
 
     /// <summary>
@@ -65,27 +65,27 @@ public static class HotelData
     /// </summary>
     public static IReadOnlyList<Booking> Bookings { get; } =
     [
-        new Booking { Id = 1, Client = Clients[0], Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 1), DaysCount = 3 },
-        new Booking { Id = 2, Client = Clients[1], Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 4), DaysCount = 5 },
-        new Booking { Id = 3, Client = Clients[2], Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 9), DaysCount = 2 },
-        new Booking { Id = 4, Client = Clients[3], Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 11), DaysCount = 4 },
-        new Booking { Id = 5, Client = Clients[4], Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 15), DaysCount = 7 },
-        new Booking { Id = 6, Client = Clients[5], Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 1), DaysCount = 3 },
-        new Booking { Id = 7, Client = Clients[6], Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 4), DaysCount = 6 },
-        new Booking { Id = 8, Client = Clients[7], Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 10), DaysCount = 2 },
-        new Booking { Id = 9, Client = Clients[8], Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 12), DaysCount = 5 },
-        new Booking { Id = 10, Client = Clients[9], Room = Rooms[9], CheckInDate = new DateOnly(2026, 7, 1), DaysCount = 4 },
-        new Booking { Id = 11, Client = Clients[0], Room = Rooms[9], CheckInDate = new DateOnly(2026, 7, 5), DaysCount = 3 },
-        new Booking { Id = 12, Client = Clients[1], Room = Rooms[9], CheckInDate = new DateOnly(2026, 7, 8), DaysCount = 2 },
-        new Booking { Id = 13, Client = Clients[2], Room = Rooms[1], CheckInDate = new DateOnly(2026, 6, 1), DaysCount = 4 },
-        new Booking { Id = 14, Client = Clients[3], Room = Rooms[1], CheckInDate = new DateOnly(2026, 6, 5), DaysCount = 3 },
-        new Booking { Id = 15, Client = Clients[4], Room = Rooms[4], CheckInDate = new DateOnly(2026, 5, 1), DaysCount = 6 },
-        new Booking { Id = 16, Client = Clients[5], Room = Rooms[4], CheckInDate = new DateOnly(2026, 5, 7), DaysCount = 3 },
-        new Booking { Id = 17, Client = Clients[6], Room = Rooms[0], CheckInDate = new DateOnly(2026, 4, 1), DaysCount = 2 },
-        new Booking { Id = 18, Client = Clients[7], Room = Rooms[3], CheckInDate = new DateOnly(2026, 4, 10), DaysCount = 4 },
-        new Booking { Id = 19, Client = Clients[8], Room = Rooms[5], CheckInDate = new DateOnly(2026, 3, 1), DaysCount = 5 },
-        new Booking { Id = 20, Client = Clients[9], Room = Rooms[7], CheckInDate = new DateOnly(2026, 3, 10), DaysCount = 2 },
-        new Booking { Id = 21, Client = Clients[0], Room = Rooms[3], CheckInDate = new DateOnly(2026, 8, 5), DaysCount = 4 },
-        new Booking { Id = 22, Client = Clients[1], Room = Rooms[5], CheckInDate = new DateOnly(2026, 8, 3), DaysCount = 7 }
+        new Booking { Id = 1, ClientId = Clients[0].Id, Client = Clients[0], RoomId = Rooms[6].Id, Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 1), DaysCount = 3 },
+        new Booking { Id = 2, ClientId = Clients[1].Id, Client = Clients[1], RoomId = Rooms[6].Id, Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 4), DaysCount = 5 },
+        new Booking { Id = 3, ClientId = Clients[2].Id, Client = Clients[2], RoomId = Rooms[6].Id, Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 9), DaysCount = 2 },
+        new Booking { Id = 4, ClientId = Clients[3].Id, Client = Clients[3], RoomId = Rooms[6].Id, Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 11), DaysCount = 4 },
+        new Booking { Id = 5, ClientId = Clients[4].Id, Client = Clients[4], RoomId = Rooms[6].Id, Room = Rooms[6], CheckInDate = new DateOnly(2026, 9, 15), DaysCount = 7 },
+        new Booking { Id = 6, ClientId = Clients[5].Id, Client = Clients[5], RoomId = Rooms[2].Id, Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 1), DaysCount = 3 },
+        new Booking { Id = 7, ClientId = Clients[6].Id, Client = Clients[6], RoomId = Rooms[2].Id, Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 4), DaysCount = 6 },
+        new Booking { Id = 8, ClientId = Clients[7].Id, Client = Clients[7], RoomId = Rooms[2].Id, Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 10), DaysCount = 2 },
+        new Booking { Id = 9, ClientId = Clients[8].Id, Client = Clients[8], RoomId = Rooms[2].Id, Room = Rooms[2], CheckInDate = new DateOnly(2026, 8, 12), DaysCount = 5 },
+        new Booking { Id = 10, ClientId = Clients[9].Id, Client = Clients[9], RoomId = Rooms[9].Id, Room = Rooms[9], CheckInDate = new DateOnly(2026, 7, 1), DaysCount = 4 },
+        new Booking { Id = 11, ClientId = Clients[0].Id, Client = Clients[0], RoomId = Rooms[9].Id, Room = Rooms[9], CheckInDate = new DateOnly(2026, 7, 5), DaysCount = 3 },
+        new Booking { Id = 12, ClientId = Clients[1].Id, Client = Clients[1], RoomId = Rooms[9].Id, Room = Rooms[9], CheckInDate = new DateOnly(2026, 7, 8), DaysCount = 2 },
+        new Booking { Id = 13, ClientId = Clients[2].Id, Client = Clients[2], RoomId = Rooms[1].Id, Room = Rooms[1], CheckInDate = new DateOnly(2026, 6, 1), DaysCount = 4 },
+        new Booking { Id = 14, ClientId = Clients[3].Id, Client = Clients[3], RoomId = Rooms[1].Id, Room = Rooms[1], CheckInDate = new DateOnly(2026, 6, 5), DaysCount = 3 },
+        new Booking { Id = 15, ClientId = Clients[4].Id, Client = Clients[4], RoomId = Rooms[4].Id, Room = Rooms[4], CheckInDate = new DateOnly(2026, 5, 1), DaysCount = 6 },
+        new Booking { Id = 16, ClientId = Clients[5].Id, Client = Clients[5], RoomId = Rooms[4].Id, Room = Rooms[4], CheckInDate = new DateOnly(2026, 5, 7), DaysCount = 3 },
+        new Booking { Id = 17, ClientId = Clients[6].Id, Client = Clients[6], RoomId = Rooms[0].Id, Room = Rooms[0], CheckInDate = new DateOnly(2026, 4, 1), DaysCount = 2 },
+        new Booking { Id = 18, ClientId = Clients[7].Id, Client = Clients[7], RoomId = Rooms[3].Id, Room = Rooms[3], CheckInDate = new DateOnly(2026, 4, 10), DaysCount = 4 },
+        new Booking { Id = 19, ClientId = Clients[8].Id, Client = Clients[8], RoomId = Rooms[5].Id, Room = Rooms[5], CheckInDate = new DateOnly(2026, 3, 1), DaysCount = 5 },
+        new Booking { Id = 20, ClientId = Clients[9].Id, Client = Clients[9], RoomId = Rooms[7].Id, Room = Rooms[7], CheckInDate = new DateOnly(2026, 3, 10), DaysCount = 2 },
+        new Booking { Id = 21, ClientId = Clients[0].Id, Client = Clients[0], RoomId = Rooms[3].Id, Room = Rooms[3], CheckInDate = new DateOnly(2026, 8, 5), DaysCount = 4 },
+        new Booking { Id = 22, ClientId = Clients[1].Id, Client = Clients[1], RoomId = Rooms[5].Id, Room = Rooms[5], CheckInDate = new DateOnly(2026, 8, 3), DaysCount = 7 }
     ];
 }
