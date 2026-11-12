@@ -9,5 +9,5 @@ public interface IBookingService
     /// <summary>
     /// Получить текущие бронирования
     /// </summary>
-    public IReadOnlyList<BookingDto> GetBookedRooms();
+    public Task<IReadOnlyList<BookingDto>> GetBookedRooms();
 }

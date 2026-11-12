@@ -12,9 +12,11 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     /// <summary>
     /// Получить все бронирования
     /// </summary>
-    public IReadOnlyList<BookingDto> GetAll()
+    public async Task<IReadOnlyList<BookingDto>> GetAll()
     {
-        return bookingRepository.GetAll()
+        var bookings = await bookingRepository.GetAll();
+
+        return bookings
             .Select(ToDto)
             .ToList();
     }
@@ -22,31 +24,31 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     /// <summary>
     /// Получить бронирование по идентификатору
     /// </summary>
-    public BookingDto? GetById(int id)
+    public async Task<BookingDto?> GetById(int id)
     {
-        var booking = bookingRepository.GetById(id);
+        var booking = await bookingRepository.GetById(id);
         return booking is null ? null : ToDto(booking);
     }
 
     /// <summary>
     /// Создать бронирование
     /// </summary>
-    public BookingDto Create(CreateBookingDto dto)
+    public async Task<BookingDto> Create(CreateBookingDto dto)
     {
-        var client = clientRepository.GetById(dto.ClientId);
+        var client = await clientRepository.GetById(dto.ClientId);
 
         if (client is null) throw new ArgumentException(
             $"Не удалось найти клиента с идентификатором {dto.ClientId}");
 
-        var room = roomRepository.GetById(dto.RoomId);
+        var room = await roomRepository.GetById(dto.RoomId);
 
         if (room is null) throw new ArgumentException(
             $"Не удалось найти номер с идентификатором {dto.RoomId}");
 
-        if (IsRoomOccupied(dto.RoomId, dto.CheckInDate, dto.DaysCount))
-            throw new ArgumentException($"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
+        var bookings = await bookingRepository.GetAll();
 
-        var bookings = bookingRepository.GetAll();
+        if (IsRoomOccupied(bookings, dto.RoomId, dto.CheckInDate, dto.DaysCount))
+            throw new ArgumentException($"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
 
         var newId = bookings.Count == 0
             ? 1
@@ -61,29 +63,33 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
             DaysCount = dto.DaysCount
         };
 
-        return ToDto(bookingRepository.Add(booking));
+        var createdBooking = await bookingRepository.Add(booking);
+
+        return ToDto(createdBooking);
     }
 
     /// <summary>
     /// Обновить бронирование
     /// </summary>
-    public BookingDto? Update(int id, CreateBookingDto dto)
+    public async Task<BookingDto?> Update(int id, CreateBookingDto dto)
     {
-        var existingBooking = bookingRepository.GetById(id);
+        var existingBooking = await bookingRepository.GetById(id);
 
         if (existingBooking is null) return null;
 
-        var client = clientRepository.GetById(dto.ClientId);
+        var client = await clientRepository.GetById(dto.ClientId);
 
         if (client is null) throw new ArgumentException(
             $"Не удалось найти клиента с идентификатором {dto.ClientId}");
 
-        var room = roomRepository.GetById(dto.RoomId);
+        var room = await roomRepository.GetById(dto.RoomId);
 
         if (room is null) throw new ArgumentException(
             $"Не удалось найти номер с идентификатором {dto.RoomId}");
 
-        if (IsRoomOccupied(dto.RoomId, dto.CheckInDate, dto.DaysCount, id))
+        var bookings = await bookingRepository.GetAll();
+
+        if (IsRoomOccupied(bookings, dto.RoomId, dto.CheckInDate, dto.DaysCount, id))
         {
             throw new ArgumentException(
                 $"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
@@ -98,7 +104,7 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
             DaysCount = dto.DaysCount
         };
 
-        var updatedBooking = bookingRepository.Update(booking);
+        var updatedBooking = await bookingRepository.Update(booking);
 
         return updatedBooking is null ? null : ToDto(updatedBooking);
     }
@@ -106,7 +112,7 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     /// <summary>
     /// Удалить бронирование
     /// </summary>
-    public bool Delete(int id)
+    public Task<bool> Delete(int id)
     {
         return bookingRepository.Delete(id);
     }
@@ -114,11 +120,12 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     /// <summary>
     /// Получить текущие бронирования
     /// </summary>
-    public IReadOnlyList<BookingDto> GetBookedRooms()
+    public async Task<IReadOnlyList<BookingDto>> GetBookedRooms()
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
+        var bookings = await bookingRepository.GetAll();
 
-        return bookingRepository.GetAll()
+        return bookings
             .Where(booking =>
                 booking.CheckInDate <= today &&
                 booking.CheckInDate.AddDays(booking.DaysCount) > today)
@@ -129,7 +136,8 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     /// <summary>
     /// Проверить занятость номера на указанный период
     /// </summary>
-    private bool IsRoomOccupied(
+    private static bool IsRoomOccupied(
+        IReadOnlyList<Booking> bookings,
         int roomId,
         DateOnly checkInDate,
         int daysCount,
@@ -137,7 +145,7 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     {
         var checkOutDate = checkInDate.AddDays(daysCount);
 
-        return bookingRepository.GetAll().Any(booking =>
+        return bookings.Any(booking =>
             booking.Room.Id == roomId &&
             booking.Id != excludedBookingId &&
             checkInDate < booking.CheckInDate.AddDays(booking.DaysCount) &&
