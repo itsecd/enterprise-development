@@ -1,4 +1,5 @@
-﻿using Hotel.Domain.Entities;
+﻿using Hotel.Domain.Data;
+using Hotel.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Infrastructure.EfCore;
@@ -50,5 +51,27 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
             .WithMany()
             .HasForeignKey(booking => booking.RoomId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RoomType>().HasData(HotelData.RoomTypes);
+
+        modelBuilder.Entity<HotelClient>().HasData(HotelData.Clients);
+
+        modelBuilder.Entity<Room>().HasData(HotelData.Rooms.Select(room => new
+        {
+            room.Id,
+            room.RoomNumber,
+            room.Floor,
+            room.HasBalcony,
+            room.RoomTypeId
+        }));
+
+        modelBuilder.Entity<Booking>().HasData(HotelData.Bookings.Select(booking => new
+        {
+            booking.Id,
+            booking.ClientId,
+            booking.RoomId,
+            booking.CheckInDate,
+            booking.DaysCount
+        }));
     }
 }
