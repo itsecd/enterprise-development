@@ -21,13 +21,13 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public ActionResult<TDto> Create([FromBody] TInputDto dto)
+    public async Task<ActionResult<TDto>> Create([FromBody] TInputDto dto)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}. Данные: {@Dto}", nameof(Create), GetType().Name, dto);
 
         try
         {
-            var result = appService.Create(dto);
+            var result = await appService.Create(dto);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(Create), GetType().Name);
 
@@ -56,13 +56,13 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<TDto> Update(TKey id, [FromBody] TInputDto dto)
+    public async Task<ActionResult<TDto>> Update(TKey id, [FromBody] TInputDto dto)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван с идентификатором {Id} и данными {@Dto}", nameof(Update), GetType().Name, id, dto);
 
         try
         {
-            var result = appService.Update(id, dto);
+            var result = await appService.Update(id, dto);
 
             if (result is null)
             {
@@ -100,13 +100,13 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult Delete(TKey id)
+    public async Task<IActionResult> Delete(TKey id)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван с идентификатором {Id}", nameof(Delete), GetType().Name, id);
 
         try
         {
-            var result = appService.Delete(id);
+            var result = await appService.Delete(id);
 
             if (!result)
             {
@@ -137,13 +137,13 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<IReadOnlyList<TDto>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<TDto>>> GetAll()
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван", nameof(GetAll), GetType().Name);
 
         try
         {
-            var result = appService.GetAll();
+            var result = await appService.GetAll();
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetAll), GetType().Name);
 
@@ -165,13 +165,13 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<TDto> GetById(TKey id)
+    public async Task<ActionResult<TDto>> GetById(TKey id)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван с идентификатором {Id}", nameof(GetById), GetType().Name, id);
 
         try
         {
-            var result = appService.GetById(id);
+            var result = await appService.GetById(id);
 
             if (result is null)
             {
