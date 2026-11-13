@@ -1,5 +1,5 @@
 ﻿using CarWash.Domain.Entities;
-using CarWash.Domain.Enums;
+using CarWash.Shared.Enums;
 
 namespace CarWash.Tests;
 

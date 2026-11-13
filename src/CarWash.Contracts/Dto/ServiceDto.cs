@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CarWash.Domain.Enums;
+using CarWash.Shared.Enums;
 
 namespace CarWash.Contracts.Dto;
 

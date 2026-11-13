@@ -5,6 +5,7 @@
     <Project Path="src/CarWash.Contracts/CarWash.Contracts.csproj" />
     <Project Path="src/CarWash.Domain/CarWash.Domain.csproj" />
     <Project Path="src/CarWash.Infrastructure.InMemory/CarWash.Infrastructure.InMemory.csproj" />
+    <Project Path="src/CarWash.Shared/CarWash.Shared.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/CarWash.Tests/CarWash.Tests.csproj" />

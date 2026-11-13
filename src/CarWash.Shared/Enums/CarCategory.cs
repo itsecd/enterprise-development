@@ -1,4 +1,4 @@
-﻿namespace CarWash.Domain.Enums;
+﻿namespace CarWash.Shared.Enums;
 
 /// <summary>
 /// Категория авто
