@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="BeautySalon.Api/BeautySalon.Api.csproj" />
+  <Project Path="BeautySalon.AppHost/BeautySalon.AppHost.csproj" Id="6eaeec22-cb8f-4db8-bb9e-60821102d6fd" />
+  <Project Path="BeautySalon.Application.Contracts/BeautySalon.Application.Contracts.csproj" />
+  <Project Path="BeautySalon.Application/BeautySalon.Application.csproj" />
+  <Project Path="BeautySalon.Domain/BeautySalon.Domain.csproj" />
+  <Project Path="BeautySalon.Infrastructure.EfCore/BeautySalon.Infrastructure.EfCore.csproj" Id="eddf2968-0443-4222-9a2e-47b3809026fe" />
+  <Project Path="BeautySalon.Infrastructure.InMemory/BeautySalon.Infrastructure.InMemory.csproj" Id="857be8c1-54e8-48d0-b779-87082ba8c16e" />
+  <Project Path="BeautySalon.ServiceDefaults/BeautySalon.ServiceDefaults.csproj" Id="a0d6f0c4-d59a-4a6b-9ae8-759347f8141b" />
+  <Project Path="BeautySalon.Shared/BeautySalon.Shared.csproj" Id="ca686211-fbc4-4ad1-b6f6-1cdfb2d5d3fc" />
+  <Project Path="BeautySalon.Tests/BeautySalon.Tests.csproj" Id="05150369-a139-431c-9247-d7bc62033422" />
+</Solution>
