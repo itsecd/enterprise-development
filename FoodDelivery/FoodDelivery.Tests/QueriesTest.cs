@@ -10,16 +10,22 @@ namespace FoodDelivery.Tests;
 /// <param name="fixture">Тестовые данные</param>
 public class QueriesTest(QueriesTestFixture fixture) : IClassFixture<QueriesTestFixture>
 {
-    private readonly List<Restaurant> _restaurants = fixture.Restaurants;
-    private readonly List<Order> _orders = fixture.Orders;
+    private readonly IReadOnlyList<Restaurant> _restaurants = fixture.Restaurants;
+    private readonly IReadOnlyList<Order> _orders = fixture.Orders;
 
     /// <summary>
     /// Проверка получения клиентом рестораном
     /// </summary>
+    [Fact]
     public void GetCustomersByRestaurant()
     {
         var targetRestaurantId = 0;
-        var expectedCustomerName = new[] { "Анна Иванова", "Сергей Громов", "Михаил Тарасов" };
+        var expectedCustomerName = new[] 
+        { 
+            "Анна Иванова", 
+            "Иван Лапшин", 
+            "Максим Громов" 
+        };
 
         var resultCustomers = _orders
             .Where(o => o.Restaurant?.Id == targetRestaurantId)
@@ -40,15 +46,21 @@ public class QueriesTest(QueriesTestFixture fixture) : IClassFixture<QueriesTest
     [Fact]
     public void GetOrdersByStatus()
     {
-        var orderStatus = orderStatus.Delivering;
-        var expectedOrderIds = new HashSet<int> { 1, 3, 6, 8 };
+        const OrderStatus targetStatus = OrderStatus.Delivering;
+        var expectedOrderIds = new HashSet<int> 
+        { 
+            1, 3, 6, 8 
+        };
 
         var resultOrdersIds = _orders
-            .Where(o => o.Status == orderStatus)
+            .Where(o => o.Status == targetStatus)
             .Select(o => o.Id)
             .ToHashSet();
 
-        Assert.Equal(expectedOrderIds, resultOrdersIds);
+        Assert.True(
+            expectedOrderIds.SetEquals(resultOrdersIds),
+            $"Ожидались заказы [{string.Join(", ", expectedOrderIds)}], " +
+            $"получены [{string.Join(", ", resultOrdersIds)}].");
     }
 
     /// <summary>
@@ -89,10 +101,15 @@ public class QueriesTest(QueriesTestFixture fixture) : IClassFixture<QueriesTest
         var expectedTopCourierTripCount = 3;
 
         var topCouriers = _orders
-            .GroupBy(o => o.Courier)
-            .OrderByDescending(g => g.Count())
+            .Where(order => order.CourierId.HasValue)
+            .GroupBy(order => order.CourierId.GetValueOrDefault())
+            .Select(group => new 
+            { 
+                Courier = group.Key, OrderCount = group.Count() 
+            })
+            .OrderByDescending(item => item.OrderCount)
+            .ThenBy(item => item.Courier)
             .Take(5)
-            .Select(g => new { Courier = g.Key, OrderCount = g.Count() })
             .ToList();
 
         Assert.NotEmpty(topCouriers);
@@ -109,14 +126,18 @@ public class QueriesTest(QueriesTestFixture fixture) : IClassFixture<QueriesTest
         var expectedTopCustomerTotalSpent = 4200;
 
         var topCustomers = _orders
-            .GroupBy(o => o.Customer)
-            .OrderByDescending(g => g.Sum(o => o.TotalAmount))
+            .GroupBy(order => order.Customer)
+            .Select(group => new
+            {
+                CustomerId = group.Key,
+                TotalSpent = group.Sum(order => order.TotalAmount)
+            })
+            .OrderByDescending(item => item.TotalSpent)
             .Take(5)
-            .Select(g => new { Customer = g.Key, TotalSpent = g.Sum(o => o.TotalAmount) })
             .ToList();
 
         Assert.NotEmpty(topCustomers);
-        Assert.Equal(expectedTopCustomerId, topCustomers.First().Customer?.Id);
+        Assert.Equal(expectedTopCustomerId, topCustomers.First().CustomerId?.Id);
         Assert.Equal(expectedTopCustomerTotalSpent, topCustomers.First().TotalSpent);
     }
 }

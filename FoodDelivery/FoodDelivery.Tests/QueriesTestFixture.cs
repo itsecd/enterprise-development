@@ -86,7 +86,7 @@ public class QueriesTestFixture
     /// </summary>
     /// <param name="restaurants">Список ресторанов для привязки</param>
     /// <returns>Список блюд</returns>
-    private static List<Dish> GetDishes(List<Restaurant> restaurants) =>
+    private static List<Dish> GetDishes() =>
     [
         new Dish { Id = 0, RestaurantId = 0, Name = "Гранд", Price = 190, Category = DishCategory.FastFood },
         new Dish { Id = 1, RestaurantId = 0, Name = "Картофель фри", Price = 100, Category = DishCategory.FastFood },

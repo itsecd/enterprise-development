@@ -19,17 +19,32 @@ public class Order
     /// <summary>
     /// Идентификатор клиента, оформившего заказ
     /// </summary>
-    public int Customer? { get; set; }
+    public int CustomerId { get; set; }
+
+    /// <summary>
+    /// Клиент, оформивший заказ
+    /// </summary>
+    public required Customer Customer { get; set; }
 
     /// <summary>
     /// Идентификатор ресторана, готового исполнить заказ
     /// </summary>
-    public int Restaurant? { get; set; }
+    public int RestaurantId { get; set; }
+
+    /// <summary>
+    /// Ресторан, исполняющий заказ
+    /// </summary>
+    public required Restaurant Restaurant { get; set; }
 
     /// <summary>
     /// Идентификатор назначенного курьера
     /// </summary>
-    public int? Courier? { get; set; }
+    public int? CourierId { get; set; }
+
+    /// <summary>
+    /// Назначенный курьер
+    /// </summary>
+    public required Courier? Courier { get; set; }
 
     /// <summary>
     /// Адрес доставки заказа
