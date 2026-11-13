@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="BeautySalon.Domain/BeautySalon.Domain.csproj">
+    <BuildDependency Project="BeautySalon.Enums/BeautySalon.Enums.csproj" />
+  </Project>
+  <Project Path="BeautySalon.Enums/BeautySalon.Enums.csproj" Id="879a7de8-4080-4664-a9c6-01bc3a4c387c" />
+  <Project Path="BeautySalon.Tests/BeautySalon.Tests.csproj">
+    <BuildDependency Project="BeautySalon.Enums/BeautySalon.Enums.csproj" />
+  </Project>
+</Solution>
