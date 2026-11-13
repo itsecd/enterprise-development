@@ -13,7 +13,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// Получить всех питомцев
     /// </summary>
     [HttpGet]
-    [EndpointSummary("Get all pets")]
+    [EndpointSummary("Получить всех питомцев")]
     [ProducesResponseType(typeof(IReadOnlyList<PetDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<PetDto>> GetAll() => Ok(service.Pets());
 
@@ -22,7 +22,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}")]
-    [EndpointSummary("Get pet by ID")]
+    [EndpointSummary("Получить питомца по идентификатору")]
     [ProducesResponseType(typeof(PetDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<PetDto> Get(int id)
@@ -36,7 +36,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// </summary>
     /// <param name="request">Данные запроса</param>
     [HttpPost]
-    [EndpointSummary("Create pet")]
+    [EndpointSummary("Создать питомца")]
     [ProducesResponseType(typeof(PetDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<PetDto> Create(SavePetRequest request)
@@ -51,7 +51,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// <param name="id">Идентификатор записи</param>
     /// <param name="request">Данные запроса</param>
     [HttpPut("{id:int}")]
-    [EndpointSummary("Update pet")]
+    [EndpointSummary("Обновить питомца")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(PetDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,7 +62,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpDelete("{id:int}")]
-    [EndpointSummary("Delete pet")]
+    [EndpointSummary("Удалить питомца")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
@@ -76,7 +76,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/appointments")]
-    [EndpointSummary("Get appointments by pet")]
+    [EndpointSummary("Получить приёмы питомца")]
     [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<IReadOnlyList<AppointmentDto>> GetAppointments(int id) =>
@@ -87,7 +87,7 @@ public sealed class PetController(IPetService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/owner")]
-    [EndpointSummary("Get pet owner")]
+    [EndpointSummary("Получить владельца питомца")]
     public ActionResult<OwnerDto> GetOwner(int id)
     {
         var owner = service.OwnerByPet(id);

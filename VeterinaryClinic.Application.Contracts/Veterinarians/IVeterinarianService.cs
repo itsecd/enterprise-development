@@ -45,11 +45,11 @@ public interface IVeterinarianService
     /// Возвращает питомцев ветеринара
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Pets.PetDto> PetsByVeterinarian(int id);
+    public IReadOnlyList<PetDto> PetsByVeterinarian(int id);
 
     /// <summary>
     /// Возвращает приёмы ветеринара
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Appointments.AppointmentDto> AppointmentsByVeterinarian(int id);
+    public IReadOnlyList<AppointmentDto> AppointmentsByVeterinarian(int id);
 }

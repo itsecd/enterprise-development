@@ -22,6 +22,15 @@ builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 var app = builder.Build();
 ClinicSeedFactory.SeedClinicTestData(app.Services);
 app.UseExceptionHandler();
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices.GetRequiredService<ILoggerFactory>()
+        .CreateLogger("VeterinaryClinic.Api.Requests");
+    logger.LogInformation("Запрос {Method} {Path}", context.Request.Method, context.Request.Path);
+    await next(context);
+    logger.LogInformation("Ответ {Method} {Path}: {StatusCode}",
+        context.Request.Method, context.Request.Path, context.Response.StatusCode);
+});
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

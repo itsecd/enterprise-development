@@ -13,7 +13,7 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// Получить все породы
     /// </summary>
     [HttpGet]
-    [EndpointSummary("Get all breeds")]
+    [EndpointSummary("Получить все породы")]
     [ProducesResponseType(typeof(IReadOnlyList<BreedDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<BreedDto>> GetAll() => Ok(service.Breeds());
 
@@ -22,7 +22,7 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}")]
-    [EndpointSummary("Get breed by ID")]
+    [EndpointSummary("Получить породу по идентификатору")]
     [ProducesResponseType(typeof(BreedDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<BreedDto> Get(int id)
@@ -36,7 +36,7 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// </summary>
     /// <param name="request">Данные запроса</param>
     [HttpPost]
-    [EndpointSummary("Create breed")]
+    [EndpointSummary("Создать породу")]
     [ProducesResponseType(typeof(BreedDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<BreedDto> Create(SaveBreedRequest request)
@@ -51,7 +51,7 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// <param name="id">Идентификатор записи</param>
     /// <param name="request">Данные запроса</param>
     [HttpPut("{id:int}")]
-    [EndpointSummary("Update breed")]
+    [EndpointSummary("Обновить породу")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(BreedDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,7 +62,7 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpDelete("{id:int}")]
-    [EndpointSummary("Delete breed")]
+    [EndpointSummary("Удалить породу")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
@@ -76,7 +76,7 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/repeated-appointments/count")]
-    [EndpointSummary("Count repeated appointments by breed")]
+    [EndpointSummary("Подсчитать повторные приёмы по породе")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     public ActionResult<int> RepeatedCount(int id) => Ok(service.RepeatedAppointments(id));
 
@@ -85,6 +85,6 @@ public sealed class BreedController(IBreedService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/pets")]
-    [EndpointSummary("Get pets by breed")]
+    [EndpointSummary("Получить питомцев по породе")]
     public ActionResult<IReadOnlyList<PetDto>> GetPets(int id) => Ok(service.PetsByBreed(id));
 }

@@ -41,12 +41,6 @@ public interface IRepository<T> where T : class
     public int NextId();
 
     /// <summary>
-    /// Добавляет запись в репозиторий
-    /// </summary>
-    /// <param name="entity">Сущность для добавления</param>
-    public void Add(T entity);
-
-    /// <summary>
     /// Создаёт запись с новым идентификатором
     /// </summary>
     /// <param name="factory">Функция создания сущности по идентификатору</param>

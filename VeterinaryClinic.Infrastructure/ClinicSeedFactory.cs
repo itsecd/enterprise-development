@@ -19,19 +19,19 @@ public static class ClinicSeedFactory
         var breeds = provider.GetRequiredService<IRepository<Breed>>();
         foreach (var x in VeterinaryClinicTestData.Breeds)
         {
-            breeds.Add(new Breed { Id = x.Id, Name = x.Name, AnimalType = x.AnimalType });
+            breeds.Create(_ => new Breed { Id = x.Id, Name = x.Name, AnimalType = x.AnimalType });
         }
 
         var specializations = provider.GetRequiredService<IRepository<Specialization>>();
         foreach (var x in VeterinaryClinicTestData.Specializations)
         {
-            specializations.Add(new Specialization { Id = x.Id, Name = x.Name, AnimalType = x.AnimalType });
+            specializations.Create(_ => new Specialization { Id = x.Id, Name = x.Name, AnimalType = x.AnimalType });
         }
 
         var owners = provider.GetRequiredService<IRepository<Owner>>();
         foreach (var x in VeterinaryClinicTestData.Owners)
         {
-            owners.Add(new Owner
+            owners.Create(_ => new Owner
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -45,7 +45,7 @@ public static class ClinicSeedFactory
         var veterinarians = provider.GetRequiredService<IRepository<Veterinarian>>();
         foreach (var x in VeterinaryClinicTestData.Veterinarians)
         {
-            veterinarians.Add(new Veterinarian
+            veterinarians.Create(_ => new Veterinarian
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -69,16 +69,15 @@ public static class ClinicSeedFactory
                 BirthDate = x.BirthDate,
                 Weight = x.Weight,
                 Breed = Require(breeds, x.Breed.Id, "Breed"),
-                Owner = x.Owner is null ? null : owners.Get(x.Owner.Id)
             };
-            pet.Owner?.Pets.Add(pet);
-            pets.Add(pet);
+            pet.ChangeOwner(x.Owner is null ? null : owners.Get(x.Owner.Id));
+            pets.Create(_ => pet);
         }
 
         var appointments = provider.GetRequiredService<IRepository<Appointment>>();
         foreach (var x in VeterinaryClinicTestData.Appointments)
         {
-            appointments.Add(new Appointment
+            appointments.Create(_ => new Appointment
             {
                 Id = x.Id,
                 AppointmentDate = x.AppointmentDate,

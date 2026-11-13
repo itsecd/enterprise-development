@@ -61,7 +61,7 @@ public sealed class SpecializationService(IRepository<Specialization> specializa
     /// Возвращает ветеринаров по специализации
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Veterinarians.VeterinarianDto> VeterinariansBySpecialization(int id)
+    public IReadOnlyList<VeterinarianDto> VeterinariansBySpecialization(int id)
     {
         if (specializations.Get(id) is null) throw new KeyNotFoundException($"Specialization {id} not found");
         return veterinarians.Find(v => v.Specialization.Id == id).Select(DtoMapper.Map).ToArray();

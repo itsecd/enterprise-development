@@ -88,7 +88,7 @@ public sealed class VeterinarianService(IRepository<Veterinarian> veterinarians,
     /// Возвращает приёмы ветеринара
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Appointments.AppointmentDto> AppointmentsByVeterinarian(int id)
+    public IReadOnlyList<AppointmentDto> AppointmentsByVeterinarian(int id)
     {
         if (veterinarians.Get(id) is null) throw new KeyNotFoundException($"Veterinarian {id} not found");
         return appointments.Find(a => a.Veterinarian.Id == id).OrderBy(a => a.AppointmentDate)
@@ -99,7 +99,7 @@ public sealed class VeterinarianService(IRepository<Veterinarian> veterinarians,
     /// Возвращает питомцев ветеринара без повторений
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Pets.PetDto> PetsByVeterinarian(int id)
+    public IReadOnlyList<PetDto> PetsByVeterinarian(int id)
     {
         if (veterinarians.Get(id) is null) throw new KeyNotFoundException($"Veterinarian {id} not found");
         return appointments.Find(a => a.Veterinarian.Id == id).Select(a => a.Pet)

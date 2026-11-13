@@ -14,7 +14,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// Получить всех ветеринаров
     /// </summary>
     [HttpGet]
-    [EndpointSummary("Get all veterinarians")]
+    [EndpointSummary("Получить всех ветеринаров")]
     [ProducesResponseType(typeof(IReadOnlyList<VeterinarianDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<VeterinarianDto>> GetAll() => Ok(service.Veterinarians());
 
@@ -23,7 +23,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}")]
-    [EndpointSummary("Get veterinarian by ID")]
+    [EndpointSummary("Получить ветеринара по идентификатору")]
     [ProducesResponseType(typeof(VeterinarianDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<VeterinarianDto> Get(int id)
@@ -37,7 +37,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// </summary>
     /// <param name="request">Данные запроса</param>
     [HttpPost]
-    [EndpointSummary("Create veterinarian")]
+    [EndpointSummary("Создать ветеринара")]
     [ProducesResponseType(typeof(VeterinarianDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<VeterinarianDto> Create(SaveVeterinarianRequest request)
@@ -52,7 +52,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// <param name="id">Идентификатор записи</param>
     /// <param name="request">Данные запроса</param>
     [HttpPut("{id:int}")]
-    [EndpointSummary("Update veterinarian")]
+    [EndpointSummary("Обновить ветеринара")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(VeterinarianDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -64,7 +64,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpDelete("{id:int}")]
-    [EndpointSummary("Delete veterinarian")]
+    [EndpointSummary("Удалить ветеринара")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
@@ -78,7 +78,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// </summary>
     /// <param name="species">Вид животного</param>
     [HttpGet("by-species/{species}")]
-    [EndpointSummary("Get veterinarians by animal species")]
+    [EndpointSummary("Получить ветеринаров по виду животного")]
     [ProducesResponseType(typeof(IReadOnlyList<VeterinarianDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<VeterinarianDto>> BySpecies(AnimalType species)
         => Ok(service.VeterinariansBySpecies(species));
@@ -88,7 +88,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/appointments")]
-    [EndpointSummary("Get appointments by veterinarian")]
+    [EndpointSummary("Получить приёмы ветеринара")]
     [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<IReadOnlyList<AppointmentDto>> GetAppointments(int id) =>
@@ -99,7 +99,7 @@ public sealed class VeterinarianController(IVeterinarianService service) : Contr
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/pets")]
-    [EndpointSummary("Get pets by veterinarian")]
+    [EndpointSummary("Получить питомцев ветеринара")]
     [ProducesResponseType(typeof(IReadOnlyList<PetDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<PetDto>> PetsByDoctor(int id) => service.Get(id) is not null
         ? Ok(service.PetsByVeterinarian(id)) : NotFound();

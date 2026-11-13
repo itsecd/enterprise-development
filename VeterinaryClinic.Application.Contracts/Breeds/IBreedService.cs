@@ -45,5 +45,5 @@ public interface IBreedService
     /// Возвращает питомцев по породе
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Pets.PetDto> PetsByBreed(int id);
+    public IReadOnlyList<PetDto> PetsByBreed(int id);
 }

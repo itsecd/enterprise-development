@@ -37,7 +37,7 @@ public sealed class PetService(IRepository<Pet> pets, IRepository<Breed> breeds,
                 Breed = breed,
                 BirthDate = x.BirthDate,
                 Weight = x.Weight
-            }; AssignOwner(p, owner); return p;
+            }; p.ChangeOwner(owner); return p;
         });
         return DtoMapper.Map(saved);
     }
@@ -57,7 +57,7 @@ public sealed class PetService(IRepository<Pet> pets, IRepository<Breed> breeds,
         return DtoMapper.Map(pets.Update(id, p =>
         {
             p.Name = x.Name; p.Breed = breed;
-            p.Weight = x.Weight; p.BirthDate = x.BirthDate; AssignOwner(p, owner);
+            p.Weight = x.Weight; p.BirthDate = x.BirthDate; p.ChangeOwner(owner);
         }));
     }
 
@@ -70,7 +70,7 @@ public sealed class PetService(IRepository<Pet> pets, IRepository<Breed> breeds,
         var pet = pets.Get(id);
         if (pet is null) return;
         if (appointments.Any(a => a.Pet.Id == id)) throw new InvalidOperationException("Pet has appointments");
-        AssignOwner(pet, null);
+        pet.ChangeOwner(null);
         pets.Remove(id);
     }
 
@@ -78,7 +78,7 @@ public sealed class PetService(IRepository<Pet> pets, IRepository<Breed> breeds,
     /// Возвращает приёмы питомца
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Appointments.AppointmentDto> AppointmentsByPet(int id)
+    public IReadOnlyList<AppointmentDto> AppointmentsByPet(int id)
     {
         if (pets.Get(id) is null) throw new KeyNotFoundException($"Pet {id} not found");
         return appointments.Find(a => a.Pet.Id == id).OrderBy(a => a.AppointmentDate)
@@ -89,18 +89,13 @@ public sealed class PetService(IRepository<Pet> pets, IRepository<Breed> breeds,
     /// Возвращает владельца питомца
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public global::VeterinaryClinic.Application.Contracts.Owners.OwnerDto? OwnerByPet(int id)
+    public OwnerDto? OwnerByPet(int id)
     {
         var pet = pets.Get(id) ?? throw new KeyNotFoundException($"Pet {id} not found");
         return pet.Owner is { } o ? DtoMapper.Map(o) : null;
     }
     private Owner? ResolveOwner(int? id) => id is int ownerId
         ? owners.Get(ownerId) ?? throw new ArgumentException("Owner not found") : null;
-    private static void AssignOwner(Pet pet, Owner? owner)
-    {
-        if (!ReferenceEquals(pet.Owner, owner)) { pet.Owner?.Pets.Remove(pet); pet.Owner = owner; }
-        if (owner is not null && !owner.Pets.Contains(pet)) owner.Pets.Add(pet);
-    }
     private static void Validate(SavePetRequest x)
     {
         if (string.IsNullOrWhiteSpace(x.Name) || x.Weight <= 0 || !double.IsFinite(x.Weight) ||

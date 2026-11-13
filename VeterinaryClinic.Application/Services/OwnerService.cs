@@ -60,7 +60,7 @@ public sealed class OwnerService(IRepository<Owner> owners, IRepository<Pet> pet
     {
         var owner = owners.Get(id);
         if (owner is null) return;
-        foreach (var pet in pets.Find(p => p.Owner?.Id == id)) pet.Owner = null;
+        foreach (var pet in pets.Find(p => p.Owner?.Id == id)) pet.ChangeOwner(null);
         owner.Pets.Clear();
         owners.Remove(id);
     }
@@ -76,7 +76,7 @@ public sealed class OwnerService(IRepository<Owner> owners, IRepository<Pet> pet
     /// Возвращает питомцев владельца
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Pets.PetDto> PetsByOwner(int id)
+    public IReadOnlyList<PetDto> PetsByOwner(int id)
     {
         if (owners.Get(id) is null) throw new KeyNotFoundException($"Owner {id} not found");
         return pets.Find(p => p.Owner?.Id == id).Select(DtoMapper.Map).ToArray();

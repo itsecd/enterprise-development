@@ -67,7 +67,7 @@ public sealed class BreedService(IRepository<Breed> breeds, IRepository<Pet> pet
     /// Возвращает питомцев выбранной породы
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Pets.PetDto> PetsByBreed(int id)
+    public IReadOnlyList<PetDto> PetsByBreed(int id)
     {
         if (breeds.Get(id) is null) throw new KeyNotFoundException($"Breed {id} not found");
         return pets.Find(p => p.Breed.Id == id).Select(DtoMapper.Map).ToArray();

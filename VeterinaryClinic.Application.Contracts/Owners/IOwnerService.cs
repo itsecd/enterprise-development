@@ -44,5 +44,5 @@ public interface IOwnerService
     /// Возвращает питомцев владельца
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Pets.PetDto> PetsByOwner(int id);
+    public IReadOnlyList<PetDto> PetsByOwner(int id);
 }

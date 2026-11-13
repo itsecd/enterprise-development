@@ -13,7 +13,7 @@ public sealed class AppointmentController(IAppointmentService service) : Control
     /// Получить все приёмы
     /// </summary>
     [HttpGet]
-    [EndpointSummary("Get all appointments")]
+    [EndpointSummary("Получить все приёмы")]
     [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<AppointmentDto>> GetAll() => Ok(service.Appointments());
 
@@ -22,7 +22,7 @@ public sealed class AppointmentController(IAppointmentService service) : Control
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}")]
-    [EndpointSummary("Get appointment by ID")]
+    [EndpointSummary("Получить приём по идентификатору")]
     [ProducesResponseType(typeof(AppointmentDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<AppointmentDto> Get(int id)
@@ -36,7 +36,7 @@ public sealed class AppointmentController(IAppointmentService service) : Control
     /// </summary>
     /// <param name="request">Данные запроса</param>
     [HttpPost]
-    [EndpointSummary("Create appointment")]
+    [EndpointSummary("Создать приём")]
     [ProducesResponseType(typeof(AppointmentDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<AppointmentDto> Create(SaveAppointmentRequest request)
@@ -51,7 +51,7 @@ public sealed class AppointmentController(IAppointmentService service) : Control
     /// <param name="id">Идентификатор записи</param>
     /// <param name="request">Данные запроса</param>
     [HttpPut("{id:int}")]
-    [EndpointSummary("Update appointment")]
+    [EndpointSummary("Обновить приём")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(AppointmentDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,7 +63,7 @@ public sealed class AppointmentController(IAppointmentService service) : Control
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpDelete("{id:int}")]
-    [EndpointSummary("Delete appointment")]
+    [EndpointSummary("Удалить приём")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
@@ -77,7 +77,7 @@ public sealed class AppointmentController(IAppointmentService service) : Control
     /// </summary>
     /// <param name="roomNumber">Номер кабинета</param>
     [HttpGet("current-month")]
-    [EndpointSummary("Get appointments for current month")]
+    [EndpointSummary("Получить приёмы за текущий месяц")]
     [ProducesResponseType(typeof(IReadOnlyList<AppointmentDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<AppointmentDto>> CurrentMonth([FromQuery] int roomNumber)
     {

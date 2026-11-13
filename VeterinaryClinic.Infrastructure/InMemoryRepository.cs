@@ -28,9 +28,6 @@ public sealed class InMemoryRepository<T>(IEnumerable<T> initial, Func<T, int> i
     public int NextId() => _items.Count == 0 ? 1 : _items.Max(idSelector) + 1;
 
     /// <inheritdoc />
-    public void Add(T entity) => _items.Add(entity);
-
-    /// <inheritdoc />
     public T Create(Func<int, T> factory)
     {
         var entity = factory(NextId());

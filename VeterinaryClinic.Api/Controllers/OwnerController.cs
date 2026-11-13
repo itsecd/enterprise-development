@@ -13,7 +13,7 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// Получить всех владельцев
     /// </summary>
     [HttpGet]
-    [EndpointSummary("Get all owners")]
+    [EndpointSummary("Получить всех владельцев")]
     [ProducesResponseType(typeof(IReadOnlyList<OwnerDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<OwnerDto>> GetAll() => Ok(service.Owners());
 
@@ -22,7 +22,7 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}")]
-    [EndpointSummary("Get owner by ID")]
+    [EndpointSummary("Получить владельца по идентификатору")]
     [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<OwnerDto> Get(int id)
@@ -36,7 +36,7 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// </summary>
     /// <param name="request">Данные запроса</param>
     [HttpPost]
-    [EndpointSummary("Create owner")]
+    [EndpointSummary("Создать владельца")]
     [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<OwnerDto> Create(SaveOwnerRequest request)
@@ -51,7 +51,7 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// <param name="id">Идентификатор записи</param>
     /// <param name="request">Данные запроса</param>
     [HttpPut("{id:int}")]
-    [EndpointSummary("Update owner")]
+    [EndpointSummary("Обновить владельца")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(OwnerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,7 +62,7 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpDelete("{id:int}")]
-    [EndpointSummary("Delete owner")]
+    [EndpointSummary("Удалить владельца")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
@@ -75,7 +75,7 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// Получить владельцев нескольких питомцев
     /// </summary>
     [HttpGet("multiple-pets")]
-    [EndpointSummary("Get owners with multiple pets")]
+    [EndpointSummary("Получить владельцев нескольких питомцев")]
     [ProducesResponseType(typeof(IReadOnlyList<OwnerDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<OwnerDto>> MultiplePets() => Ok(service.OwnersWithMultiplePets());
 
@@ -84,6 +84,6 @@ public sealed class OwnerController(IOwnerService service) : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/pets")]
-    [EndpointSummary("Get pets by owner")]
+    [EndpointSummary("Получить питомцев владельца")]
     public ActionResult<IReadOnlyList<PetDto>> GetPets(int id) => Ok(service.PetsByOwner(id));
 }

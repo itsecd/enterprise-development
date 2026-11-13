@@ -39,11 +39,11 @@ public interface IPetService
     /// Возвращает владельца питомца
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public global::VeterinaryClinic.Application.Contracts.Owners.OwnerDto? OwnerByPet(int id);
+    public OwnerDto? OwnerByPet(int id);
 
     /// <summary>
     /// Возвращает приёмы питомца
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Appointments.AppointmentDto> AppointmentsByPet(int id);
+    public IReadOnlyList<AppointmentDto> AppointmentsByPet(int id);
 }

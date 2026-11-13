@@ -39,5 +39,5 @@ public interface ISpecializationService
     /// Возвращает ветеринаров по специализации
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
-    public IReadOnlyList<global::VeterinaryClinic.Application.Contracts.Veterinarians.VeterinarianDto> VeterinariansBySpecialization(int id);
+    public IReadOnlyList<VeterinarianDto> VeterinariansBySpecialization(int id);
 }

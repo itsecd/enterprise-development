@@ -13,7 +13,7 @@ public sealed class SpecializationController(ISpecializationService service) : C
     /// Получить все специализации
     /// </summary>
     [HttpGet]
-    [EndpointSummary("Get all specializations")]
+    [EndpointSummary("Получить все специализации")]
     [ProducesResponseType(typeof(IReadOnlyList<SpecializationDto>), StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<SpecializationDto>> GetAll() => Ok(service.Specializations());
 
@@ -22,7 +22,7 @@ public sealed class SpecializationController(ISpecializationService service) : C
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}")]
-    [EndpointSummary("Get specialization by ID")]
+    [EndpointSummary("Получить специализацию по идентификатору")]
     [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<SpecializationDto> Get(int id)
@@ -36,7 +36,7 @@ public sealed class SpecializationController(ISpecializationService service) : C
     /// </summary>
     /// <param name="request">Данные запроса</param>
     [HttpPost]
-    [EndpointSummary("Create specialization")]
+    [EndpointSummary("Создать специализацию")]
     [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<SpecializationDto> Create(SaveSpecializationRequest request)
@@ -51,7 +51,7 @@ public sealed class SpecializationController(ISpecializationService service) : C
     /// <param name="id">Идентификатор записи</param>
     /// <param name="request">Данные запроса</param>
     [HttpPut("{id:int}")]
-    [EndpointSummary("Update specialization")]
+    [EndpointSummary("Обновить специализацию")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,7 +63,7 @@ public sealed class SpecializationController(ISpecializationService service) : C
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpDelete("{id:int}")]
-    [EndpointSummary("Delete specialization")]
+    [EndpointSummary("Удалить специализацию")]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult Delete(int id)
@@ -77,7 +77,7 @@ public sealed class SpecializationController(ISpecializationService service) : C
     /// </summary>
     /// <param name="id">Идентификатор записи</param>
     [HttpGet("{id:int}/veterinarians")]
-    [EndpointSummary("Get veterinarians by specialization")]
+    [EndpointSummary("Получить ветеринаров по специализации")]
     public ActionResult<IReadOnlyList<VeterinarianDto>> GetVeterinarians(int id)
         => Ok(service.VeterinariansBySpecialization(id));
 }
