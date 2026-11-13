@@ -38,6 +38,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    await using var scope = app.Services.CreateAsyncScope();
+    var db = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
+    await db.Database.MigrateAsync();
+
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
