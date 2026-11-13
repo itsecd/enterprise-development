@@ -1,4 +1,5 @@
-﻿using CarWash.Contracts.Dto;
+﻿using CarWash.Application.Mapping;
+using CarWash.Contracts.Dto;
 using CarWash.Contracts.Interfaces;
 using CarWash.Domain.Interfaces;
 
@@ -16,8 +17,7 @@ public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsServ
             .Take(5)
             .Select(g => new TopClientDto
             {
-                Id = g.Key.Id,
-                FullName = g.Key.FullName,
+                Client = g.Key.ToDto(),
                 VisitCount = g.Count()
             });
     }
@@ -48,7 +48,7 @@ public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsServ
             .Take(5)
             .Select(g => new TopServiceDto
             {
-                Name = g.Key.Name,
+                Service = g.Key.ToDto(),
                 UsageCount = g.Count()
             });
     }

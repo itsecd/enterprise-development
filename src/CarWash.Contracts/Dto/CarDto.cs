@@ -1,19 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace CarWash.Contracts.Dto;
 
-namespace CarWash.Contracts.Dto;
-
+/// <summary>
+/// Данные автомобиля
+/// </summary>
 public class CarDto
 {
+    /// <summary>
+    /// ID автомобиля
+    /// </summary>
     public int Id { get; set; }
-    public string LicensePlate { get; set; } = string.Empty;
-    public string? Brand { get; set; }
-}
 
-public class CarEditDto
-{
-    [Required(ErrorMessage = "Госномер обязателен")]
-    [MaxLength(9, ErrorMessage = "Госномер не может быть длиннее 9 символов")]
-    public string LicensePlate { get; set; } = string.Empty;
+    /// <summary>
+    /// Государственный регистрационный номер
+    /// </summary>
+    public required string LicensePlate { get; set; }
 
+    /// <summary>
+    /// Марка автомобиля
+    /// </summary>
     public string? Brand { get; set; }
 }

@@ -1,34 +1,52 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace CarWash.Contracts.Dto;
 
-namespace CarWash.Contracts.Dto;
-
+/// <summary>
+/// Данные заказа
+/// </summary>
 public class OrderDto
 {
+    /// <summary>
+    /// ID заказа
+    /// </summary>
     public int Id { get; set; }
-    public int ClientId { get; set; }
-    public string ClientFullName { get; set; } = string.Empty;
-    public int CarId { get; set; }
-    public string CarLicensePlate { get; set; } = string.Empty;
-    public int ServiceId { get; set; }
-    public string ServiceName { get; set; } = string.Empty;
-    public DateTime StartTime { get; set; }
-    public int BoxNumber { get; set; }
-}
 
-public class OrderEditDto
-{
-    [Required(ErrorMessage = "ID клиента обязателен")]
+    /// <summary>
+    /// ID клиента
+    /// </summary>
     public int ClientId { get; set; }
 
-    [Required(ErrorMessage = "ID автомобиля обязателен")]
+    /// <summary>
+    /// ФИО клиента
+    /// </summary>
+    public required string ClientFullName { get; set; }
+
+    /// <summary>
+    /// ID автомобиля
+    /// </summary>
     public int CarId { get; set; }
 
-    [Required(ErrorMessage = "ID услуги обязателен")]
+    /// <summary>
+    /// Госномер автомобиля
+    /// </summary>
+    public required string CarLicensePlate { get; set; }
+
+    /// <summary>
+    /// ID услуги
+    /// </summary>
     public int ServiceId { get; set; }
 
-    [Required(ErrorMessage = "Время начала обязательно")]
+    /// <summary>
+    /// Название услуги
+    /// </summary>
+    public required string ServiceName { get; set; }
+
+    /// <summary>
+    /// Дата и время начала обслуживания
+    /// </summary>
     public DateTime StartTime { get; set; }
 
-    [Range(1, 100, ErrorMessage = "Номер бокса должен быть от 1 до 100")]
+    /// <summary>
+    /// Номер бокса мойки
+    /// </summary>
     public int BoxNumber { get; set; }
 }

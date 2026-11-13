@@ -1,19 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace CarWash.Contracts.Dto;
 
-namespace CarWash.Contracts.Dto;
-
+/// <summary>
+/// Данные клиента
+/// </summary>
 public class ClientDto
 {
+    /// <summary>
+    /// ID клиента
+    /// </summary>
     public int Id { get; set; }
-    public string FullName { get; set; } = string.Empty;
-    public string? Phone { get; set; }
-}
 
-public class ClientEditDto
-{
-    [Required(ErrorMessage = "ФИО обязательно")]
-    public string FullName { get; set; } = string.Empty;
+    /// <summary>
+    /// ФИО клиента
+    /// </summary>
+    public required string FullName { get; set; }
 
-    [Phone(ErrorMessage = "Некорректный формат телефона")]
+    /// <summary>
+    /// Номер телефона
+    /// </summary>
     public string? Phone { get; set; }
 }

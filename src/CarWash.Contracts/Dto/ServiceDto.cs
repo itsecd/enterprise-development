@@ -1,28 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
-using CarWash.Shared.Enums;
+﻿using CarWash.Shared.Enums;
 
 namespace CarWash.Contracts.Dto;
 
+/// <summary>
+/// Данные услуги
+/// </summary>
 public class ServiceDto
 {
+    /// <summary>
+    /// ID услуги
+    /// </summary>
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public CarCategory Category { get; set; }
-    public decimal Price { get; set; }
-    public int DurationMinutes { get; set; }
-}
 
-public class ServiceEditDto
-{
-    [Required(ErrorMessage = "Название услуги обязательно")]
-    public string Name { get; set; } = string.Empty;
+    /// <summary>
+    /// Название услуги
+    /// </summary>
+    public required string Name { get; set; }
 
-    [Required(ErrorMessage = "Категория обязательна")]
+    /// <summary>
+    /// Категория автомобиля, для которого предназначена услуга
+    /// </summary>
     public CarCategory Category { get; set; }
 
-    [Range(0.01, 100000, ErrorMessage = "Цена должна быть больше нуля")]
+    /// <summary>
+    /// Стоимость услуги в рублях
+    /// </summary>
     public decimal Price { get; set; }
 
-    [Range(1, 1440, ErrorMessage = "Длительность должна быть от 1 до 1440 минут")]
+    /// <summary>
+    /// Продолжительность услуги в минутах
+    /// </summary>
     public int DurationMinutes { get; set; }
 }
