@@ -15,7 +15,7 @@ public class Order
     /// </summary>
     [Key]
     public int Id { get; set; }
-
+    
     /// <summary>
     /// Идентификатор клиента, оформившего заказ
     /// </summary>
@@ -27,7 +27,7 @@ public class Order
     public int Restaurant? { get; set; }
 
     /// <summary>
-    /// Идентификатор назначенного курьера (null, если курьер еще не назначен)
+    /// Идентификатор назначенного курьера
     /// </summary>
     public int? Courier? { get; set; }
 
@@ -57,7 +57,7 @@ public class Order
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
-    /// Комментарий к заказу для курьера или кухни (необязательное поле)
+    /// Комментарий к заказу для курьера или кухни
     /// </summary>
     public string? Comment { get; set; }
 }
