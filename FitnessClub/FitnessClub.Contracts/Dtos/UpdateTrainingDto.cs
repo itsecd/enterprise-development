@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using FitnessClub.Contracts.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitnessClub.Contracts.Dtos;
 
@@ -20,7 +21,8 @@ public class UpdateTrainingDto
     public int HallId { get; set; }
 
     /// <summary>Дата и время начала тренировки.</summary>
-    public DateTime StartTime { get; set; }
+    [ValidDate]
+    public DateTimeOffset StartTime { get; set; }
 
     /// <summary>Продолжительность тренировки в минутах.</summary>
     [Range(1, 480)]

@@ -1,4 +1,4 @@
-﻿using FitnessClub.Domain.Interfaces;
+using FitnessClub.Domain.Interfaces;
 
 namespace FitnessClub.Domain.Entities;
 
@@ -15,17 +15,26 @@ public class Training : IEntity
     /// <summary>
     /// Клиент, записанный на занятие.
     /// </summary>
-    public required Client Client { get; set; }
+    public Client Client { get; set; } = null!;
+
+    /// <summary>Идентификатор связанной сущности Client.</summary>
+    public int ClientId { get; set; }
 
     /// <summary>
     /// Тренер, проводящий занятие.
     /// </summary>
-    public required Trainer Trainer { get; set; }
+    public Trainer Trainer { get; set; } = null!;
+
+    /// <summary>Идентификатор связанной сущности Trainer.</summary>
+    public int TrainerId { get; set; }
 
     /// <summary>
     /// Зал, в котором проводится занятие.
     /// </summary>
-    public required Hall Hall { get; set; }
+    public Hall Hall { get; set; } = null!;
+
+    /// <summary>Идентификатор связанной сущности Hall.</summary>
+    public int HallId { get; set; }
 
     /// <summary>
     /// Дата и время начала занятия.

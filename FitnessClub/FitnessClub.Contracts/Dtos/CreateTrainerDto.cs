@@ -1,3 +1,4 @@
+using FitnessClub.Contracts.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace FitnessClub.Contracts.Dtos;
@@ -11,12 +12,14 @@ public class CreateTrainerDto
     /// Номер паспорта тренера.
     /// </summary>
     [Required]
+    [MaxLength(32)]
     public required string PassportNumber { get; set; }
 
     /// <summary>
     /// ФИО тренера.
     /// </summary>
     [Required]
+    [MaxLength(200)]
     public required string FullName { get; set; }
 
     /// <summary>
@@ -29,6 +32,7 @@ public class CreateTrainerDto
     /// <summary>
     /// Дата рождения тренера.
     /// </summary>
+    [ValidDate(AllowFuture = false)]
     public DateTime BirthDate { get; set; }
 
     /// <summary>

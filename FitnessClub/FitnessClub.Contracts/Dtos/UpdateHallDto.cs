@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitnessClub.Contracts.Dtos;
 
@@ -9,6 +9,7 @@ public class UpdateHallDto
 {
     /// <summary>Название зала.</summary>
     [Required]
+    [MaxLength(200)]
     public required string Name { get; set; }
 
     /// <summary>Вместимость зала.</summary>

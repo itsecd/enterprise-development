@@ -1,4 +1,4 @@
-﻿using FitnessClub.Contracts.Dtos;
+using FitnessClub.Contracts.Dtos;
 using FitnessClub.Domain.Entities;
 
 namespace FitnessClub.Application.Mapping;
@@ -24,7 +24,7 @@ public static class TrainerMapping
             FullName = trainer.FullName,
             Gender = (GenderDto)trainer.Gender,
             BirthDate = trainer.BirthDate,
-            SpecializationId = trainer.Specialization.Id,
+            SpecializationId = trainer.SpecializationId,
             WorkExperienceYears = trainer.WorkExperience
         };
     }

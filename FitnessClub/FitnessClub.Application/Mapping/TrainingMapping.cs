@@ -1,4 +1,4 @@
-﻿using FitnessClub.Contracts.Dtos;
+using FitnessClub.Contracts.Dtos;
 using FitnessClub.Domain.Entities;
 
 namespace FitnessClub.Application.Mapping;
@@ -20,9 +20,9 @@ public static class TrainingMapping
         return new TrainingDto
         {
             Id = training.Id,
-            ClientId = training.Client.Id,
-            TrainerId = training.Trainer.Id,
-            HallId = training.Hall.Id,
+            ClientId = training.ClientId,
+            TrainerId = training.TrainerId,
+            HallId = training.HallId,
             StartTime = training.StartTime,
             DurationMinutes = training.DurationMinutes,
             IsTrial = training.IsTrial

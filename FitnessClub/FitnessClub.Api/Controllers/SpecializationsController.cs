@@ -12,6 +12,8 @@ namespace FitnessClub.Api.Controllers;
 [ApiController]
 [Route("api/specializations")]
 [Produces("application/json")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 public class SpecializationsController(
     ISpecializationService specializationService,
     ILogger<SpecializationsController> logger) : ControllerBase
@@ -34,7 +36,7 @@ public class SpecializationsController(
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(SpecializationDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SpecializationDto>> GetByIdAsync(int id)
+    public async Task<ActionResult<SpecializationDto>> GetById(int id)
     {
         var specialization = await specializationService.GetByIdAsync(id);
 
@@ -65,7 +67,7 @@ public class SpecializationsController(
                 specialization.Id);
 
             return CreatedAtAction(
-                nameof(GetByIdAsync),
+                nameof(GetById),
                 new { id = specialization.Id },
                 specialization);
         }

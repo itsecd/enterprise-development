@@ -58,10 +58,10 @@ public class TrainingService(
         var training = new Training
         {
             Id = 0,
-            Client = client,
-            Trainer = trainer,
-            Hall = hall,
-            StartTime = dto.StartTime,
+            ClientId = client.Id,
+            TrainerId = trainer.Id,
+            HallId = hall.Id,
+            StartTime = dto.StartTime.UtcDateTime,
             DurationMinutes = dto.DurationMinutes,
             IsTrial = dto.IsTrial
         };
@@ -94,10 +94,10 @@ public class TrainingService(
                 nameof(dto));
         }
 
-        training.Client = client;
-        training.Trainer = trainer;
-        training.Hall = hall;
-        training.StartTime = dto.StartTime;
+        training.ClientId = client.Id;
+        training.TrainerId = trainer.Id;
+        training.HallId = hall.Id;
+        training.StartTime = dto.StartTime.UtcDateTime;
         training.DurationMinutes = dto.DurationMinutes;
         training.IsTrial = dto.IsTrial;
 

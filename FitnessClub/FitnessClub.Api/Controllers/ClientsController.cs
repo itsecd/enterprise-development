@@ -12,6 +12,8 @@ namespace FitnessClub.Api.Controllers;
 [ApiController]
 [Route("api/clients")]
 [Produces("application/json")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 public class ClientsController(
     IClientService clientService,
     ILogger<ClientsController> logger) : ControllerBase

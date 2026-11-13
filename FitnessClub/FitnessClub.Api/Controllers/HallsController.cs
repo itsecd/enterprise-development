@@ -11,6 +11,8 @@ namespace FitnessClub.Api.Controllers;
 [ApiController]
 [Route("api/halls")]
 [Produces("application/json")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 public class HallsController(IHallService service) : ControllerBase
 {
     /// <summary>Возвращает все залы.</summary>

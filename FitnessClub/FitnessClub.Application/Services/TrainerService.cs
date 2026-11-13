@@ -42,9 +42,9 @@ public class TrainerService(
         {
             PassportNumber = dto.PassportNumber,
             FullName = dto.FullName,
-            Gender = (Gender)dto.Gender!.Value,
+            Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto))),
             BirthDate = dto.BirthDate,
-            Specialization = specialization,
+            SpecializationId = specialization.Id,
             WorkExperience = dto.WorkExperienceYears
         };
 
@@ -64,21 +64,14 @@ public class TrainerService(
             return false;
         }
 
-        var specialization = await specializationRepository
-            .GetByIdAsync(dto.SpecializationId);
-
-        if (specialization is null)
-        {
-            throw new ArgumentException(
-                "Указанная специализация не найдена.",
-                nameof(dto));
-        }
+        var specialization = await specializationRepository.GetByIdAsync(dto.SpecializationId)
+            ?? throw new ArgumentException("Указанная специализация не найдена.", nameof(dto));
 
         trainer.PassportNumber = dto.PassportNumber;
         trainer.FullName = dto.FullName;
-        trainer.Gender = (Gender)dto.Gender!.Value;
+        trainer.Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto)));
         trainer.BirthDate = dto.BirthDate;
-        trainer.Specialization = specialization;
+        trainer.SpecializationId = specialization.Id;
         trainer.WorkExperience = dto.WorkExperienceYears;
 
         return await trainerRepository.UpdateAsync(id, trainer);

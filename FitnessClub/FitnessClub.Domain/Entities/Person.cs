@@ -1,4 +1,4 @@
-﻿using FitnessClub.Domain.Enums;
+using FitnessClub.Domain.Enums;
 using FitnessClub.Domain.Interfaces;
 
 namespace FitnessClub.Domain.Entities;
@@ -8,10 +8,10 @@ namespace FitnessClub.Domain.Entities;
 /// </summary>
 public abstract class Person : IEntity
 {
-/// <summary>
-/// ID человека.
-/// </summary>
-public int Id { get; set; }
+    /// <summary>
+    /// ID человека.
+    /// </summary>
+    public int Id { get; set; }
 
     /// <summary>
     /// Номер паспорта человека.

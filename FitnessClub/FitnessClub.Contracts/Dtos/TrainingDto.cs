@@ -1,4 +1,4 @@
-﻿namespace FitnessClub.Contracts.Dtos;
+namespace FitnessClub.Contracts.Dtos;
 
 /// <summary>
 /// Данные записи на тренировку.
@@ -28,7 +28,7 @@ public class TrainingDto
     /// <summary>
     /// Дата и время начала тренировки.
     /// </summary>
-    public DateTime StartTime { get; set; }
+    public DateTimeOffset StartTime { get; set; }
 
     /// <summary>
     /// Продолжительность в минутах.

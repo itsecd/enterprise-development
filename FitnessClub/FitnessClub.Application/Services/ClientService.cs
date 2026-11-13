@@ -38,7 +38,7 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         {
             PassportNumber = dto.PassportNumber,
             FullName = dto.FullName,
-            Gender = (Gender)dto.Gender!.Value,
+            Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto))),
             BirthDate = dto.BirthDate,
             Phone = dto.Phone,
             SubscriptionStartDate = dto.SubscriptionStartDate,
@@ -64,7 +64,7 @@ public class ClientService(IClientRepository clientRepository) : IClientService
 
         existingClient.PassportNumber = dto.PassportNumber;
         existingClient.FullName = dto.FullName;
-        existingClient.Gender = (Gender)dto.Gender!.Value;
+        existingClient.Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto)));
         existingClient.BirthDate = dto.BirthDate;
         existingClient.Phone = dto.Phone;
         existingClient.SubscriptionStartDate = dto.SubscriptionStartDate;

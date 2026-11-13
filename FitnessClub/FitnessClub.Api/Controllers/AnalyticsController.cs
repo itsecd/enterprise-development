@@ -11,6 +11,8 @@ namespace FitnessClub.Api.Controllers;
 [ApiController]
 [Route("api/analytics")]
 [Produces("application/json")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 public class AnalyticsController(IAnalyticsService service) : ControllerBase
 {
     /// <summary>

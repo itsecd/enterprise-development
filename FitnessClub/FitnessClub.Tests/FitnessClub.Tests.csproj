@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FitnessClub.Domain\FitnessClub.Domain.csproj" />
+    <ProjectReference Include="..\FitnessClub.Contracts\FitnessClub.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

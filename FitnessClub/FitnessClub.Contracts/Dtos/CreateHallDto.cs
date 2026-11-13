@@ -11,6 +11,7 @@ public class CreateHallDto
     /// Название зала.
     /// </summary>
     [Required]
+    [MaxLength(200)]
     public required string Name { get; set; }
 
     /// <summary>

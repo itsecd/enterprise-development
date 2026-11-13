@@ -5,107 +5,53 @@ using FitnessClub.Domain.Interfaces;
 
 namespace FitnessClub.Application.Services;
 
-/// <summary>
-/// Реализует аналитические запросы фитнес-клуба.
-/// </summary>
-public class AnalyticsService(
-    ITrainerRepository trainerRepository,
-    IClientRepository clientRepository,
-    ITrainingRepository trainingRepository,
-    IHallRepository hallRepository) : IAnalyticsService
+/// <summary>Предоставляет результаты аналитических запросов фитнес-клуба.</summary>
+public class AnalyticsService(IAnalyticsRepository analyticsRepository, IHallRepository hallRepository) : IAnalyticsService
 {
     /// <inheritdoc />
-    public async Task<IReadOnlyCollection<TrainerDto>>
-        GetExperiencedTrainersAsync()
+    public async Task<IReadOnlyCollection<TrainerDto>> GetExperiencedTrainersAsync()
     {
-        var trainers = await trainerRepository.GetAllAsync();
-
-        return [.. trainers
-            .Where(trainer => trainer.WorkExperience >= 5)
-            .Select(trainer => trainer.ToDto())];
+        var trainers = await analyticsRepository.GetExperiencedTrainersAsync();
+        return [.. trainers.Select(trainer => trainer.ToDto())];
     }
 
     /// <inheritdoc />
-    public async Task<HallAvailabilityDto?> CheckHallAvailabilityAsync(
-        int hallId)
+    public async Task<HallAvailabilityDto?> CheckHallAvailabilityAsync(int hallId)
     {
         var hall = await hallRepository.GetByIdAsync(hallId);
-
         if (hall is null)
         {
             return null;
         }
 
-        var trainings = await trainingRepository.GetAllAsync();
-        var now = DateTime.Now;
-
-        var isOccupied = trainings.Any(training =>
-            training.Hall.Id == hallId
-            && training.StartTime <= now
-            && training.StartTime.AddMinutes(training.DurationMinutes) > now);
-
         return new HallAvailabilityDto
         {
             HallId = hall.Id,
             HallName = hall.Name,
-            IsAvailable = !isOccupied
+            IsAvailable = !await analyticsRepository.IsHallOccupiedAsync(hallId, DateTime.UtcNow)
         };
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyCollection<ClientDto>>
-        GetClientsWithExpiredSubscriptionsAsync()
+    public async Task<IReadOnlyCollection<ClientDto>> GetClientsWithExpiredSubscriptionsAsync()
     {
-        var clients = await clientRepository.GetAllAsync();
-        var today = DateTime.Today;
-
-        return [.. clients
-            .Where(client => client.SubscriptionEndDate.Date < today)
-            .OrderBy(client => client.FullName)
-            .Select(client => client.ToDto())];
+        var clients = await analyticsRepository.GetExpiredClientsAsync(DateTime.UtcNow.Date);
+        return [.. clients.Select(client => client.ToDto())];
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyCollection<TrainingDto>>
-        GetCurrentMonthTrainingsByHallAsync(int hallId)
+    public async Task<IReadOnlyCollection<TrainingDto>> GetCurrentMonthTrainingsByHallAsync(int hallId)
     {
-        var hall = await hallRepository.GetByIdAsync(hallId);
-
-        if (hall is null)
-        {
-            return [];
-        }
-
-        var trainings = await trainingRepository.GetAllAsync();
-        var now = DateTime.Now;
-
-        return [.. trainings
-            .Where(training =>
-                training.Hall.Id == hallId
-                && training.StartTime.Year == now.Year
-                && training.StartTime.Month == now.Month)
-            .OrderBy(training => training.StartTime)
-            .Select(training => training.ToDto())];
+        var today = DateTime.UtcNow.Date;
+        var start = new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var trainings = await analyticsRepository.GetHallTrainingsAsync(hallId, start, start.AddMonths(1));
+        return [.. trainings.Select(training => training.ToDto())];
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyCollection<TrainerDto>>
-        GetTopFiveTrainersAsync()
+    public async Task<IReadOnlyCollection<TrainerDto>> GetTopFiveTrainersAsync()
     {
-        var trainers = await trainerRepository.GetAllAsync();
-        var trainings = await trainingRepository.GetAllAsync();
-
-        return [.. trainers
-            .Select(trainer => new
-            {
-                Trainer = trainer,
-                TrainingCount = trainings.Count(training =>
-                    training.Trainer.Id == trainer.Id)
-            })
-            .Where(item => item.TrainingCount > 0)
-            .OrderByDescending(item => item.TrainingCount)
-            .ThenBy(item => item.Trainer.FullName)
-            .Take(5)
-            .Select(item => item.Trainer.ToDto())];
+        var trainers = await analyticsRepository.GetTopTrainersAsync();
+        return [.. trainers.Select(trainer => trainer.ToDto())];
     }
 }

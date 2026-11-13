@@ -1,3 +1,4 @@
+using FitnessClub.Contracts.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace FitnessClub.Contracts.Dtos;
@@ -9,10 +10,12 @@ public class UpdateTrainerDto
 {
     /// <summary>Номер паспорта тренера.</summary>
     [Required]
+    [MaxLength(32)]
     public required string PassportNumber { get; set; }
 
     /// <summary>ФИО тренера.</summary>
     [Required]
+    [MaxLength(200)]
     public required string FullName { get; set; }
 
     /// <summary>Пол тренера.</summary>
@@ -21,6 +24,7 @@ public class UpdateTrainerDto
     public GenderDto? Gender { get; set; }
 
     /// <summary>Дата рождения.</summary>
+    [ValidDate(AllowFuture = false)]
     public DateTime BirthDate { get; set; }
 
     /// <summary>ID специализации.</summary>

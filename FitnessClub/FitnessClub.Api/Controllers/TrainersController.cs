@@ -7,11 +7,13 @@ namespace FitnessClub.Api.Controllers;
 /// <summary>
 /// Предоставляет REST API для управления тренерами фитнес-клуба.
 /// </summary>
-/// /// <param name="trainerService">Сервис управления тренерами.</param>
+/// <param name="trainerService">Сервис управления тренерами.</param>
 /// <param name="logger">Журнал событий.</param>
 [ApiController]
 [Route("api/trainers")]
 [Produces("application/json")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 public class TrainersController(
     ITrainerService trainerService,
     ILogger<TrainersController> logger) : ControllerBase
@@ -35,7 +37,7 @@ public class TrainersController(
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(TrainerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TrainerDto>> GetByIdAsync(int id)
+    public async Task<ActionResult<TrainerDto>> GetById(int id)
     {
         var trainer = await trainerService.GetByIdAsync(id);
 
@@ -66,7 +68,7 @@ public class TrainersController(
                 trainer.Id);
 
             return CreatedAtAction(
-                nameof(GetByIdAsync),
+                nameof(GetById),
                 new { id = trainer.Id },
                 trainer);
         }

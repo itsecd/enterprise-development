@@ -10,6 +10,8 @@ namespace FitnessClub.Api.Controllers;
 [ApiController]
 [Route("api/trainings")]
 [Produces("application/json")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
 public class TrainingsController(
     ITrainingService service,
     ILogger<TrainingsController> logger) : ControllerBase
