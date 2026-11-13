@@ -1,0 +1,7 @@
+### Получить все машины
+GET http://localhost:5199/api/cars
+Accept: application/json
+
+### Получить топ-5 работ
+GET http://localhost:5199/api/reports/top-5-works
+Accept: application/json
