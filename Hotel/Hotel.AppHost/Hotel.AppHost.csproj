@@ -9,4 +9,9 @@
     <UserSecretsId>99fdf5f1-a986-43f1-b02c-62cbf4f1f10f</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.MySql" Version="13.5.0" />
+    <ProjectReference Include="..\Hotel.Api.Host\Hotel.Api.Host.csproj" />
+  </ItemGroup>
+
 </Project>
