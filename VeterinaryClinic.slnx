@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="VeterinaryClinic.Api/VeterinaryClinic.Api.csproj" />
+  <Project Path="VeterinaryClinic.Application.Contracts/VeterinaryClinic.Application.Contracts.csproj" />
+  <Project Path="VeterinaryClinic.Application/VeterinaryClinic.Application.csproj" />
+  <Project Path="VeterinaryClinic.Domain.Shared/VeterinaryClinic.Domain.Shared.csproj" />
+  <Project Path="VeterinaryClinic.Domain/VeterinaryClinic.Domain.csproj" />
+  <Project Path="VeterinaryClinic.Infrastructure/VeterinaryClinic.Infrastructure.csproj" />
+  <Project Path="VeterinaryClinic.Tests/VeterinaryClinic.Tests.csproj" />
+</Solution>

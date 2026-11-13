@@ -427,3 +427,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# VeterinaryClinic (.NET)
+**/bin/
+**/obj/
+**/TestResults/
+.idea/
