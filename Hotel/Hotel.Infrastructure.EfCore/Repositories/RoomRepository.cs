@@ -82,5 +82,4 @@ public class RoomRepository(HotelDbContext context) : IRepository<Room, int>
 
         return roomType ?? throw new ArgumentException($"Не удалось найти тип номера с идентификатором {roomTypeId}");
     }
-
 }
