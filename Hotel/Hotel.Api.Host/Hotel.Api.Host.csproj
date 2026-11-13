@@ -9,6 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Scalar.AspNetCore" Version="2.18.0" />
   </ItemGroup>
 
@@ -16,7 +20,6 @@
     <ProjectReference Include="..\Hotel.Application.Contracts\Hotel.Application.Contracts.csproj" />
     <ProjectReference Include="..\Hotel.Application\Hotel.Application.csproj" />
     <ProjectReference Include="..\Hotel.Infrastructure.EfCore\Hotel.Infrastructure.EfCore.csproj" />
-    <ProjectReference Include="..\Hotel.Infrastructure.InMemory\Hotel.Infrastructure.InMemory.csproj" />
   </ItemGroup>
 
 </Project>
