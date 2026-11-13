@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Hotel.Api.Host/Hotel.Api.Host.csproj" />
+  <Project Path="Hotel.AppHost/Hotel.AppHost.csproj" />
   <Project Path="Hotel.Application.Contracts/Hotel.Application.Contracts.csproj" Id="102cf56c-0fac-4ca5-b0b2-0cd50a26392f" />
   <Project Path="Hotel.Application/Hotel.Application.csproj" Id="f8a62683-d4e9-4550-9d4f-968db172d3e0" />
   <Project Path="Hotel.Domain.Shared/Hotel.Domain.Shared.csproj" Id="2b7da4dc-3c5f-4780-addc-9eada690f692" />
