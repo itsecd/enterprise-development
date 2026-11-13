@@ -1,7 +1,6 @@
 using CarWash.Application.Services;
 using CarWash.Contracts.Interfaces;
 using CarWash.Domain.Interfaces;
-using CarWash.Infrastructure.InMemory.Data;
 using CarWash.Infrastructure.InMemory.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +9,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<InMemoryDataStore>();
-builder.Services.AddScoped<ICarRepository, CarRepository>();
-builder.Services.AddScoped<IClientRepository, ClientRepository>();
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddSingleton<ICarRepository, CarRepository>();
+builder.Services.AddSingleton<IClientRepository, ClientRepository>();
+builder.Services.AddSingleton<IServiceRepository, ServiceRepository>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -29,8 +27,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// app.UseHttpsRedirection();
 
 app.MapControllers();
 

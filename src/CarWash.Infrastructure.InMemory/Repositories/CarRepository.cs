@@ -1,35 +1,53 @@
-﻿using CarWash.Domain.Entities;
+﻿using CarWash.Domain.Data;
+using CarWash.Domain.Entities;
 using CarWash.Domain.Interfaces;
-using CarWash.Infrastructure.InMemory.Data;
 
 namespace CarWash.Infrastructure.InMemory.Repositories;
 
-public class CarRepository(InMemoryDataStore dataStore) : ICarRepository
+/// <summary>
+/// Репозиторий, хранящий автомобили в памяти
+/// </summary>
+public class CarRepository : ICarRepository
 {
+    private readonly List<Car> _cars = [.. DataSeed.Cars];
+
+    /// <inheritdoc />
     public Task<IEnumerable<Car>> GetAllAsync()
-        => Task.FromResult<IEnumerable<Car>>(dataStore.Cars);
+        => Task.FromResult<IEnumerable<Car>>([.. _cars]);
 
+    /// <inheritdoc />
     public Task<Car?> GetByIdAsync(int id)
-        => Task.FromResult(dataStore.Cars.FirstOrDefault(c => c.Id == id));
+        => Task.FromResult(_cars.FirstOrDefault(c => c.Id == id));
 
+    /// <inheritdoc />
     public Task<Car> AddAsync(Car entity)
     {
-        entity.Id = dataStore.Cars.Any() ? dataStore.Cars.Max(c => c.Id) + 1 : 1;
-        dataStore.Cars.Add(entity);
+        entity.Id = _cars.Count != 0 ? _cars.Max(c => c.Id) + 1 : 1;
+        _cars.Add(entity);
         return Task.FromResult(entity);
     }
 
+    /// <inheritdoc />
     public Task UpdateAsync(Car entity)
     {
-        var index = dataStore.Cars.FindIndex(c => c.Id == entity.Id);
-        if (index != -1) dataStore.Cars[index] = entity;
+        var index = _cars.FindIndex(c => c.Id == entity.Id);
+        if (index != -1)
+        {
+            _cars[index] = entity;
+        }
+
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc />
     public Task DeleteAsync(int id)
     {
-        var car = dataStore.Cars.FirstOrDefault(c => c.Id == id);
-        if (car != null) dataStore.Cars.Remove(car);
+        var item = _cars.FirstOrDefault(c => c.Id == id);
+        if (item != null)
+        {
+            _cars.Remove(item);
+        }
+
         return Task.CompletedTask;
     }
 }
