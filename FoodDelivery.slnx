@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="FoodDelivery.Api/FoodDelivery.Api.csproj" Id="c2119ce5-8619-40e7-a5ff-bc9b0997f92e" />
+  <Project Path="FoodDelivery.AppHost/FoodDelivery.AppHost.csproj" />
+  <Project Path="FoodDelivery.Application.Contracts/FoodDelivery.Application.Contracts.csproj" Id="1439444d-866a-4567-ac14-7737ff7b60ad" />
+  <Project Path="FoodDelivery.Application/FoodDelivery.Application.csproj" Id="7de2ebe2-57ff-4c40-aaed-b7a357f18690" />
+  <Project Path="FoodDelivery.Domain/FoodDelivery.Domain.csproj" />
+  <Project Path="FoodDelivery.Infrastructure.EfCore/FoodDelivery.Infrastructure.EfCore.csproj" Id="84872433-8948-4965-a1c4-581c4a08a739" />
+  <Project Path="FoodDelivery.Infrastructure.InMemory/FoodDelivery.Infrastructure.InMemory.csproj" Id="238e16c2-c94c-4a5e-b5a8-c66f1afbd5e8" />
+  <Project Path="FoodDelivery.ServiceDefaults/FoodDelivery.ServiceDefaults.csproj" />
+  <Project Path="FoodDelivery.Tests/FoodDelivery.Tests.csproj" />
+</Solution>
