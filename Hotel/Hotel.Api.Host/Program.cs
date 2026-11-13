@@ -5,18 +5,26 @@ using Hotel.Application.Contracts.RoomTypes;
 using Hotel.Application.Services;
 using Hotel.Domain;
 using Hotel.Domain.Entities;
-using Hotel.Infrastructure.InMemory.Repositories;
+using Hotel.Infrastructure.EfCore;
+using Hotel.Infrastructure.EfCore.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Регистрация репозиториев
-builder.Services.AddSingleton<IRepository<RoomType, int>, RoomTypeRepository>();
-builder.Services.AddSingleton<IRepository<Room, int>, RoomRepository>();
-builder.Services.AddSingleton<IRepository<HotelClient, int>, HotelClientRepository>();
-builder.Services.AddSingleton<IRepository<Booking, int>, BookingRepository>();
+//Настройка подключения к MySQL
+var connectionString = builder.Configuration.GetConnectionString("HotelDb")
+    ?? throw new InvalidOperationException("Не задана строка подключения");
 
-// Регистрация сервисов
+builder.Services.AddDbContext<HotelDbContext>(options => options.UseMySQL(connectionString));
+
+// Регистрация репозиториев
+builder.Services.AddScoped<IRepository<RoomType, int>, RoomTypeRepository>();
+builder.Services.AddScoped<IRepository<Room, int>, RoomRepository>();
+builder.Services.AddScoped<IRepository<HotelClient, int>, HotelClientRepository>();
+builder.Services.AddScoped<IRepository<Booking, int>, BookingRepository>();
+
+// Регистрация сервисов приложения
 builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IHotelClientService, HotelClientService>();
