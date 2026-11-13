@@ -18,6 +18,6 @@ public record CreateRoomTypeDto(
 
     bool HasBathroom,
 
-    [Range(typeof(decimal), "0.01", "1000000", ErrorMessage = "Цена за день должна быть от 0,01 до 1000000")]
+    [Range(typeof(decimal), "0.01", "1000000", ParseLimitsInInvariantCulture = true, ErrorMessage = "Цена за день должна быть от 0,01 до 1000000")]
     decimal PricePerDay
 );
