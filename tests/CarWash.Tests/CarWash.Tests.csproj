@@ -15,6 +15,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\CarWash.Domain\CarWash.Domain.csproj" />
+		<ProjectReference Include="..\..\src\CarWash.Application\CarWash.Application.csproj" />
+		<ProjectReference Include="..\..\src\CarWash.Infrastructure.InMemory\CarWash.Infrastructure.InMemory.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

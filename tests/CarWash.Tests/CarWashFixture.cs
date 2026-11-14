@@ -1,15 +1,17 @@
-﻿using CarWash.Domain.Data;
-using CarWash.Domain.Entities;
+﻿using CarWash.Application.Services;
+using CarWash.Contracts.Interfaces;
+using CarWash.Infrastructure.InMemory.Repositories;
 
 namespace CarWash.Tests;
 
 /// <summary>
-/// Набор тестовых данных для проведения юнит-тестирования автомойки
+/// Набор объектов для проведения юнит-тестирования автомойки.
+/// Тесты работают с настоящим сервисом аналитики и тестовыми данными из Domain
 /// </summary>
 public class CarWashFixture
 {
     /// <summary>
-    /// Заказы из общих тестовых данных
+    /// Сервис аналитики, работающий с репозиторием заказов в памяти
     /// </summary>
-    public IReadOnlyList<Order> Orders { get; } = DataSeed.Orders;
+    public IAnalyticsService AnalyticsService { get; } = new AnalyticsService(new OrderRepository());
 }

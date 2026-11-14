@@ -9,7 +9,7 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
     /// Вывести топ 5 клиентов по количеству посещений
     /// </summary>
     [Fact]
-    public void GetTop5Clients_WhenCalled_ReturnsClientsOrderedByVisits()
+    public async Task GetTop5Clients_WhenCalled_ReturnsClientsOrderedByVisits()
     {
         List<string> expectedNames =
         [
@@ -20,13 +20,8 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
             "Кузнецов Дмитрий Николаевич"
         ];
 
-        var actualNames = fixture.Orders
-            .GroupBy(o => o.Client)
-            .OrderByDescending(g => g.Count())
-            .ThenBy(g => g.Key.Id)
-            .Take(5)
-            .Select(g => g.Key.FullName)
-            .ToList();
+        var topClients = await fixture.AnalyticsService.GetTop5ClientsAsync();
+        var actualNames = topClients.Select(t => t.Client.FullName).ToList();
 
         Assert.Equal(expectedNames, actualNames);
     }
@@ -35,7 +30,7 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
     /// Вывести информацию об автомобилях, находящихся на мойке в данный момент
     /// </summary>
     [Fact]
-    public void GetCurrentCarsAtWash_WhenTimeIsSpecified_ReturnsActiveCars()
+    public async Task GetCurrentCarsAtWash_WhenTimeIsSpecified_ReturnsActiveCars()
     {
         var currentTime = new DateTime(2026, 6, 1, 10, 15, 0);
 
@@ -47,9 +42,9 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
             "С302СС363"
         ];
 
-        var actualPlates = fixture.Orders
-            .Where(o => o.StartTime <= currentTime && currentTime < o.StartTime.AddMinutes(o.Service.DurationMinutes))
-            .Select(o => o.Car.LicensePlate)
+        var currentCars = await fixture.AnalyticsService.GetCurrentCarsAsync(currentTime);
+        var actualPlates = currentCars
+            .Select(c => c.LicensePlate)
             .OrderBy(plate => plate)
             .ToList();
 
@@ -60,7 +55,7 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
     /// Вывести 5 самых популярных услуг
     /// </summary>
     [Fact]
-    public void GetTop5PopularServices_WhenCalled_ReturnsServicesOrderedByPopularity()
+    public async Task GetTop5PopularServices_WhenCalled_ReturnsServicesOrderedByPopularity()
     {
         List<string> expectedServices =
         [
@@ -71,13 +66,8 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
             "Мойка грузовика"
         ];
 
-        var actualServices = fixture.Orders
-            .GroupBy(o => o.Service)
-            .OrderByDescending(g => g.Count())
-            .ThenBy(g => g.Key.Id)
-            .Take(5)
-            .Select(g => g.Key.Name)
-            .ToList();
+        var topServices = await fixture.AnalyticsService.GetTop5PopularServicesAsync();
+        var actualServices = topServices.Select(t => t.Service.Name).ToList();
 
         Assert.Equal(expectedServices, actualServices);
     }
@@ -86,44 +76,23 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
     /// Узнать для выбранного бокса мойки, начиная с какого времени он освобождается
     /// </summary>
     [Fact]
-    public void GetBoxFreeTime_WhenBoxIsBusy_ReturnsNextAvailableTime()
+    public async Task GetBoxFreeTime_WhenBoxIsBusy_ReturnsNextAvailableTime()
     {
         var targetBox = 1;
         var currentTime = new DateTime(2026, 6, 1, 10, 10, 0);
         var expectedFreeTime = new DateTime(2026, 6, 1, 10, 20, 0);
 
-        var busyOrders = fixture.Orders
-            .Where(o => o.BoxNumber == targetBox && o.StartTime.AddMinutes(o.Service.DurationMinutes) > currentTime)
-            .OrderBy(o => o.StartTime)
-            .ToList();
+        var result = await fixture.AnalyticsService.GetBoxFreeTimeAsync(targetBox, currentTime);
 
-        var freeTime = currentTime;
-
-        foreach (var order in busyOrders)
-        {
-            var orderEndTime = order.StartTime.AddMinutes(order.Service.DurationMinutes);
-
-            if (order.StartTime <= freeTime)
-            {
-                if (orderEndTime > freeTime)
-                {
-                    freeTime = orderEndTime;
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        Assert.Equal(expectedFreeTime, freeTime);
+        Assert.Equal(targetBox, result.BoxNumber);
+        Assert.Equal(expectedFreeTime, result.FreeTime);
     }
 
     /// <summary>
     /// Для каждой услуги вывести суммарную выручку
     /// </summary>
     [Fact]
-    public void GetRevenueForEachService_WhenCalled_CalculatesTotalRevenueCorrectly()
+    public async Task GetRevenueForEachService_WhenCalled_CalculatesTotalRevenueCorrectly()
     {
         var expectedRevenue = new Dictionary<string, decimal>
         {
@@ -139,9 +108,7 @@ public class CarWashTests(CarWashFixture fixture) : IClassFixture<CarWashFixture
             ["Мойка минивэна"] = 1800m
         };
 
-        var actualRevenue = fixture.Orders
-            .GroupBy(o => o.Service.Name)
-            .ToDictionary(g => g.Key, g => g.Sum(o => o.Service.Price));
+        var actualRevenue = await fixture.AnalyticsService.GetRevenueForEachServiceAsync();
 
         Assert.Equal(expected: expectedRevenue, actual: actualRevenue);
     }
