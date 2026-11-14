@@ -17,7 +17,7 @@ public class ServiceEditDto
     /// <summary>
     /// Категория автомобиля, для которого предназначена услуга
     /// </summary>
-    [Required(ErrorMessage = "Категория обязательна")]
+    [EnumDataType(typeof(CarCategory), ErrorMessage = "Недопустимая категория автомобиля")]
     public CarCategory Category { get; set; }
 
     /// <summary>

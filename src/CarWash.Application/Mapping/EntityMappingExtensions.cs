@@ -9,6 +9,19 @@ namespace CarWash.Application.Mapping;
 public static class EntityMappingExtensions
 {
     /// <summary>
+    /// Преобразует автомобиль в DTO
+    /// </summary>
+    /// <param name="car">Автомобиль</param>
+    /// <returns>DTO автомобиля</returns>
+    public static CarDto ToDto(this Car car)
+        => new()
+        {
+            Id = car.Id,
+            LicensePlate = car.LicensePlate,
+            Brand = car.Brand
+        };
+
+    /// <summary>
     /// Преобразует клиента в DTO
     /// </summary>
     /// <param name="client">Клиент</param>

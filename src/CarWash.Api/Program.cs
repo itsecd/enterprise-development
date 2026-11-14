@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CarWash.Application.Services;
 using CarWash.Contracts.Interfaces;
 using CarWash.Domain.Interfaces;
@@ -5,7 +6,9 @@ using CarWash.Infrastructure.InMemory.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => 
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
