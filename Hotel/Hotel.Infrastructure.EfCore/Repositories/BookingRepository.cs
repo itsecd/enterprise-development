@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Infrastructure.EfCore.Repositories;
 
+/// <summary>
+/// Репозиторий бронирований
+/// </summary>
 public class BookingRepository(HotelDbContext context) : IRepository<Booking, int>
 {
     /// <inheritdoc/>
