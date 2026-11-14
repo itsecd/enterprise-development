@@ -22,25 +22,25 @@ public class ClientService(
     /// <summary>
     /// Получить список клиентов
     /// </summary>
-    public async Task<IReadOnlyList<ClientDto>> GetAllAsync()
+    public async Task<IReadOnlyList<ClientDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var clients = await clientRepository.GetAllAsync();
+        var clients = await clientRepository.GetAllAsync(cancellationToken);
         return [.. clients.Select(c => c.ToDto())];
     }
     /// <summary>
     /// Получить клиента по идентификатору
     /// </summary>
-    public async Task<ClientDto?> GetByIdAsync(int id)
+    public async Task<ClientDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var client = await clientRepository.GetByIdAsync(id);
+        var client = await clientRepository.GetByIdAsync(id, cancellationToken);
         return client?.ToDto();
     }
     /// <summary>
     /// Добавить клиента
     /// </summary>
-    public async Task<ClientDto> AddAsync(ClientEditDto editDto)
+    public async Task<ClientDto> AddAsync(ClientEditDto editDto, CancellationToken cancellationToken = default)
     {
-        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber);
+        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, cancellationToken: cancellationToken);
         var client = await clientRepository.AddAsync(editDto.ToEntity());
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Создан клиент {ClientId}: {FullName}", client.Id, client.FullName);
@@ -49,17 +49,17 @@ public class ClientService(
     /// <summary>
     /// Обновить данные клиента
     /// </summary>
-    public async Task<ClientDto?> UpdateAsync(int id, ClientEditDto editDto)
+    public async Task<ClientDto?> UpdateAsync(int id, ClientEditDto editDto, CancellationToken cancellationToken = default)
     {
-        var client = await clientRepository.GetByIdAsync(id);
+        var client = await clientRepository.GetByIdAsync(id, cancellationToken);
         if (client is null)
         {
             logger.LogWarning("Клиент {ClientId} не найден для обновления", id);
             return null;
         }
-        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, client);
+        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, client, cancellationToken);
         client.UpdateEntity(editDto);
-        await clientRepository.UpdateAsync(client);
+        await clientRepository.UpdateAsync(client, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Обновлен клиент {ClientId}: {FullName}", client.Id, client.FullName);
         return client.ToDto();
@@ -67,12 +67,12 @@ public class ClientService(
     /// <summary>
     /// Удалить клиента при отсутствии брони
     /// </summary>
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var allBookings = await bookingRepository.GetAllAsync();
+        var allBookings = await bookingRepository.GetAllAsync(cancellationToken);
         if (allBookings.Any(b => b.Client.Id == id))
             throw new ConflictException("Невозможно удалить клиента, так как существуют бронирования для него.");
-        var deleted = await clientRepository.DeleteAsync(id);
+        var deleted = await clientRepository.DeleteAsync(id, cancellationToken);
         if (deleted)
         {    
             if (logger.IsEnabled(LogLevel.Information))

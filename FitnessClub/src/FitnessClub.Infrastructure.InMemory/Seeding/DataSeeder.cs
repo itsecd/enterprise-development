@@ -13,14 +13,14 @@ public class DataSeeder(
     IRepository<Specialization> specializationRepository,
     ILogger<DataSeeder> logger)
 { 
-    public async Task DataSeedingAsync(SeedData data)
+    public async Task DataSeedingAsync(SeedData data, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Начало заполнения базы данных начальными данными");
-        foreach(var specialization in data.Specializations) await specializationRepository.AddAsync(specialization);
-        foreach(var hall in data.Halls) await hallRepository.AddAsync(hall);
-        foreach(var client in data.Clients) await clientRepository.AddAsync(client);
-        foreach(var trainer in data.Trainers) await trainerRepository.AddAsync(trainer);
-        foreach(var booking in data.Bookings) await bookingRepository.AddAsync(booking);
+        foreach(var specialization in data.Specializations) await specializationRepository.AddAsync(specialization, cancellationToken);
+        foreach(var hall in data.Halls) await hallRepository.AddAsync(hall, cancellationToken);
+        foreach(var client in data.Clients) await clientRepository.AddAsync(client, cancellationToken);
+        foreach(var trainer in data.Trainers) await trainerRepository.AddAsync(trainer, cancellationToken);
+        foreach(var booking in data.Bookings) await bookingRepository.AddAsync(booking, cancellationToken);
         logger.LogInformation("Заполнение базы данных начальными данными завершено");
     }
 }

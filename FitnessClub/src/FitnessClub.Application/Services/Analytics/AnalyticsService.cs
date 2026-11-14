@@ -22,11 +22,12 @@ public class AnalyticsService(
     /// <param name="minimumExperience">Минимальный стаж в годах</param>
     /// <returns>Список тренеров, удовлетворяющих условию</returns>
     public async Task<IReadOnlyList<TrainerDto>> GetExperiencedTrainersAsync(
-        int minimumExperience = 5)
+        int minimumExperience = 5,
+        CancellationToken cancellationToken = default)
     {
         if (logger.IsEnabled(LogLevel.Debug))
             logger.LogDebug("Поиск тренеров со стажем от {MinimumExperience} лет", minimumExperience);
-        var trainers = await trainerRepository.GetAllAsync();
+        var trainers = await trainerRepository.GetAllAsync(cancellationToken);
         return [.. trainers
             .Where(trainer => trainer.Experience >= minimumExperience)
             .Select(trainer => trainer.ToDto())];
@@ -38,11 +39,12 @@ public class AnalyticsService(
     /// <param name="asOfDate">Дата, относительно которой проверяется срок подписки</param>
     /// <returns>Список клиентов, у которых подписка закончилась до указанной даты</returns>
     public async Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
-        DateOnly asOfDate)
+        DateOnly asOfDate,
+        CancellationToken cancellationToken = default)
     {
         if (logger.IsEnabled(LogLevel.Debug))
             logger.LogDebug("Поиск клиентов с просроченной подпиской на дату {AsOfDate}", asOfDate);
-        var clients = await clientRepository.GetAllAsync();
+        var clients = await clientRepository.GetAllAsync(cancellationToken);
         return [.. clients
             .Where(client => client.SubscriptionEnd < asOfDate)
             .OrderBy(client => client.FullName)
@@ -58,12 +60,13 @@ public class AnalyticsService(
     /// ><paramref name="count"/> меньше или равен нулю
     /// </exception>
     public async Task<IReadOnlyList<PopularTrainerDto>> GetMostPopularTrainersAsync(
-        int count = 5)
+        int count = 5,
+        CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         if (logger.IsEnabled(LogLevel.Debug))
             logger.LogDebug("Поиск {Count} самых популярных тренеров", count);
-        var bookings = await bookingRepository.GetAllAsync();
+        var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return [.. bookings
             .GroupBy(booking => booking.Trainer.Id)
             .Select(group => new PopularTrainerDto(
@@ -86,13 +89,13 @@ public class AnalyticsService(
     /// <exception cref="NotFoundException"
     /// >Зал с указанным идентификатором не найден
     /// </exception>
-    public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime)
+    public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime, CancellationToken cancellationToken = default)
     {
         if (logger.IsEnabled(LogLevel.Debug))
             logger.LogDebug("Проверка доступности зала {HallId} на {DateTime}", hallId, dateTime);
-        await EnsureHallExistsAsync(hallId);
+        await EnsureHallExistsAsync(hallId, cancellationToken);
 
-        var bookings = await bookingRepository.GetAllAsync();
+        var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return !bookings.Any(booking =>
             booking.Hall.Id == hallId &&
             booking.DateTime <= dateTime &&
@@ -110,13 +113,14 @@ public class AnalyticsService(
     /// </exception>
     public async Task<IReadOnlyList<BookingDto>> GetBookingsInHallForMonthAsync(
         int hallId,
-        DateOnly dateInMonth)
+        DateOnly dateInMonth,
+        CancellationToken cancellationToken = default)
     {
         if (logger.IsEnabled(LogLevel.Debug))
             logger.LogDebug("Поиск бронирований зала {HallId} за месяц {DateInMonth}", hallId, dateInMonth);
-        await EnsureHallExistsAsync(hallId);
+        await EnsureHallExistsAsync(hallId, cancellationToken);
         
-        var bookings = await bookingRepository.GetAllAsync();
+        var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return [.. bookings
             .Where(booking =>
                 booking.Hall.Id == hallId &&
@@ -134,9 +138,9 @@ public class AnalyticsService(
     /// <exception cref="NotFoundException"
     /// >Зал с указанным идентификатором не найден
     /// </exception>
-    private async Task EnsureHallExistsAsync(int hallId)
+    private async Task EnsureHallExistsAsync(int hallId, CancellationToken cancellationToken)
     {
-        if (await hallRepository.GetByIdAsync(hallId) is null)
+        if (await hallRepository.GetByIdAsync(hallId, cancellationToken) is null)
         {
             logger.LogWarning("Зал {HallId} не найден", hallId);
             throw new NotFoundException($"Зал с ID {hallId} не найден.");

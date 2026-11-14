@@ -11,9 +11,10 @@ public class BookingScheduleValidator(
 {
     public async Task EnsureAvailableAsync(
         Booking candidate,
-        int? excludingBookingId = null)
+        int? excludingBookingId = null,
+        CancellationToken cancellationToken = default)
     {
-        var allBookings = await bookingRepository.GetAllAsync();
+        var allBookings = await bookingRepository.GetAllAsync(cancellationToken);
         var end = candidate.DateTime + candidate.Duration;
         var overlappingBookings = allBookings
             .Where(existing =>

@@ -15,10 +15,12 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task SeedInMemoryStorageAsync(this IServiceProvider services)
+    public static async Task SeedInMemoryStorageAsync(
+        this IServiceProvider services,
+        CancellationToken cancellationToken = default)
     {
         await using var scope = services.CreateAsyncScope();
         var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-        await seeder.DataSeedingAsync(new SeedData());
+        await seeder.DataSeedingAsync(new SeedData(), cancellationToken);
     }
 }

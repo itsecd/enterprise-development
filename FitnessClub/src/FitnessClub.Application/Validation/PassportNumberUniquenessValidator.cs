@@ -10,9 +10,12 @@ public class PassportNumberUniquenessValidator(
     IRepository<Trainer> trainerRepository,
     ILogger<PassportNumberUniquenessValidator> logger)
 {
-    public async Task EnsureUniqueAsync(string passportNumber, Person? personBeingUpdated = null)
+    public async Task EnsureUniqueAsync(
+        string passportNumber,
+        Person? personBeingUpdated = null,
+        CancellationToken cancellationToken = default)
     {
-        var clients = await clientRepository.GetAllAsync();
+        var clients = await clientRepository.GetAllAsync(cancellationToken);
         if (clients.Any(client =>
                 client.PassportNumber == passportNumber &&
                 (personBeingUpdated is not Client currentClient || client.Id != currentClient.Id)))
@@ -21,7 +24,7 @@ public class PassportNumberUniquenessValidator(
             throw new ConflictException(
                 $"Человек с таким паспортным номером уже существует.");
         }
-        var trainers = await trainerRepository.GetAllAsync();
+        var trainers = await trainerRepository.GetAllAsync(cancellationToken);
         if (trainers.Any(trainer =>
                 trainer.PassportNumber == passportNumber &&
                 (personBeingUpdated is not Trainer currentTrainer || trainer.Id != currentTrainer.Id)))

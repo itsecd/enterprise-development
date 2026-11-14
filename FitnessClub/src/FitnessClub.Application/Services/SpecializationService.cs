@@ -20,23 +20,23 @@ public class SpecializationService(
     /// <summary>
     /// Получить список специализаций
     /// </summary>
-    public async Task<IReadOnlyList<SpecializationDto>> GetAllAsync()
+    public async Task<IReadOnlyList<SpecializationDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var specializations = await specializationRepository.GetAllAsync();
+        var specializations = await specializationRepository.GetAllAsync(cancellationToken);
         return [.. specializations.Select(s => s.ToDto())];
     }
     /// <summary>
     /// Получить специализацию по идентификатору
     /// </summary>
-    public async Task<SpecializationDto?> GetByIdAsync(int id)
+    public async Task<SpecializationDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var specialization = await specializationRepository.GetByIdAsync(id);
+        var specialization = await specializationRepository.GetByIdAsync(id, cancellationToken);
         return specialization?.ToDto();
     }
     /// <summary>
     /// Добавить специализацию
     /// </summary>
-    public async Task<SpecializationDto> AddAsync(SpecializationEditDto editDto)
+    public async Task<SpecializationDto> AddAsync(SpecializationEditDto editDto, CancellationToken cancellationToken = default)
     {
         var specialization = await specializationRepository.AddAsync(editDto.ToEntity());
         if (logger.IsEnabled(LogLevel.Information))
@@ -46,16 +46,16 @@ public class SpecializationService(
     /// <summary>
     /// Обновить специализацию
     /// </summary>
-    public async Task<SpecializationDto?> UpdateAsync(int id, SpecializationEditDto editDto)
+    public async Task<SpecializationDto?> UpdateAsync(int id, SpecializationEditDto editDto, CancellationToken cancellationToken = default)
     {
-        var specialization = await specializationRepository.GetByIdAsync(id);
+        var specialization = await specializationRepository.GetByIdAsync(id, cancellationToken);
         if (specialization is null)
         {
             logger.LogWarning("Специализация {SpecializationId} не найдена для обновления", id);
             return null;
         }
         specialization.UpdateEntity(editDto);
-        await specializationRepository.UpdateAsync(specialization);
+        await specializationRepository.UpdateAsync(specialization, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Обновлена специализация {SpecializationId}: {SpecializationName}", specialization.Id, specialization.Name);
         return specialization.ToDto();
@@ -63,14 +63,14 @@ public class SpecializationService(
     /// <summary>
     /// Удалить специализацию при отсутствии связанных тренеров
     /// </summary>
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var allTrainers = await trainerRepository.GetAllAsync();
+        var allTrainers = await trainerRepository.GetAllAsync(cancellationToken);
         if (allTrainers.Any(t => t.Specialization.Id == id))
         {
             throw new ConflictException("Невозможно удалить специализацию, так как она назначена тренерам.");
         }
-        var deleted = await specializationRepository.DeleteAsync(id);
+        var deleted = await specializationRepository.DeleteAsync(id, cancellationToken);
         if (deleted)
         {    
             if (logger.IsEnabled(LogLevel.Information))

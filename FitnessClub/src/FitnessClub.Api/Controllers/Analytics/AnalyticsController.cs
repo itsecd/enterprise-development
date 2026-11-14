@@ -19,46 +19,53 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     /// Получить тренеров с указанным минимальным стажем
     /// </summary>
     /// <param name="minimumExperience">Минимальный стаж тренера в годах, например 5</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список тренеров, подходящих по минимальному стажу</returns>
     [HttpGet("experienced-trainers")]
     [ProducesResponseType(typeof(IReadOnlyList<TrainerDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<TrainerDto>>> GetExperiencedTrainers(
         [FromQuery, Required, Range(0, int.MaxValue)]
-        int minimumExperience = 5) =>
-        Ok(await analyticsService.GetExperiencedTrainersAsync(minimumExperience));
+        int minimumExperience = 5,
+        CancellationToken cancellationToken = default)=>
+        Ok(await analyticsService.GetExperiencedTrainersAsync(minimumExperience, cancellationToken));
 
     /// <summary>
     /// Получить клиентов с просроченным абонементом на указанную дату
     /// </summary>
     /// <param name="asOfDate">Дата проверки срока действия абонемента в формате yyyy-MM-dd, по умолчанию текущая дата</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список клиентов с просроченными абонементами</returns>
     [HttpGet("overdue-subscriptions")]
     [ProducesResponseType(typeof(IReadOnlyList<ClientDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetClientsWithOverdueSubscriptions(
         [FromQuery]
-        DateOnly? asOfDate = null) 
+        DateOnly? asOfDate = null,
+        CancellationToken cancellationToken = default)
     {
         var subscriptionCheckDate = asOfDate ?? DateOnly.FromDateTime(DateTime.Today);
-        return Ok(await analyticsService.GetClientsWithOverdueSubscriptionsAsync(subscriptionCheckDate));
+        return Ok(await analyticsService.GetClientsWithOverdueSubscriptionsAsync(subscriptionCheckDate, cancellationToken));
     }
 
     /// <summary>
     /// Получить тренеров с наибольшим количеством бронирований
     /// </summary>
     /// <param name="count">Максимальное количество тренеров в результате, не меньше 1</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список самых популярных тренеров</returns>
     [HttpGet("popular-trainers")]
     [ProducesResponseType(typeof(IReadOnlyList<PopularTrainerDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<PopularTrainerDto>>> GetMostPopularTrainers(
         [FromQuery, Required, Range(1, int.MaxValue)]
-        int count = 5) =>
-        Ok(await analyticsService.GetMostPopularTrainersAsync(count));
+        int count = 5,
+        CancellationToken cancellationToken = default)=>
+        Ok(await analyticsService.GetMostPopularTrainersAsync(count, cancellationToken));
 
     /// <summary>
     /// Проверить, свободен ли зал в указанный момент времени
     /// </summary>
     /// <param name="hallId">Идентификатор зала, например 5</param>
     /// <param name="dateTime">Дата и время проверки доступности в формате yyyy-MM-ddTHH:mm:ssZ, по умолчанию текущая дата</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Признак доступности зала в указанный момент времени</returns>
     [HttpGet("halls/{hallId:int}/availability")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
@@ -67,10 +74,11 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
         [FromRoute, Required, Range(1, int.MaxValue)]
         int hallId,
         [FromQuery]
-        DateTime? dateTime = null)
+        DateTime? dateTime = null,
+        CancellationToken cancellationToken = default)
     {
         var checkTime  = dateTime ?? DateTime.Now;
-        return Ok(await analyticsService.IsHallAvailableAsync(hallId, checkTime ));
+        return Ok(await analyticsService.IsHallAvailableAsync(hallId, checkTime, cancellationToken));
     }
 
     /// <summary>
@@ -78,6 +86,7 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     /// </summary>
     /// <param name="hallId">Идентификатор зала, например 5</param>
     /// <param name="dateInMonth">Дата месяца поиска в формате yyyy-MM-dd, по умолчанию текущая дата</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список бронирований зала за указанный месяц</returns>
     [HttpGet("bookings")]
     [ProducesResponseType(typeof(IReadOnlyList<BookingDto>), StatusCodes.Status200OK)]
@@ -86,9 +95,10 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
         [FromQuery, Required, Range(1, int.MaxValue)]
         int hallId,
         [FromQuery]
-        DateOnly? dateInMonth = null)
+        DateOnly? dateInMonth = null,
+        CancellationToken cancellationToken = default)
     {
         var monthDate = dateInMonth ?? DateOnly.FromDateTime(DateTime.Today);
-        return Ok(await analyticsService.GetBookingsInHallForMonthAsync(hallId, monthDate));
+        return Ok(await analyticsService.GetBookingsInHallForMonthAsync(hallId, monthDate, cancellationToken));
     }
 }

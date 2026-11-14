@@ -23,26 +23,26 @@ public class TrainerService(
     /// <summary>
     /// Получить список тренеров
     /// </summary>
-    public async Task<IReadOnlyList<TrainerDto>> GetAllAsync()
+    public async Task<IReadOnlyList<TrainerDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var trainers = await trainerRepository.GetAllAsync();
+        var trainers = await trainerRepository.GetAllAsync(cancellationToken);
         return [.. trainers.Select(t => t.ToDto())];
     }
     /// <summary>
     /// Получить тренера по идентификатору
     /// </summary>
-    public async Task<TrainerDto?> GetByIdAsync(int id)
+    public async Task<TrainerDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var trainer = await trainerRepository.GetByIdAsync(id);
+        var trainer = await trainerRepository.GetByIdAsync(id, cancellationToken);
         return trainer?.ToDto();
     }
     /// <summary>
     /// Добавить тренера
     /// </summary>
-    public async Task<TrainerDto> AddAsync(TrainerEditDto editDto)
+    public async Task<TrainerDto> AddAsync(TrainerEditDto editDto, CancellationToken cancellationToken = default)
     {
-        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber);
-        var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId) ?? throw new NotFoundException("Специализация не найдена.");
+        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, cancellationToken: cancellationToken);
+        var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId, cancellationToken) ?? throw new NotFoundException("Специализация не найдена.");
         var trainer = await trainerRepository.AddAsync(editDto.ToEntity(specialization));
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Создан тренер {TrainerId}: {FullName}", trainer.Id, trainer.FullName);
@@ -51,18 +51,18 @@ public class TrainerService(
     /// <summary>
     /// Обновить данные тренера
     /// </summary>
-    public async Task<TrainerDto?> UpdateAsync(int id, TrainerEditDto editDto)
+    public async Task<TrainerDto?> UpdateAsync(int id, TrainerEditDto editDto, CancellationToken cancellationToken = default)
     {
-        var trainer = await trainerRepository.GetByIdAsync(id);
+        var trainer = await trainerRepository.GetByIdAsync(id, cancellationToken);
         if (trainer is null)
         {
             logger.LogWarning("Тренер {TrainerId} не найден для обновления", id);
             return null;
         }
-        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, trainer);
-        var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId) ?? throw new NotFoundException("Специализация не найдена.");
+        await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, trainer, cancellationToken);
+        var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId, cancellationToken) ?? throw new NotFoundException("Специализация не найдена.");
         trainer.UpdateEntity(editDto, specialization);
-        await trainerRepository.UpdateAsync(trainer);
+        await trainerRepository.UpdateAsync(trainer, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Обновлен тренер {TrainerId}: {FullName}", trainer.Id, trainer.FullName);
         return trainer.ToDto();
@@ -70,12 +70,12 @@ public class TrainerService(
     /// <summary>
     /// Удалить тренера при отсутствии бронирований
     /// </summary>
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var allBookings = await bookingRepository.GetAllAsync();
+        var allBookings = await bookingRepository.GetAllAsync(cancellationToken);
         if (allBookings.Any(b => b.Trainer.Id == id))
             throw new ConflictException("Невозможно удалить тренера, так как существуют бронирования для него.");
-        var deleted = await trainerRepository.DeleteAsync(id);
+        var deleted = await trainerRepository.DeleteAsync(id, cancellationToken);
         if (deleted)
         {    
             if (logger.IsEnabled(LogLevel.Information))

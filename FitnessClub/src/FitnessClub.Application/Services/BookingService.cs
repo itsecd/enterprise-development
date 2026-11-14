@@ -25,29 +25,29 @@ public class BookingService(
     /// <summary>
     /// Получить список бронирований
     /// </summary>
-    public async Task<IReadOnlyList<BookingDto>> GetAllAsync()
+    public async Task<IReadOnlyList<BookingDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var bookings = await bookingRepository.GetAllAsync();
+        var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return [.. bookings.Select(b => b.ToDto())];
     }
     /// <summary>
     /// Получить бронирование по идентификатору
     /// </summary>
-    public async Task<BookingDto?> GetByIdAsync(int id)
+    public async Task<BookingDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var booking = await bookingRepository.GetByIdAsync(id);
+        var booking = await bookingRepository.GetByIdAsync(id, cancellationToken);
         return booking?.ToDto();
     }
     /// <summary>
     /// Создать бронирование с проверкой доступности
     /// </summary>
-    public async Task<BookingDto> AddAsync(BookingEditDto editDto)
+    public async Task<BookingDto> AddAsync(BookingEditDto editDto, CancellationToken cancellationToken = default)
     {
-        var (client, trainer, hall) = await GetBookingReferencesAsync(editDto);
+        var (client, trainer, hall) = await GetBookingReferencesAsync(editDto, cancellationToken);
         var booking = editDto.ToEntity(client, trainer, hall);
-        await scheduleValidator.EnsureAvailableAsync(booking);
+        await scheduleValidator.EnsureAvailableAsync(booking, cancellationToken: cancellationToken);
 
-        var savedBooking = await bookingRepository.AddAsync(booking);
+        var savedBooking = await bookingRepository.AddAsync(booking, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
         {
             logger.LogInformation(
@@ -62,19 +62,19 @@ public class BookingService(
     /// <summary>
     /// Обновить бронирование с проверкой доступности
     /// </summary>
-    public async Task<BookingDto?> UpdateAsync(int id, BookingEditDto editDto)
+    public async Task<BookingDto?> UpdateAsync(int id, BookingEditDto editDto, CancellationToken cancellationToken = default)
     {
-        var existingBooking = await bookingRepository.GetByIdAsync(id);
+        var existingBooking = await bookingRepository.GetByIdAsync(id, cancellationToken);
         if (existingBooking is null)
         {
             logger.LogWarning("Бронирование {BookingId} не найдено для обновления", id);
             return null;
         }
-        var (client, trainer, hall) = await GetBookingReferencesAsync(editDto);
+        var (client, trainer, hall) = await GetBookingReferencesAsync(editDto, cancellationToken);
         var candidateBooking = editDto.ToEntity(client, trainer, hall);
-        await scheduleValidator.EnsureAvailableAsync(candidateBooking, excludingBookingId: id);
+        await scheduleValidator.EnsureAvailableAsync(candidateBooking, excludingBookingId: id, cancellationToken: cancellationToken);
         existingBooking.UpdateEntity(editDto, client, trainer, hall);
-        await bookingRepository.UpdateAsync(existingBooking);
+        await bookingRepository.UpdateAsync(existingBooking, cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Обновлено бронирование {BookingId}", id);
 
@@ -83,9 +83,9 @@ public class BookingService(
     /// <summary>
     /// Удалить бронирование по идентификатору
     /// </summary>
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var deleted = await bookingRepository.DeleteAsync(id);
+        var deleted = await bookingRepository.DeleteAsync(id, cancellationToken);
         if (deleted)
             if (logger.IsEnabled(LogLevel.Information))
                 logger.LogInformation("Удалено бронирование {BookingId}", id);
@@ -97,13 +97,14 @@ public class BookingService(
     /// Получить клиента, тренера и зал для брони
     /// </summary>
     private async Task<(Client, Trainer, Hall)> GetBookingReferencesAsync(
-        BookingEditDto editDto)
+        BookingEditDto editDto,
+        CancellationToken cancellationToken)
     {
-        var client = await clientRepository.GetByIdAsync(editDto.ClientId)
+        var client = await clientRepository.GetByIdAsync(editDto.ClientId, cancellationToken)
             ?? throw new NotFoundException($"Клиент с ID {editDto.ClientId} не найден.");
-        var trainer = await trainerRepository.GetByIdAsync(editDto.TrainerId)
+        var trainer = await trainerRepository.GetByIdAsync(editDto.TrainerId, cancellationToken)
             ?? throw new NotFoundException($"Тренер с ID {editDto.TrainerId} не найден.");
-        var hall = await hallRepository.GetByIdAsync(editDto.HallId)
+        var hall = await hallRepository.GetByIdAsync(editDto.HallId, cancellationToken)
             ?? throw new NotFoundException($"Зал с ID {editDto.HallId} не найден.");
         return (client, trainer, hall);
     }

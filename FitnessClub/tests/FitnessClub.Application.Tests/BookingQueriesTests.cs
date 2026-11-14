@@ -27,7 +27,8 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
             fixture.SeedData.Trainers[9]
         };
         // Act
-        var result = await fixture.AnalyticsService.GetExperiencedTrainersAsync();
+        var result = await fixture.AnalyticsService.GetExperiencedTrainersAsync(
+            cancellationToken: TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expectedTrainers.Select(trainer => trainer.FullName),
             result.Select(trainer => trainer.FullName));
@@ -50,7 +51,7 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
         };
         // Act
         var result = await fixture.AnalyticsService
-            .GetClientsWithOverdueSubscriptionsAsync(checkDate);
+            .GetClientsWithOverdueSubscriptionsAsync(checkDate, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expectedClients.Select(client => client.FullName),
             result.Select(client => client.FullName));
@@ -64,7 +65,8 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
     {
         // Arrange
         // Act
-        var result = await fixture.AnalyticsService.GetMostPopularTrainersAsync();
+        var result = await fixture.AnalyticsService.GetMostPopularTrainersAsync(
+            cancellationToken: TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal([3, 4, 2, 1, 7], result.Select(trainer => trainer.TrainerId));
         Assert.Equal([5, 4, 3, 2, 2], result.Select(trainer => trainer.BookingCount));
@@ -88,7 +90,7 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
         var busyHallId = fixture.SeedData.Halls[4].Id;
         // Act
         var isAvailable = await fixture.AnalyticsService
-            .IsHallAvailableAsync(busyHallId, _checkTime);
+            .IsHallAvailableAsync(busyHallId, _checkTime, TestContext.Current.CancellationToken);
         // Assert
         Assert.False(isAvailable);
     }
@@ -109,7 +111,7 @@ public class BookingQueriesTests(BookingQueriesFixture fixture) : IClassFixture<
         };
         // Act
         var result = await fixture.AnalyticsService
-            .GetBookingsInHallForMonthAsync(chosenHallId, checkDate);
+            .GetBookingsInHallForMonthAsync(chosenHallId, checkDate, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(expectedBookingIds, result.Select(booking => booking.Id));
     }
