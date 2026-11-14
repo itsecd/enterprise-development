@@ -1,6 +1,6 @@
+using BeautySalon.Contracts.Clients;
 using BeautySalon.Domain.Entities;
 using BeautySalon.Domain.Repositories;
-using BeautySalon.Contracts.Clients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeautySalon.Server.Controllers;
@@ -10,16 +10,27 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ClientsController(IClientRepository clientRepository) : ControllerBase
+public class ClientsController(IClientRepository clientRepository, ILogger<ClientsController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает всех клиентов.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ClientResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IEnumerable<ClientResponse>> GetAll()
     {
-        return Ok(clientRepository.GetAll().Select(MapToResponse));
+        try
+        {
+            logger.LogInformation("Запрос на получение списка всех клиентов.");
+            var clients = clientRepository.GetAll().Select(MapToResponse);
+            return Ok(clients);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка клиентов.");
+            return Problem("Внутренняя ошибка сервера при получении клиентов.");
+        }
     }
 
     /// <summary>
@@ -28,10 +39,25 @@ public class ClientsController(IClientRepository clientRepository) : ControllerB
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<ClientResponse> GetById(int id)
     {
-        var client = clientRepository.GetById(id);
-        return client is null ? NotFound() : Ok(MapToResponse(client));
+        try
+        {
+            logger.LogInformation("Запрос на получение клиента с ID: {ClientId}", id);
+            var client = clientRepository.GetById(id);
+            if (client is null)
+            {
+                logger.LogWarning("Клиент с ID {ClientId} не найден.", id);
+                return NotFound();
+            }
+            return Ok(MapToResponse(client));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении клиента с ID: {ClientId}", id);
+            return Problem("Внутренняя ошибка сервера при получении клиента.");
+        }
     }
 
     /// <summary>
@@ -40,20 +66,31 @@ public class ClientsController(IClientRepository clientRepository) : ControllerB
     [HttpPost]
     [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<ClientResponse> Create([FromBody] ClientRequest request)
     {
-        // Маппинг из Request DTO в доменную сущность
-        var client = new Client
+        try
         {
-            FullName = request.FullName,
-            Gender = request.Gender,
-            BirthDate = request.BirthDate,
-            Phone = request.Phone
-        };
+            logger.LogInformation("Запрос на создание нового клиента: {FullName}", request.FullName);
+            
+            var client = new Client
+            {
+                FullName = request.FullName,
+                Gender = request.Gender,
+                BirthDate = request.BirthDate,
+                Phone = request.Phone
+            };
 
-        clientRepository.Add(client);
-        
-        return CreatedAtAction(nameof(GetById), new { id = client.Id }, MapToResponse(client));
+            clientRepository.Add(client);
+            
+            logger.LogInformation("Клиент успешно создан с ID: {ClientId}", client.Id);
+            return CreatedAtAction(nameof(GetById), new { id = client.Id }, MapToResponse(client));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при создании клиента: {FullName}", request.FullName);
+            return Problem("Внутренняя ошибка сервера при создании клиента.");
+        }
     }
 
     /// <summary>
@@ -62,18 +99,35 @@ public class ClientsController(IClientRepository clientRepository) : ControllerB
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Update(int id, [FromBody] ClientRequest request)
     {
-        var client = clientRepository.GetById(id);
-        if (client is null) return NotFound();
+        try
+        {
+            logger.LogInformation("Запрос на обновление клиента с ID: {ClientId}", id);
+            
+            var client = clientRepository.GetById(id);
+            if (client is null)
+            {
+                logger.LogWarning("Клиент с ID {ClientId} не найден для обновления.", id);
+                return NotFound();
+            }
 
-        client.FullName = request.FullName;
-        client.Gender = request.Gender;
-        client.BirthDate = request.BirthDate;
-        client.Phone = request.Phone;
+            client.FullName = request.FullName;
+            client.Gender = request.Gender;
+            client.BirthDate = request.BirthDate;
+            client.Phone = request.Phone;
 
-        clientRepository.Update(client);
-        return NoContent();
+            clientRepository.Update(client);
+            
+            logger.LogInformation("Клиент с ID {ClientId} успешно обновлен.", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении клиента с ID: {ClientId}", id);
+            return Problem("Внутренняя ошибка сервера при обновлении клиента.");
+        }
     }
 
     /// <summary>
@@ -81,15 +135,31 @@ public class ClientsController(IClientRepository clientRepository) : ControllerB
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int id)
     {
-        var client = clientRepository.GetById(id);
-        if (client is not null)
+        try
         {
-            clientRepository.Delete(client);
-        }
+            logger.LogInformation("Запрос на удаление клиента с ID: {ClientId}", id);
+            
+            var client = clientRepository.GetById(id);
+            if (client is not null)
+            {
+                clientRepository.Delete(client);
+                logger.LogInformation("Клиент с ID {ClientId} успешно удален.", id);
+            }
+            else
+            {
+                logger.LogWarning("Клиент с ID {ClientId} не найден (удаление пропущено).", id);
+            }
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении клиента с ID: {ClientId}", id);
+            return Problem("Внутренняя ошибка сервера при удалении клиента.");
+        }
     }
 
     // Метод для маппинга доменной сущности в DTO ответа

@@ -10,16 +10,26 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ServicesController(IServiceRepository serviceRepository) : ControllerBase
+public class ServicesController(IServiceRepository serviceRepository, ILogger<ServicesController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает все услуги.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ServiceResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IEnumerable<ServiceResponse>> GetAll()
     {
-        return Ok(serviceRepository.GetAll().Select(MapToResponse));
+        try
+        {
+            logger.LogInformation("Запрос на получение списка всех услуг.");
+            return Ok(serviceRepository.GetAll().Select(MapToResponse));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка услуг.");
+            return Problem("Внутренняя ошибка сервера при получении услуг.");
+        }
     }
 
     /// <summary>
@@ -28,10 +38,25 @@ public class ServicesController(IServiceRepository serviceRepository) : Controll
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<ServiceResponse> GetById(int id)
     {
-        var service = serviceRepository.GetById(id);
-        return service is null ? NotFound() : Ok(MapToResponse(service));
+        try
+        {
+            logger.LogInformation("Запрос на получение услуги с ID: {ServiceId}", id);
+            var service = serviceRepository.GetById(id);
+            if (service is null)
+            {
+                logger.LogWarning("Услуга с ID {ServiceId} не найдена.", id);
+                return NotFound();
+            }
+            return Ok(MapToResponse(service));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении услуги с ID: {ServiceId}", id);
+            return Problem("Внутренняя ошибка сервера при получении услуги.");
+        }
     }
 
     /// <summary>
@@ -40,19 +65,31 @@ public class ServicesController(IServiceRepository serviceRepository) : Controll
     [HttpPost]
     [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<ServiceResponse> Create([FromBody] ServiceRequest request)
     {
-        var service = new Service
+        try
         {
-            Name = request.Name,
-            Category = request.Category,
-            Cost = request.Cost,
-            Duration = request.Duration
-        };
+            logger.LogInformation("Запрос на создание новой услуги: {Name}", request.Name);
+            
+            var service = new Service
+            {
+                Name = request.Name,
+                Category = request.Category,
+                Cost = request.Cost,
+                Duration = request.Duration
+            };
 
-        serviceRepository.Add(service);
-        
-        return CreatedAtAction(nameof(GetById), new { id = service.Id }, MapToResponse(service));
+            serviceRepository.Add(service);
+            
+            logger.LogInformation("Услуга успешно создана с ID: {ServiceId}", service.Id);
+            return CreatedAtAction(nameof(GetById), new { id = service.Id }, MapToResponse(service));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при создании услуги: {Name}", request.Name);
+            return Problem("Внутренняя ошибка сервера при создании услуги.");
+        }
     }
 
     /// <summary>
@@ -61,18 +98,35 @@ public class ServicesController(IServiceRepository serviceRepository) : Controll
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Update(int id, [FromBody] ServiceRequest request)
     {
-        var service = serviceRepository.GetById(id);
-        if (service is null) return NotFound();
+        try
+        {
+            logger.LogInformation("Запрос на обновление услуги с ID: {ServiceId}", id);
+            
+            var service = serviceRepository.GetById(id);
+            if (service is null)
+            {
+                logger.LogWarning("Услуга с ID {ServiceId} не найдена для обновления.", id);
+                return NotFound();
+            }
 
-        service.Name = request.Name;
-        service.Category = request.Category;
-        service.Cost = request.Cost;
-        service.Duration = request.Duration;
+            service.Name = request.Name;
+            service.Category = request.Category;
+            service.Cost = request.Cost;
+            service.Duration = request.Duration;
 
-        serviceRepository.Update(service);
-        return NoContent();
+            serviceRepository.Update(service);
+            
+            logger.LogInformation("Услуга с ID {ServiceId} успешно обновлена.", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении услуги с ID: {ServiceId}", id);
+            return Problem("Внутренняя ошибка сервера при обновлении услуги.");
+        }
     }
 
     /// <summary>
@@ -80,16 +134,31 @@ public class ServicesController(IServiceRepository serviceRepository) : Controll
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int id)
     {
-        var service = serviceRepository.GetById(id);
-        
-        if (service is not null)
+        try
         {
-            serviceRepository.Delete(service);
-        }
+            logger.LogInformation("Запрос на удаление услуги с ID: {ServiceId}", id);
+            
+            var service = serviceRepository.GetById(id);
+            if (service is not null)
+            {
+                serviceRepository.Delete(service);
+                logger.LogInformation("Услуга с ID {ServiceId} успешно удалена.", id);
+            }
+            else
+            {
+                logger.LogWarning("Услуга с ID {ServiceId} не найдена (удаление пропущено).", id);
+            }
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении услуги с ID: {ServiceId}", id);
+            return Problem("Внутренняя ошибка сервера при удалении услуги.");
+        }
     }
 
     private static ServiceResponse MapToResponse(Service service) => new()

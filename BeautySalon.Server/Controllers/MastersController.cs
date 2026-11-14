@@ -10,16 +10,26 @@ namespace BeautySalon.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class MastersController(IMasterRepository masterRepository) : ControllerBase
+public class MastersController(IMasterRepository masterRepository, ILogger<MastersController> logger) : ControllerBase
 {
     /// <summary>
     /// Возвращает всех мастеров.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<MasterResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IEnumerable<MasterResponse>> GetAll()
     {
-        return Ok(masterRepository.GetAll().Select(MapToResponse));
+        try
+        {
+            logger.LogInformation("Запрос на получение списка всех мастеров.");
+            return Ok(masterRepository.GetAll().Select(MapToResponse));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка мастеров.");
+            return Problem("Внутренняя ошибка сервера при получении мастеров.");
+        }
     }
 
     /// <summary>
@@ -28,10 +38,25 @@ public class MastersController(IMasterRepository masterRepository) : ControllerB
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<MasterResponse> GetById(int id)
     {
-        var master = masterRepository.GetById(id);
-        return master is null ? NotFound() : Ok(MapToResponse(master));
+        try
+        {
+            logger.LogInformation("Запрос на получение мастера с ID: {MasterId}", id);
+            var master = masterRepository.GetById(id);
+            if (master is null)
+            {
+                logger.LogWarning("Мастер с ID {MasterId} не найден.", id);
+                return NotFound();
+            }
+            return Ok(MapToResponse(master));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении мастера с ID: {MasterId}", id);
+            return Problem("Внутренняя ошибка сервера при получении мастера.");
+        }
     }
 
     /// <summary>
@@ -40,20 +65,32 @@ public class MastersController(IMasterRepository masterRepository) : ControllerB
     [HttpPost]
     [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<MasterResponse> Create([FromBody] MasterRequest request)
     {
-        var master = new Master
+        try
         {
-            FullName = request.FullName,
-            Gender = request.Gender,
-            PassportNumber = request.PassportNumber,
-            Specialization = request.Specialization,
-            ExperienceYears = request.ExperienceYears
-        };
+            logger.LogInformation("Запрос на создание нового мастера: {FullName}", request.FullName);
+            
+            var master = new Master
+            {
+                FullName = request.FullName,
+                Gender = request.Gender,
+                PassportNumber = request.PassportNumber,
+                Specialization = request.Specialization,
+                ExperienceYears = request.ExperienceYears
+            };
 
-        masterRepository.Add(master);
-        
-        return CreatedAtAction(nameof(GetById), new { id = master.Id }, MapToResponse(master));
+            masterRepository.Add(master);
+            
+            logger.LogInformation("Мастер успешно создан с ID: {MasterId}", master.Id);
+            return CreatedAtAction(nameof(GetById), new { id = master.Id }, MapToResponse(master));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при создании мастера: {FullName}", request.FullName);
+            return Problem("Внутренняя ошибка сервера при создании мастера.");
+        }
     }
 
     /// <summary>
@@ -62,19 +99,36 @@ public class MastersController(IMasterRepository masterRepository) : ControllerB
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Update(int id, [FromBody] MasterRequest request)
     {
-        var master = masterRepository.GetById(id);
-        if (master is null) return NotFound();
+        try
+        {
+            logger.LogInformation("Запрос на обновление мастера с ID: {MasterId}", id);
+            
+            var master = masterRepository.GetById(id);
+            if (master is null)
+            {
+                logger.LogWarning("Мастер с ID {MasterId} не найден для обновления.", id);
+                return NotFound();
+            }
 
-        master.FullName = request.FullName;
-        master.Gender = request.Gender;
-        master.PassportNumber = request.PassportNumber;
-        master.Specialization = request.Specialization;
-        master.ExperienceYears = request.ExperienceYears;
+            master.FullName = request.FullName;
+            master.Gender = request.Gender;
+            master.PassportNumber = request.PassportNumber;
+            master.Specialization = request.Specialization;
+            master.ExperienceYears = request.ExperienceYears;
 
-        masterRepository.Update(master);
-        return NoContent();
+            masterRepository.Update(master);
+            
+            logger.LogInformation("Мастер с ID {MasterId} успешно обновлен.", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновлении мастера с ID: {MasterId}", id);
+            return Problem("Внутренняя ошибка сервера при обновлении мастера.");
+        }
     }
 
     /// <summary>
@@ -82,16 +136,31 @@ public class MastersController(IMasterRepository masterRepository) : ControllerB
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int id)
     {
-        var master = masterRepository.GetById(id);
-        
-        if (master is not null)
+        try
         {
-            masterRepository.Delete(master);
-        }
+            logger.LogInformation("Запрос на удаление мастера с ID: {MasterId}", id);
+            
+            var master = masterRepository.GetById(id);
+            if (master is not null)
+            {
+                masterRepository.Delete(master);
+                logger.LogInformation("Мастер с ID {MasterId} успешно удален.", id);
+            }
+            else
+            {
+                logger.LogWarning("Мастер с ID {MasterId} не найден (удаление пропущено).", id);
+            }
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении мастера с ID: {MasterId}", id);
+            return Problem("Внутренняя ошибка сервера при удалении мастера.");
+        }
     }
 
     private static MasterResponse MapToResponse(Master master) => new()

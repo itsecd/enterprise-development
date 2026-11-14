@@ -13,34 +13,46 @@ public class AnalyticsController(
     IAppointmentRepository appointmentRepository,
     IMasterRepository masterRepository,
     IServiceRepository serviceRepository,
-    IClientRepository clientRepository) : ControllerBase
+    IClientRepository clientRepository,
+    ILogger<AnalyticsController> logger) : ControllerBase
 {
     /// <summary>
     /// Мастера со стажем не менее указанного количества лет.
     /// </summary>
     [HttpGet("masters-with-experience")]
     [ProducesResponseType(typeof(MastersWithExperienceResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<MastersWithExperienceResponse> GetMastersWithExperience([FromQuery] int minYears = 5)
     {
-        var masters = masterRepository.GetAll()
-            .Where(m => m.ExperienceYears >= minYears)
-            .Select(m => new MasterExperienceItem
-            {
-                Id = m.Id,
-                FullName = m.FullName,
-                Specialization = m.Specialization,
-                ExperienceYears = m.ExperienceYears
-            })
-            .ToList();
-
-        var response = new MastersWithExperienceResponse
+        try
         {
-            MinYears = minYears,
-            Count = masters.Count,
-            Masters = masters
-        };
+            logger.LogInformation("Запрос аналитики: мастера со стажем от {MinYears} лет.", minYears);
+            
+            var masters = masterRepository.GetAll()
+                .Where(m => m.ExperienceYears >= minYears)
+                .Select(m => new MasterExperienceItem
+                {
+                    Id = m.Id,
+                    FullName = m.FullName,
+                    Specialization = m.Specialization,
+                    ExperienceYears = m.ExperienceYears
+                })
+                .ToList();
 
-        return Ok(response);
+            var response = new MastersWithExperienceResponse
+            {
+                MinYears = minYears,
+                Count = masters.Count,
+                Masters = masters
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении аналитики по мастерам.");
+            return Problem("Внутренняя ошибка сервера при получении аналитики по мастерам.");
+        }
     }
 
     /// <summary>
@@ -49,52 +61,67 @@ public class AnalyticsController(
     [HttpGet("master-gaps/{masterId:int}")]
     [ProducesResponseType(typeof(MasterGapsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<MasterGapsResponse> GetMasterTimeGaps(int masterId)
     {
-        var master = masterRepository.GetById(masterId);
-        if (master is null) return NotFound($"Мастер с id '{masterId}' не найден.");
-
-        var appointments = appointmentRepository.GetAll()
-            .Where(a => a.MasterId == masterId)
-            .OrderBy(a => a.StartTime)
-            .ToList();
-
-        if (appointments.Count < 2)
+        try
         {
+            logger.LogInformation("Запрос аналитики: окошки для мастера с ID {MasterId}.", masterId);
+            
+            var master = masterRepository.GetById(masterId);
+            if (master is null)
+            {
+                logger.LogWarning("Мастер с ID {MasterId} не найден для аналитики окошек.", masterId);
+                return NotFound($"Мастер с id '{masterId}' не найден.");
+            }
+
+            var appointments = appointmentRepository.GetAll()
+                .Where(a => a.MasterId == masterId)
+                .OrderBy(a => a.StartTime)
+                .ToList();
+
+            if (appointments.Count < 2)
+            {
+                return Ok(new MasterGapsResponse
+                {
+                    MasterId = masterId,
+                    MasterName = master.FullName,
+                    GapsCount = 0,
+                    Message = "У мастера меньше двух записей — окошек нет."
+                });
+            }
+
+            var gaps = new List<GapItem>();
+            for (var i = 0; i < appointments.Count - 1; i++)
+            {
+                var current = appointments[i];
+                var next = appointments[i + 1];
+                var currentEnd = current.StartTime + current.Service.Duration;
+
+                if (next.StartTime > currentEnd)
+                {
+                    gaps.Add(new GapItem
+                    {
+                        From = currentEnd,
+                        To = next.StartTime,
+                        DurationMinutes = (int)(next.StartTime - currentEnd).TotalMinutes
+                    });
+                }
+            }
+
             return Ok(new MasterGapsResponse
             {
                 MasterId = masterId,
                 MasterName = master.FullName,
-                GapsCount = 0,
-                Message = "У мастера меньше двух записей — окошек нет."
+                GapsCount = gaps.Count,
+                Gaps = gaps
             });
         }
-
-        var gaps = new List<GapItem>();
-        for (var i = 0; i < appointments.Count - 1; i++)
+        catch (Exception ex)
         {
-            var current = appointments[i];
-            var next = appointments[i + 1];
-            var currentEnd = current.StartTime + current.Service.Duration;
-
-            if (next.StartTime > currentEnd)
-            {
-                gaps.Add(new GapItem
-                {
-                    From = currentEnd,
-                    To = next.StartTime,
-                    DurationMinutes = (int)(next.StartTime - currentEnd).TotalMinutes
-                });
-            }
+            logger.LogError(ex, "Ошибка при получении аналитики окошек для мастера с ID {MasterId}.", masterId);
+            return Problem("Внутренняя ошибка сервера при получении аналитики окошек.");
         }
-
-        return Ok(new MasterGapsResponse
-        {
-            MasterId = masterId,
-            MasterName = master.FullName,
-            GapsCount = gaps.Count,
-            Gaps = gaps
-        });
     }
 
     /// <summary>
@@ -102,22 +129,33 @@ public class AnalyticsController(
     /// </summary>
     [HttpGet("top-services")]
     [ProducesResponseType(typeof(IEnumerable<TopServiceItem>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<IEnumerable<TopServiceItem>> GetTopServices([FromQuery] int take = 5)
     {
-        var top = appointmentRepository.GetAll()
-            .GroupBy(a => a.ServiceId)
-            .Select(g => new TopServiceItem
-            {
-                ServiceId = g.Key,
-                ServiceName = serviceRepository.GetById(g.Key)!.Name,
-                Category = serviceRepository.GetById(g.Key)!.Category,
-                AppointmentCount = g.Count()
-            })
-            .OrderByDescending(x => x.AppointmentCount)
-            .Take(take)
-            .ToList();
+        try
+        {
+            logger.LogInformation("Запрос аналитики: топ {Take} популярных услуг.", take);
+            
+            var top = appointmentRepository.GetAll()
+                .GroupBy(a => a.ServiceId)
+                .Select(g => new TopServiceItem
+                {
+                    ServiceId = g.Key,
+                    ServiceName = serviceRepository.GetById(g.Key)!.Name,
+                    Category = serviceRepository.GetById(g.Key)!.Category,
+                    AppointmentCount = g.Count()
+                })
+                .OrderByDescending(x => x.AppointmentCount)
+                .Take(take)
+                .ToList();
 
-        return Ok(top);
+            return Ok(top);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении топа популярных услуг.");
+            return Problem("Внутренняя ошибка сервера при получении топа услуг.");
+        }
     }
 
     /// <summary>
@@ -125,29 +163,40 @@ public class AnalyticsController(
     /// </summary>
     [HttpGet("repeat-clients")]
     [ProducesResponseType(typeof(RepeatClientsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<RepeatClientsResponse> GetRepeatClients([FromQuery] int days = 30)
     {
-        var threshold = DateTime.Now.AddDays(-days);
-
-        var repeats = appointmentRepository.GetAll()
-            .Where(a => a.StartTime >= threshold)
-            .GroupBy(a => a.ClientId)
-            .Where(g => g.Count() > 1)
-            .Select(g => new RepeatClientItem
-            {
-                ClientId = g.Key,
-                ClientName = clientRepository.GetById(g.Key)!.FullName,
-                RepeatCount = g.Count()
-            })
-            .OrderByDescending(x => x.RepeatCount)
-            .ToList();
-
-        return Ok(new RepeatClientsResponse
+        try
         {
-            PeriodDays = days,
-            ClientsWithRepeats = repeats.Count,
-            Details = repeats
-        });
+            logger.LogInformation("Запрос аналитики: повторные клиенты за {Days} дней.", days);
+            
+            var threshold = DateTime.Now.AddDays(-days);
+
+            var repeats = appointmentRepository.GetAll()
+                .Where(a => a.StartTime >= threshold)
+                .GroupBy(a => a.ClientId)
+                .Where(g => g.Count() > 1)
+                .Select(g => new RepeatClientItem
+                {
+                    ClientId = g.Key,
+                    ClientName = clientRepository.GetById(g.Key)!.FullName,
+                    RepeatCount = g.Count()
+                })
+                .OrderByDescending(x => x.RepeatCount)
+                .ToList();
+
+            return Ok(new RepeatClientsResponse
+            {
+                PeriodDays = days,
+                ClientsWithRepeats = repeats.Count,
+                Details = repeats
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении аналитики повторных клиентов.");
+            return Problem("Внутренняя ошибка сервера при получении повторных клиентов.");
+        }
     }
 
     /// <summary>
@@ -155,25 +204,36 @@ public class AnalyticsController(
     /// </summary>
     [HttpGet("clients-multiple-masters")]
     [ProducesResponseType(typeof(ClientsMultipleMastersResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<ClientsMultipleMastersResponse> GetClientsWithMultipleMasters()
     {
-        var result = appointmentRepository.GetAll()
-            .GroupBy(a => a.ClientId)
-            .Where(g => g.Select(a => a.MasterId).Distinct().Count() > 1)
-            .Select(g => new ClientMultipleMastersItem
-            {
-                ClientId = g.Key,
-                FullName = clientRepository.GetById(g.Key)!.FullName,
-                BirthDate = clientRepository.GetById(g.Key)!.BirthDate,
-                UniqueMastersCount = g.Select(a => a.MasterId).Distinct().Count()
-            })
-            .OrderBy(x => x.BirthDate)
-            .ToList();
-
-        return Ok(new ClientsMultipleMastersResponse
+        try
         {
-            Count = result.Count,
-            Clients = result
-        });
+            logger.LogInformation("Запрос аналитики: клиенты у нескольких мастеров.");
+            
+            var result = appointmentRepository.GetAll()
+                .GroupBy(a => a.ClientId)
+                .Where(g => g.Select(a => a.MasterId).Distinct().Count() > 1)
+                .Select(g => new ClientMultipleMastersItem
+                {
+                    ClientId = g.Key,
+                    FullName = clientRepository.GetById(g.Key)!.FullName,
+                    BirthDate = clientRepository.GetById(g.Key)!.BirthDate,
+                    UniqueMastersCount = g.Select(a => a.MasterId).Distinct().Count()
+                })
+                .OrderBy(x => x.BirthDate)
+                .ToList();
+
+            return Ok(new ClientsMultipleMastersResponse
+            {
+                Count = result.Count,
+                Clients = result
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении аналитики клиентов у нескольких мастеров.");
+            return Problem("Внутренняя ошибка сервера при получении аналитики.");
+        }
     }
 }
