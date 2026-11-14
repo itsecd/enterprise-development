@@ -2,7 +2,7 @@ namespace FitnessClub.Domain.Entities;
 /// <summary>
 /// Базовый класс для всех сущностей
 /// </summary>
-public class Entity
+public abstract class Entity
 {
     /// <summary>
     /// Идентификатор
