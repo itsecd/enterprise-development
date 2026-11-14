@@ -50,13 +50,9 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
         if (IsRoomOccupied(bookings, dto.RoomId, dto.CheckInDate, dto.DaysCount))
             throw new ArgumentException($"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
 
-        var newId = bookings.Count == 0
-            ? 1
-            : bookings.Max(booking => booking.Id) + 1;
-
         var booking = new Booking
         {
-            Id = newId,
+            Id = 0,
             Client = client,
             Room = room,
             CheckInDate = dto.CheckInDate,

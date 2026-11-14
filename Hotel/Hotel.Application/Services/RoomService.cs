@@ -42,15 +42,9 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
         if (roomType is null) throw new ArgumentException(
             $"Не удалось найти тип номера с идентификатором {dto.RoomTypeId}");
 
-        var rooms = await roomRepository.GetAll();
-
-        var newId = rooms.Count == 0
-            ? 1
-            : rooms.Max(room => room.Id) + 1;
-
         var room = new Room
         {
-            Id = newId,
+            Id = 0,
             RoomNumber = dto.RoomNumber,
             Floor = dto.Floor,
             HasBalcony = dto.HasBalcony,

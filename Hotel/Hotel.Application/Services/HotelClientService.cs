@@ -38,15 +38,9 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// </summary>
     public async Task<HotelClientDto> Create(CreateHotelClientDto dto)
     {
-        var clients = await clientRepository.GetAll();
-
-        var newId = clients.Count == 0
-            ? 1
-            : clients.Max(client => client.Id) + 1;
-
         var client = new HotelClient
         {
-            Id = newId,
+            Id = 0,
             PassportNumber = dto.PassportNumber,
             FirstName = dto.FirstName,
             LastName = dto.LastName,

@@ -36,15 +36,9 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// </summary>
     public async Task<RoomTypeDto> Create(CreateRoomTypeDto dto)
     {
-        var roomTypes = await repository.GetAll();
-
-        var newId = roomTypes.Count == 0
-            ? 1
-            : roomTypes.Max(roomType => roomType.Id) + 1;
-
         var roomType = new RoomType
         {
-            Id = newId,
+            Id = 0,
             Category = dto.Category,
             Area = dto.Area,
             BedCount = dto.BedCount,
