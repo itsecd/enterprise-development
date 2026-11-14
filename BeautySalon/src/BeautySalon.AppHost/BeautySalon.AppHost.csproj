@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.5.4" />
+    <!-- В Aspire 13.5.4 StreamJsonRpc зависит от уязвимой версии MessagePack 2.5.302. -->
     <PackageReference Include="MessagePack" Version="2.5.303" />
     <ProjectReference Include="..\BeautySalon.Api\BeautySalon.Api.csproj" />
   </ItemGroup>

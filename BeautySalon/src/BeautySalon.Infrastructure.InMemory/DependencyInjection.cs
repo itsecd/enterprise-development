@@ -5,7 +5,7 @@ namespace BeautySalon.Infrastructure.InMemory;
 
 /// <summary>
 /// Регистрация in-memory хранилища в контейнере зависимостей.
-/// Для перехода на БД эту регистрацию заменяют на аналогичную из Infrastructure.MsSqlServer.
+/// Для перехода на БД эту регистрацию заменяют на аналогичную из BeautySalon.Infrastructure.PostgreSQL.
 /// </summary>
 public static class DependencyInjection
 {
