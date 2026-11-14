@@ -1,0 +1,28 @@
+@host = http://localhost:5182
+
+### Клиенты
+GET {{host}}/api/clients
+
+### Тренеры
+GET {{host}}/api/trainers
+
+### Создание зала
+POST {{host}}/api/halls
+Content-Type: application/json
+
+{"name":"Зал для проверки","capacity":20}
+
+### Опытные тренеры
+GET {{host}}/api/analytics/experienced-trainers
+
+### Доступность зала
+GET {{host}}/api/analytics/halls/1/availability
+
+### Просроченные абонементы
+GET {{host}}/api/analytics/expired-subscriptions
+
+### Занятия текущего месяца
+GET {{host}}/api/analytics/halls/1/current-month-trainings
+
+### Популярные тренеры
+GET {{host}}/api/analytics/top-trainers

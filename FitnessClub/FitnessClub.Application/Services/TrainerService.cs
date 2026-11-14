@@ -1,0 +1,82 @@
+using FitnessClub.Application.Mapping;
+using FitnessClub.Contracts.Dtos;
+using FitnessClub.Contracts.Services;
+using FitnessClub.Domain.Entities;
+using FitnessClub.Domain.Enums;
+using FitnessClub.Domain.Interfaces;
+
+namespace FitnessClub.Application.Services;
+
+/// <summary>
+/// Реализует операции для работы с тренерами.
+/// </summary>
+public class TrainerService(
+    ITrainerRepository trainerRepository,
+    ISpecializationRepository specializationRepository) : ITrainerService
+{
+    /// <inheritdoc />
+    public async Task<IReadOnlyCollection<TrainerDto>> GetAllAsync()
+    {
+        var trainers = await trainerRepository.GetAllAsync();
+        return [.. trainers.Select(trainer => trainer.ToDto())];
+    }
+
+    /// <inheritdoc />
+    public async Task<TrainerDto?> GetByIdAsync(int id)
+    {
+        var trainer = await trainerRepository.GetByIdAsync(id);
+        return trainer?.ToDto();
+    }
+
+    /// <inheritdoc />
+    public async Task<TrainerDto> CreateAsync(CreateTrainerDto dto)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+
+        var specialization = await specializationRepository
+            .GetByIdAsync(dto.SpecializationId) ?? throw new ArgumentException(
+                "Указанная специализация не найдена.",
+                nameof(dto));
+
+        var trainer = new Trainer
+        {
+            PassportNumber = dto.PassportNumber,
+            FullName = dto.FullName,
+            Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto))),
+            BirthDate = dto.BirthDate,
+            SpecializationId = specialization.Id,
+            WorkExperience = dto.WorkExperienceYears
+        };
+
+        var createdTrainer = await trainerRepository.AddAsync(trainer);
+        return createdTrainer.ToDto();
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> UpdateAsync(int id, UpdateTrainerDto dto)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+
+        var specialization = await specializationRepository.GetByIdAsync(dto.SpecializationId)
+            ?? throw new ArgumentException("Указанная специализация не найдена.", nameof(dto));
+
+        var trainer = new Trainer
+        {
+            Id = id,
+            PassportNumber = dto.PassportNumber,
+            FullName = dto.FullName,
+            Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto))),
+            BirthDate = dto.BirthDate,
+            SpecializationId = specialization.Id,
+            WorkExperience = dto.WorkExperienceYears,
+        };
+
+        return await trainerRepository.UpdateAsync(id, trainer);
+    }
+
+    /// <inheritdoc />
+    public Task<bool> DeleteAsync(int id)
+    {
+        return trainerRepository.DeleteAsync(id);
+    }
+}
