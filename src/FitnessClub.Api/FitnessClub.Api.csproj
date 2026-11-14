@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FitnessClub.ServiceDefaults\FitnessClub.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\FitnessClub.Contracts\FitnessClub.Contracts.csproj" />
+    <ProjectReference Include="..\FitnessClub.Infrastructure.InMemory\FitnessClub.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\FitnessClub.Application\FitnessClub.Application.csproj" />
+  </ItemGroup>
+
+</Project>
