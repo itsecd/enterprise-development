@@ -1,8 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using CarWash.Application.Services;
 using CarWash.Contracts.Interfaces;
-using CarWash.Domain.Interfaces;
-using CarWash.Infrastructure.InMemory.Repositories;
+using CarWash.Infrastructure.EfCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +15,11 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<ICarRepository, CarRepository>();
-builder.Services.AddSingleton<IClientRepository, ClientRepository>();
-builder.Services.AddSingleton<IServiceRepository, ServiceRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+var connectionString = builder.Configuration.GetConnectionString("carwashdb")
+    ?? throw new InvalidOperationException(
+        "Не задана строка подключения 'carwashdb'. Запустите проект через CarWash.AppHost");
+
+builder.Services.AddEfCoreInfrastructure(connectionString);
 
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -28,6 +28,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 var app = builder.Build();
+
+await app.Services.ApplyMigrationsAsync();
 
 if (app.Environment.IsDevelopment())
 {
