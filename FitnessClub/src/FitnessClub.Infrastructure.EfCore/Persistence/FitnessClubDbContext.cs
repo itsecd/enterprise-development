@@ -12,6 +12,10 @@ public sealed class FitnessClubDbContext(DbContextOptions<FitnessClubDbContext> 
     public DbSet<Booking> Bookings => Set<Booking>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Person>().ToTable("people");
+        modelBuilder.Entity<Hall>().ToTable("halls");
+        modelBuilder.Entity<Specialization>().ToTable("specializations");
+        modelBuilder.Entity<Booking>().ToTable("bookings");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FitnessClubDbContext).Assembly);
     }
 }   

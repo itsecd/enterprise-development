@@ -15,7 +15,6 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
         builder.Property(b => b.DateTime).IsRequired();
         builder.Property(b => b.IsTrial);
         builder.Property(b => b.Duration).IsRequired();
-
         builder.HasOne(b => b.Trainer)
             .WithMany()
             .HasForeignKey("TrainerId")
