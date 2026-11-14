@@ -11,5 +11,5 @@ public interface IWashServiceService : ICrudService<WashServiceRequest, WashServ
     /// <summary>
     /// Получить заказы с услугой
     /// </summary>
-    IReadOnlyList<OrderResponse> GetOrders(int id);
+    Task<IReadOnlyList<OrderResponse>> GetOrdersAsync(int id, CancellationToken cancellationToken = default);
 }

@@ -13,50 +13,50 @@ namespace CarWash.Application.Services;
 public class CarService(ICarRepository cars, ICustomerRepository customers, IOrderRepository orders) : ICarService
 {
     /// <inheritdoc />
-    public IReadOnlyList<CarResponse> GetAll() => cars.GetAll().Select(car => car.ToResponse()).ToList();
+    public async Task<IReadOnlyList<CarResponse>> GetAllAsync(CancellationToken cancellationToken = default) => (await cars.GetAllAsync(cancellationToken)).Select(car => car.ToResponse()).ToList();
 
     /// <inheritdoc />
-    public CarResponse GetById(int id) =>
-        (cars.GetById(id) ?? throw new EntityNotFoundException("Автомобиль не найден.")).ToResponse();
+    public async Task<CarResponse> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
+        (await cars.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Автомобиль не найден.")).ToResponse();
 
     /// <inheritdoc />
-    public CarResponse Create(CarRequest request)
+    public async Task<CarResponse> CreateAsync(CarRequest request, CancellationToken cancellationToken = default)
     {
-        var customer = customers.GetById(request.CustomerId)
+        var customer = await customers.GetByIdAsync(request.CustomerId, cancellationToken)
             ?? throw new EntityNotFoundException("Владелец автомобиля не найден.");
         var car = request.ToDomain(customer);
-        cars.Add(car);
+        await cars.AddAsync(car, cancellationToken);
         return car.ToResponse();
     }
 
     /// <inheritdoc />
-    public void Update(int id, CarRequest request)
+    public async Task UpdateAsync(int id, CarRequest request, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        var customer = customers.GetById(request.CustomerId)
+        _ = await GetByIdAsync(id, cancellationToken);
+        var customer = await customers.GetByIdAsync(request.CustomerId, cancellationToken)
             ?? throw new EntityNotFoundException("Владелец автомобиля не найден.");
         var car = request.ToDomain(customer);
         car.Id = id;
-        cars.Update(car);
+        await cars.UpdateAsync(car, cancellationToken);
     }
 
     /// <inheritdoc />
-    public void Delete(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        if (orders.GetByCarId(id).Count != 0)
+        _ = await GetByIdAsync(id, cancellationToken);
+        if (await orders.AnyAsync(order => order.CarId == id, cancellationToken))
             throw new EntityConflictException("Автомобиль используется в заказах.");
-        cars.Delete(id);
+        await cars.DeleteAsync(id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public CustomerResponse GetCustomer(int id) =>
-        (cars.GetCustomer(id) ?? throw new EntityNotFoundException("Автомобиль не найден.")).ToResponse();
+    public async Task<CustomerResponse> GetCustomerAsync(int id, CancellationToken cancellationToken = default) =>
+        (await cars.GetCustomerAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Автомобиль не найден.")).ToResponse();
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderResponse> GetOrders(int id)
+    public async Task<IReadOnlyList<OrderResponse>> GetOrdersAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        return orders.GetByCarId(id).Select(order => order.ToResponse()).ToList();
+        _ = await GetByIdAsync(id, cancellationToken);
+        return (await orders.GetByCarIdAsync(id, cancellationToken)).Select(order => order.ToResponse()).ToList();
     }
 }

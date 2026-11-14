@@ -13,54 +13,47 @@ namespace CarWash.Application.Services;
 public class WashServiceService(IWashServiceRepository services, IOrderRepository orders) : IWashServiceService
 {
     /// <inheritdoc />
-    public IReadOnlyList<WashServiceResponse> GetAll() =>
-        services.GetAll().Select(service => service.ToResponse()).ToList();
+    public async Task<IReadOnlyList<WashServiceResponse>> GetAllAsync(CancellationToken cancellationToken = default) =>
+        (await services.GetAllAsync(cancellationToken)).Select(service => service.ToResponse()).ToList();
 
     /// <inheritdoc />
-    public WashServiceResponse GetById(int id) =>
-        (services.GetById(id) ?? throw new EntityNotFoundException("Услуга не найдена.")).ToResponse();
+    public async Task<WashServiceResponse> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
+        (await services.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Услуга не найдена.")).ToResponse();
 
     /// <inheritdoc />
-    public WashServiceResponse Create(WashServiceRequest request)
+    public async Task<WashServiceResponse> CreateAsync(WashServiceRequest request, CancellationToken cancellationToken = default)
     {
         var service = request.ToDomain();
-        services.Add(service);
+        await services.AddAsync(service, cancellationToken);
         return service.ToResponse();
     }
 
     /// <inheritdoc />
-    public void Update(int id, WashServiceRequest request)
+    public async Task UpdateAsync(int id, WashServiceRequest request, CancellationToken cancellationToken = default)
     {
-        var service = services.GetById(id) ?? throw new EntityNotFoundException("Услуга не найдена.");
-        foreach (var order in orders.GetByWashServiceId(id))
-        {
-            try
-            {
-                _ = order.StartTime.AddMinutes(request.DurationMinutes);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw new RequestValidationException(nameof(request.DurationMinutes),
-                    "Продолжительность услуги выводит время окончания существующего заказа за допустимые границы даты.");
-            }
-        }
+        var service = await services.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Услуга не найдена.");
+        var latestStart = DateTime.MaxValue.AddMinutes(-request.DurationMinutes);
+        if (await orders.AnyAsync(order => order.WashServiceId == id && order.StartTime > latestStart,
+                cancellationToken))
+            throw new RequestValidationException(nameof(request.DurationMinutes),
+                "Продолжительность услуги выводит время окончания существующего заказа за допустимые границы даты.");
         request.ApplyTo(service);
-        services.Update(service);
+        await services.UpdateAsync(service, cancellationToken);
     }
 
     /// <inheritdoc />
-    public void Delete(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        if (orders.GetByWashServiceId(id).Count != 0)
+        _ = await GetByIdAsync(id, cancellationToken);
+        if (await orders.AnyAsync(order => order.WashServiceId == id, cancellationToken))
             throw new EntityConflictException("Услуга используется в заказах.");
-        services.Delete(id);
+        await services.DeleteAsync(id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderResponse> GetOrders(int id)
+    public async Task<IReadOnlyList<OrderResponse>> GetOrdersAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        return orders.GetByWashServiceId(id).Select(order => order.ToResponse()).ToList();
+        _ = await GetByIdAsync(id, cancellationToken);
+        return (await orders.GetByWashServiceIdAsync(id, cancellationToken)).Select(order => order.ToResponse()).ToList();
     }
 }

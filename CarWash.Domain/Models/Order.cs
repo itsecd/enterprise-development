@@ -11,6 +11,21 @@ public class Order : IEntity
     public required int Id { get; set; }
 
     /// <summary>
+    /// Идентификатор клиента
+    /// </summary>
+    public int CustomerId { get; set; }
+
+    /// <summary>
+    /// Идентификатор автомобиля
+    /// </summary>
+    public int CarId { get; set; }
+
+    /// <summary>
+    /// Идентификатор услуги
+    /// </summary>
+    public int WashServiceId { get; set; }
+
+    /// <summary>
     /// Клиент
     /// </summary>
     public required Customer Customer { get; set; }

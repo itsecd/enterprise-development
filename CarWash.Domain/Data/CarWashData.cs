@@ -8,6 +8,11 @@ namespace CarWash.Domain.Data;
 public class CarWashData
 {
     /// <summary>
+    /// Постоянная опорная дата начальных данных для миграций базы
+    /// </summary>
+    public static DateTime MigrationReferenceTime { get; } = new(2026, 1, 1, 12, 0, 0);
+
+    /// <summary>
     /// Автомобили
     /// </summary>
     public IReadOnlyList<Car> Cars { get; }
@@ -28,9 +33,10 @@ public class CarWashData
     public IReadOnlyList<Order> Orders { get; }
 
     /// <summary>
-    /// Создать фиксированный набор данных с одним текущим заказом
+    /// Создать набор данных с одним выполняющимся заказом относительно опорного времени
     /// </summary>
-    public CarWashData()
+    /// <param name="referenceTime">Опорное время; для тестов по умолчанию используется текущее время</param>
+    public CarWashData(DateTime? referenceTime = null)
     {
         Customers =
         [
@@ -39,7 +45,11 @@ public class CarWashData
             new() { Id = 3, FullName = "Сидоров Алексей Олегович", Phone = "79000000003" },
             new() { Id = 4, FullName = "Смирнов Максим Игоревич", Phone = "79000000004" },
             new() { Id = 5, FullName = "Кузнецов Андрей Сергеевич", Phone = "79000000005" },
-            new() { Id = 6, FullName = "Попов Дмитрий Андреевич", Phone = "79000000006" }
+            new() { Id = 6, FullName = "Попов Дмитрий Андреевич", Phone = "79000000006" },
+            new() { Id = 7, FullName = "Волков Роман Ильич", Phone = "79000000007" },
+            new() { Id = 8, FullName = "Соколов Павел Андреевич", Phone = "79000000008" },
+            new() { Id = 9, FullName = "Орлов Олег Сергеевич", Phone = "79000000009" },
+            new() { Id = 10, FullName = "Морозов Антон Петрович", Phone = "79000000010" }
         ];
 
         Cars =
@@ -49,11 +59,18 @@ public class CarWashData
             new() { Id = 3, LicensePlate = "A003AA", Brand = "Lada", Customer = Customers[2] },
             new() { Id = 4, LicensePlate = "A004AA", Brand = "BMW", Customer = Customers[3] },
             new() { Id = 5, LicensePlate = "A005AA", Brand = "Audi", Customer = Customers[4] },
-            new() { Id = 6, LicensePlate = "A006AA", Brand = "Ford", Customer = Customers[5] }
+            new() { Id = 6, LicensePlate = "A006AA", Brand = "Ford", Customer = Customers[5] },
+            new() { Id = 7, LicensePlate = "A007AA", Brand = "Skoda", Customer = Customers[6] },
+            new() { Id = 8, LicensePlate = "A008AA", Brand = "Renault", Customer = Customers[7] },
+            new() { Id = 9, LicensePlate = "A009AA", Brand = "Hyundai", Customer = Customers[8] },
+            new() { Id = 10, LicensePlate = "A010AA", Brand = "Volkswagen", Customer = Customers[9] }
         ];
 
         foreach (var car in Cars)
+        {
+            car.CustomerId = car.Customer.Id;
             car.Customer.Cars.Add(car);
+        }
 
         WashServices =
         [
@@ -62,10 +79,14 @@ public class CarWashData
             new() { Id = 3, Name = "Комплексная мойка", Category = CarCategory.Sedan, Cost = 800m, DurationMinutes = 40 },
             new() { Id = 4, Name = "Мойка внедорожника", Category = CarCategory.SUV, Cost = 1000m, DurationMinutes = 45 },
             new() { Id = 5, Name = "Мойка грузовика", Category = CarCategory.Truck, Cost = 1500m, DurationMinutes = 60 },
-            new() { Id = 6, Name = "Мойка мотоцикла", Category = CarCategory.Motorcycle, Cost = 300m, DurationMinutes = 15 }
+            new() { Id = 6, Name = "Мойка мотоцикла", Category = CarCategory.Motorcycle, Cost = 300m, DurationMinutes = 15 },
+            new() { Id = 7, Name = "Мойка микроавтобуса", Category = CarCategory.Minibus, Cost = 900m, DurationMinutes = 35 },
+            new() { Id = 8, Name = "Уборка салона", Category = CarCategory.Sedan, Cost = 600m, DurationMinutes = 30 },
+            new() { Id = 9, Name = "Мойка колёс", Category = CarCategory.Sedan, Cost = 200m, DurationMinutes = 10 },
+            new() { Id = 10, Name = "Нанесение воска", Category = CarCategory.Sedan, Cost = 700m, DurationMinutes = 25 }
         ];
 
-        var now = DateTime.Now;
+        var now = referenceTime ?? DateTime.Now;
         var orders = new List<Order>();
         for (var customerIndex = 0; customerIndex < 5; customerIndex++)
         {
@@ -92,6 +113,12 @@ public class CarWashData
             StartTime = now.AddMinutes(-5),
             BoxNumber = 1
         });
+        foreach (var order in orders)
+        {
+            order.CustomerId = order.Customer.Id;
+            order.CarId = order.Car.Id;
+            order.WashServiceId = order.WashService.Id;
+        }
         Orders = orders;
     }
 }

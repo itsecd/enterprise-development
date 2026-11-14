@@ -11,6 +11,11 @@ public class Car : IEntity
     public required int Id { get; set; }
 
     /// <summary>
+    /// Идентификатор владельца
+    /// </summary>
+    public int CustomerId { get; set; }
+
+    /// <summary>
     /// Государственный номер
     /// </summary>
     public required string LicensePlate { get; set; }

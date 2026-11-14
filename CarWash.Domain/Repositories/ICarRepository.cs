@@ -10,10 +10,10 @@ public interface ICarRepository : IRepository<Car>
     /// <summary>
     /// Получить автомобили владельца
     /// </summary>
-    IReadOnlyList<Car> GetByCustomerId(int customerId);
+    Task<IReadOnlyList<Car>> GetByCustomerIdAsync(int customerId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить владельца автомобиля
     /// </summary>
-    Customer? GetCustomer(int carId);
+    Task<Customer?> GetCustomerAsync(int carId, CancellationToken cancellationToken = default);
 }

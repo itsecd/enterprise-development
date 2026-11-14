@@ -10,25 +10,25 @@ public interface ICrudService<TRequest, TResponse>
     /// <summary>
     /// Получить список сущностей
     /// </summary>
-    IReadOnlyList<TResponse> GetAll();
+    Task<IReadOnlyList<TResponse>> GetAllAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить сущность по идентификатору
     /// </summary>
-    TResponse GetById(int id);
+    Task<TResponse> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Создать сущность
     /// </summary>
-    TResponse Create(TRequest request);
+    Task<TResponse> CreateAsync(TRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Изменить сущность
     /// </summary>
-    void Update(int id, TRequest request);
+    Task UpdateAsync(int id, TRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить сущность
     /// </summary>
-    void Delete(int id);
+    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

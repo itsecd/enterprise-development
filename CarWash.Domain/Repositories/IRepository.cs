@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using CarWash.Domain.Models;
 
 namespace CarWash.Domain.Repositories;
@@ -11,25 +12,30 @@ public interface IRepository<TEntity> where TEntity : class, IEntity
     /// <summary>
     /// Получить все сущности
     /// </summary>
-    IReadOnlyList<TEntity> GetAll();
+    Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить сущность по идентификатору
     /// </summary>
-    TEntity? GetById(int id);
+    Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Проверить наличие сущности по условию
+    /// </summary>
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Добавить сущность и назначить свободный идентификатор
     /// </summary>
-    void Add(TEntity entity);
+    Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Обновить существующую сущность
     /// </summary>
-    void Update(TEntity entity);
+    Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить сущность
     /// </summary>
-    void Delete(int id);
+    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

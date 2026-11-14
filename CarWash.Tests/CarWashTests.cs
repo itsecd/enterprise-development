@@ -12,10 +12,10 @@ public class CarWashTests(CarWashFixture fixture)
     /// Проверка пяти клиентов с наибольшим количеством посещений
     /// </summary>
     [Fact]
-    public void GetTop5CustomersByVisits()
+    public async Task GetTop5CustomersByVisits()
     {
         var result =
-            fixture.CustomerRepository.GetTop5CustomersByVisits();
+            await fixture.CustomerRepository.GetTop5CustomersByVisitsAsync(TestContext.Current.CancellationToken);
 
         var actual = result
             .Select(item => item.Customer.Id)
@@ -37,10 +37,10 @@ public class CarWashTests(CarWashFixture fixture)
     /// Проверка автомобилей, находящихся сейчас на мойке
     /// </summary>
     [Fact]
-    public void GetCarsCurrentlyAtWash()
+    public async Task GetCarsCurrentlyAtWash()
     {
         var result =
-            fixture.OrderRepository.GetCarsCurrentlyAtWash();
+            await fixture.OrderRepository.GetCarsCurrentlyAtWashAsync(TestContext.Current.CancellationToken);
 
         Assert.Single(result);
 
@@ -53,10 +53,10 @@ public class CarWashTests(CarWashFixture fixture)
     /// Проверка пяти наиболее популярных услуг
     /// </summary>
     [Fact]
-    public void GetTop5PopularServices()
+    public async Task GetTop5PopularServices()
     {
         var result =
-            fixture.WashServiceRepository.GetTop5PopularServices();
+            await fixture.WashServiceRepository.GetTop5PopularServicesAsync(TestContext.Current.CancellationToken);
 
         var actual = result
             .Select(item => item.WashService.Id)
@@ -78,10 +78,10 @@ public class CarWashTests(CarWashFixture fixture)
     /// Проверка времени освобождения бокса
     /// </summary>
     [Fact]
-    public void GetBoxAvailableFrom()
+    public async Task GetBoxAvailableFrom()
     {
         var result =
-            fixture.OrderRepository.GetBoxAvailableFrom(1);
+            await fixture.OrderRepository.GetBoxAvailableFromAsync(1, TestContext.Current.CancellationToken);
 
         Assert.Equal(fixture.Data.Orders[15].EndTime, result);
     }
@@ -90,10 +90,10 @@ public class CarWashTests(CarWashFixture fixture)
     /// Проверка суммарной выручки по услугам
     /// </summary>
     [Fact]
-    public void GetRevenuePerService()
+    public async Task GetRevenuePerService()
     {
         var result =
-            fixture.WashServiceRepository.GetRevenuePerService();
+            await fixture.WashServiceRepository.GetRevenuePerServiceAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains(
             result,

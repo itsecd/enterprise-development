@@ -11,10 +11,10 @@ public interface ICarService : ICrudService<CarRequest, CarResponse>
     /// <summary>
     /// Получить владельца автомобиля
     /// </summary>
-    CustomerResponse GetCustomer(int id);
+    Task<CustomerResponse> GetCustomerAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить заказы автомобиля
     /// </summary>
-    IReadOnlyList<OrderResponse> GetOrders(int id);
+    Task<IReadOnlyList<OrderResponse>> GetOrdersAsync(int id, CancellationToken cancellationToken = default);
 }

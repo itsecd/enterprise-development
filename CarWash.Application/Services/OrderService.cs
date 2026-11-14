@@ -18,55 +18,55 @@ public class OrderService(
     IWashServiceRepository services) : IOrderService
 {
     /// <inheritdoc />
-    public IReadOnlyList<OrderResponse> GetAll() => orders.GetAll().Select(order => order.ToResponse()).ToList();
+    public async Task<IReadOnlyList<OrderResponse>> GetAllAsync(CancellationToken cancellationToken = default) => (await orders.GetAllAsync(cancellationToken)).Select(order => order.ToResponse()).ToList();
 
     /// <inheritdoc />
-    public OrderResponse GetById(int id) =>
-        (orders.GetById(id) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
+    public async Task<OrderResponse> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
+        (await orders.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
 
     /// <inheritdoc />
-    public OrderResponse Create(OrderRequest request)
+    public async Task<OrderResponse> CreateAsync(OrderRequest request, CancellationToken cancellationToken = default)
     {
-        var order = CreateOrder(request);
-        orders.Add(order);
+        var order = await CreateOrderAsync(request, cancellationToken);
+        await orders.AddAsync(order, cancellationToken);
         return order.ToResponse();
     }
 
     /// <inheritdoc />
-    public void Update(int id, OrderRequest request)
+    public async Task UpdateAsync(int id, OrderRequest request, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        var order = CreateOrder(request);
+        _ = await GetByIdAsync(id, cancellationToken);
+        var order = await CreateOrderAsync(request, cancellationToken);
         order.Id = id;
-        orders.Update(order);
+        await orders.UpdateAsync(order, cancellationToken);
     }
 
     /// <inheritdoc />
-    public void Delete(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        orders.Delete(id);
+        _ = await GetByIdAsync(id, cancellationToken);
+        await orders.DeleteAsync(id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public CustomerResponse GetCustomer(int id) =>
-        (orders.GetCustomer(id) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
+    public async Task<CustomerResponse> GetCustomerAsync(int id, CancellationToken cancellationToken = default) =>
+        (await orders.GetCustomerAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
 
     /// <inheritdoc />
-    public CarResponse GetCar(int id) =>
-        (orders.GetCar(id) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
+    public async Task<CarResponse> GetCarAsync(int id, CancellationToken cancellationToken = default) =>
+        (await orders.GetCarAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
 
     /// <inheritdoc />
-    public WashServiceResponse GetWashService(int id) =>
-        (orders.GetWashService(id) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
+    public async Task<WashServiceResponse> GetWashServiceAsync(int id, CancellationToken cancellationToken = default) =>
+        (await orders.GetWashServiceAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Заказ не найден.")).ToResponse();
 
-    private Order CreateOrder(OrderRequest request)
+    private async Task<Order> CreateOrderAsync(OrderRequest request, CancellationToken cancellationToken = default)
     {
-        var customer = customers.GetById(request.CustomerId)
+        var customer = await customers.GetByIdAsync(request.CustomerId, cancellationToken)
             ?? throw new EntityNotFoundException("Клиент не найден.");
-        var car = cars.GetById(request.CarId)
+        var car = await cars.GetByIdAsync(request.CarId, cancellationToken)
             ?? throw new EntityNotFoundException("Автомобиль не найден.");
-        var service = services.GetById(request.WashServiceId)
+        var service = await services.GetByIdAsync(request.WashServiceId, cancellationToken)
             ?? throw new EntityNotFoundException("Услуга не найдена.");
         var order = request.ToDomain(customer, car, service);
         try

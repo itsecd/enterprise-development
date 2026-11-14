@@ -12,6 +12,6 @@
   <ItemGroup>
     <ProjectReference Include="../CarWash.Application/CarWash.Application.csproj" />
     <ProjectReference Include="../CarWash.Contracts/CarWash.Contracts.csproj" />
-    <ProjectReference Include="../CarWash.Infrastructure/CarWash.Infrastructure.csproj" />
+    <ProjectReference Include="../CarWash.Infrastructure.Ef/CarWash.Infrastructure.Ef.csproj" />
   </ItemGroup>
 </Project>

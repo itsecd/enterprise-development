@@ -11,15 +11,15 @@ public interface IOrderService : ICrudService<OrderRequest, OrderResponse>
     /// <summary>
     /// Получить клиента заказа
     /// </summary>
-    CustomerResponse GetCustomer(int id);
+    Task<CustomerResponse> GetCustomerAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить автомобиль заказа
     /// </summary>
-    CarResponse GetCar(int id);
+    Task<CarResponse> GetCarAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить услугу заказа
     /// </summary>
-    WashServiceResponse GetWashService(int id);
+    Task<WashServiceResponse> GetWashServiceAsync(int id, CancellationToken cancellationToken = default);
 }

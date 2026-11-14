@@ -10,25 +10,25 @@ public interface IAnalyticsService
     /// <summary>
     /// Получить пять клиентов с наибольшим количеством посещений
     /// </summary>
-    IReadOnlyList<TopCustomerResponse> GetTopCustomers();
+    Task<IReadOnlyList<TopCustomerResponse>> GetTopCustomersAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить автомобили, находящиеся сейчас на мойке
     /// </summary>
-    IReadOnlyList<CarResponse> GetCurrentCars();
+    Task<IReadOnlyList<CarResponse>> GetCurrentCarsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить пять наиболее популярных услуг
     /// </summary>
-    IReadOnlyList<PopularServiceResponse> GetTopServices();
+    Task<IReadOnlyList<PopularServiceResponse>> GetTopServicesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить время освобождения бокса
     /// </summary>
-    BoxAvailabilityResponse GetBoxAvailability(int boxNumber);
+    Task<BoxAvailabilityResponse> GetBoxAvailabilityAsync(int boxNumber, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить выручку по каждой услуге
     /// </summary>
-    IReadOnlyList<ServiceRevenueResponse> GetRevenuePerService();
+    Task<IReadOnlyList<ServiceRevenueResponse>> GetRevenuePerServiceAsync(CancellationToken cancellationToken = default);
 }

@@ -10,10 +10,10 @@ public interface IWashServiceRepository : IRepository<WashService>
     /// <summary>
     /// Получить пять наиболее популярных услуг
     /// </summary>
-    IReadOnlyList<(WashService WashService, int OrderCount)> GetTop5PopularServices();
+    Task<IReadOnlyList<(WashService WashService, int OrderCount)>> GetTop5PopularServicesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить общую выручку по каждой услуге
     /// </summary>
-    IReadOnlyList<(WashService WashService, decimal Revenue)> GetRevenuePerService();
+    Task<IReadOnlyList<(WashService WashService, decimal Revenue)>> GetRevenuePerServiceAsync(CancellationToken cancellationToken = default);
 }

@@ -4,5 +4,7 @@
   <Project Path="CarWash.Api/CarWash.Api.csproj" />
   <Project Path="CarWash.Domain/CarWash.Domain.csproj" />
   <Project Path="CarWash.Infrastructure/CarWash.Infrastructure.csproj" />
+  <Project Path="CarWash.Infrastructure.Ef/CarWash.Infrastructure.Ef.csproj" />
+  <Project Path="CarWash.AppHost/CarWash.AppHost.csproj" />
   <Project Path="CarWash.Tests/CarWash.Tests.csproj" />
 </Solution>

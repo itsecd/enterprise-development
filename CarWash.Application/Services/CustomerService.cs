@@ -10,54 +10,54 @@ namespace CarWash.Application.Services;
 /// <summary>
 /// Операции приложения с клиентами
 /// </summary>
-public class CustomerService(ICustomerRepository customers, IOrderRepository orders) : ICustomerService
+public class CustomerService(ICustomerRepository customers, IOrderRepository orders, ICarRepository cars) : ICustomerService
 {
     /// <inheritdoc />
-    public IReadOnlyList<CustomerResponse> GetAll() =>
-        customers.GetAll().Select(customer => customer.ToResponse()).ToList();
+    public async Task<IReadOnlyList<CustomerResponse>> GetAllAsync(CancellationToken cancellationToken = default) =>
+        (await customers.GetAllAsync(cancellationToken)).Select(customer => customer.ToResponse()).ToList();
 
     /// <inheritdoc />
-    public CustomerResponse GetById(int id) =>
-        (customers.GetById(id) ?? throw new EntityNotFoundException("Клиент не найден.")).ToResponse();
+    public async Task<CustomerResponse> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
+        (await customers.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Клиент не найден.")).ToResponse();
 
     /// <inheritdoc />
-    public CustomerResponse Create(CustomerRequest request)
+    public async Task<CustomerResponse> CreateAsync(CustomerRequest request, CancellationToken cancellationToken = default)
     {
         var customer = request.ToDomain();
-        customers.Add(customer);
+        await customers.AddAsync(customer, cancellationToken);
         return customer.ToResponse();
     }
 
     /// <inheritdoc />
-    public void Update(int id, CustomerRequest request)
+    public async Task UpdateAsync(int id, CustomerRequest request, CancellationToken cancellationToken = default)
     {
-        var customer = customers.GetById(id) ?? throw new EntityNotFoundException("Клиент не найден.");
+        var customer = await customers.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Клиент не найден.");
         request.ApplyTo(customer);
-        customers.Update(customer);
+        await customers.UpdateAsync(customer, cancellationToken);
     }
 
     /// <inheritdoc />
-    public void Delete(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        if (orders.GetByCustomerId(id).Count != 0)
+        _ = await GetByIdAsync(id, cancellationToken);
+        if (await orders.AnyAsync(order => order.CustomerId == id, cancellationToken))
             throw new EntityConflictException("Клиент используется в заказах.");
-        if (customers.GetCars(id).Count != 0)
+        if (await cars.AnyAsync(car => car.CustomerId == id, cancellationToken))
             throw new EntityConflictException("У клиента есть автомобили. Сначала смените их владельца или удалите автомобили.");
-        customers.Delete(id);
+        await customers.DeleteAsync(id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<CarResponse> GetCars(int id)
+    public async Task<IReadOnlyList<CarResponse>> GetCarsAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        return customers.GetCars(id).Select(car => car.ToResponse()).ToList();
+        _ = await GetByIdAsync(id, cancellationToken);
+        return (await customers.GetCarsAsync(id, cancellationToken)).Select(car => car.ToResponse()).ToList();
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<OrderResponse> GetOrders(int id)
+    public async Task<IReadOnlyList<OrderResponse>> GetOrdersAsync(int id, CancellationToken cancellationToken = default)
     {
-        _ = GetById(id);
-        return orders.GetByCustomerId(id).Select(order => order.ToResponse()).ToList();
+        _ = await GetByIdAsync(id, cancellationToken);
+        return (await orders.GetByCustomerIdAsync(id, cancellationToken)).Select(order => order.ToResponse()).ToList();
     }
 }

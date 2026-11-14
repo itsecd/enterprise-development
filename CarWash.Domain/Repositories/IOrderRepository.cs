@@ -10,40 +10,40 @@ public interface IOrderRepository : IRepository<Order>
     /// <summary>
     /// Получить заказы клиента
     /// </summary>
-    IReadOnlyList<Order> GetByCustomerId(int customerId);
+    Task<IReadOnlyList<Order>> GetByCustomerIdAsync(int customerId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить заказы автомобиля
     /// </summary>
-    IReadOnlyList<Order> GetByCarId(int carId);
+    Task<IReadOnlyList<Order>> GetByCarIdAsync(int carId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить заказы с указанной услугой
     /// </summary>
-    IReadOnlyList<Order> GetByWashServiceId(int washServiceId);
+    Task<IReadOnlyList<Order>> GetByWashServiceIdAsync(int washServiceId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить клиента заказа
     /// </summary>
-    Customer? GetCustomer(int orderId);
+    Task<Customer?> GetCustomerAsync(int orderId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить автомобиль заказа
     /// </summary>
-    Car? GetCar(int orderId);
+    Task<Car?> GetCarAsync(int orderId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить услугу заказа
     /// </summary>
-    WashService? GetWashService(int orderId);
+    Task<WashService?> GetWashServiceAsync(int orderId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить автомобили, которые сейчас находятся на мойке
     /// </summary>
-    IReadOnlyList<Car> GetCarsCurrentlyAtWash();
+    Task<IReadOnlyList<Car>> GetCarsCurrentlyAtWashAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Определить время освобождения бокса
     /// </summary>
-    DateTime GetBoxAvailableFrom(int boxNumber);
+    Task<DateTime> GetBoxAvailableFromAsync(int boxNumber, CancellationToken cancellationToken = default);
 }

@@ -1,11 +1,12 @@
 using System.Collections.Concurrent;
+using System.Linq.Expressions;
 using CarWash.Domain.Models;
 using CarWash.Domain.Repositories;
 
 namespace CarWash.Infrastructure.Repositories;
 
 /// <summary>
-/// Базовый репозиторий сущностей в памяти
+/// Базовый репозиторий в памяти для тестов
 /// </summary>
 /// <typeparam name="TEntity">Тип сущности</typeparam>
 public abstract class InMemoryRepository<TEntity>(IEnumerable<TEntity> entities)
@@ -18,34 +19,42 @@ public abstract class InMemoryRepository<TEntity>(IEnumerable<TEntity> entities)
         new(entities.ToDictionary(entity => entity.Id));
 
     /// <inheritdoc />
-    public IReadOnlyList<TEntity> GetAll() =>
-        Items.Values.OrderBy(entity => entity.Id).ToList();
+    public Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult<IReadOnlyList<TEntity>>(Items.Values.OrderBy(entity => entity.Id).ToList());
 
     /// <inheritdoc />
-    public TEntity? GetById(int id) =>
-        Items.GetValueOrDefault(id);
+    public Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Items.GetValueOrDefault(id));
 
     /// <inheritdoc />
-    public virtual void Add(TEntity entity)
+    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Items.Values.Any(predicate.Compile()));
+
+    /// <inheritdoc />
+    public virtual Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var id = Items.Count + 1;
         while (true)
         {
             entity.Id = id;
             if (Items.TryAdd(id, entity))
-                return;
+                return Task.CompletedTask;
             id = checked(id + 1);
         }
     }
 
     /// <inheritdoc />
-    public virtual void Update(TEntity entity)
+    public virtual Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (Items.TryGetValue(entity.Id, out var current))
             Items.TryUpdate(entity.Id, entity, current);
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public virtual void Delete(int id) =>
+    public virtual Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+    {
         Items.TryRemove(id, out _);
+        return Task.CompletedTask;
+    }
 }

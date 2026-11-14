@@ -1,4 +1,3 @@
-using CarWash.Application.Exceptions;
 using CarWash.Application.Mapping;
 using CarWash.Contracts.Responses;
 using CarWash.Contracts.Services;
@@ -15,8 +14,8 @@ public class AnalyticsService(
     IWashServiceRepository services) : IAnalyticsService
 {
     /// <inheritdoc />
-    public IReadOnlyList<TopCustomerResponse> GetTopCustomers() =>
-        customers.GetTop5CustomersByVisits().Select(item => new TopCustomerResponse
+    public async Task<IReadOnlyList<TopCustomerResponse>> GetTopCustomersAsync(CancellationToken cancellationToken = default) =>
+        (await customers.GetTop5CustomersByVisitsAsync(cancellationToken)).Select(item => new TopCustomerResponse
         {
             CustomerId = item.Customer.Id,
             FullName = item.Customer.FullName,
@@ -24,12 +23,12 @@ public class AnalyticsService(
         }).ToList();
 
     /// <inheritdoc />
-    public IReadOnlyList<CarResponse> GetCurrentCars() =>
-        orders.GetCarsCurrentlyAtWash().Select(car => car.ToResponse()).ToList();
+    public async Task<IReadOnlyList<CarResponse>> GetCurrentCarsAsync(CancellationToken cancellationToken = default) =>
+        (await orders.GetCarsCurrentlyAtWashAsync(cancellationToken)).Select(car => car.ToResponse()).ToList();
 
     /// <inheritdoc />
-    public IReadOnlyList<PopularServiceResponse> GetTopServices() =>
-        services.GetTop5PopularServices().Select(item => new PopularServiceResponse
+    public async Task<IReadOnlyList<PopularServiceResponse>> GetTopServicesAsync(CancellationToken cancellationToken = default) =>
+        (await services.GetTop5PopularServicesAsync(cancellationToken)).Select(item => new PopularServiceResponse
         {
             WashServiceId = item.WashService.Id,
             Name = item.WashService.Name,
@@ -37,20 +36,18 @@ public class AnalyticsService(
         }).ToList();
 
     /// <inheritdoc />
-    public BoxAvailabilityResponse GetBoxAvailability(int boxNumber)
+    public async Task<BoxAvailabilityResponse> GetBoxAvailabilityAsync(int boxNumber, CancellationToken cancellationToken = default)
     {
-        if (boxNumber <= 0)
-            throw new RequestValidationException(nameof(boxNumber), "Номер бокса должен быть положительным.");
         return new BoxAvailabilityResponse
         {
             BoxNumber = boxNumber,
-            AvailableFrom = orders.GetBoxAvailableFrom(boxNumber)
+            AvailableFrom = await orders.GetBoxAvailableFromAsync(boxNumber, cancellationToken)
         };
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<ServiceRevenueResponse> GetRevenuePerService() =>
-        services.GetRevenuePerService().Select(item => new ServiceRevenueResponse
+    public async Task<IReadOnlyList<ServiceRevenueResponse>> GetRevenuePerServiceAsync(CancellationToken cancellationToken = default) =>
+        (await services.GetRevenuePerServiceAsync(cancellationToken)).Select(item => new ServiceRevenueResponse
         {
             WashServiceId = item.WashService.Id,
             Name = item.WashService.Name,

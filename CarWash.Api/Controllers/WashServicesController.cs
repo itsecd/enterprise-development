@@ -11,7 +11,7 @@ namespace CarWash.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/wash-services")]
-[ProducesResponseType<ErrorResponse>(StatusCodes.Status500InternalServerError)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
 public class WashServicesController(IWashServiceService service, ILogger<WashServicesController> logger) : ControllerBase
 {
     /// <summary>
@@ -19,10 +19,10 @@ public class WashServicesController(IWashServiceService service, ILogger<WashSer
     /// </summary>
     [HttpGet]
     [ProducesResponseType<IReadOnlyList<WashServiceResponse>>(StatusCodes.Status200OK)]
-    public ActionResult<IReadOnlyList<WashServiceResponse>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<WashServiceResponse>>> GetAll(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение списка услуг");
-        return Ok(service.GetAll());
+        return Ok(await service.GetAllAsync(cancellationToken));
     }
 
     /// <summary>
@@ -30,12 +30,12 @@ public class WashServicesController(IWashServiceService service, ILogger<WashSer
     /// </summary>
     [HttpGet("{id:int}")]
     [ProducesResponseType<WashServiceResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public ActionResult<WashServiceResponse> GetById([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<ActionResult<WashServiceResponse>> GetById([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение записи из коллекции услуг: {Id}", id);
-        return Ok(service.GetById(id));
+        return Ok(await service.GetByIdAsync(id, cancellationToken));
     }
 
     /// <summary>
@@ -43,11 +43,11 @@ public class WashServicesController(IWashServiceService service, ILogger<WashSer
     /// </summary>
     [HttpPost]
     [ProducesResponseType<WashServiceResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status415UnsupportedMediaType)]
-    public ActionResult<WashServiceResponse> Create(WashServiceRequest request)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType, "application/problem+json")]
+    public async Task<ActionResult<WashServiceResponse>> Create(WashServiceRequest request, CancellationToken cancellationToken = default)
     {
-        var response = service.Create(request);
+        var response = await service.CreateAsync(request, cancellationToken);
         logger.LogInformation("Создана запись в коллекции услуг: {Id}", response.Id);
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
@@ -57,12 +57,12 @@ public class WashServicesController(IWashServiceService service, ILogger<WashSer
     /// </summary>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status415UnsupportedMediaType)]
-    public IActionResult Update([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, WashServiceRequest request)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType, "application/problem+json")]
+    public async Task<IActionResult> Update([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, WashServiceRequest request, CancellationToken cancellationToken = default)
     {
-        service.Update(id, request);
+        await service.UpdateAsync(id, request, cancellationToken);
         logger.LogInformation("Изменена запись в коллекции услуг: {Id}", id);
         return NoContent();
     }
@@ -72,12 +72,12 @@ public class WashServicesController(IWashServiceService service, ILogger<WashSer
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
-    public IActionResult Delete([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")]
+    public async Task<IActionResult> Delete([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
-        service.Delete(id);
+        await service.DeleteAsync(id, cancellationToken);
         logger.LogInformation("Удалена запись из коллекции услуг: {Id}", id);
         return NoContent();
     }
@@ -87,11 +87,11 @@ public class WashServicesController(IWashServiceService service, ILogger<WashSer
     /// </summary>
     [HttpGet("{id:int}/orders")]
     [ProducesResponseType<IReadOnlyList<OrderResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public ActionResult<IReadOnlyList<OrderResponse>> GetOrders([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<ActionResult<IReadOnlyList<OrderResponse>>> GetOrders([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос: заказы с услугой; Id: {Id}", id);
-        return Ok(service.GetOrders(id));
+        return Ok(await service.GetOrdersAsync(id, cancellationToken));
     }
 }

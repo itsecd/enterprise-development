@@ -11,7 +11,7 @@ namespace CarWash.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/orders")]
-[ProducesResponseType<ErrorResponse>(StatusCodes.Status500InternalServerError)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
 public class OrdersController(IOrderService service, ILogger<OrdersController> logger) : ControllerBase
 {
     /// <summary>
@@ -19,10 +19,10 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpGet]
     [ProducesResponseType<IReadOnlyList<OrderResponse>>(StatusCodes.Status200OK)]
-    public ActionResult<IReadOnlyList<OrderResponse>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<OrderResponse>>> GetAll(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение списка заказов");
-        return Ok(service.GetAll());
+        return Ok(await service.GetAllAsync(cancellationToken));
     }
 
     /// <summary>
@@ -30,12 +30,12 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpGet("{id:int}")]
     [ProducesResponseType<OrderResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public ActionResult<OrderResponse> GetById([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<ActionResult<OrderResponse>> GetById([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Получение записи из коллекции заказов: {Id}", id);
-        return Ok(service.GetById(id));
+        return Ok(await service.GetByIdAsync(id, cancellationToken));
     }
 
     /// <summary>
@@ -43,12 +43,12 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpPost]
     [ProducesResponseType<OrderResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status415UnsupportedMediaType)]
-    public ActionResult<OrderResponse> Create(OrderRequest request)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType, "application/problem+json")]
+    public async Task<ActionResult<OrderResponse>> Create(OrderRequest request, CancellationToken cancellationToken = default)
     {
-        var response = service.Create(request);
+        var response = await service.CreateAsync(request, cancellationToken);
         logger.LogInformation("Создана запись в коллекции заказов: {Id}", response.Id);
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
@@ -58,12 +58,12 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status415UnsupportedMediaType)]
-    public IActionResult Update([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, OrderRequest request)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType, "application/problem+json")]
+    public async Task<IActionResult> Update([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, OrderRequest request, CancellationToken cancellationToken = default)
     {
-        service.Update(id, request);
+        await service.UpdateAsync(id, request, cancellationToken);
         logger.LogInformation("Изменена запись в коллекции заказов: {Id}", id);
         return NoContent();
     }
@@ -73,11 +73,11 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public IActionResult Delete([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<IActionResult> Delete([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
-        service.Delete(id);
+        await service.DeleteAsync(id, cancellationToken);
         logger.LogInformation("Удалена запись из коллекции заказов: {Id}", id);
         return NoContent();
     }
@@ -87,12 +87,12 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpGet("{id:int}/customer")]
     [ProducesResponseType<CustomerResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public ActionResult<CustomerResponse> GetCustomer([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<ActionResult<CustomerResponse>> GetCustomer([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос: клиента заказа; Id: {Id}", id);
-        return Ok(service.GetCustomer(id));
+        return Ok(await service.GetCustomerAsync(id, cancellationToken));
     }
 
     /// <summary>
@@ -100,12 +100,12 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpGet("{id:int}/car")]
     [ProducesResponseType<CarResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public ActionResult<CarResponse> GetCar([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<ActionResult<CarResponse>> GetCar([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос: автомобиль заказа; Id: {Id}", id);
-        return Ok(service.GetCar(id));
+        return Ok(await service.GetCarAsync(id, cancellationToken));
     }
 
     /// <summary>
@@ -113,11 +113,11 @@ public class OrdersController(IOrderService service, ILogger<OrdersController> l
     /// </summary>
     [HttpGet("{id:int}/wash-service")]
     [ProducesResponseType<WashServiceResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
-    public ActionResult<WashServiceResponse> GetWashService([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    public async Task<ActionResult<WashServiceResponse>> GetWashService([Range(1, int.MaxValue, ErrorMessage = "Идентификатор должен быть положительным.")] int id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос: услугу заказа; Id: {Id}", id);
-        return Ok(service.GetWashService(id));
+        return Ok(await service.GetWashServiceAsync(id, cancellationToken));
     }
 }

@@ -10,7 +10,7 @@ namespace CarWash.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/analytics")]
-[ProducesResponseType<ErrorResponse>(StatusCodes.Status500InternalServerError)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
 public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsController> logger) : ControllerBase
 {
     /// <summary>
@@ -18,10 +18,10 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// </summary>
     [HttpGet("top-customers")]
     [ProducesResponseType<IReadOnlyList<TopCustomerResponse>>(StatusCodes.Status200OK)]
-    public ActionResult<IReadOnlyList<TopCustomerResponse>> GetTopCustomers()
+    public async Task<ActionResult<IReadOnlyList<TopCustomerResponse>>> GetTopCustomers(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос аналитики: пять клиентов с наибольшим количеством посещений");
-        return Ok(service.GetTopCustomers());
+        return Ok(await service.GetTopCustomersAsync(cancellationToken));
     }
 
     /// <summary>
@@ -29,10 +29,10 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// </summary>
     [HttpGet("current-cars")]
     [ProducesResponseType<IReadOnlyList<CarResponse>>(StatusCodes.Status200OK)]
-    public ActionResult<IReadOnlyList<CarResponse>> GetCurrentCars()
+    public async Task<ActionResult<IReadOnlyList<CarResponse>>> GetCurrentCars(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос аналитики: автомобили, находящиеся сейчас на мойке");
-        return Ok(service.GetCurrentCars());
+        return Ok(await service.GetCurrentCarsAsync(cancellationToken));
     }
 
     /// <summary>
@@ -40,10 +40,10 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// </summary>
     [HttpGet("top-services")]
     [ProducesResponseType<IReadOnlyList<PopularServiceResponse>>(StatusCodes.Status200OK)]
-    public ActionResult<IReadOnlyList<PopularServiceResponse>> GetTopServices()
+    public async Task<ActionResult<IReadOnlyList<PopularServiceResponse>>> GetTopServices(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос аналитики: пять наиболее популярных услуг");
-        return Ok(service.GetTopServices());
+        return Ok(await service.GetTopServicesAsync(cancellationToken));
     }
 
     /// <summary>
@@ -51,11 +51,11 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// </summary>
     [HttpGet("boxes/{boxNumber:int}/available-from")]
     [ProducesResponseType<BoxAvailabilityResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    public ActionResult<BoxAvailabilityResponse> GetBoxAvailability([Range(1, int.MaxValue, ErrorMessage = "Номер бокса должен быть положительным.")] int boxNumber)
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public async Task<ActionResult<BoxAvailabilityResponse>> GetBoxAvailability([Range(1, int.MaxValue, ErrorMessage = "Номер бокса должен быть положительным.")] int boxNumber, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос времени освобождения бокса {BoxNumber}", boxNumber);
-        return Ok(service.GetBoxAvailability(boxNumber));
+        return Ok(await service.GetBoxAvailabilityAsync(boxNumber, cancellationToken));
     }
 
     /// <summary>
@@ -63,9 +63,9 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// </summary>
     [HttpGet("revenue-per-service")]
     [ProducesResponseType<IReadOnlyList<ServiceRevenueResponse>>(StatusCodes.Status200OK)]
-    public ActionResult<IReadOnlyList<ServiceRevenueResponse>> GetRevenuePerService()
+    public async Task<ActionResult<IReadOnlyList<ServiceRevenueResponse>>> GetRevenuePerService(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Запрос аналитики: выручку по каждой услуге");
-        return Ok(service.GetRevenuePerService());
+        return Ok(await service.GetRevenuePerServiceAsync(cancellationToken));
     }
 }

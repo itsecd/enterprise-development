@@ -5,23 +5,21 @@ using CarWash.Domain.Repositories;
 namespace CarWash.Infrastructure.Repositories;
 
 /// <summary>
-/// Репозиторий клиентов и их связей в памяти
+/// Репозиторий клиентов в памяти для тестов
 /// </summary>
-public class InMemoryCustomerRepository(CarWashData data, IOrderRepository orderRepository, ICarRepository carRepository)
+public class InMemoryCustomerRepository(CarWashData data, IOrderRepository orders, ICarRepository cars)
     : InMemoryRepository<Customer>(data.Customers), ICustomerRepository
 {
     /// <inheritdoc />
-    public IReadOnlyList<Car> GetCars(int customerId) => carRepository.GetByCustomerId(customerId);
+    public Task<IReadOnlyList<Car>> GetCarsAsync(int customerId, CancellationToken cancellationToken = default) =>
+        cars.GetByCustomerIdAsync(customerId, cancellationToken);
 
     /// <inheritdoc />
-    public IReadOnlyList<(Customer Customer, int VisitCount)> GetTop5CustomersByVisits()
+    public async Task<IReadOnlyList<(Customer Customer, int VisitCount)>> GetTop5CustomersByVisitsAsync(CancellationToken cancellationToken = default)
     {
-        var visits = orderRepository.GetAll()
-            .GroupBy(order => order.Customer.Id)
-            .ToDictionary(group => group.Key, group => group.Count());
-        return Items.Values
-            .Select(customer => (Customer: customer, VisitCount: visits.GetValueOrDefault(customer.Id)))
-            .OrderByDescending(item => item.VisitCount).ThenBy(item => item.Customer.Id)
-            .Take(5).ToList();
+        var visits = (await orders.GetAllAsync(cancellationToken))
+            .GroupBy(order => order.CustomerId).ToDictionary(group => group.Key, group => group.Count());
+        return Items.Values.Select(customer => (Customer: customer, VisitCount: visits.GetValueOrDefault(customer.Id)))
+            .OrderByDescending(item => item.VisitCount).ThenBy(item => item.Customer.Id).Take(5).ToList();
     }
 }

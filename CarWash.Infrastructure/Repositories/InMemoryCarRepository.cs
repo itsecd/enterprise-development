@@ -5,47 +5,48 @@ using CarWash.Domain.Repositories;
 namespace CarWash.Infrastructure.Repositories;
 
 /// <summary>
-/// Репозиторий автомобилей в памяти
+/// Репозиторий автомобилей в памяти для тестов
 /// </summary>
-public class InMemoryCarRepository(CarWashData data)
-    : InMemoryRepository<Car>(data.Cars), ICarRepository
+public class InMemoryCarRepository(CarWashData data) : InMemoryRepository<Car>(data.Cars), ICarRepository
 {
     /// <inheritdoc />
-    public IReadOnlyList<Car> GetByCustomerId(int customerId) =>
-        Items.Values.Where(car => car.Customer.Id == customerId).OrderBy(car => car.Id).ToList();
+    public Task<IReadOnlyList<Car>> GetByCustomerIdAsync(int customerId, CancellationToken cancellationToken = default) =>
+        Task.FromResult<IReadOnlyList<Car>>(Items.Values.Where(car => car.CustomerId == customerId).OrderBy(car => car.Id).ToList());
 
     /// <inheritdoc />
-    public Customer? GetCustomer(int carId) => GetById(carId)?.Customer;
+    public Task<Customer?> GetCustomerAsync(int carId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Items.GetValueOrDefault(carId)?.Customer);
 
     /// <inheritdoc />
-    public override void Add(Car entity)
+    public override async Task AddAsync(Car entity, CancellationToken cancellationToken = default)
     {
-        base.Add(entity);
+        await base.AddAsync(entity, cancellationToken);
         entity.Customer.Cars = [.. entity.Customer.Cars, entity];
     }
 
     /// <inheritdoc />
-    public override void Update(Car entity)
+    public override Task UpdateAsync(Car entity, CancellationToken cancellationToken = default)
     {
-        var current = GetById(entity.Id);
+        var current = Items.GetValueOrDefault(entity.Id);
         if (current is null)
-            return;
-
-        if (current.Customer.Id != entity.Customer.Id)
+            return Task.CompletedTask;
+        if (current.CustomerId != entity.CustomerId)
         {
             current.Customer.Cars = current.Customer.Cars.Where(car => car.Id != current.Id).ToList();
             entity.Customer.Cars = [.. entity.Customer.Cars, current];
         }
-
         current.LicensePlate = entity.LicensePlate;
         current.Brand = entity.Brand;
         current.Customer = entity.Customer;
+        current.CustomerId = entity.CustomerId;
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public override void Delete(int id)
+    public override Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         if (Items.TryRemove(id, out var car))
             car.Customer.Cars = car.Customer.Cars.Where(item => item.Id != id).ToList();
+        return Task.CompletedTask;
     }
 }

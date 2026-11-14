@@ -15,7 +15,7 @@ public static class CarWashMapper
     /// </summary>
     public static CarResponse ToResponse(this Car car) => new()
     {
-        Id = car.Id, LicensePlate = car.LicensePlate, Brand = car.Brand, CustomerId = car.Customer.Id
+        Id = car.Id, LicensePlate = car.LicensePlate, Brand = car.Brand, CustomerId = car.CustomerId
     };
 
     /// <summary>
@@ -44,9 +44,9 @@ public static class CarWashMapper
     public static OrderResponse ToResponse(this Order order) => new()
     {
         Id = order.Id,
-        CustomerId = order.Customer.Id,
-        CarId = order.Car.Id,
-        WashServiceId = order.WashService.Id,
+        CustomerId = order.CustomerId,
+        CarId = order.CarId,
+        WashServiceId = order.WashServiceId,
         StartTime = order.StartTime,
         EndTime = order.EndTime,
         BoxNumber = order.BoxNumber,
@@ -58,7 +58,7 @@ public static class CarWashMapper
     /// </summary>
     public static Car ToDomain(this CarRequest request, Customer customer) => new()
     {
-        Id = 0, LicensePlate = request.LicensePlate, Brand = request.Brand, Customer = customer
+        Id = 0, LicensePlate = request.LicensePlate, Brand = request.Brand, Customer = customer, CustomerId = customer.Id
     };
 
     /// <summary>
@@ -88,8 +88,11 @@ public static class CarWashMapper
     {
         Id = 0,
         Customer = customer,
+        CustomerId = customer.Id,
         Car = car,
+        CarId = car.Id,
         WashService = service,
+        WashServiceId = service.Id,
         StartTime = request.StartTime.Kind == DateTimeKind.Utc
             ? request.StartTime.ToLocalTime()
             : request.StartTime,
