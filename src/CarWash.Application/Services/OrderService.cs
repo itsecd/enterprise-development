@@ -5,24 +5,34 @@ using CarWash.Domain.Interfaces;
 
 namespace CarWash.Application.Services;
 
+/// <summary>
+/// Сервис для работы с заказами
+/// </summary>
+/// <param name="orderRepository">Репозиторий заказов</param>
+/// <param name="clientRepository">Репозиторий клиентов</param>
+/// <param name="carRepository">Репозиторий автомобилей</param>
+/// <param name="serviceRepository">Репозиторий услуг</param>
 public class OrderService(
     IOrderRepository orderRepository,
     IClientRepository clientRepository,
     ICarRepository carRepository,
     IServiceRepository serviceRepository) : IOrderService
 {
+    /// <inheritdoc />
     public async Task<IEnumerable<OrderDto>> GetAllAsync()
     {
         var orders = await orderRepository.GetAllAsync();
         return orders.Select(MapToDto);
     }
 
+    /// <inheritdoc />
     public async Task<OrderDto?> GetByIdAsync(int id)
     {
         var order = await orderRepository.GetByIdAsync(id);
         return order == null ? null : MapToDto(order);
     }
 
+    /// <inheritdoc />
     public async Task<OrderDto> CreateAsync(OrderEditDto editDto)
     {
         var client = await clientRepository.GetByIdAsync(editDto.ClientId)
@@ -45,6 +55,7 @@ public class OrderService(
         return MapToDto(created);
     }
 
+    /// <inheritdoc />
     public async Task UpdateAsync(int id, OrderEditDto editDto)
     {
         var order = await orderRepository.GetByIdAsync(id)
@@ -66,8 +77,12 @@ public class OrderService(
         await orderRepository.UpdateAsync(order);
     }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(int id)
     {
+        _ = await orderRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException("Заказ не найден");
+
         await orderRepository.DeleteAsync(id);
     }
 

@@ -1,4 +1,8 @@
 ﻿using CarWash.Domain.Entities;
+
 namespace CarWash.Domain.Interfaces;
 
+/// <summary>
+/// Репозиторий клиентов
+/// </summary>
 public interface IClientRepository : IRepository<Client> { }

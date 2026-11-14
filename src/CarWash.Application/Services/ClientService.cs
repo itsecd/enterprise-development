@@ -54,6 +54,9 @@ public class ClientService(IClientRepository repository, ICarRepository carRepos
     /// <inheritdoc />
     public async Task DeleteAsync(int id)
     {
+        _ = await repository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException("Клиент не найден");
+
         await repository.DeleteAsync(id);
     }
 

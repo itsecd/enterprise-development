@@ -1,16 +1,20 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using CarWash.Application.Services;
 using CarWash.Contracts.Interfaces;
 using CarWash.Domain.Interfaces;
 using CarWash.Infrastructure.InMemory.Repositories;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options => 
+    .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<ICarRepository, CarRepository>();
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
@@ -27,8 +31,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.MapControllers();

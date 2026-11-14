@@ -5,8 +5,13 @@ using CarWash.Domain.Interfaces;
 
 namespace CarWash.Application.Services;
 
+/// <summary>
+/// Сервис аналитических запросов по автомойке
+/// </summary>
+/// <param name="orderRepository">Репозиторий заказов</param>
 public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsService
 {
+    /// <inheritdoc />
     public async Task<IEnumerable<TopClientDto>> GetTop5ClientsAsync()
     {
         var orders = await orderRepository.GetAllAsync();
@@ -22,6 +27,7 @@ public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsServ
             });
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<CurrentCarDto>> GetCurrentCarsAsync(DateTime? time)
     {
         var currentTime = time ?? DateTime.Now;
@@ -38,6 +44,7 @@ public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsServ
             });
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<TopServiceDto>> GetTop5PopularServicesAsync()
     {
         var orders = await orderRepository.GetAllAsync();
@@ -53,6 +60,7 @@ public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsServ
             });
     }
 
+    /// <inheritdoc />
     public async Task<BoxFreeTimeDto> GetBoxFreeTimeAsync(int boxNumber, DateTime? time)
     {
         var currentTime = time ?? DateTime.Now;
@@ -82,6 +90,7 @@ public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsServ
         return new BoxFreeTimeDto { BoxNumber = boxNumber, FreeTime = freeTime };
     }
 
+    /// <inheritdoc />
     public async Task<Dictionary<string, decimal>> GetRevenueForEachServiceAsync()
     {
         var orders = await orderRepository.GetAllAsync();

@@ -7,10 +7,12 @@ namespace CarWash.Api.Controllers;
 /// <summary>
 /// Контроллер для работы с клиентами и их автомобилями
 /// </summary>
-/// <param name="clientService">Сервис клиентов</param>
+/// <param name="clientService">Сервис для работы с клиентами и их автомобилями</param>
+/// <param name="logger">Логгер</param>
 [ApiController]
 [Route("api/[controller]")]
-public class ClientsController(IClientService clientService) : ControllerBase
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+public class ClientsController(IClientService clientService, ILogger<ClientsController> logger) : ControllerBase
 {
     /// <summary>
     /// Получить список всех клиентов
@@ -20,7 +22,16 @@ public class ClientsController(IClientService clientService) : ControllerBase
     [ProducesResponseType(200, Type = typeof(IEnumerable<ClientDto>))]
     public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
     {
-        return Ok(await clientService.GetAllAsync());
+        try
+        {
+            logger.LogInformation("Запрос списка клиентов");
+            return Ok(await clientService.GetAllAsync());
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении списка клиентов");
+            return Problem(detail: "Не удалось получить список клиентов", statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
@@ -30,46 +41,77 @@ public class ClientsController(IClientService clientService) : ControllerBase
     /// <returns>Данные клиента</returns>
     [HttpGet("{id:int}")]
     [ProducesResponseType(200, Type = typeof(ClientDto))]
-    [ProducesResponseType(404)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ClientDto>> GetById(int id)
     {
-        var client = await clientService.GetByIdAsync(id);
-        return client == null ? NotFound() : Ok(client);
+        try
+        {
+            logger.LogInformation("Запрос клиента с ID {Id}", id);
+            var item = await clientService.GetByIdAsync(id);
+            if (item == null)
+            {
+                logger.LogWarning("Клиент с ID {Id} не найден", id);
+                return Problem(detail: $"Клиент с ID {id} не найден", statusCode: StatusCodes.Status404NotFound);
+            }
+
+            return Ok(item);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении клиента с ID {Id}", id);
+            return Problem(detail: "Не удалось получить клиента", statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
-    /// Создать нового клиента
+    /// Создать клиента
     /// </summary>
     /// <param name="dto">Данные клиента</param>
-    /// <returns>Созданный клиент</returns>
+    /// <returns>Созданный объект</returns>
     [HttpPost]
     [ProducesResponseType(201, Type = typeof(ClientDto))]
-    [ProducesResponseType(400)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ClientDto>> Create([FromBody] ClientEditDto dto)
     {
-        var created = await clientService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        try
+        {
+            var created = await clientService.CreateAsync(dto);
+            logger.LogInformation("Создан клиент с ID {Id}", created.Id);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при создании клиента");
+            return Problem(detail: "Не удалось создать клиента", statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
-    /// Изменить данные клиента
+    /// Изменить клиента
     /// </summary>
     /// <param name="id">ID клиента</param>
     /// <param name="dto">Новые данные клиента</param>
     [HttpPut("{id:int}")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(404)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, [FromBody] ClientEditDto dto)
     {
         try
         {
             await clientService.UpdateAsync(id, dto);
+            logger.LogInformation("Обновлён клиент с ID {Id}", id);
             return NoContent();
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return NotFound();
+            logger.LogWarning(ex, "Не удалось изменить клиента с ID {Id}: {Message}", id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при изменении клиента с ID {Id}", id);
+            return Problem(detail: "Не удалось изменить клиента", statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -79,11 +121,25 @@ public class ClientsController(IClientService clientService) : ControllerBase
     /// <param name="id">ID клиента</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        await clientService.DeleteAsync(id);
-        return NoContent();
+        try
+        {
+            await clientService.DeleteAsync(id);
+            logger.LogInformation("Удалён клиент с ID {Id}", id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "Не удалось удалить клиента с ID {Id}: {Message}", id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при удалении клиента с ID {Id}", id);
+            return Problem(detail: "Не удалось удалить клиента", statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
@@ -93,11 +149,26 @@ public class ClientsController(IClientService clientService) : ControllerBase
     /// <returns>Список автомобилей клиента</returns>
     [HttpGet("{id:int}/cars")]
     [ProducesResponseType(200, Type = typeof(IEnumerable<CarDto>))]
-    [ProducesResponseType(404)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<CarDto>>> GetCars(int id)
     {
-        var cars = await clientService.GetCarsAsync(id);
-        return cars == null ? NotFound() : Ok(cars);
+        try
+        {
+            logger.LogInformation("Запрос автомобилей клиента с ID {Id}", id);
+            var cars = await clientService.GetCarsAsync(id);
+            if (cars == null)
+            {
+                logger.LogWarning("Клиент с ID {Id} не найден", id);
+                return Problem(detail: $"Клиент с ID {id} не найден", statusCode: StatusCodes.Status404NotFound);
+            }
+
+            return Ok(cars);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении автомобилей клиента с ID {Id}", id);
+            return Problem(detail: "Не удалось получить автомобили клиента", statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
@@ -107,22 +178,30 @@ public class ClientsController(IClientService clientService) : ControllerBase
     /// <param name="carId">ID автомобиля</param>
     [HttpPost("{id:int}/cars/{carId:int}")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(409)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> AddCar(int id, int carId)
     {
         try
         {
             await clientService.AddCarAsync(id, carId);
+            logger.LogInformation("Автомобиль с ID {CarId} привязан к клиенту с ID {Id}", carId, id);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            logger.LogWarning(ex, "Не удалось привязать автомобиль {CarId} к клиенту {Id}: {Message}", carId, id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(ex.Message);
+            logger.LogWarning(ex, "Не удалось привязать автомобиль {CarId} к клиенту {Id}: {Message}", carId, id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status409Conflict);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при привязке автомобиля {CarId} к клиенту {Id}", carId, id);
+            return Problem(detail: "Не удалось привязать автомобиль к клиенту", statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -133,17 +212,24 @@ public class ClientsController(IClientService clientService) : ControllerBase
     /// <param name="carId">ID автомобиля</param>
     [HttpDelete("{id:int}/cars/{carId:int}")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveCar(int id, int carId)
     {
         try
         {
             await clientService.RemoveCarAsync(id, carId);
+            logger.LogInformation("Автомобиль с ID {CarId} отвязан от клиента с ID {Id}", carId, id);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            logger.LogWarning(ex, "Не удалось отвязать автомобиль {CarId} от клиента {Id}: {Message}", carId, id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при отвязке автомобиля {CarId} от клиента {Id}", carId, id);
+            return Problem(detail: "Не удалось отвязать автомобиль от клиента", statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 }
