@@ -1,4 +1,8 @@
 <Solution>
-    <Project Path = "DryCleaning.Domain/DryCleaning.Domain.csproj" />
-    <Project Path = "DryCleaning.Tests/DryCleaning.Tests.csproj" />
+    <Project Path="DryCleaning.Api/DryCleaning.Api.csproj" />
+    <Project Path="DryCleaning.Application/DryCleaning.Application.csproj" />
+    <Project Path="DryCleaning.Contracts/DryCleaning.Contracts.csproj" />
+    <Project Path="DryCleaning.Domain/DryCleaning.Domain.csproj" />
+    <Project Path="DryCleaning.Infrastructure.InMemory/DryCleaning.Infrastructure.InMemory.csproj" />
+    <Project Path="DryCleaning.Tests/DryCleaning.Tests.csproj" />
 </Solution>

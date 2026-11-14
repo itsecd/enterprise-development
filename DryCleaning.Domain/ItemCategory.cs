@@ -1,29 +1,12 @@
-using DryCleaning.Domain.Enums;
+using DryCleaning.Domain.Enum;
 
 namespace DryCleaning.Domain;
 
-/// <summary>
-/// Категория изделия
-/// </summary>
+/// <summary>Категория изделия.</summary>
 public class ItemCategory
 {
-    /// <summary>
-    /// Идентификатор категории
-    /// <summary>
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Название категории
-    /// </summary>
-    public required string Name { get; set; }
-
-    /// <summary>
-    /// Рекомендуемый вид чистки
-    /// </summary>
-    public CleaningType RecommendedCleaningType { get; set; }
-
-    /// <summary>
-    /// Стоимость чистки
-    /// </summary>
-    public decimal Price { get; set; }
+    public int CategoryId { get; set; }
+    public required string CategoryName { get; set; }
+    public required CleaningType RecommendedCleaningType { get; set; }
+    public required decimal Price { get; set; }
 }

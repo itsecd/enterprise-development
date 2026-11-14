@@ -1,4 +1,4 @@
-namespace DryCleaning.Domain.Enums;
+namespace DryCleaning.Domain.Enum;
 
 /// <summary>
 /// Вид чистки изделия

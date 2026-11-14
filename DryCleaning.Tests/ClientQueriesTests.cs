@@ -21,7 +21,7 @@ public class ClientQueriesTests(TestData data) : IClassFixture<TestData>
 
         var clients = OrderQueries.GetTop5Clients(data.Orders, from, to);
 
-        Assert.Equal(expectedIds, clients.Select(c => c.Id));
+        Assert.Equal(expectedIds, clients.Select(c => c.ClientId));
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class ClientQueriesTests(TestData data) : IClassFixture<TestData>
         
         var clients = OrderQueries.GetClientsWithLongestProcessing(data.Orders);
 
-        Assert.Equal(expectedIds, clients.Select(c => c.Id));
+        Assert.Equal(expectedIds, clients.Select(c => c.ClientId));
     }
 
     /// <summary>
@@ -48,6 +48,6 @@ public class ClientQueriesTests(TestData data) : IClassFixture<TestData>
         var client = OrderQueries.GetTopSpendingClient(data.Orders);
 
         Assert.NotNull(client);
-        Assert.Equal(expectedId, client.Id);
+        Assert.Equal(expectedId, client.ClientId);
     }
 }
