@@ -9,23 +9,28 @@
 ## Структура проекта (Лабораторная работа №2)
 
 В рамках второй лабораторной работы реализовано серверное приложение на базе ASP.NET Core Web API (.NET 10). Проект разделен на слои согласно принципам Clean Architecture:
-* `CarWash.Domain` - ядро приложения. Содержит сущности (`Car`, `Client`, `Service`, `Order`), перечисления и интерфейсы репозиториев. Не зависит от других проектов.
-* `CarWash.Contracts` - DTO (Data Transfer Objects) для запросов/ответов API, а также интерфейсы сервисов. Содержит атрибуты валидации (`[Required]`, `[MaxLength]`).
-* `CarWash.Application` - бизнес-логика. Реализация сервисов (`CarService`, `OrderService`, `AnalyticsService`), маппинг доменных сущностей в DTO и обратно.
-* `CarWash.Infrastructure.InMemory` - инфраструктура хранения данных. Реализация репозиториев для работы с коллекциями в памяти (`InMemoryDataStore`).
-* `CarWash.Api` - слой представления. Контроллеры и конфигурация DI (Dependency Injection). Контроллеры являются "тонкими" и делегируют всю работу сервисам.
-* `CarWash.Tests` - юнит-тесты бизнес-логики (xUnit).
+* `CarWash.Shared` - общие типы, которыми пользуются несколько проектов. Содержит перечисление `CarCategory` (категория автомобиля).
+* `CarWash.Domain` - ядро приложения. Содержит сущности (`Car`, `Client`, `Service`, `Order`), интерфейсы репозиториев и тестовые данные (`DataSeed`). Зависит только от `CarWash.Shared`.
+* `CarWash.Contracts` - DTO (Data Transfer Objects) для запросов/ответов API, а также интерфейсы сервисов. Содержит атрибуты валидации (`[Required]`, `[MaxLength]`, `[Range]`, `[EnumDataType]`). Зависит только от `CarWash.Shared`.
+* `CarWash.Application` - бизнес-логика. Реализация сервисов (`CarService`, `ClientService`, `ServiceService`, `OrderService`, `AnalyticsService`) и преобразование доменных сущностей в DTO.
+* `CarWash.Infrastructure.InMemory` - инфраструктура хранения данных. Репозитории хранят данные в памяти в виде коллекций и заполняются тестовыми данными из `DataSeed`.
+* `CarWash.Api` - слой представления. Контроллеры (с логированием и обработкой ошибок) и конфигурация DI (Dependency Injection). Контроллеры являются "тонкими" и делегируют всю работу сервисам.
+* `CarWash.Tests` - юнит-тесты бизнес-логики (xUnit v3).
 
 ### Основные эндпоинты API:
 * CRUD-операции для всех сущностей: `Cars` (Автомобили), `Clients` (Клиенты), `Services` (Услуги) и `Orders` (Заказы).
+* Работа с автомобилями клиента:
+	* `GET /api/clients/{id}/cars` - автомобили клиента.
+	* `POST /api/clients/{id}/cars/{carId}` - привязать автомобиль к клиенту (409, если автомобиль уже принадлежит другому клиенту).
+	* `DELETE /api/clients/{id}/cars/{carId}` - отвязать автомобиль от клиента.
 * Аналитические эндпоинты (перенесены из юнит-тестов):
 	* `GET /api/analytics/top-clients` - Топ-5 клиентов по посещениям.
 	* `GET /api/analytics/current-cars` - Автомобили на мойке в заданный момент времени.
 	* `GET /api/analytics/top-services` - Топ-5 популярных услуг.
 	* `GET /api/analytics/box-free-time` - Время освобождения выбранного бокса.
 	* `GET /api/analytics/revenue` — Суммарная выручка по услугам.
-* Хранение данных: На данном этапе данные хранятся в памяти (`InMemoryDataStore`).
-* Документация: Реализован и настроен Swagger UI.
+* Хранение данных: На данном этапе данные хранятся в памяти (в репозиториях), начальные данные задаются в `CarWash.Domain/Data/DataSeed.cs`.
+* Документация: OpenAPI-спецификация генерируется средствами `Microsoft.AspNetCore.OpenApi` (с использованием XML-комментариев), для просмотра подключен интерфейс Scalar.
 
 ### Запуск сервера
 
@@ -33,7 +38,7 @@
 ```bash
 dotnet run --project src/CarWash.Api
 ```
-После запуска интерфейс Swagger доступен по адресу: http://localhost:5299/swagger
+После запуска интерфейс Scalar доступен по адресу: http://localhost:5299/scalar, а сама спецификация - по адресу: http://localhost:5299/openapi/v1.json
 
 ### Скриншоты
 
