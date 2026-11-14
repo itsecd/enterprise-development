@@ -12,13 +12,11 @@ namespace Vet.Application.Services;
 /// <param name="petRepository">Репозиторий питомцев</param>
 /// <param name="ownerRepository">Репозиторий владельцев</param>
 /// <param name="breedRepository">Репозиторий пород</param>
-/// <param name="appointmentRepository">Репозиторий приемов</param>
 /// <param name="logger">Логгер сервиса</param>
 public class PetService(
     IRepository<Pet, int> petRepository,
     IRepository<Owner, int> ownerRepository,
     IRepository<Breed, int> breedRepository,
-    IRepository<Appointment, int> appointmentRepository,
     ILogger<PetService> logger)
     : IApplicationService<PetDto, PetCreateUpdateDto, int>
 {
@@ -62,9 +60,7 @@ public class PetService(
         var pet = dto.ToEntity(breed, owner);
         var created = await petRepository.AddAsync(pet);
 
-        owner.Pets.Add(created);
         logger.LogInformation("Создан новый питомец с Id {Id} ({Name})", created.Id, created.Name);
-
         return created.ToDto();
     }
 
@@ -98,12 +94,6 @@ public class PetService(
             throw new ArgumentException($"Вид животного '{dto.Species}' не соответствует виду выбранной породы '{breed.Species}'");
         }
 
-        if (existing.Owner.Id != owner.Id)
-        {
-            existing.Owner.Pets.Remove(existing);
-            owner.Pets.Add(existing);
-        }
-
         existing.Name = dto.Name;
         existing.Species = dto.Species;
         existing.Breed = breed;
@@ -122,28 +112,14 @@ public class PetService(
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        var pet = await petRepository.GetByIdAsync(id);
-        if (pet is null)
+        var result = await petRepository.DeleteAsync(id);
+        if (!result)
         {
             logger.LogWarning("Попытка удаления несуществующего питомца с Id {Id}", id);
             return false;
         }
 
-        pet.Owner.Pets.Remove(pet);
-
-        var allAppointments = await appointmentRepository.GetAllAsync();
-        var petAppointments = allAppointments.Where(a => a.Pet.Id == id).ToList();
-        foreach (var appt in petAppointments)
-        {
-            appt.Veterinarian.Appointments.Remove(appt);
-            await appointmentRepository.DeleteAsync(appt.Id);
-        }
-
-        var result = await petRepository.DeleteAsync(id);
-        if (result)
-        {
-            logger.LogInformation("Питомец с Id {Id} и все связанные приемы успешно удалены", id);
-        }
-        return result;
+        logger.LogInformation("Питомец с Id {Id} и все связанные приемы успешно удалены", id);
+        return true;
     }
 }

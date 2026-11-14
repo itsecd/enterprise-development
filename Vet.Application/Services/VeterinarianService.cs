@@ -11,12 +11,10 @@ namespace Vet.Application.Services;
 /// </summary>
 /// <param name="veterinarianRepository">Репозиторий ветеринаров</param>
 /// <param name="specializationRepository">Репозиторий специализаций</param>
-/// <param name="appointmentRepository">Репозиторий приемов</param>
 /// <param name="logger">Логгер сервиса</param>
 public class VeterinarianService(
     IRepository<Veterinarian, int> veterinarianRepository,
     IRepository<Specialization, int> specializationRepository,
-    IRepository<Appointment, int> appointmentRepository,
     ILogger<VeterinarianService> logger)
     : IApplicationService<VeterinarianDto, VeterinarianCreateUpdateDto, int>
 {
@@ -85,27 +83,14 @@ public class VeterinarianService(
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        var existing = await veterinarianRepository.GetByIdAsync(id);
-        if (existing is null)
+        var result = await veterinarianRepository.DeleteAsync(id);
+        if (!result)
         {
             logger.LogWarning("Попытка удаления несуществующего ветеринара с Id {Id}", id);
             return false;
         }
 
-        var allAppointments = await appointmentRepository.GetAllAsync();
-        var vetAppointments = allAppointments.Where(a => a.Veterinarian.Id == id).ToList();
-
-        foreach (var appt in vetAppointments)
-        {
-            appt.Pet.Appointments.Remove(appt);
-            await appointmentRepository.DeleteAsync(appt.Id);
-        }
-
-        var result = await veterinarianRepository.DeleteAsync(id);
-        if (result)
-        {
-            logger.LogInformation("Ветеринар с Id {Id} и все его приёмы ({ApptCount} шт.) успешно удалены", id, vetAppointments.Count);
-        }
-        return result;
+        logger.LogInformation("Ветеринар с Id {Id} и все его приёмы успешно удалены", id);
+        return true;
     }
 }

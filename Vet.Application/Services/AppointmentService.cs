@@ -54,9 +54,6 @@ public class AppointmentService(
         var appt = dto.ToEntity(pet, vet);
         var created = await appointmentRepository.AddAsync(appt);
 
-        pet.Appointments.Add(created);
-        vet.Appointments.Add(created);
-
         logger.LogInformation("Успешно создана запись на прием с Id {Id} (Питомец: {PetId}, Врач: {VetId})", created.Id, pet.Id, vet.Id);
 
         return created.ToDto();
@@ -86,18 +83,6 @@ public class AppointmentService(
             throw new KeyNotFoundException($"Врач с Id {dto.VeterinarianId} не найден");
         }
 
-        if (existing.Pet.Id != pet.Id)
-        {
-            existing.Pet.Appointments.Remove(existing);
-            pet.Appointments.Add(existing);
-        }
-
-        if (existing.Veterinarian.Id != vet.Id)
-        {
-            existing.Veterinarian.Appointments.Remove(existing);
-            vet.Appointments.Add(existing);
-        }
-
         existing.Pet = pet;
         existing.Veterinarian = vet;
         existing.AppointmentDateTime = dto.AppointmentDateTime;
@@ -115,21 +100,14 @@ public class AppointmentService(
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        var existing = await appointmentRepository.GetByIdAsync(id);
-        if (existing is null)
+        var result = await appointmentRepository.DeleteAsync(id);
+        if (!result)
         {
             logger.LogWarning("Попытка удаления несуществующей записи на прием с Id {Id}", id);
             return false;
         }
 
-        existing.Pet.Appointments.Remove(existing);
-        existing.Veterinarian.Appointments.Remove(existing);
-
-        var result = await appointmentRepository.DeleteAsync(id);
-        if (result)
-        {
-            logger.LogInformation("Запись на прием с Id {Id} успешно удалена", id);
-        }
-        return result;
+        logger.LogInformation("Запись на прием с Id {Id} успешно удалена", id);
+        return true;
     }
-} 
+}

@@ -10,13 +10,9 @@ namespace Vet.Application.Services;
 /// Сервис для управления владельцами
 /// </summary>
 /// <param name="ownerRepository">Репозиторий владельцев</param>
-/// <param name="petRepository">Репозиторий питомцев</param>
-/// <param name="appointmentRepository">Репозиторий приемов</param>
 /// <param name="logger">Логгер сервиса</param>
 public class OwnerService(
     IRepository<Owner, int> ownerRepository,
-    IRepository<Pet, int> petRepository,
-    IRepository<Appointment, int> appointmentRepository,
     ILogger<OwnerService> logger)
     : IApplicationService<OwnerDto, OwnerCreateUpdateDto, int>
 {
@@ -68,35 +64,14 @@ public class OwnerService(
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        var existing = await ownerRepository.GetByIdAsync(id);
-        if (existing is null)
+        var result = await ownerRepository.DeleteAsync(id);
+        if (!result)
         {
             logger.LogWarning("Попытка удаления несуществующего владельца с Id {Id}", id);
             return false;
         }
 
-        var allPets = await petRepository.GetAllAsync();
-        var ownerPets = allPets.Where(p => p.Owner.Id == id).ToList();
-
-        var allAppointments = await appointmentRepository.GetAllAsync();
-
-        foreach (var pet in ownerPets)
-        {
-            var petAppointments = allAppointments.Where(a => a.Pet.Id == pet.Id).ToList();
-            foreach (var appt in petAppointments)
-            {
-                appt.Veterinarian.Appointments.Remove(appt);
-                await appointmentRepository.DeleteAsync(appt.Id);
-            }
-
-            await petRepository.DeleteAsync(pet.Id);
-        }
-
-        var result = await ownerRepository.DeleteAsync(id);
-        if (result)
-        {
-            logger.LogInformation("Владелец с Id {Id}, его питомцы ({PetCount} шт.) и все их приёмы успешно удалены", id, ownerPets.Count);
-        }
-        return result;
+        logger.LogInformation("Владелец с Id {Id}, его питомцы и их приёмы успешно удалены", id);
+        return true;
     }
 }
