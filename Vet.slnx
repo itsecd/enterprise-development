@@ -4,6 +4,7 @@
   <Project Path="Vet.Application/Vet.Application.csproj" Id="0e08281b-bda9-418c-b8b4-25cfcf2ebe64" />
   <Project Path="Vet.Contracts/Vet.Contracts.csproj" Id="9e53b09e-eb6e-474c-ad24-88d74db0d79f" />
   <Project Path="Vet.Domain/Vet.Domain.csproj" Id="4911b072-1e50-4c77-8ccf-12a36a5b208c" />
+  <Project Path="Vet.Infrastructure.EfCore/Vet.Infrastructure.EfCore.csproj" Id="768803b1-2ff2-41a1-817f-70c3611b4ae9" />
   <Project Path="Vet.Infrastructure.InMemory/Vet.Infrastructure.InMemory.csproj" Id="5ceb1526-4733-4dec-b52e-2fc5314b0afd" />
   <Project Path="Vet.ServiceDefaults/Vet.ServiceDefaults.csproj" />
   <Project Path="Vet.Tests/Vet.Tests.csproj" />
