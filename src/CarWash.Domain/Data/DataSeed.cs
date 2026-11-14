@@ -8,7 +8,7 @@ namespace CarWash.Domain.Data;
 /// </summary>
 public static class DataSeed
 {
-    private static readonly DateTime BaseTime = new(2026, 6, 1, 10, 0, 0);
+    private static readonly DateTime _baseTime = new(2026, 6, 1, 10, 0, 0);
 
     /// <summary>
     /// Автомобили
@@ -258,7 +258,7 @@ public static class DataSeed
             Client = Clients[0],
             Car = Cars[0],
             Service = Services[0],
-            StartTime = BaseTime,
+            StartTime = _baseTime,
             BoxNumber = 1
         },
         new Order
@@ -267,7 +267,7 @@ public static class DataSeed
             Client = Clients[0],
             Car = Cars[0],
             Service = Services[0],
-            StartTime = BaseTime.AddHours(2),
+            StartTime = _baseTime.AddHours(2),
             BoxNumber = 1
         },
         new Order
@@ -276,7 +276,7 @@ public static class DataSeed
             Client = Clients[0],
             Car = Cars[0],
             Service = Services[1],
-            StartTime = BaseTime.AddDays(1),
+            StartTime = _baseTime.AddDays(1),
             BoxNumber = 2
         },
         new Order
@@ -285,7 +285,7 @@ public static class DataSeed
             Client = Clients[0],
             Car = Cars[0],
             Service = Services[7],
-            StartTime = BaseTime.AddDays(2),
+            StartTime = _baseTime.AddDays(2),
             BoxNumber = 1
         },
         new Order
@@ -294,7 +294,7 @@ public static class DataSeed
             Client = Clients[0],
             Car = Cars[0],
             Service = Services[0],
-            StartTime = BaseTime.AddDays(3),
+            StartTime = _baseTime.AddDays(3),
             BoxNumber = 1
         },
 
@@ -304,7 +304,7 @@ public static class DataSeed
             Client = Clients[1],
             Car = Cars[1],
             Service = Services[1],
-            StartTime = BaseTime,
+            StartTime = _baseTime,
             BoxNumber = 2
         },
         new Order
@@ -313,7 +313,7 @@ public static class DataSeed
             Client = Clients[1],
             Car = Cars[1],
             Service = Services[1],
-            StartTime = BaseTime.AddHours(3),
+            StartTime = _baseTime.AddHours(3),
             BoxNumber = 1
         },
         new Order
@@ -322,7 +322,7 @@ public static class DataSeed
             Client = Clients[1],
             Car = Cars[4],
             Service = Services[2],
-            StartTime = BaseTime.AddDays(1),
+            StartTime = _baseTime.AddDays(1),
             BoxNumber = 3
         },
         new Order
@@ -331,7 +331,7 @@ public static class DataSeed
             Client = Clients[1],
             Car = Cars[4],
             Service = Services[0],
-            StartTime = BaseTime.AddDays(2),
+            StartTime = _baseTime.AddDays(2),
             BoxNumber = 2
         },
 
@@ -341,7 +341,7 @@ public static class DataSeed
             Client = Clients[2],
             Car = Cars[2],
             Service = Services[4],
-            StartTime = BaseTime,
+            StartTime = _baseTime,
             BoxNumber = 3
         },
         new Order
@@ -350,7 +350,7 @@ public static class DataSeed
             Client = Clients[2],
             Car = Cars[2],
             Service = Services[4],
-            StartTime = BaseTime.AddDays(2),
+            StartTime = _baseTime.AddDays(2),
             BoxNumber = 3
         },
         new Order
@@ -359,7 +359,7 @@ public static class DataSeed
             Client = Clients[2],
             Car = Cars[2],
             Service = Services[2],
-            StartTime = BaseTime.AddDays(4),
+            StartTime = _baseTime.AddDays(4),
             BoxNumber = 3
         },
 
@@ -369,7 +369,7 @@ public static class DataSeed
             Client = Clients[3],
             Car = Cars[3],
             Service = Services[2],
-            StartTime = BaseTime.AddMinutes(10),
+            StartTime = _baseTime.AddMinutes(10),
             BoxNumber = 4
         },
         new Order
@@ -378,7 +378,7 @@ public static class DataSeed
             Client = Clients[3],
             Car = Cars[3],
             Service = Services[0],
-            StartTime = BaseTime.AddDays(1),
+            StartTime = _baseTime.AddDays(1),
             BoxNumber = 1
         },
 
@@ -388,7 +388,7 @@ public static class DataSeed
             Client = Clients[4],
             Car = Cars[5],
             Service = Services[3],
-            StartTime = BaseTime.AddHours(5),
+            StartTime = _baseTime.AddHours(5),
             BoxNumber = 2
         },
         new Order
@@ -397,7 +397,7 @@ public static class DataSeed
             Client = Clients[4],
             Car = Cars[5],
             Service = Services[5],
-            StartTime = BaseTime.AddDays(3),
+            StartTime = _baseTime.AddDays(3),
             BoxNumber = 2
         },
 
@@ -407,7 +407,7 @@ public static class DataSeed
             Client = Clients[5],
             Car = Cars[6],
             Service = Services[6],
-            StartTime = BaseTime.AddHours(4),
+            StartTime = _baseTime.AddHours(4),
             BoxNumber = 4
         },
         new Order
@@ -416,7 +416,7 @@ public static class DataSeed
             Client = Clients[6],
             Car = Cars[7],
             Service = Services[9],
-            StartTime = BaseTime.AddHours(1),
+            StartTime = _baseTime.AddHours(1),
             BoxNumber = 5
         },
         new Order
@@ -425,7 +425,7 @@ public static class DataSeed
             Client = Clients[7],
             Car = Cars[8],
             Service = Services[8],
-            StartTime = BaseTime.AddHours(2),
+            StartTime = _baseTime.AddHours(2),
             BoxNumber = 5
         },
         new Order
@@ -434,7 +434,7 @@ public static class DataSeed
             Client = Clients[8],
             Car = Cars[9],
             Service = Services[1],
-            StartTime = BaseTime.AddHours(6),
+            StartTime = _baseTime.AddHours(6),
             BoxNumber = 2
         },
         new Order
@@ -443,7 +443,7 @@ public static class DataSeed
             Client = Clients[9],
             Car = Cars[10],
             Service = Services[3],
-            StartTime = BaseTime.AddDays(5),
+            StartTime = _baseTime.AddDays(5),
             BoxNumber = 2
         }
     ];
