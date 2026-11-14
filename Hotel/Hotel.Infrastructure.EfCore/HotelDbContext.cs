@@ -34,6 +34,20 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<HotelClient>()
+            .Property(client => client.BirthDate)
+            .HasConversion(
+                date => date.ToDateTime(TimeOnly.MinValue),
+                value => DateOnly.FromDateTime(value))
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Booking>()
+            .Property(booking => booking.CheckInDate)
+            .HasConversion(
+                date => date.ToDateTime(TimeOnly.MinValue),
+                value => DateOnly.FromDateTime(value))
+            .HasColumnType("date");
+
         modelBuilder.Entity<Room>()
             .HasOne(room => room.RoomType)
             .WithMany()

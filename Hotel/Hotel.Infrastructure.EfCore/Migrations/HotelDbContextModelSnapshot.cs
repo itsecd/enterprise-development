@@ -25,7 +25,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("CheckInDate")
+                    b.Property<DateTime>("CheckInDate")
                         .HasColumnType("date");
 
                     b.Property<int>("ClientId")
@@ -49,7 +49,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 1,
-                            CheckInDate = new DateOnly(2026, 9, 1),
+                            CheckInDate = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 1,
                             DaysCount = 3,
                             RoomId = 7
@@ -57,7 +57,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 2,
-                            CheckInDate = new DateOnly(2026, 9, 4),
+                            CheckInDate = new DateTime(2026, 9, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 2,
                             DaysCount = 5,
                             RoomId = 7
@@ -65,7 +65,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 3,
-                            CheckInDate = new DateOnly(2026, 9, 9),
+                            CheckInDate = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 3,
                             DaysCount = 2,
                             RoomId = 7
@@ -73,7 +73,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 4,
-                            CheckInDate = new DateOnly(2026, 9, 11),
+                            CheckInDate = new DateTime(2026, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 4,
                             DaysCount = 4,
                             RoomId = 7
@@ -81,7 +81,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 5,
-                            CheckInDate = new DateOnly(2026, 9, 15),
+                            CheckInDate = new DateTime(2026, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 5,
                             DaysCount = 7,
                             RoomId = 7
@@ -89,7 +89,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 6,
-                            CheckInDate = new DateOnly(2026, 8, 1),
+                            CheckInDate = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 6,
                             DaysCount = 3,
                             RoomId = 3
@@ -97,7 +97,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 7,
-                            CheckInDate = new DateOnly(2026, 8, 4),
+                            CheckInDate = new DateTime(2026, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 7,
                             DaysCount = 6,
                             RoomId = 3
@@ -105,7 +105,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 8,
-                            CheckInDate = new DateOnly(2026, 8, 10),
+                            CheckInDate = new DateTime(2026, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 8,
                             DaysCount = 2,
                             RoomId = 3
@@ -113,7 +113,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 9,
-                            CheckInDate = new DateOnly(2026, 8, 12),
+                            CheckInDate = new DateTime(2026, 8, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 9,
                             DaysCount = 5,
                             RoomId = 3
@@ -121,7 +121,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 10,
-                            CheckInDate = new DateOnly(2026, 7, 1),
+                            CheckInDate = new DateTime(2026, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 10,
                             DaysCount = 4,
                             RoomId = 10
@@ -129,7 +129,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 11,
-                            CheckInDate = new DateOnly(2026, 7, 5),
+                            CheckInDate = new DateTime(2026, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 1,
                             DaysCount = 3,
                             RoomId = 10
@@ -137,7 +137,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 12,
-                            CheckInDate = new DateOnly(2026, 7, 8),
+                            CheckInDate = new DateTime(2026, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 2,
                             DaysCount = 2,
                             RoomId = 10
@@ -145,7 +145,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 13,
-                            CheckInDate = new DateOnly(2026, 6, 1),
+                            CheckInDate = new DateTime(2026, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 3,
                             DaysCount = 4,
                             RoomId = 2
@@ -153,7 +153,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 14,
-                            CheckInDate = new DateOnly(2026, 6, 5),
+                            CheckInDate = new DateTime(2026, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 4,
                             DaysCount = 3,
                             RoomId = 2
@@ -161,7 +161,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 15,
-                            CheckInDate = new DateOnly(2026, 5, 1),
+                            CheckInDate = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 5,
                             DaysCount = 6,
                             RoomId = 5
@@ -169,7 +169,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 16,
-                            CheckInDate = new DateOnly(2026, 5, 7),
+                            CheckInDate = new DateTime(2026, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 6,
                             DaysCount = 3,
                             RoomId = 5
@@ -177,7 +177,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 17,
-                            CheckInDate = new DateOnly(2026, 4, 1),
+                            CheckInDate = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 7,
                             DaysCount = 2,
                             RoomId = 1
@@ -185,7 +185,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 18,
-                            CheckInDate = new DateOnly(2026, 4, 10),
+                            CheckInDate = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 8,
                             DaysCount = 4,
                             RoomId = 4
@@ -193,7 +193,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 19,
-                            CheckInDate = new DateOnly(2026, 3, 1),
+                            CheckInDate = new DateTime(2026, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 9,
                             DaysCount = 5,
                             RoomId = 6
@@ -201,7 +201,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 20,
-                            CheckInDate = new DateOnly(2026, 3, 10),
+                            CheckInDate = new DateTime(2026, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 10,
                             DaysCount = 2,
                             RoomId = 8
@@ -209,7 +209,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 21,
-                            CheckInDate = new DateOnly(2026, 8, 5),
+                            CheckInDate = new DateTime(2026, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 1,
                             DaysCount = 4,
                             RoomId = 4
@@ -217,7 +217,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 22,
-                            CheckInDate = new DateOnly(2026, 8, 3),
+                            CheckInDate = new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ClientId = 2,
                             DaysCount = 7,
                             RoomId = 6
@@ -230,7 +230,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("BirthDate")
+                    b.Property<DateTime>("BirthDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Citizenship")
@@ -260,7 +260,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 1,
-                            BirthDate = new DateOnly(1990, 5, 12),
+                            BirthDate = new DateTime(1990, 5, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Alexey",
                             LastName = "Ivanov",
@@ -269,7 +269,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 2,
-                            BirthDate = new DateOnly(1988, 3, 20),
+                            BirthDate = new DateTime(1988, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Anna",
                             LastName = "Petrova",
@@ -278,7 +278,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 3,
-                            BirthDate = new DateOnly(1995, 7, 8),
+                            BirthDate = new DateTime(1995, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Dmitry",
                             LastName = "Smirnov",
@@ -287,7 +287,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 4,
-                            BirthDate = new DateOnly(1992, 11, 15),
+                            BirthDate = new DateTime(1992, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Elena",
                             LastName = "Kuznetsova",
@@ -296,7 +296,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 5,
-                            BirthDate = new DateOnly(1985, 1, 25),
+                            BirthDate = new DateTime(1985, 1, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Ivan",
                             LastName = "Popov",
@@ -305,7 +305,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 6,
-                            BirthDate = new DateOnly(1998, 6, 10),
+                            BirthDate = new DateTime(1998, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Maria",
                             LastName = "Sokolova",
@@ -314,7 +314,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 7,
-                            BirthDate = new DateOnly(1987, 9, 3),
+                            BirthDate = new DateTime(1987, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Nikolay",
                             LastName = "Fedorov",
@@ -323,7 +323,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 8,
-                            BirthDate = new DateOnly(1993, 12, 18),
+                            BirthDate = new DateTime(1993, 12, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Olga",
                             LastName = "Morozova",
@@ -332,7 +332,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 9,
-                            BirthDate = new DateOnly(1991, 4, 7),
+                            BirthDate = new DateTime(1991, 4, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Pavel",
                             LastName = "Volkov",
@@ -341,7 +341,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 10,
-                            BirthDate = new DateOnly(1996, 8, 22),
+                            BirthDate = new DateTime(1996, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "Russia",
                             FirstName = "Sofia",
                             LastName = "Orlova",
@@ -350,7 +350,7 @@ namespace Hotel.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 11,
-                            BirthDate = new DateOnly(1989, 2, 14),
+                            BirthDate = new DateTime(1989, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Citizenship = "USA",
                             FirstName = "John",
                             LastName = "Smith",
