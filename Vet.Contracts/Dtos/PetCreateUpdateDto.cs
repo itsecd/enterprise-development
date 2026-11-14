@@ -13,21 +13,21 @@ namespace Vet.Contracts.Dtos;
 /// <param name="BodyWeight">Масса тела</param>
 /// <param name="OwnerId">Идентификатор владельца</param>
 public sealed record PetCreateUpdateDto(
-    [property: Required(ErrorMessage = "Кличка питомца обязательна для заполнения")]
-    [property: StringLength(100, MinimumLength = 1, ErrorMessage = "Кличка должна быть от 1 до 100 символов")]
+    [Required(ErrorMessage = "Кличка питомца обязательна для заполнения")]
+    [StringLength(100, MinimumLength = 1, ErrorMessage = "Кличка должна быть от 1 до 100 символов")]
     string Name,
 
-    [property: Required(ErrorMessage = "Вид животного обязателен")]
-    [property: EnumDataType(typeof(Species), ErrorMessage = "Указан недопустимый вид животного")]
+    [Required(ErrorMessage = "Вид животного обязателен")]
+    [EnumDataType(typeof(Species), ErrorMessage = "Указан недопустимый вид животного")]
     Species Species,
 
-    [property: Range(1, int.MaxValue, ErrorMessage = "Идентификатор породы должен быть больше 0")]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор породы должен быть больше 0")]
     int BreedId,
 
     DateOnly? BirthDate,
 
-    [property: Range(0.01, 500.0, ErrorMessage = "Масса тела должна быть в диапазоне от 0.01 до 500.0 кг")]
+    [Range(0.01, 500.0, ErrorMessage = "Масса тела должна быть в диапазоне от 0.01 до 500.0 кг")]
     double? BodyWeight,
 
-    [property: Range(1, int.MaxValue, ErrorMessage = "Идентификатор владельца должен быть больше 0")]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор владельца должен быть больше 0")]
     int OwnerId);

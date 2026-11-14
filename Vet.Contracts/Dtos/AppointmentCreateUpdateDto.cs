@@ -11,16 +11,16 @@ namespace Vet.Contracts.Dtos;
 /// <param name="RoomNumber">Номер кабинета</param>
 /// <param name="IsRepeat">Флаг повторного приема</param>
 public sealed record AppointmentCreateUpdateDto(
-    [property: Range(1, int.MaxValue, ErrorMessage = "Идентификатор питомца должен быть больше 0")]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор питомца должен быть больше 0")]
     int PetId,
 
-    [property: Range(1, int.MaxValue, ErrorMessage = "Идентификатор ветеринара должен быть больше 0")]
+    [ Range(1, int.MaxValue, ErrorMessage = "Идентификатор ветеринара должен быть больше 0")]
     int VeterinarianId,
 
-    [property: Required(ErrorMessage = "Дата и время приёма обязательны для заполнения")]
+    [Required(ErrorMessage = "Дата и время приёма обязательны для заполнения")]
     DateTime AppointmentDateTime,
 
-    [property: Range(1, 9999, ErrorMessage = "Номер кабинета должен быть положительным числом")]
+    [Range(1, 9999, ErrorMessage = "Номер кабинета должен быть положительным числом")]
     int RoomNumber,
 
     bool IsRepeat);
