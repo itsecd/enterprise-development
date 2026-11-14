@@ -12,6 +12,8 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 //Настройка подключения к MySQL
 var connectionString = builder.Configuration.GetConnectionString("HotelDb")
     ?? throw new InvalidOperationException("Не задана строка подключения");
@@ -49,5 +51,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.MapDefaultEndpoints();
 
 app.Run();
