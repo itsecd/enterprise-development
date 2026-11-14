@@ -40,5 +40,6 @@ public interface ICarService
     /// </summary>
     /// <param name="id">ID автомобиля</param>
     /// <exception cref="KeyNotFoundException">Объект не найден</exception>
+    /// <exception cref="InvalidOperationException">Автомобиль используется в заказах</exception>
     public Task DeleteAsync(int id);
 }

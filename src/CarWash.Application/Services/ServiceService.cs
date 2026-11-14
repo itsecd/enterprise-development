@@ -10,7 +10,8 @@ namespace CarWash.Application.Services;
 /// Сервис для работы с услугами
 /// </summary>
 /// <param name="repository">Репозиторий услуг</param>
-public class ServiceService(IServiceRepository repository) : IServiceService
+/// <param name="orderRepository">Репозиторий заказов</param>
+public class ServiceService(IServiceRepository repository, IOrderRepository orderRepository) : IServiceService
 {
     /// <inheritdoc />
     public async Task<IEnumerable<ServiceDto>> GetAllAsync()
@@ -59,6 +60,12 @@ public class ServiceService(IServiceRepository repository) : IServiceService
     {
         _ = await repository.GetByIdAsync(id)
             ?? throw new KeyNotFoundException("Услуга не найдена");
+
+        var orders = await orderRepository.GetAllAsync();
+        if (orders.Any(o => o.Service.Id == id))
+        {
+            throw new InvalidOperationException("Нельзя удалить услугу: по ней есть заказы");
+        }
 
         await repository.DeleteAsync(id);
     }

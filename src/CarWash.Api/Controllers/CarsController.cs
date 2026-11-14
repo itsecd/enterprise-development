@@ -122,6 +122,7 @@ public class CarsController(ICarService carService, ILogger<CarsController> logg
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id)
     {
         try
@@ -134,6 +135,11 @@ public class CarsController(ICarService carService, ILogger<CarsController> logg
         {
             logger.LogWarning(ex, "Не удалось удалить автомобиль с ID {Id}: {Message}", id, ex.Message);
             return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogWarning(ex, "Не удалось удалить автомобиль с ID {Id}: {Message}", id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status409Conflict);
         }
         catch (Exception ex)
         {

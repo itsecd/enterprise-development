@@ -40,5 +40,6 @@ public interface IServiceService
     /// </summary>
     /// <param name="id">ID услуги</param>
     /// <exception cref="KeyNotFoundException">Объект не найден</exception>
+    /// <exception cref="InvalidOperationException">Услуга используется в заказах</exception>
     public Task DeleteAsync(int id);
 }

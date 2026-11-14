@@ -122,6 +122,7 @@ public class ClientsController(IClientService clientService, ILogger<ClientsCont
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id)
     {
         try
@@ -134,6 +135,11 @@ public class ClientsController(IClientService clientService, ILogger<ClientsCont
         {
             logger.LogWarning(ex, "Не удалось удалить клиента с ID {Id}: {Message}", id, ex.Message);
             return Problem(detail: ex.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogWarning(ex, "Не удалось удалить клиента с ID {Id}: {Message}", id, ex.Message);
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status409Conflict);
         }
         catch (Exception ex)
         {

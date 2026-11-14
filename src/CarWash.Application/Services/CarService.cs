@@ -10,7 +10,12 @@ namespace CarWash.Application.Services;
 /// Сервис для работы с автомобилями
 /// </summary>
 /// <param name="repository">Репозиторий автомобилей</param>
-public class CarService(ICarRepository repository) : ICarService
+/// <param name="clientRepository">Репозиторий клиентов</param>
+/// <param name="orderRepository">Репозиторий заказов</param>
+public class CarService(
+    ICarRepository repository,
+    IClientRepository clientRepository,
+    IOrderRepository orderRepository) : ICarService
 {
     /// <inheritdoc />
     public async Task<IEnumerable<CarDto>> GetAllAsync()
@@ -55,6 +60,19 @@ public class CarService(ICarRepository repository) : ICarService
     {
         _ = await repository.GetByIdAsync(id)
             ?? throw new KeyNotFoundException("Автомобиль не найден");
+
+        var orders = await orderRepository.GetAllAsync();
+        if (orders.Any(o => o.Car.Id == id))
+        {
+            throw new InvalidOperationException("Нельзя удалить автомобиль: по нему есть заказы");
+        }
+
+        // Убираем автомобиль из списка автомобилей его владельца
+        var clients = await clientRepository.GetAllAsync();
+        foreach (var client in clients)
+        {
+            client.Cars.RemoveAll(c => c.Id == id);
+        }
 
         await repository.DeleteAsync(id);
     }

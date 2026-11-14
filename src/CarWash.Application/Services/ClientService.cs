@@ -11,7 +11,11 @@ namespace CarWash.Application.Services;
 /// </summary>
 /// <param name="repository">Репозиторий клиентов</param>
 /// <param name="carRepository">Репозиторий автомобилей</param>
-public class ClientService(IClientRepository repository, ICarRepository carRepository) : IClientService
+/// <param name="orderRepository">Репозиторий заказов</param>
+public class ClientService(
+    IClientRepository repository,
+    ICarRepository carRepository,
+    IOrderRepository orderRepository) : IClientService
 {
     /// <inheritdoc />
     public async Task<IEnumerable<ClientDto>> GetAllAsync()
@@ -56,6 +60,12 @@ public class ClientService(IClientRepository repository, ICarRepository carRepos
     {
         _ = await repository.GetByIdAsync(id)
             ?? throw new KeyNotFoundException("Клиент не найден");
+
+        var orders = await orderRepository.GetAllAsync();
+        if (orders.Any(o => o.Client.Id == id))
+        {
+            throw new InvalidOperationException("Нельзя удалить клиента: у него есть заказы");
+        }
 
         await repository.DeleteAsync(id);
     }

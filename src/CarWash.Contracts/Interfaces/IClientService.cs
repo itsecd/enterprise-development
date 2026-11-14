@@ -40,6 +40,7 @@ public interface IClientService
     /// </summary>
     /// <param name="id">ID клиента</param>
     /// <exception cref="KeyNotFoundException">Объект не найден</exception>
+    /// <exception cref="InvalidOperationException">У клиента есть заказы</exception>
     public Task DeleteAsync(int id);
 
     /// <summary>
