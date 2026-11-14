@@ -21,14 +21,14 @@ public class AnalyticsRepository(FitnessClubDbContext context) : IAnalyticsRepos
     /// <inheritdoc />
     public async Task<IReadOnlyCollection<Client>> GetExpiredClientsAsync(DateTime today) =>
         await context.Clients.AsNoTracking().Where(client => client.SubscriptionEndDate < today)
-            .OrderBy(client => client.FullName).ToListAsync();
+            .OrderBy(client => client.FullName).ThenBy(client => client.Id).ToListAsync();
 
     /// <inheritdoc />
     public async Task<IReadOnlyCollection<Training>> GetHallTrainingsAsync(
         int hallId, DateTime start, DateTime end) =>
         await context.Trainings.AsNoTracking()
             .Where(training => training.HallId == hallId && training.StartTime >= start && training.StartTime < end)
-            .OrderBy(training => training.StartTime).ToListAsync();
+            .OrderBy(training => training.StartTime).ThenBy(training => training.Id).ToListAsync();
 
     /// <inheritdoc />
     public async Task<IReadOnlyCollection<Trainer>> GetTopTrainersAsync() =>

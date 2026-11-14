@@ -22,7 +22,7 @@ public class ClientValidationTests
     public void FutureBirthDateIsRejected()
     {
         var dto = CreateClient();
-        dto.BirthDate = DateTime.Today.AddDays(1);
+        dto.BirthDate = DateTime.UtcNow.Date.AddDays(1);
         Assert.False(Validator.TryValidateObject(dto, new ValidationContext(dto), [], true));
     }
 

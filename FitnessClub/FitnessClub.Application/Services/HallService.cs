@@ -50,15 +50,12 @@ public class HallService(IHallRepository repository) : IHallService
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var hall = await repository.GetByIdAsync(id);
-
-        if (hall is null)
+        var hall = new Hall
         {
-            return false;
-        }
-
-        hall.Name = dto.Name;
-        hall.Capacity = dto.Capacity;
+            Id = id,
+            Name = dto.Name,
+            Capacity = dto.Capacity,
+        };
 
         return await repository.UpdateAsync(id, hall);
     }

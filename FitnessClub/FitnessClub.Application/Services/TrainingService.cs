@@ -76,13 +76,6 @@ public class TrainingService(
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var training = await trainingRepository.GetByIdAsync(id);
-
-        if (training is null)
-        {
-            return false;
-        }
-
         var client = await clientRepository.GetByIdAsync(dto.ClientId);
         var trainer = await trainerRepository.GetByIdAsync(dto.TrainerId);
         var hall = await hallRepository.GetByIdAsync(dto.HallId);
@@ -94,12 +87,16 @@ public class TrainingService(
                 nameof(dto));
         }
 
-        training.ClientId = client.Id;
-        training.TrainerId = trainer.Id;
-        training.HallId = hall.Id;
-        training.StartTime = dto.StartTime.UtcDateTime;
-        training.DurationMinutes = dto.DurationMinutes;
-        training.IsTrial = dto.IsTrial;
+        var training = new Training
+        {
+            Id = id,
+            ClientId = client.Id,
+            TrainerId = trainer.Id,
+            HallId = hall.Id,
+            StartTime = dto.StartTime.UtcDateTime,
+            DurationMinutes = dto.DurationMinutes,
+            IsTrial = dto.IsTrial,
+        };
 
         return await trainingRepository.UpdateAsync(id, training);
     }

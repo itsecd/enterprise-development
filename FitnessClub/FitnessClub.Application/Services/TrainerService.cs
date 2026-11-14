@@ -57,22 +57,19 @@ public class TrainerService(
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var trainer = await trainerRepository.GetByIdAsync(id);
-
-        if (trainer is null)
-        {
-            return false;
-        }
-
         var specialization = await specializationRepository.GetByIdAsync(dto.SpecializationId)
             ?? throw new ArgumentException("Указанная специализация не найдена.", nameof(dto));
 
-        trainer.PassportNumber = dto.PassportNumber;
-        trainer.FullName = dto.FullName;
-        trainer.Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto)));
-        trainer.BirthDate = dto.BirthDate;
-        trainer.SpecializationId = specialization.Id;
-        trainer.WorkExperience = dto.WorkExperienceYears;
+        var trainer = new Trainer
+        {
+            Id = id,
+            PassportNumber = dto.PassportNumber,
+            FullName = dto.FullName,
+            Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto))),
+            BirthDate = dto.BirthDate,
+            SpecializationId = specialization.Id,
+            WorkExperience = dto.WorkExperienceYears,
+        };
 
         return await trainerRepository.UpdateAsync(id, trainer);
     }

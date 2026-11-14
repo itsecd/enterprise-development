@@ -55,20 +55,17 @@ public class ClientService(IClientRepository clientRepository) : IClientService
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var existingClient = await clientRepository.GetByIdAsync(id);
-
-        if (existingClient is null)
+        var existingClient = new Client
         {
-            return false;
-        }
-
-        existingClient.PassportNumber = dto.PassportNumber;
-        existingClient.FullName = dto.FullName;
-        existingClient.Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto)));
-        existingClient.BirthDate = dto.BirthDate;
-        existingClient.Phone = dto.Phone;
-        existingClient.SubscriptionStartDate = dto.SubscriptionStartDate;
-        existingClient.SubscriptionEndDate = dto.SubscriptionEndDate;
+            Id = id,
+            PassportNumber = dto.PassportNumber,
+            FullName = dto.FullName,
+            Gender = (Gender)(dto.Gender ?? throw new ArgumentException("Пол обязателен.", nameof(dto))),
+            BirthDate = dto.BirthDate,
+            Phone = dto.Phone,
+            SubscriptionStartDate = dto.SubscriptionStartDate,
+            SubscriptionEndDate = dto.SubscriptionEndDate,
+        };
 
         return await clientRepository.UpdateAsync(id, existingClient);
     }

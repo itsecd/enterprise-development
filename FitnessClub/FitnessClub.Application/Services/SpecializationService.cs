@@ -53,15 +53,12 @@ public class SpecializationService(ISpecializationRepository repository) : ISpec
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var specialization = await repository.GetByIdAsync(id);
-
-        if (specialization is null)
+        var specialization = new Specialization
         {
-            return false;
-        }
-
-        specialization.Name = dto.Name;
-        specialization.Description = dto.Description;
+            Id = id,
+            Name = dto.Name,
+            Description = dto.Description,
+        };
 
         return await repository.UpdateAsync(id, specialization);
     }
