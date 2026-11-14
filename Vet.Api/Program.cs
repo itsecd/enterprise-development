@@ -1,14 +1,14 @@
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Vet.Api;
 using Vet.Application;
-using Vet.Infrastructure.InMemory;
+using Vet.Infrastructure.EfCore;
 using Vet.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     var apiXmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -29,13 +29,30 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddApplication();
-builder.Services.AddInMemoryInfrastructure();
+
+var connectionString = builder.Configuration.GetConnectionString("vetdb")
+    ?? "server=localhost;database=vetdb;user=root;password=dummy";
+
+var connectionStringBuilder = new MySqlConnector.MySqlConnectionStringBuilder(connectionString)
+{
+    SslMode = MySqlConnector.MySqlSslMode.None,
+    AllowPublicKeyRetrieval = true
+};
+
+builder.Services.AddEfCoreInfrastructure(connectionStringBuilder.ConnectionString);
 
 var app = builder.Build();
+
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<VetDbContext>();
+        await dbContext.Database.MigrateAsync();
+    }
+
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -47,4 +64,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapDefaultEndpoints();
-app.Run();
+
+await app.RunAsync();
