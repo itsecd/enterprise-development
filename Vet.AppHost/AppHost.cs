@@ -1,6 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var mysql = builder.AddMySql("mysql")
+    .WithImageTag("8.0.36")
     .WithDataVolume()
     .WithPhpMyAdmin();
 
