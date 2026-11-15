@@ -1,4 +1,5 @@
-﻿using FitnessGym.Contracts.Dtos;
+﻿using FitnessGym.Application.Exceptions;
+using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Enums;
@@ -35,9 +36,7 @@ public class ClientService(IClientRepository repository) : IClientService
     public async Task<ClientDto> CreateAsync(ClientEditDto dto)
     {
         if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
-        {
-            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
-        }
+            throw new BadRequestException($"Недопустимое значение для пола: {dto.Gender}");
 
         var client = new Client
         {
@@ -60,12 +59,10 @@ public class ClientService(IClientRepository repository) : IClientService
     public async Task<bool> UpdateAsync(int id, ClientEditDto dto)
     {
         var client = await repository.GetByIdAsync(id);
-        if (client is null) return false;
+        if (client is null) throw new NotFoundException("Клиент не найден");
 
         if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
-        {
-            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
-        }
+            throw new BadRequestException($"Недопустимое значение для пола: {dto.Gender}");
 
         client.PassportNumber = dto.PassportNumber;
         client.FullName = dto.FullName;

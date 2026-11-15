@@ -1,4 +1,5 @@
-﻿using FitnessGym.Application.Mapping;
+﻿using FitnessGym.Application.Exceptions;
+using FitnessGym.Application.Mapping;
 using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
@@ -41,10 +42,10 @@ public class TrainingSessionService(
         var client = await clientRepository.GetByIdAsync(dto.ClientId);
         var trainer = await trainerRepository.GetByIdAsync(dto.TrainerId);
         if (client is null || trainer is null)
-            throw new ArgumentException("Клиент или тренер не найдены");
+            throw new NotFoundException("Клиент или тренер не найдены");
 
         if (!Enum.TryParse<Hall>(dto.Hall, ignoreCase: true, out var hall))
-            throw new ArgumentException($"Недопустимое значение для зала: {dto.Hall}");
+            throw new BadRequestException($"Недопустимое значение для зала: {dto.Hall}");
 
         var session = new TrainingSession
         {

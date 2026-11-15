@@ -1,3 +1,4 @@
+using FitnessGym.Api.ExceptionHandlers;
 using FitnessGym.Application.Services;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Interfaces;
@@ -15,6 +16,9 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi(options =>
 {
@@ -85,6 +89,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();

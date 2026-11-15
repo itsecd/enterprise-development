@@ -39,8 +39,7 @@ public class AnalyticsService(
         var sessions = await sessionRepository.GetAllAsync();
         var isBusy = sessions.Any(s =>
             s.HallName == hall &&
-            moment >= s.StartsTraining &&
-            moment <= s.EndsTraining);
+            s.IsInProgressAt(moment));
 
         return !isBusy;
     }

@@ -1,4 +1,5 @@
-﻿using FitnessGym.Application.Mapping;
+﻿using FitnessGym.Application.Exceptions;
+using FitnessGym.Application.Mapping;
 using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
@@ -39,10 +40,10 @@ public class TrainerService(
     {
         var spec = await specRepository.GetByIdAsync(dto.SpecializationId);
         if (spec is null)
-            throw new ArgumentException("Специализация не найдена");
+            throw new NotFoundException("Специализация не найдена");
 
         if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
-            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
+            throw new BadRequestException($"Недопустимое значение для пола: {dto.Gender}");
 
         var trainer = new Trainer
         {
@@ -64,13 +65,13 @@ public class TrainerService(
     public async Task<bool> UpdateAsync(int id, TrainerEditDto dto)
     {
         var trainer = await trainerRepository.GetByIdAsync(id);
-        if (trainer is null) return false;
+        if (trainer is null) throw new NotFoundException("Тренер не найден");
 
         var spec = await specRepository.GetByIdAsync(dto.SpecializationId);
-        if (spec is null) return false;
+        if (spec is null) throw new NotFoundException("Специализация не найдена");
 
         if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
-            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
+            throw new BadRequestException($"Недопустимое значение для пола: {dto.Gender}");
 
         trainer.PassportNumber = dto.PassportNumber;
         trainer.FullName = dto.FullName;
