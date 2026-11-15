@@ -1,4 +1,5 @@
-﻿using FitnessGym.Application.Mapping;
+﻿using FitnessGym.Application.Exceptions;
+using FitnessGym.Application.Mapping;
 using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
@@ -34,7 +35,7 @@ public class AnalyticsService(
     public async Task<bool> IsHallAvailableAsync(string hallName, DateTime moment)
     {
         if (!Enum.TryParse<Hall>(hallName, ignoreCase: true, out var hall))
-            return false;
+            throw new BadRequestException($"Недопустимое название зала: {hallName}");
 
         var sessions = await sessionRepository.GetAllAsync();
         var isBusy = sessions.Any(s =>
