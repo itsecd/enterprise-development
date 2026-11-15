@@ -141,7 +141,7 @@ public class VetClinicTestFixture
         new Specialization {
             Id = 1,
             Name = "Терапевт",
-            Species = 
+            Species =
             [
                 new SpecializationSpecies { SpecializationId = 1, Species = Species.Cat },
                 new SpecializationSpecies { SpecializationId = 1, Species = Species.Dog }
@@ -188,7 +188,7 @@ public class VetClinicTestFixture
         new Specialization {
             Id = 6,
             Name = "Герпетолог",
-            Species = 
+            Species =
             [
                 new SpecializationSpecies { SpecializationId = 6, Species = Species.Turtle }
             ]

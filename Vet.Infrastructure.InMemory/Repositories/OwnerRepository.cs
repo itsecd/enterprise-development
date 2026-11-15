@@ -8,7 +8,7 @@ namespace Vet.Infrastructure.InMemory.Repositories;
 /// Класс репозитория для хранения данных в памяти
 /// </summary>
 /// <param name="data">Данные из датасида</param>
-public class OwnerRepository(VetClinicTestFixture data) : IRepository<Owner, int>
+public class OwnerRepository(VetClinicTestFixture data) : IOwnerRepository
 {
     private readonly VetClinicTestFixture _data = data;
     private readonly Lock _lock = new();
@@ -20,7 +20,6 @@ public class OwnerRepository(VetClinicTestFixture data) : IRepository<Owner, int
         {
             var maxId = _data.Owners.Count > 0 ? _data.Owners.Max(p => p.Id) : 0;
             entity.Id = maxId + 1;
-
             _data.Owners.Add(entity);
             return Task.FromResult(entity);
         }
@@ -36,7 +35,6 @@ public class OwnerRepository(VetClinicTestFixture data) : IRepository<Owner, int
             {
                 return Task.FromResult(false);
             }
-
             _data.Owners.Remove(owner);
             return Task.FromResult(true);
         }
@@ -72,9 +70,22 @@ public class OwnerRepository(VetClinicTestFixture data) : IRepository<Owner, int
             {
                 return Task.FromResult(false);
             }
-
             _data.Owners[index] = entity;
             return Task.FromResult(true);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<Owner>> GetWithMultiplePetsAsync()
+    {
+        lock (_lock)
+        {
+            IReadOnlyList<Owner> result = _data.Owners
+                .Where(o => o.Pets.Count > 1)
+                .OrderBy(o => o.FullName)
+                .ToList()
+                .AsReadOnly();
+            return Task.FromResult(result);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Vet.Infrastructure.InMemory.Repositories;
 /// Класс репозитория для хранения данных в памяти
 /// </summary>
 /// <param name="data">Данные из датасида</param>
-public class PetRepository(VetClinicTestFixture data) : IRepository<Pet, int>
+public class PetRepository(VetClinicTestFixture data) : IPetRepository
 {
     private readonly VetClinicTestFixture _data = data;
     private readonly Lock _lock = new();
@@ -20,7 +20,6 @@ public class PetRepository(VetClinicTestFixture data) : IRepository<Pet, int>
         {
             var maxId = _data.Pets.Count > 0 ? _data.Pets.Max(p => p.Id) : 0;
             entity.Id = maxId + 1;
-
             _data.Pets.Add(entity);
             return Task.FromResult(entity);
         }
@@ -36,7 +35,6 @@ public class PetRepository(VetClinicTestFixture data) : IRepository<Pet, int>
             {
                 return Task.FromResult(false);
             }
-
             _data.Pets.Remove(pet);
             return Task.FromResult(true);
         }
@@ -72,9 +70,17 @@ public class PetRepository(VetClinicTestFixture data) : IRepository<Pet, int>
             {
                 return Task.FromResult(false);
             }
-
             _data.Pets[index] = entity;
             return Task.FromResult(true);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<bool> AnyByBreedIdAsync(int breedId)
+    {
+        lock (_lock)
+        {
+            return Task.FromResult(_data.Pets.Any(p => p.Breed.Id == breedId));
         }
     }
 }

@@ -19,15 +19,27 @@ public static class DependencyInjection
     public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
     {
         var fixture = new VetClinicTestFixture();
-
         services.AddSingleton(fixture);
+
+        var vetRepo = new VeterinarianRepository(fixture);
+        var ownerRepo = new OwnerRepository(fixture);
+        var petRepo = new PetRepository(fixture);
+        var apptRepo = new AppointmentRepository(fixture);
 
         services.AddSingleton<IRepository<Breed, int>>(new BreedRepository(fixture));
         services.AddSingleton<IRepository<Specialization, int>>(new SpecializationRepository(fixture));
-        services.AddSingleton<IRepository<Veterinarian, int>>(new VeterinarianRepository(fixture));
-        services.AddSingleton<IRepository<Owner, int>>(new OwnerRepository(fixture));
-        services.AddSingleton<IRepository<Pet, int>>(new PetRepository(fixture));
-        services.AddSingleton<IRepository<Appointment, int>>(new AppointmentRepository(fixture));
+
+        services.AddSingleton<IVeterinarianRepository>(vetRepo);
+        services.AddSingleton<IRepository<Veterinarian, int>>(vetRepo);
+
+        services.AddSingleton<IOwnerRepository>(ownerRepo);
+        services.AddSingleton<IRepository<Owner, int>>(ownerRepo);
+
+        services.AddSingleton<IPetRepository>(petRepo);
+        services.AddSingleton<IRepository<Pet, int>>(petRepo);
+
+        services.AddSingleton<IAppointmentRepository>(apptRepo);
+        services.AddSingleton<IRepository<Appointment, int>>(apptRepo);
 
         return services;
     }

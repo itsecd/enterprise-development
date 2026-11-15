@@ -8,7 +8,7 @@ namespace Vet.Infrastructure.InMemory.Repositories;
 /// Класс репозитория для хранения данных в памяти
 /// </summary>
 /// <param name="data">Данные из датасида</param>
-public class AppointmentRepository(VetClinicTestFixture data) : IRepository<Appointment, int>
+public class AppointmentRepository(VetClinicTestFixture data) : IAppointmentRepository
 {
     private readonly VetClinicTestFixture _data = data;
     private readonly Lock _lock = new();
@@ -20,7 +20,6 @@ public class AppointmentRepository(VetClinicTestFixture data) : IRepository<Appo
         {
             var maxId = _data.Appointments.Count > 0 ? _data.Appointments.Max(p => p.Id) : 0;
             entity.Id = maxId + 1;
-
             _data.Appointments.Add(entity);
             return Task.FromResult(entity);
         }
@@ -36,7 +35,6 @@ public class AppointmentRepository(VetClinicTestFixture data) : IRepository<Appo
             {
                 return Task.FromResult(false);
             }
-
             _data.Appointments.Remove(appointment);
             return Task.FromResult(true);
         }
@@ -72,9 +70,49 @@ public class AppointmentRepository(VetClinicTestFixture data) : IRepository<Appo
             {
                 return Task.FromResult(false);
             }
-
             _data.Appointments[index] = entity;
             return Task.FromResult(true);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<Pet>> GetDistinctPetsByVeterinarianIdAsync(int veterinarianId)
+    {
+        lock (_lock)
+        {
+            IReadOnlyList<Pet> result = _data.Appointments
+                .Where(a => a.Veterinarian.Id == veterinarianId)
+                .Select(a => a.Pet)
+                .Distinct()
+                .OrderBy(p => p.Name)
+                .ToList()
+                .AsReadOnly();
+            return Task.FromResult(result);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<int> GetRepeatCountByBreedIdAsync(int breedId)
+    {
+        lock (_lock)
+        {
+            return Task.FromResult(_data.Appointments.Count(a => a.IsRepeat && a.Pet.Breed.Id == breedId));
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<Appointment>> GetByRoomAndMonthAsync(int roomNumber, int year, int month)
+    {
+        lock (_lock)
+        {
+            IReadOnlyList<Appointment> result = _data.Appointments
+                .Where(a => a.RoomNumber == roomNumber
+                         && a.AppointmentDateTime.Year == year
+                         && a.AppointmentDateTime.Month == month)
+                .OrderBy(a => a.AppointmentDateTime)
+                .ToList()
+                .AsReadOnly();
+            return Task.FromResult(result);
         }
     }
 }

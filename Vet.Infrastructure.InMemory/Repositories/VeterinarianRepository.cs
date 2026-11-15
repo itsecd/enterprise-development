@@ -1,5 +1,6 @@
 ﻿using Vet.Domain.DataSeed;
 using Vet.Domain.Entities;
+using Vet.Domain.Enums;
 using Vet.Domain.Interfaces;
 
 namespace Vet.Infrastructure.InMemory.Repositories;
@@ -8,7 +9,7 @@ namespace Vet.Infrastructure.InMemory.Repositories;
 /// Класс репозитория для хранения данных в памяти
 /// </summary>
 /// <param name="data">Данные из датасида</param>
-public class VeterinarianRepository(VetClinicTestFixture data) : IRepository<Veterinarian, int>
+public class VeterinarianRepository(VetClinicTestFixture data) : IVeterinarianRepository
 {
     private readonly VetClinicTestFixture _data = data;
     private readonly Lock _lock = new();
@@ -20,7 +21,6 @@ public class VeterinarianRepository(VetClinicTestFixture data) : IRepository<Vet
         {
             var maxId = _data.Veterinarians.Count > 0 ? _data.Veterinarians.Max(p => p.Id) : 0;
             entity.Id = maxId + 1;
-
             _data.Veterinarians.Add(entity);
             return Task.FromResult(entity);
         }
@@ -36,7 +36,6 @@ public class VeterinarianRepository(VetClinicTestFixture data) : IRepository<Vet
             {
                 return Task.FromResult(false);
             }
-
             _data.Veterinarians.Remove(veterinarian);
             return Task.FromResult(true);
         }
@@ -72,9 +71,31 @@ public class VeterinarianRepository(VetClinicTestFixture data) : IRepository<Vet
             {
                 return Task.FromResult(false);
             }
-
             _data.Veterinarians[index] = entity;
             return Task.FromResult(true);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<Veterinarian>> GetBySpeciesAsync(Species species)
+    {
+        lock (_lock)
+        {
+            IReadOnlyList<Veterinarian> result = _data.Veterinarians
+                .Where(v => v.Specialization.Species.Any(ss => ss.Species == species))
+                .OrderBy(v => v.FullName)
+                .ToList()
+                .AsReadOnly();
+            return Task.FromResult(result);
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<bool> AnyBySpecializationIdAsync(int specializationId)
+    {
+        lock (_lock)
+        {
+            return Task.FromResult(_data.Veterinarians.Any(v => v.Specialization.Id == specializationId));
         }
     }
 }
