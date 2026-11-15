@@ -10,13 +10,14 @@
   <ItemGroup>
     <ProjectReference Include="..\FitnessClub.Application\FitnessClub.Application.csproj" />
     <ProjectReference Include="..\FitnessClub.Contracts\FitnessClub.Contracts.csproj" />
-    <ProjectReference Include="..\FitnessClub.Infrastructure.InMemory\FitnessClub.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\FitnessClub.Infrastructure.EfCore\FitnessClub.Infrastructure.EfCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" Version="13.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
+    <PackageReference Include="MySqlConnector" Version="2.6.1" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.18.6" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
   </ItemGroup>

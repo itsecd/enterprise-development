@@ -3,14 +3,13 @@
     <Project Path="aspire/FitnessClub.AppHost/FitnessClub.AppHost.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/FitnessClub.AppHost/FitnessClub.AppHost.csproj" />
     <Project Path="src/FitnessClub.Api/FitnessClub.Api.csproj" />
     <Project Path="src/FitnessClub.Application/FitnessClub.Application.csproj" />
     <Project Path="src/FitnessClub.Contracts/FitnessClub.Contracts.csproj" />
     <Project Path="src/FitnessClub.Domain/FitnessClub.Domain.csproj" />
     <Project Path="src/FitnessClub.Infrastructure.EfCore/FitnessClub.Infrastructure.EfCore.csproj" />
     <Project Path="src/FitnessClub.Infrastructure.InMemory/FitnessClub.Infrastructure.InMemory.csproj" />
-    <Project Path="src/FitnessClub.MigrationServices/FitnessClub.MigrationServices.csproj" />
+    <Project Path="src/FitnessClub.MigrationService/FitnessClub.MigrationService.csproj" />
     <Project Path="src/FitnessClub.Shared/FitnessClub.Shared.csproj" />
   </Folder>
   <Folder Name="/tests/">
