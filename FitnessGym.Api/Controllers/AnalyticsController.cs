@@ -61,11 +61,11 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     [HttpGet("expired-subscriptions")]
     [ProducesResponseType(typeof(IReadOnlyList<ClientDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetExpiredSubscriptions([FromQuery] DateTime? currentDate = null)
+    public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetExpiredSubscriptions([FromQuery] DateOnly? currentDate = null)
     {
         try
         {
-            var date = currentDate ?? DateTime.UtcNow;
+            var date = currentDate ?? DateOnly.FromDateTime(DateTime.UtcNow);
             var clients = await service.GetClientsWithExpiredSubscriptionAsync(date);
             return Ok(clients);
         }

@@ -48,12 +48,11 @@ public class AnalyticsService(
     /// <summary>
     /// Вывести информацию о клиентах, у которых просрочен абонемент
     /// </summary>
-    public async Task<IReadOnlyList<ClientDto>> GetClientsWithExpiredSubscriptionAsync(DateTime currentDate)
+    public async Task<IReadOnlyList<ClientDto>> GetClientsWithExpiredSubscriptionAsync(DateOnly currentDate)
     {
-        var dateOnly = DateOnly.FromDateTime(currentDate);
         var clients = await clientRepository.GetAllAsync();
         return clients
-            .Where(c => c.SubscriptionEnd < dateOnly)
+            .Where(c => c.SubscriptionEnd < currentDate)
             .OrderBy(c => c.FullName)
             .Select(c => new ClientDto(
                 c.Id,

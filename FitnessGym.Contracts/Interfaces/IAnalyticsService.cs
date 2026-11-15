@@ -20,7 +20,7 @@ public interface IAnalyticsService
     /// <summary>
     /// Вывести информацию о клиентах, у которых абонемент просрочен на указанную дату
     /// </summary>
-    public Task<IReadOnlyList<ClientDto>> GetClientsWithExpiredSubscriptionAsync(DateTime currentDate);
+    public Task<IReadOnlyList<ClientDto>> GetClientsWithExpiredSubscriptionAsync(DateOnly currentDate);
 
     /// <summary>
     /// Вывести информацию о занятиях за указанный месяц, проходящих в выбранном зале
