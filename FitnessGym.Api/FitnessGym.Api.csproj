@@ -11,6 +11,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Scalar.AspNetCore" Version="2.21.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
   </ItemGroup>
@@ -20,6 +24,7 @@
     <ProjectReference Include="..\FitnessGym.Contracts\FitnessGym.Contracts.csproj" />
     <ProjectReference Include="..\FitnessGym.Application\FitnessGym.Application.csproj" />
     <ProjectReference Include="..\FitnessGym.Infrastructure.InMemory\FitnessGym.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\FitnessGym.Infrastructure.EFCore\FitnessGym.Infrastructure.EFCore.csproj" />
   </ItemGroup>
 
 </Project>
