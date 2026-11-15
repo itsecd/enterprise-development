@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Scalar.AspNetCore" Version="2.*" />
   </ItemGroup>
 
@@ -17,7 +21,7 @@
     <ProjectReference Include="..\Museum.Domain\Museum.Domain.csproj" />
     <ProjectReference Include="..\Museum.Application\Museum.Application.csproj" />
     <ProjectReference Include="..\Museum.Contracts\Museum.Contracts.csproj" />
-    <ProjectReference Include="..\Museum.Infrastructure.InMemory\Museum.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\Museum.Infrastructure.MySql\Museum.Infrastructure.MySql.csproj" />
   </ItemGroup>
 
 </Project>

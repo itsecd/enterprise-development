@@ -1,4 +1,4 @@
-# Разработка корпоративных приложений лабораторная №2
+# Разработка корпоративных приложений лабораторная №3
 
 ## Вариант
 
@@ -26,60 +26,55 @@
 4. Сведения обо всех экскурсиях в выбранном зале за заданный период.
 5. Сведения обо всех посетителях, купивших билеты на выбранную экскурсию, упорядоченные по ФИО.
 
-### Технологический стек
+## Что реализовано в лабораторной работе 3
+
+- Новый проект `Museum.Infrastructure.MySql`: репозитории, реализующие те же интерфейсы, что и в `Infrastructure.InMemory`, но поверх базы данных MySQL (Entity Framework Core). Сервисы и контроллеры не менялись, заменена только регистрация в `Program.cs`: `AddMySqlPersistence(...)` вместо `AddInMemoryPersistence()`.
+- `MuseumDbContext` и настройки таблиц (`IEntityTypeConfiguration`): ограничения длины полей, внешние ключи, связь «многие ко многим» между экскурсиями и выставками, хранение перечислений в виде строк.
+- Миграция `InitialCreate` создаёт таблицы `Exhibitions`, `Visitors`, `Tours`, `TourExhibitions`, `Tickets` и заполняет их начальными данными из `DataSeeder`.
+- Миграции применяются автоматически при старте сервера.
+- Оркестратор .NET Aspire (`Museum.AppHost`) запускает MySQL в контейнере, создаёт базу `museum`, передаёт серверу строку подключения и запускает сервер после готовности базы.
+- Выставку, посетителя или экскурсию, на которые есть ссылки, удалить нельзя (проверяется в сервисах, а в базе заданы ограничения внешних ключей).
+
+## Технологический стек
 
 - Платформа: .NET 10.0
 - Веб-фреймворк: ASP.NET Core Web API
-- Маппинг: ручной маппинг Domain ↔ DTO
-- Документация API: OpenAPI + Scalar (интерактивный интерфейс по адресу `/scalar`)
+- ORM: Entity Framework Core 10, провайдер `Microting.EntityFrameworkCore.MySql` (форк Pomelo для EF Core 10), миграции
+- База данных: MySQL (контейнер Docker, запускается через Aspire)
+- Оркестрация: .NET Aspire (`Museum.AppHost`)
+- Документация API: OpenAPI + Scalar (`/scalar`)
 - Логирование: `ILogger` в контроллерах
 - Фреймворк тестирования: xUnit v3
 - Continuous Integration: GitHub Actions
-- Хранение данных: In-memory storage
-- Архитектура: слоистая, Repository pattern
-- Dependency Injection
+- Архитектура: слоистая, Repository pattern, Dependency Injection
 
-### Структура решения
+## Запуск
 
-~~~text
+Требуется .NET 10 SDK и запущенный Docker.
+
+```bash
+dotnet run --project Museum.AppHost
+```
+
+Панель Aspire откроется в браузере, там же будет ссылка на Scalar сервера.
+
+## Структура решения
+
+```text
 Museum.slnx
-│
-├── .github/
-│   └── workflows/
-│       └── dotnet-tests.yml                 — CI: сборка и запуск тестов
-│
-├── Museum.Shared/                           — общие типы для всех слоёв
-│   ├── ExhibitionTheme.cs                   — тематика выставки
-│   └── TicketType.cs                        — тип билета
-│
-├── Museum.Domain/                           — доменная модель
-│   ├── DataSeeder.cs                        — начальные данные и связи между сущностями
-│   ├── Exhibition.cs                        — выставка
-│   ├── Ticket.cs                            — билет
-│   ├── Tour.cs                              — экскурсия
-│   ├── Visitor.cs                           — посетитель
-│   └── Interfaces/                          — интерфейсы репозиториев
-│
-├── Museum.Contracts/                        — контракты приложения
-│   ├── Dto/                                 — DTO
-│   └── Interfaces/                          — интерфейсы сервисов
-│
-├── Museum.Application/                      — бизнес-логика
-│   ├── Mapping/                             — маппинг
-│   ├── Services/                            — сервисы приложения
-│   └── DependencyInjection/                 — регистрация сервисов
-│
-├── Museum.Infrastructure.InMemory/          — хранение данных в памяти
-│   ├── Repositories/                        — реализации репозиториев
-│   └── DependencyInjection/                 — регистрация репозиториев
-│
-├── Museum.Api/                              — REST API
-│   ├── Controllers/                         — контроллеры
-│   └── Program.cs                           — конфигурация приложения
-│
-└── Museum.Tests/                            — модульные тесты (xUnit v3)
-    ├── ExhibitionTests.cs
-    └── MuseumFixture.cs
-~~~
-
-В `DataSeeder` находятся начальные данные для доменных сущностей, а связи между ними (экскурсия — выставки, билет — экскурсия и посетитель) проставляются прямо в сидере. Репозитории получают коллекции из `DataSeeder`, который регистрируется в контейнере зависимостей как singleton. Перечисления `ExhibitionTheme` и `TicketType` вынесены в проект `Museum.Shared`, чтобы `Museum.Contracts` не зависел от `Museum.Domain`.
+├── Museum.Shared/                     — общие типы (ExhibitionTheme, TicketType)
+├── Museum.Domain/                     — доменная модель, DataSeeder, интерфейсы репозиториев
+├── Museum.Contracts/                  — DTO и интерфейсы сервисов
+├── Museum.Application/                — бизнес-логика, маппинг
+├── Museum.Infrastructure.InMemory/    — репозитории поверх коллекций в памяти
+├── Museum.Infrastructure.MySql/       — репозитории поверх MySQL (EF Core)
+│   ├── MuseumDbContext.cs
+│   ├── MuseumDbContextFactory.cs
+│   ├── Configurations/                — настройки таблиц и начальные данные
+│   ├── Repositories/
+│   ├── Migrations/                    — миграции
+│   └── DependencyInjection/
+├── Museum.Api/                        — REST API
+├── Museum.AppHost/                    — оркестратор .NET Aspire: MySQL и сервер
+└── Museum.Tests/                      — модульные тесты (xUnit v3)
+```

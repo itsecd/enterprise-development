@@ -1,14 +1,14 @@
 using System.Text.Json.Serialization;
 using Museum.Application.DependencyInjection;
-using Museum.Infrastructure.InMemory.DependencyInjection;
+using Museum.Infrastructure.MySql.DependencyInjection;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Подключение сервисов приложения и хранилища
+// Подключение сервисов приложения и хранилища (база данных MySQL)
 builder.Services
     .AddApplication()
-    .AddInMemoryPersistence();
+    .AddMySqlPersistence(builder.Configuration.GetConnectionString("museum"));
 
 builder.Services
     .AddControllers()
@@ -18,6 +18,9 @@ builder.Services
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Создание таблиц и начальное заполнение при запуске
+await app.Services.ApplyMigrationsAsync();
 
 if (app.Environment.IsDevelopment())
 {
