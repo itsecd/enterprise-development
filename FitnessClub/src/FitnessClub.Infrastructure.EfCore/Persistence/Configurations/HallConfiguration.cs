@@ -9,6 +9,7 @@ namespace FitnessClub.Infrastructure.EfCore.Persistence.Configurations;
 /// </summary>
 public class HallConfiguration : IEntityTypeConfiguration<Hall>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Hall> builder)
     {
         builder.HasKey(h => h.Id);

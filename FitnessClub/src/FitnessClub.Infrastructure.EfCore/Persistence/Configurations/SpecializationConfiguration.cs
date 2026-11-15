@@ -9,6 +9,7 @@ namespace FitnessClub.Infrastructure.EfCore.Persistence.Configurations;
 /// </summary>
 public class SpecializationConfiguration : IEntityTypeConfiguration<Specialization>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Specialization> builder)
     {
         builder.HasKey(s => s.Id);

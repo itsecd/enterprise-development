@@ -7,8 +7,9 @@ namespace FitnessClub.Infrastructure.EfCore.Persistence.Configurations;
 /// <summary>
 /// Конфигурация маппинга человечка в базу данных
 /// </summary>
-public abstract class PersonConfiguration : IEntityTypeConfiguration<Person>
+public class PersonConfiguration : IEntityTypeConfiguration<Person>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Person> builder)
     {
         builder.HasKey(p => p.Id);

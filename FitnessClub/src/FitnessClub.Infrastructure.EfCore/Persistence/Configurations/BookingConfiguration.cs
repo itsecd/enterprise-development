@@ -9,11 +9,11 @@ namespace FitnessClub.Infrastructure.EfCore.Persistence.Configurations;
 /// </summary>
 public class BookingConfiguration : IEntityTypeConfiguration<Booking>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Booking> builder)
     {
         builder.HasKey(b => b.Id);
         builder.Property(b => b.DateTime).IsRequired();
-        builder.Property(b => b.IsTrial);
         builder.Property(b => b.Duration).IsRequired();
         builder.HasOne(b => b.Trainer)
             .WithMany()
@@ -27,5 +27,8 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .WithMany()
             .HasForeignKey("HallId")
             .OnDelete(DeleteBehavior.Restrict);
+        builder.Navigation(booking => booking.Client).AutoInclude();
+        builder.Navigation(booking => booking.Trainer).AutoInclude();   
+        builder.Navigation(booking => booking.Hall).AutoInclude();
     }
 }
