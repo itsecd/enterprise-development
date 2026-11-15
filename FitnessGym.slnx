@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path="tests.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="FitnessGym.Api/FitnessGym.Api.csproj" />
+  <Project Path="FitnessGym.Application/FitnessGym.Application.csproj" />
+  <Project Path="FitnessGym.Contracts/FitnessGym.Contracts.csproj" />
+  <Project Path="FitnessGym.Domain/FitnessGym.Domain.csproj" Id="4d1d62a3-a28a-4e18-8e47-e55a8a3e89af" />
+  <Project Path="FitnessGym.Infrastructure.InMemory/FitnessGym.Infrastructure.InMemory.csproj" />
+  <Project Path="FitnessGym.Tests/FitnessGym.Tests.csproj" Id="e5b977fa-3e08-4e36-8b6b-44940c56e500" />
+</Solution>
