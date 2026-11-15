@@ -39,13 +39,27 @@ public class TrainingSessionRepository : ITrainingSessionRepository
     }
 
     /// <summary>
+    /// Обновить данные записи на занятие
+    /// </summary>
+    public Task<bool> UpdateAsync(TrainingSession session)
+    {
+        var existing = _sessions.FirstOrDefault(s => s.Id == session.Id);
+        if (existing is null)
+            return Task.FromResult(false);
+
+        var index = _sessions.IndexOf(existing);
+        _sessions[index] = session;
+        return Task.FromResult(true);
+    }
+
+    /// <summary>
     /// Удалить запись о занятии
     /// </summary>
     public Task<bool> DeleteAsync(int id)
     {
         var session = _sessions.FirstOrDefault(s => s.Id == id);
-        if (session is null) return Task.FromResult(false);
-
+        if (session is null)
+            return Task.FromResult(false);
         _sessions.Remove(session);
         return Task.FromResult(true);
     }

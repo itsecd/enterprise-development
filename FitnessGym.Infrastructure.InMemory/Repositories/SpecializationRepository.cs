@@ -39,13 +39,27 @@ public class SpecializationRepository : ISpecializationRepository
     }
 
     /// <summary>
+    /// Обновить данные специализации
+    /// </summary>
+    public Task<bool> UpdateAsync(Specialization specialization)
+    {
+        var existing = _specializations.FirstOrDefault(s => s.Id == specialization.Id);
+        if (existing is null)
+            return Task.FromResult(false);
+
+        var index = _specializations.IndexOf(existing);
+        _specializations[index] = specialization;
+        return Task.FromResult(true);
+    }
+
+    /// <summary>
     /// Удалить специализацию
     /// </summary>
     public Task<bool> DeleteAsync(int id)
     {
         var spec = _specializations.FirstOrDefault(s => s.Id == id);
-        if (spec is null) return Task.FromResult(false);
-
+        if (spec is null)
+            return Task.FromResult(false);
         _specializations.Remove(spec);
         return Task.FromResult(true);
     }
