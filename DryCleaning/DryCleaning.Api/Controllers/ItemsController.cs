@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DryCleaning.Api.Services;
+using DryCleaning.Infrastructure.Repositories;
 using DryCleaning.Domain.Models;
+using DryCleaning.Api.Dtos;
 
 namespace DryCleaning.Api.Controllers;
 
@@ -10,82 +11,96 @@ namespace DryCleaning.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ItemsController : ControllerBase
+public class ItemsController(
+    IItemRepository repository, 
+    ICategoryRepository categoryRepository,
+    ILogger<ItemsController> logger) : ControllerBase
 {
-    private readonly InMemStore _store;
-
-    public ItemsController(InMemStore store)
-    {
-        _store = store;
-    }
-
     /// <summary>
     /// Получить все изделия
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<Item>> GetAll()
+    public ActionResult<IEnumerable<ItemDto>> GetAll()
     {
-        return Ok(_store.Items);
+        logger.LogInformation("Запрос всего списка объектов(изделий)");
+        var items = repository.GetAll();
+        var result = items.Select(i => new ItemDto(i.Id, i.Name, i.Material, i.CategoryId, i.Category.Name));
+        return Ok(result);
     }
 
     /// <summary>
     /// Получить изделие по Id
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Item> GetById(int id)
+    public ActionResult<ItemDto> GetById(int id)
     {
-        var item = _store.Items.FirstOrDefault(i => i.Id == id);
+        logger.LogInformation("Запрос конкретного объекта(изделия) из доступных");
+        var item = repository.GetById(id);
         if (item == null)
         {
+            logger.LogWarning("Изделие с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Изделие с Id = {id} не найдено" });
         }
-        return Ok(item);
+
+        var result = new ItemDto(item.Id, item.Name, item.Material, item.CategoryId, item.Category.Name);
+        return Ok(result);
     }
 
     /// <summary>
     /// Создать новое изделие
     /// </summary>
     [HttpPost]
-    public ActionResult<Item> Create([FromBody] Item newItem)
+    public ActionResult<ItemDto> Create([FromBody] CreateItemDto dto)
     {
-        var category = _store.Categories.FirstOrDefault(c => c.Id == newItem.CategoryId);
+        logger.LogInformation("Создание нового объекта(изделия)");
+        var category = categoryRepository.GetById(dto.CategoryId);
         if (category == null)
         {
-            return BadRequest(new { message = $"Категория с Id = {newItem.CategoryId} не существует" });
+            logger.LogWarning("Категория с Id = {id} не существует", dto.CategoryId);
+            return BadRequest(new { message = $"Категория с Id = {dto.CategoryId} не существует" });
         }
 
-        var nextId = _store.Items.Any() ? _store.Items.Max(i => i.Id) + 1 : 1;
-        newItem.Id = nextId;
-        newItem.Category = category;
+        var item = new Item
+        {
+            Name = dto.Name,
+            Material = dto.Material,
+            CategoryId = dto.CategoryId,
+            Category = category
+        };
 
-        _store.Items.Add(newItem);
+        repository.Add(item);
 
-        return CreatedAtAction(nameof(GetById), new { id = newItem.Id }, newItem);
+        var result = new ItemDto(item.Id, item.Name, item.Material, item.CategoryId, item.Category.Name);
+        return CreatedAtAction(nameof(GetById), new { id = item.Id }, result);
     }
 
     /// <summary>
     /// Обновить изделие
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] Item updatedItem)
+    public IActionResult Update(int id, [FromBody] UpdateItemDto dto)
     {
-        var item = _store.Items.FirstOrDefault(i => i.Id == id);
+        logger.LogInformation("Обновление объекта(изделия)");
+        var item = repository.GetById(id);
         if (item == null)
         {
+            logger.LogWarning("Изделие с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Изделие с Id = {id} не найдено" });
         }
 
-        var category = _store.Categories.FirstOrDefault(c => c.Id == updatedItem.CategoryId);
+        var category = categoryRepository.GetById(dto.CategoryId);
         if (category == null)
         {
-            return BadRequest(new { message = $"Категория с Id = {updatedItem.CategoryId} не существует" });
+            logger.LogWarning("Категория с Id = {id} не существует", dto.CategoryId);
+            return BadRequest(new { message = $"Категория с Id = {dto.CategoryId} не существует" });
         }
 
-        item.Name = updatedItem.Name;
-        item.Material = updatedItem.Material;
-        item.CategoryId = updatedItem.CategoryId;
+        item.Name = dto.Name;
+        item.Material = dto.Material;
+        item.CategoryId = dto.CategoryId;
         item.Category = category;
 
+        repository.Update(item);
         return NoContent();
     }
 
@@ -95,13 +110,15 @@ public class ItemsController : ControllerBase
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        var item = _store.Items.FirstOrDefault(i => i.Id == id);
+        logger.LogInformation("Удаление объекта(изделия)");
+        var item = repository.GetById(id);
         if (item == null)
         {
+            logger.LogWarning("Изделие с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Изделие с Id = {id} не найдено" });
         }
 
-        _store.Items.Remove(item);
+        repository.Delete(id);
         return NoContent();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DryCleaning.Api.Services;
+using DryCleaning.Infrastructure.Repositories;
 using DryCleaning.Domain.Models;
+using DryCleaning.Api.Dtos;
 
 namespace DryCleaning.Api.Controllers;
 
@@ -10,67 +11,75 @@ namespace DryCleaning.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ClientsController : ControllerBase
+public class ClientsController(IClientRepository repository, ILogger<ClientsController> logger) : ControllerBase
 {
-    private readonly InMemStore _store;
-
-    public ClientsController(InMemStore store)
-    {
-        _store = store;
-    }
-
     /// <summary>
     /// Получить список всех клиентов
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<Client>> GetAll()
+    public ActionResult<IEnumerable<ClientDto>> GetAll()
     {
-        return Ok(_store.Clients);
+        logger.LogInformation("Запрос всего списка объектов(клиентов)");
+        var clients = repository.GetAll();
+        var result = clients.Select(c => new ClientDto(c.Id, c.FullName, c.PhoneNumber));
+        return Ok(result);
     }
 
     /// <summary>
     /// Получить клиента по Id
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Client> GetById(int id)
+    public ActionResult<ClientDto> GetById(int id)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == id);
+        logger.LogInformation("Запрос конкретного объекта(клиента) из доступных");
+        var client = repository.GetById(id);
         if (client == null)
         {
+            logger.LogWarning("Клиент с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Клиент с Id = {id} не найден" });
         }
-        return Ok(client);
+
+        var result = new ClientDto(client.Id, client.FullName, client.PhoneNumber);
+        return Ok(result);
     }
 
     /// <summary>
     /// Создать нового клиента
     /// </summary>
     [HttpPost]
-    public ActionResult<Client> Create([FromBody] Client newClient)
+    public ActionResult<ClientDto> Create([FromBody] CreateClientDto dto)
     {
-        var nextId = _store.Clients.Any() ? _store.Clients.Max(c => c.Id) + 1 : 1;
-        newClient.Id = nextId;
+        logger.LogInformation("Создание нового объекта(клиента)");
+        var client = new Client
+        {
+            FullName = dto.FullName,
+            PhoneNumber = dto.PhoneNumber
+        };
 
-        _store.Clients.Add(newClient);
+        repository.Add(client);
 
-        return CreatedAtAction(nameof(GetById), new { id = newClient.Id }, newClient);
+        var result = new ClientDto(client.Id, client.FullName, client.PhoneNumber);
+        return CreatedAtAction(nameof(GetById), new { id = client.Id }, result);
     }
 
     /// <summary>
     /// Обновить данные клиента
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] Client updatedClient)
+    public IActionResult Update(int id, [FromBody] UpdateClientDto dto)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == id);
+        logger.LogInformation("Обновление объекта(клиента)");
+        var client = repository.GetById(id);
         if (client == null)
         {
+            logger.LogWarning("Клиент с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Клиент с Id = {id} не найден" });
         }
 
-        client.FullName = updatedClient.FullName;
-        client.PhoneNumber = updatedClient.PhoneNumber;
+        client.FullName = dto.FullName;
+        client.PhoneNumber = dto.PhoneNumber;
 
+        repository.Update(client);
         return NoContent();
     }
 
@@ -80,13 +89,15 @@ public class ClientsController : ControllerBase
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == id);
+        logger.LogInformation("Удаление объекта(клиента)");
+        var client = repository.GetById(id);
         if (client == null)
         {
+            logger.LogWarning("Клиент с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Клиент с Id = {id} не найден" });
         }
 
-        _store.Clients.Remove(client);
+        repository.Delete(id);
         return NoContent();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DryCleaning.Api.Services;
+using DryCleaning.Infrastructure.Repositories;
 using DryCleaning.Domain.Models;
+using DryCleaning.Api.Dtos;
 
 namespace DryCleaning.Api.Controllers;
 
@@ -10,103 +11,134 @@ namespace DryCleaning.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController : ControllerBase
+public class OrdersController(
+    IOrderRepository repository,
+    IClientRepository clientRepository,
+    IItemRepository itemRepository,
+    ILogger<OrdersController> logger) : ControllerBase
 {
-    private readonly InMemStore _store;
-
-    public OrdersController(InMemStore store)
-    {
-        _store = store;
-    }
-
     /// <summary>
     /// Получить все заказы
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<Order>> GetAll()
+    public ActionResult<IEnumerable<OrderDto>> GetAll()
     {
-        return Ok(_store.Orders);
+        logger.LogInformation("Запрос всего списка объектов(заказов)");
+        var orders = repository.GetAll();
+        var result = orders.Select(o => new OrderDto(
+            o.Id,
+            o.ClientId,
+            o.Client.FullName,
+            o.ItemId,
+            o.Item.Name,
+            o.AcceptDate,
+            o.ExeDays,
+            o.Status
+        ));
+        return Ok(result);
     }
 
     /// <summary>
     /// Получить заказ по Id
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Order> GetById(int id)
+    public ActionResult<OrderDto> GetById(int id)
     {
-        var order = _store.Orders.FirstOrDefault(o => o.Id == id);
+        logger.LogInformation("Запрос конкретного объекта(заказа) из доступных");
+        var order = repository.GetById(id);
         if (order == null)
         {
+            logger.LogWarning("Заказ с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Заказ с Id = {id} не найден" });
         }
-        return Ok(order);
+
+        var result = new OrderDto(
+            order.Id, order.ClientId, order.Client.FullName,
+            order.ItemId, order.Item.Name,
+            order.AcceptDate, order.ExeDays, order.Status
+        );
+        return Ok(result);
     }
 
     /// <summary>
     /// Создать новый заказ
     /// </summary>
     [HttpPost]
-    public ActionResult<Order> Create([FromBody] Order newOrder)
+    public ActionResult<OrderDto> Create([FromBody] CreateOrderDto dto)
     {
-        var client = _store.Clients.FirstOrDefault(c => c.Id == newOrder.ClientId);
+        logger.LogInformation("Создание нового объекта(заказа)");
+        var client = clientRepository.GetById(dto.ClientId);
         if (client == null)
         {
-            return BadRequest(new { message = $"Клиент с Id = {newOrder.ClientId} не найден" });
+            logger.LogWarning("Клиент с Id = {id} не найден", dto.ClientId);
+            return BadRequest(new { message = $"Клиент с Id = {dto.ClientId} не найден" });
         }
 
-        var item = _store.Items.FirstOrDefault(i => i.Id == newOrder.ItemId);
+        var item = itemRepository.GetById(dto.ItemId);
         if (item == null)
         {
-            return BadRequest(new { message = $"Изделие с Id = {newOrder.ItemId} не найдено" });
+            logger.LogWarning("Изделие с Id = {id} не найдено", dto.ItemId);
+            return BadRequest(new { message = $"Изделие с Id = {dto.ItemId} не найдено" });
         }
 
-        var nextId = _store.Orders.Any() ? _store.Orders.Max(o => o.Id) + 1 : 1;
-        newOrder.Id = nextId;
-        newOrder.Client = client;
-        newOrder.Item = item;
-
-        if (newOrder.AcceptDate == default)
+        var order = new Order
         {
-            newOrder.AcceptDate = DateTime.Today;
-        }
+            ClientId = dto.ClientId,
+            Client = client,
+            ItemId = dto.ItemId,
+            Item = item,
+            AcceptDate = dto.AcceptDate == default ? DateTime.Today : dto.AcceptDate,
+            ExeDays = dto.ExeDays,
+            Status = dto.Status
+        };
 
-        _store.Orders.Add(newOrder);
+        repository.Add(order);
 
-        return CreatedAtAction(nameof(GetById), new { id = newOrder.Id }, newOrder);
+        var result = new OrderDto(
+            order.Id, order.ClientId, order.Client.FullName,
+            order.ItemId, order.Item.Name,
+            order.AcceptDate, order.ExeDays, order.Status
+        );
+        return CreatedAtAction(nameof(GetById), new { id = order.Id }, result);
     }
 
     /// <summary>
     /// Обновить параметры заказа
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] Order updatedOrder)
+    public IActionResult Update(int id, [FromBody] UpdateOrderDto dto)
     {
-        var order = _store.Orders.FirstOrDefault(o => o.Id == id);
+        logger.LogInformation("Обновление объекта(заказа)");
+        var order = repository.GetById(id);
         if (order == null)
         {
+            logger.LogWarning("Заказ с Id = {id} не найден", id);
             return NotFound(new { message = $"Заказ с Id = {id} не найден" });
         }
 
-        var client = _store.Clients.FirstOrDefault(c => c.Id == updatedOrder.ClientId);
+        var client = clientRepository.GetById(dto.ClientId);
         if (client == null)
         {
-            return BadRequest(new { message = $"Клиент с Id = {updatedOrder.ClientId} не найден" });
+            logger.LogWarning("Клиент с Id = {id} не найден", dto.ClientId);
+            return BadRequest(new { message = $"Клиент с Id = {dto.ClientId} не найден" });
         }
 
-        var item = _store.Items.FirstOrDefault(i => i.Id == updatedOrder.ItemId);
+        var item = itemRepository.GetById(dto.ItemId);
         if (item == null)
         {
-            return BadRequest(new { message = $"Изделие с Id = {updatedOrder.ItemId} не найдено" });
+            logger.LogWarning("Изделие с Id = {id} не найдено", dto.ItemId);
+            return BadRequest(new { message = $"Изделие с Id = {dto.ItemId} не найдено" });
         }
 
-        order.ClientId = updatedOrder.ClientId;
+        order.ClientId = dto.ClientId;
         order.Client = client;
-        order.ItemId = updatedOrder.ItemId;
+        order.ItemId = dto.ItemId;
         order.Item = item;
-        order.AcceptDate = updatedOrder.AcceptDate;
-        order.ExeDays = updatedOrder.ExeDays;
-        order.Status = updatedOrder.Status;
+        order.AcceptDate = dto.AcceptDate;
+        order.ExeDays = dto.ExeDays;
+        order.Status = dto.Status;
 
+        repository.Update(order);
         return NoContent();
     }
 
@@ -116,13 +148,15 @@ public class OrdersController : ControllerBase
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        var order = _store.Orders.FirstOrDefault(o => o.Id == id);
+        logger.LogInformation("Удаление объекта(изделия)");
+        var order = repository.GetById(id);
         if (order == null)
         {
+            logger.LogWarning("Заказ с Id = {id} не найден", id);
             return NotFound(new { message = $"Заказ с Id = {id} не найден" });
         }
 
-        _store.Orders.Remove(order);
+        repository.Delete(id);
         return NoContent();
     }
 }

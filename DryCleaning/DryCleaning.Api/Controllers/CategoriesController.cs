@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DryCleaning.Api.Services;
+using DryCleaning.Infrastructure.Repositories;
 using DryCleaning.Domain.Models;
+using DryCleaning.Api.Dtos;
 
 namespace DryCleaning.Api.Controllers;
 
@@ -10,68 +11,79 @@ namespace DryCleaning.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class CategoriesController : ControllerBase
+public class CategoriesController(ICategoryRepository repository, ILogger<CategoriesController> logger) : ControllerBase
 {
-    private readonly InMemStore _store;
-
-    public CategoriesController(InMemStore store)
-    {
-        _store = store;
-    }
-
     /// <summary>
     /// Получить все категории
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<Category>> GetAll()
+    public ActionResult<IEnumerable<CategoryDto>> GetAll()
     {
-        return Ok(_store.Categories);
+        logger.LogInformation("Запрос всего списка объектов(категорий)");
+        var categories = repository.GetAll();
+
+        var result = categories.Select(c => new CategoryDto(c.Id, c.Name, c.CleaningType, c.Price));
+
+        return Ok(result);
     }
 
     /// <summary>
     /// Получить категорию по Id
     /// </summary>
     [HttpGet("{id:int}")]
-    public ActionResult<Category> GetById(int id)
+    public ActionResult<CategoryDto> GetById(int id)
     {
-        var category = _store.Categories.FirstOrDefault(c => c.Id == id);
+        logger.LogInformation("Запрос конкретного объекта(категории) из доступных");
+        var category = repository.GetById(id);
         if (category == null)
         {
+            logger.LogWarning("Категория с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Категория с Id = {id} не найдена" });
         }
-        return Ok(category);
+
+        var result = new CategoryDto(category.Id, category.Name, category.CleaningType, category.Price);
+        return Ok(result);
     }
 
     /// <summary>
     /// Создать новую категорию
     /// </summary>
     [HttpPost]
-    public ActionResult<Category> Create([FromBody] Category newCategory)
+    public ActionResult<CategoryDto> Create([FromBody] CreateCategoryDto dto)
     {
-        var nextId = _store.Categories.Any() ? _store.Categories.Max(c => c.Id) + 1 : 1;
-        newCategory.Id = nextId;
+        logger.LogInformation("Создание нового объекта(категории)");
+        var category = new Category
+        {
+            Name = dto.Name,
+            CleaningType = dto.CleaningType,
+            Price = dto.Price
+        };
 
-        _store.Categories.Add(newCategory);
+        repository.Add(category);
 
-        return CreatedAtAction(nameof(GetById), new { id = newCategory.Id }, newCategory);
+        var result = new CategoryDto(category.Id, category.Name, category.CleaningType, category.Price);
+        return CreatedAtAction(nameof(GetById), new { id = category.Id }, result);
     }
 
     /// <summary>
     /// Обновить категорию
     /// </summary>
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] Category updatedCategory)
+    public IActionResult Update(int id, [FromBody] UpdateCategoryDto dto)
     {
-        var category = _store.Categories.FirstOrDefault(c => c.Id == id);
+        logger.LogInformation("Обновление объекта(категории)");
+        var category = repository.GetById(id);
         if (category == null)
         {
+            logger.LogWarning("Категория с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Категория с Id = {id} не найдена" });
         }
 
-        category.Name = updatedCategory.Name;
-        category.CleaningType = updatedCategory.CleaningType;
-        category.Price = updatedCategory.Price;
+        category.Name = dto.Name;
+        category.CleaningType = dto.CleaningType;
+        category.Price = dto.Price;
 
+        repository.Update(category);
         return NoContent();
     }
 
@@ -81,13 +93,15 @@ public class CategoriesController : ControllerBase
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        var category = _store.Categories.FirstOrDefault(c => c.Id == id);
+        logger.LogInformation("Удаление объекта(категории)");
+        var category = repository.GetById(id);
         if (category == null)
         {
+            logger.LogWarning("Категория с Id = {id} отсутствует", id);
             return NotFound(new { message = $"Категория с Id = {id} не найдена" });
         }
 
-        _store.Categories.Remove(category);
+        repository.Delete(id);
         return NoContent();
     }
 }
