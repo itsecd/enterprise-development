@@ -12,6 +12,8 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Единый источник данных для всех репозиториев и аналитики
 builder.Services.AddSingleton<CarWashData>();
 
@@ -77,5 +79,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapDefaultEndpoints();
 
 app.Run();

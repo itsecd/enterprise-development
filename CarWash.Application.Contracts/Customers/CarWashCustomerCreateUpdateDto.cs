@@ -7,11 +7,11 @@ namespace CarWash.Application.Contracts.Customers;
 /// </summary>
 public record CarWashCustomerCreateUpdateDto(
     [property: Required(ErrorMessage = "Имя клиента обязательно")]
-    [property: StringLength(100, ErrorMessage = "Фамилия не должна превышать 100 символов")]
+    [property: StringLength(100, ErrorMessage = "Имя не должна превышать 100 символов")]
     string LastName,
 
     [property: Required(ErrorMessage = "Фамилия клиента обязательна")]
-    [property: StringLength(100, ErrorMessage = "Имя не должно превышать 100 символов")]
+    [property: StringLength(100, ErrorMessage = "Фамилия не должно превышать 100 символов")]
     string FirstName,
 
     string? Patronymic,

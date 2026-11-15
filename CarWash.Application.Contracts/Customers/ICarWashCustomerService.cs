@@ -9,5 +9,8 @@ namespace CarWash.Application.Contracts.Customers;
 public interface ICarWashCustomerService
     : IApplicationService<CarWashCustomerDto, CarWashCustomerCreateUpdateDto, int>
 {
+    /// <summary>
+    /// Получает список автомобилей указанного клиента
+    /// </summary>
     List<CarDto> GetCustomerCars(int customerId);
 }

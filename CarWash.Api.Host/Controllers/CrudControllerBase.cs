@@ -37,7 +37,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
                 "Метод {method} контроллера {controller} успешно выполнен",
                 nameof(Create), GetType().Name);
 
-            return CreatedAtAction(nameof(Get), new { id = GetId(result) }, result);
+            return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
         }
         catch (Exception ex)
         {
@@ -198,7 +198,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
             logger.LogWarning(
                 ex,
                 "Запись с идентификатором {id} не найдена при выполнении метода {method} контроллера {controller}",
-                id, nameof(Delete), GetType().Name);
+                id, nameof(Get), GetType().Name);
 
             return NotFound();
         }
@@ -211,10 +211,5 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
             return StatusCode(500, "Внутренняя ошибка сервера");
         }
-    }
-
-    private static object? GetId(TDto dto)
-    {
-        return dto.Id;
     }
 }

@@ -60,6 +60,7 @@ public class AnalyticsService(IRepository<Order, int> orderRepository) : IAnalyt
             .Where(order => order.WashBoxNumber == washBoxNumber)
             .Select(order =>
                 order.StartTime.Add(order.Procedure.Duration))
+            .DefaultIfEmpty(DateTime.Now)
             .Max();
     }
 
