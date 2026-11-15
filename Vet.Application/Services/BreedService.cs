@@ -14,7 +14,7 @@ namespace Vet.Application.Services;
 /// <param name="logger">Логгер сервиса</param>
 public class BreedService(
     IRepository<Breed, int> breedRepository,
-    IRepository<Pet, int> petRepository,
+    IPetRepository petRepository,
     ILogger<BreedService> logger)
     : IApplicationService<BreedDto, BreedCreateUpdateDto, int>
 {
@@ -63,6 +63,7 @@ public class BreedService(
     }
 
     /// <inheritdoc />
+    /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
         var existing = await breedRepository.GetByIdAsync(id);
@@ -72,8 +73,7 @@ public class BreedService(
             return false;
         }
 
-        var pets = await petRepository.GetAllAsync();
-        if (pets.Any(p => p.Breed.Id == id))
+        if (await petRepository.AnyByBreedIdAsync(id))
         {
             logger.LogWarning("Невозможно удалить породу с Id {Id}, так как на неё ссылаются питомцы", id);
             throw new InvalidOperationException($"Невозможно удалить породу с Id {id}, так как на неё ссылаются питомцы");
@@ -84,6 +84,7 @@ public class BreedService(
         {
             logger.LogInformation("Порода с Id {Id} успешно удалена", id);
         }
+
         return result;
     }
 }

@@ -33,7 +33,7 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
                 "Конфликт бизнес-логики",
                 conflict.Message),
 
-            DbUpdateException dbException => (
+            DbUpdateException => (
                 StatusCodes.Status409Conflict,
                 "Конфликт данных",
                 "Нарушено ограничение целостности данных"),

@@ -11,16 +11,16 @@ namespace Vet.Infrastructure.EfCore.Repositories;
 public class SpecializationRepository(VetDbContext context) : IRepository<Specialization, int>
 {
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Specialization>> GetAllAsync()
-    {
-        return await context.Specializations.ToListAsync();
-    }
+    public async Task<IReadOnlyList<Specialization>> GetAllAsync() =>
+        await context.Specializations
+            .Include(s => s.Species)
+            .ToListAsync();
 
     /// <inheritdoc />
-    public async Task<Specialization?> GetByIdAsync(int entityId)
-    {
-        return await context.Specializations.FirstOrDefaultAsync(s => s.Id == entityId);
-    }
+    public async Task<Specialization?> GetByIdAsync(int entityId) =>
+        await context.Specializations
+            .Include(s => s.Species)
+            .FirstOrDefaultAsync(s => s.Id == entityId);
 
     /// <inheritdoc />
     public async Task<Specialization> AddAsync(Specialization entity)

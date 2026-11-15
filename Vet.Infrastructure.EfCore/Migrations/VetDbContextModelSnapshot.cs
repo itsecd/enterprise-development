@@ -51,6 +51,8 @@ namespace Vet.Infrastructure.EfCore.Migrations
 
                     b.HasIndex("VeterinarianId");
 
+                    b.HasIndex("RoomNumber", "AppointmentDateTime");
+
                     b.ToTable("Appointments");
 
                     b.HasData(
@@ -201,7 +203,8 @@ namespace Vet.Infrastructure.EfCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("Species")
                         .HasColumnType("int");
@@ -294,15 +297,18 @@ namespace Vet.Infrastructure.EfCore.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
 
                     b.HasKey("Id");
 
@@ -390,7 +396,8 @@ namespace Vet.Infrastructure.EfCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
@@ -515,13 +522,13 @@ namespace Vet.Infrastructure.EfCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.PrimitiveCollection<string>("Species")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Specializations");
 
@@ -529,74 +536,207 @@ namespace Vet.Infrastructure.EfCore.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Терапевт",
-                            Species = "[1,2]"
+                            Name = "Терапевт"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Хирург",
-                            Species = "[2]"
+                            Name = "Хирург"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Орнитолог",
-                            Species = "[3]"
+                            Name = "Орнитолог"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Универсал",
-                            Species = "[1,2,3,4,5,6,7]"
+                            Name = "Универсал"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Фелинолог",
-                            Species = "[1]"
+                            Name = "Фелинолог"
                         },
                         new
                         {
                             Id = 6,
-                            Name = "Герпетолог",
-                            Species = "[7]"
+                            Name = "Герпетолог"
                         },
                         new
                         {
                             Id = 7,
-                            Name = "Ратолог",
-                            Species = "[4,5,6]"
+                            Name = "Ратолог"
                         },
                         new
                         {
                             Id = 8,
-                            Name = "Офтальмолог",
-                            Species = "[1,2]"
+                            Name = "Офтальмолог"
                         },
                         new
                         {
                             Id = 9,
-                            Name = "Стоматолог",
-                            Species = "[1,2]"
+                            Name = "Стоматолог"
                         },
                         new
                         {
                             Id = 10,
-                            Name = "Дерматолог",
-                            Species = "[1,2]"
+                            Name = "Дерматолог"
                         },
                         new
                         {
                             Id = 11,
-                            Name = "Кардиолог",
-                            Species = "[1,2]"
+                            Name = "Кардиолог"
                         },
                         new
                         {
                             Id = 12,
-                            Name = "Невролог",
-                            Species = "[1,2]"
+                            Name = "Невролог"
+                        });
+                });
+
+            modelBuilder.Entity("Vet.Domain.Entities.SpecializationSpecies", b =>
+                {
+                    b.Property<int>("SpecializationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Species")
+                        .HasColumnType("int");
+
+                    b.HasKey("SpecializationId", "Species");
+
+                    b.ToTable("SpecializationSpecies");
+
+                    b.HasData(
+                        new
+                        {
+                            SpecializationId = 1,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 1,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 2,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 3,
+                            Species = 3
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 3
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 4
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 5
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 6
+                        },
+                        new
+                        {
+                            SpecializationId = 4,
+                            Species = 7
+                        },
+                        new
+                        {
+                            SpecializationId = 5,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 6,
+                            Species = 7
+                        },
+                        new
+                        {
+                            SpecializationId = 7,
+                            Species = 5
+                        },
+                        new
+                        {
+                            SpecializationId = 7,
+                            Species = 6
+                        },
+                        new
+                        {
+                            SpecializationId = 7,
+                            Species = 7
+                        },
+                        new
+                        {
+                            SpecializationId = 8,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 8,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 9,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 9,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 10,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 10,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 11,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 11,
+                            Species = 2
+                        },
+                        new
+                        {
+                            SpecializationId = 12,
+                            Species = 1
+                        },
+                        new
+                        {
+                            SpecializationId = 12,
+                            Species = 2
                         });
                 });
 
@@ -613,11 +753,13 @@ namespace Vet.Infrastructure.EfCore.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("PassportNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.Property<int>("SpecializationId")
                         .HasColumnType("int");
@@ -626,6 +768,9 @@ namespace Vet.Infrastructure.EfCore.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PassportNumber")
+                        .IsUnique();
 
                     b.HasIndex("SpecializationId");
 
@@ -762,6 +907,15 @@ namespace Vet.Infrastructure.EfCore.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Vet.Domain.Entities.SpecializationSpecies", b =>
+                {
+                    b.HasOne("Vet.Domain.Entities.Specialization", null)
+                        .WithMany("Species")
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Vet.Domain.Entities.Veterinarian", b =>
                 {
                     b.HasOne("Vet.Domain.Entities.Specialization", "Specialization")
@@ -781,6 +935,11 @@ namespace Vet.Infrastructure.EfCore.Migrations
             modelBuilder.Entity("Vet.Domain.Entities.Pet", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("Vet.Domain.Entities.Specialization", b =>
+                {
+                    b.Navigation("Species");
                 });
 
             modelBuilder.Entity("Vet.Domain.Entities.Veterinarian", b =>

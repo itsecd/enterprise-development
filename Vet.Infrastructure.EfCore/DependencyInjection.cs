@@ -24,10 +24,22 @@ public static class DependencyInjection
 
         services.AddScoped<IRepository<Breed, int>, BreedRepository>();
         services.AddScoped<IRepository<Specialization, int>, SpecializationRepository>();
-        services.AddScoped<IRepository<Veterinarian, int>, VeterinarianRepository>();
-        services.AddScoped<IRepository<Owner, int>, OwnerRepository>();
-        services.AddScoped<IRepository<Pet, int>, PetRepository>();
-        services.AddScoped<IRepository<Appointment, int>, AppointmentRepository>();
+
+        services.AddScoped<VeterinarianRepository>();
+        services.AddScoped<IVeterinarianRepository>(sp => sp.GetRequiredService<VeterinarianRepository>());
+        services.AddScoped<IRepository<Veterinarian, int>>(sp => sp.GetRequiredService<VeterinarianRepository>());
+
+        services.AddScoped<OwnerRepository>();
+        services.AddScoped<IOwnerRepository>(sp => sp.GetRequiredService<OwnerRepository>());
+        services.AddScoped<IRepository<Owner, int>>(sp => sp.GetRequiredService<OwnerRepository>());
+
+        services.AddScoped<PetRepository>();
+        services.AddScoped<IPetRepository>(sp => sp.GetRequiredService<PetRepository>());
+        services.AddScoped<IRepository<Pet, int>>(sp => sp.GetRequiredService<PetRepository>());
+
+        services.AddScoped<AppointmentRepository>();
+        services.AddScoped<IAppointmentRepository>(sp => sp.GetRequiredService<AppointmentRepository>());
+        services.AddScoped<IRepository<Appointment, int>>(sp => sp.GetRequiredService<AppointmentRepository>());
 
         return services;
     }

@@ -24,7 +24,7 @@ namespace Vet.Infrastructure.EfCore.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Species = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -39,11 +39,11 @@ namespace Vet.Infrastructure.EfCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FullName = table.Column<string>(type: "longtext", nullable: false)
+                    FullName = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Address = table.Column<string>(type: "longtext", nullable: true)
+                    Address = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -58,9 +58,7 @@ namespace Vet.Infrastructure.EfCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Species = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -75,7 +73,7 @@ namespace Vet.Infrastructure.EfCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Species = table.Column<int>(type: "int", nullable: false),
                     BreedId = table.Column<int>(type: "int", nullable: false),
@@ -102,14 +100,33 @@ namespace Vet.Infrastructure.EfCore.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "SpecializationSpecies",
+                columns: table => new
+                {
+                    SpecializationId = table.Column<int>(type: "int", nullable: false),
+                    Species = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecializationSpecies", x => new { x.SpecializationId, x.Species });
+                    table.ForeignKey(
+                        name: "FK_SpecializationSpecies_Specializations_SpecializationId",
+                        column: x => x.SpecializationId,
+                        principalTable: "Specializations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Veterinarians",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    PassportNumber = table.Column<string>(type: "longtext", nullable: false)
+                    PassportNumber = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FullName = table.Column<string>(type: "longtext", nullable: false)
+                    FullName = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SpecializationId = table.Column<int>(type: "int", nullable: false),
                     BirthYear = table.Column<int>(type: "int", nullable: false),
@@ -195,21 +212,21 @@ namespace Vet.Infrastructure.EfCore.Migrations
 
             migrationBuilder.InsertData(
                 table: "Specializations",
-                columns: new[] { "Id", "Name", "Species" },
+                columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Терапевт", "[1,2]" },
-                    { 2, "Хирург", "[2]" },
-                    { 3, "Орнитолог", "[3]" },
-                    { 4, "Универсал", "[1,2,3,4,5,6,7]" },
-                    { 5, "Фелинолог", "[1]" },
-                    { 6, "Герпетолог", "[7]" },
-                    { 7, "Ратолог", "[4,5,6]" },
-                    { 8, "Офтальмолог", "[1,2]" },
-                    { 9, "Стоматолог", "[1,2]" },
-                    { 10, "Дерматолог", "[1,2]" },
-                    { 11, "Кардиолог", "[1,2]" },
-                    { 12, "Невролог", "[1,2]" }
+                    { 1, "Терапевт" },
+                    { 2, "Хирург" },
+                    { 3, "Орнитолог" },
+                    { 4, "Универсал" },
+                    { 5, "Фелинолог" },
+                    { 6, "Герпетолог" },
+                    { 7, "Ратолог" },
+                    { 8, "Офтальмолог" },
+                    { 9, "Стоматолог" },
+                    { 10, "Дерматолог" },
+                    { 11, "Кардиолог" },
+                    { 12, "Невролог" }
                 });
 
             migrationBuilder.InsertData(
@@ -229,6 +246,39 @@ namespace Vet.Infrastructure.EfCore.Migrations
                     { 10, null, null, 3, "Муся", 7, 1 },
                     { 11, null, null, 7, "Хома", 4, 4 },
                     { 12, null, null, 10, "Снежок", 8, 6 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SpecializationSpecies",
+                columns: new[] { "SpecializationId", "Species" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 2 },
+                    { 3, 3 },
+                    { 4, 1 },
+                    { 4, 2 },
+                    { 4, 3 },
+                    { 4, 4 },
+                    { 4, 5 },
+                    { 4, 6 },
+                    { 4, 7 },
+                    { 5, 1 },
+                    { 6, 7 },
+                    { 7, 5 },
+                    { 7, 6 },
+                    { 7, 7 },
+                    { 8, 1 },
+                    { 8, 2 },
+                    { 9, 1 },
+                    { 9, 2 },
+                    { 10, 1 },
+                    { 10, 2 },
+                    { 11, 1 },
+                    { 11, 2 },
+                    { 12, 1 },
+                    { 12, 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -276,6 +326,11 @@ namespace Vet.Infrastructure.EfCore.Migrations
                 column: "PetId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Appointments_RoomNumber_AppointmentDateTime",
+                table: "Appointments",
+                columns: new[] { "RoomNumber", "AppointmentDateTime" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Appointments_VeterinarianId",
                 table: "Appointments",
                 column: "VeterinarianId");
@@ -291,6 +346,18 @@ namespace Vet.Infrastructure.EfCore.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Specializations_Name",
+                table: "Specializations",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Veterinarians_PassportNumber",
+                table: "Veterinarians",
+                column: "PassportNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Veterinarians_SpecializationId",
                 table: "Veterinarians",
                 column: "SpecializationId");
@@ -301,6 +368,9 @@ namespace Vet.Infrastructure.EfCore.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Appointments");
+
+            migrationBuilder.DropTable(
+                name: "SpecializationSpecies");
 
             migrationBuilder.DropTable(
                 name: "Pets");

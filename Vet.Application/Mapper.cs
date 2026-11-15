@@ -22,7 +22,7 @@ public static class MappingExtensions
     /// <param name="specialization">Сущность специализации</param>
     /// <returns>DTO специализации</returns>
     public static SpecializationDto ToDto(this Specialization specialization) =>
-        new(specialization.Id, specialization.Name, [.. specialization.Species]);
+        new(specialization.Id, specialization.Name, [.. specialization.Species.Select(s => s.Species)]);
 
     /// <summary>
     /// Преобразование сущности владельца в DTO
@@ -100,7 +100,11 @@ public static class MappingExtensions
         {
             Id = id,
             Name = dto.Name,
-            Species = [.. dto.Species]
+            Species = [.. dto.Species.Distinct().Select(s => new SpecializationSpecies
+            {
+                SpecializationId = id,
+                Species = s
+            })]
         };
 
     /// <summary>

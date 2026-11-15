@@ -8,8 +8,17 @@ namespace Vet.Infrastructure.EfCore.Repositories;
 /// Репозиторий владельцев на базе Entity Framework Core
 /// </summary>
 /// <param name="context">Контекст базы данных</param>
-public class OwnerRepository(VetDbContext context) : IRepository<Owner, int>
+public class OwnerRepository(VetDbContext context) : IOwnerRepository
 {
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<Owner>> GetWithMultiplePetsAsync() =>
+        await context.Owners
+            .AsNoTracking()
+            .Include(o => o.Pets)
+            .Where(o => o.Pets.Count > 1)
+            .OrderBy(o => o.FullName)
+            .ToListAsync();
+
     /// <inheritdoc />
     public async Task<IReadOnlyList<Owner>> GetAllAsync()
     {

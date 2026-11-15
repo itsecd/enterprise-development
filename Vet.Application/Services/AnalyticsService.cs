@@ -16,9 +16,9 @@ namespace Vet.Application.Services;
 /// <param name="breedRepository">Репозиторий пород</param>
 /// <param name="logger">Логгер сервиса</param>
 public class AnalyticsService(
-    IRepository<Veterinarian, int> veterinarianRepository,
-    IRepository<Appointment, int> appointmentRepository,
-    IRepository<Owner, int> ownerRepository,
+    IVeterinarianRepository veterinarianRepository,
+    IAppointmentRepository appointmentRepository,
+    IOwnerRepository ownerRepository,
     IRepository<Breed, int> breedRepository,
     ILogger<AnalyticsService> logger) : IAnalyticsService
 {
@@ -26,12 +26,8 @@ public class AnalyticsService(
     public async Task<IReadOnlyList<VeterinarianDto>> GetVeterinariansBySpeciesAsync(Species species)
     {
         logger.LogInformation("Запрос на получение ветеринаров по виду животного: {Species}", species);
-        var vets = await veterinarianRepository.GetAllAsync();
-
-        return [.. vets
-            .Where(v => v.Specialization.Species.Contains(species))
-            .OrderBy(v => v.FullName)
-            .Select(v => v.ToDto())];
+        var vets = await veterinarianRepository.GetBySpeciesAsync(species);
+        return [.. vets.Select(v => v.ToDto())];
     }
 
     /// <inheritdoc />
@@ -45,14 +41,8 @@ public class AnalyticsService(
             throw new KeyNotFoundException($"Ветеринар с идентификатором {veterinarianId} не найден в клинике");
         }
 
-        var appointments = await appointmentRepository.GetAllAsync();
-
-        return [.. appointments
-            .Where(a => a.Veterinarian.Id == vet.Id)
-            .Select(a => a.Pet)
-            .Distinct()
-            .OrderBy(p => p.Name)
-            .Select(p => p.ToDto())];
+        var pets = await appointmentRepository.GetDistinctPetsByVeterinarianIdAsync(vet.Id);
+        return [.. pets.Select(p => p.ToDto())];
     }
 
     /// <inheritdoc />
@@ -66,33 +56,22 @@ public class AnalyticsService(
             throw new KeyNotFoundException($"Порода с идентификатором {breedId} не найдена в справочнике");
         }
 
-        var appointments = await appointmentRepository.GetAllAsync();
-        return appointments.Count(a => a.IsRepeat && a.Pet.Breed.Id == breed.Id);
+        return await appointmentRepository.GetRepeatCountByBreedIdAsync(breed.Id);
     }
 
     /// <inheritdoc />
     public async Task<IReadOnlyList<OwnerDto>> GetOwnersWithMultiplePetsAsync()
     {
         logger.LogInformation("Запрос на получение владельцев с более чем одним питомцем");
-        var owners = await ownerRepository.GetAllAsync();
-
-        return [.. owners
-            .Where(o => o.Pets.Count > 1)
-            .OrderBy(o => o.FullName)
-            .Select(o => o.ToDto())];
+        var owners = await ownerRepository.GetWithMultiplePetsAsync();
+        return [.. owners.Select(o => o.ToDto())];
     }
 
     /// <inheritdoc />
     public async Task<IReadOnlyList<AppointmentDto>> GetAppointmentsByRoomAsync(int roomNumber, int year, int month)
     {
         logger.LogInformation("Запрос на получение приемов в кабинете {Room} за {Month}.{Year}", roomNumber, month, year);
-        var appointments = await appointmentRepository.GetAllAsync();
-
-        return [.. appointments
-            .Where(a => a.RoomNumber == roomNumber
-                     && a.AppointmentDateTime.Year == year
-                     && a.AppointmentDateTime.Month == month)
-            .OrderBy(a => a.AppointmentDateTime)
-            .Select(a => a.ToDto())];
+        var appointments = await appointmentRepository.GetByRoomAndMonthAsync(roomNumber, year, month);
+        return [.. appointments.Select(a => a.ToDto())];
     }
 }

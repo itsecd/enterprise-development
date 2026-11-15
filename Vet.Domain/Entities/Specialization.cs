@@ -1,5 +1,3 @@
-using Vet.Domain.Enums;
-
 namespace Vet.Domain.Entities;
 
 /// <summary>
@@ -20,5 +18,5 @@ public sealed class Specialization
     /// <summary>
     /// Список видов животных, которых может принять врач данной специализации
     /// </summary>
-    public List<Species> Species { get; set; } = [];
+    public List<SpecializationSpecies> Species { get; set; } = [];
 }

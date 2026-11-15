@@ -141,62 +141,112 @@ public class VetClinicTestFixture
         new Specialization {
             Id = 1,
             Name = "Терапевт",
-            Species = [Species.Cat, Species.Dog]
+            Species = 
+            [
+                new SpecializationSpecies { SpecializationId = 1, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 1, Species = Species.Dog }
+            ]
         },
         new Specialization {
             Id = 2,
             Name = "Хирург",
-            Species = [Species.Dog]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 2, Species = Species.Dog }
+            ]
         },
         new Specialization {
             Id = 3,
             Name = "Орнитолог",
-            Species = [Species.Bird]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 3, Species = Species.Bird }
+            ]
         },
         new Specialization {
             Id = 4,
             Name = "Универсал",
-            Species = [..Enum.GetValues<Species>()]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Dog },
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Bird },
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Hamster },
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Mouse },
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Rabbit },
+                new SpecializationSpecies { SpecializationId = 4, Species = Species.Turtle }
+            ]
         },
         new Specialization {
             Id = 5,
             Name = "Фелинолог",
-            Species = [Species.Cat]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 5, Species = Species.Cat }
+            ]
         },
         new Specialization {
             Id = 6,
             Name = "Герпетолог",
-            Species = [Species.Turtle]
+            Species = 
+            [
+                new SpecializationSpecies { SpecializationId = 6, Species = Species.Turtle }
+            ]
         },
         new Specialization {
             Id = 7,
             Name = "Ратолог",
-            Species = [Species.Hamster, Species.Mouse, Species.Rabbit]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 7, Species = Species.Mouse },
+                new SpecializationSpecies { SpecializationId = 7, Species = Species.Rabbit },
+                new SpecializationSpecies { SpecializationId = 7, Species = Species.Turtle }
+            ]
         },
         new Specialization {
             Id = 8,
             Name = "Офтальмолог",
-            Species = [Species.Cat, Species.Dog]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 8, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 8, Species = Species.Dog }
+            ]
         },
         new Specialization {
             Id = 9,
             Name = "Стоматолог",
-            Species = [Species.Cat, Species.Dog]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 9, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 9, Species = Species.Dog }
+            ]
         },
         new Specialization {
             Id = 10,
             Name = "Дерматолог",
-            Species = [Species.Cat, Species.Dog]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 10, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 10, Species = Species.Dog }
+            ]
         },
         new Specialization {
             Id = 11,
             Name = "Кардиолог",
-            Species = [Species.Cat, Species.Dog]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 11, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 11, Species = Species.Dog }
+            ]
         },
         new Specialization {
             Id = 12,
             Name = "Невролог",
-            Species = [Species.Cat, Species.Dog]
+            Species =
+            [
+                new SpecializationSpecies { SpecializationId = 12, Species = Species.Cat },
+                new SpecializationSpecies { SpecializationId = 12, Species = Species.Dog }
+            ]
         }
     ];
 

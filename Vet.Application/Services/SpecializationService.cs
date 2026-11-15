@@ -14,7 +14,7 @@ namespace Vet.Application.Services;
 /// <param name="logger">Логгер сервиса</param>
 public class SpecializationService(
     IRepository<Specialization, int> specializationRepository,
-    IRepository<Veterinarian, int> veterinarianRepository,
+    IVeterinarianRepository veterinarianRepository,
     ILogger<SpecializationService> logger)
     : IApplicationService<SpecializationDto, SpecializationCreateUpdateDto, int>
 {
@@ -52,13 +52,22 @@ public class SpecializationService(
         }
 
         existing.Name = dto.Name;
-        existing.Species = [.. dto.Species];
+        existing.Species.Clear();
+        foreach (var species in dto.Species.Distinct())
+        {
+            existing.Species.Add(new SpecializationSpecies
+            {
+                SpecializationId = existing.Id,
+                Species = species
+            });
+        }
 
         var result = await specializationRepository.UpdateAsync(existing);
         if (result)
         {
             logger.LogInformation("Специализация с Id {Id} успешно обновлена", id);
         }
+
         return result;
     }
 
@@ -72,8 +81,7 @@ public class SpecializationService(
             return false;
         }
 
-        var vets = await veterinarianRepository.GetAllAsync();
-        if (vets.Any(v => v.Specialization.Id == id))
+        if (await veterinarianRepository.AnyBySpecializationIdAsync(id))
         {
             logger.LogWarning("Невозможно удалить специализацию с Id {Id}, так как она назначена ветеринарам", id);
             throw new InvalidOperationException($"Невозможно удалить специализацию с Id {id}, так как она назначена ветеринарам");
@@ -84,6 +92,7 @@ public class SpecializationService(
         {
             logger.LogInformation("Специализация с Id {Id} успешно удалена", id);
         }
+
         return result;
     }
 }

@@ -8,8 +8,12 @@ namespace Vet.Infrastructure.EfCore.Repositories;
 /// Репозиторий питомцев на базе Entity Framework Core
 /// </summary>
 /// <param name="context">Контекст базы данных</param>
-public class PetRepository(VetDbContext context) : IRepository<Pet, int>
+public class PetRepository(VetDbContext context) : IPetRepository
 {
+    /// <inheritdoc />
+    public async Task<bool> AnyByBreedIdAsync(int breedId) =>
+        await context.Pets.AnyAsync(p => p.Breed.Id == breedId);
+
     /// <inheritdoc />
     public async Task<IReadOnlyList<Pet>> GetAllAsync()
     {

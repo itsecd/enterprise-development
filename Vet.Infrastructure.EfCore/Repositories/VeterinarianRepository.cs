@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vet.Domain.Entities;
+using Vet.Domain.Enums;
 using Vet.Domain.Interfaces;
 
 namespace Vet.Infrastructure.EfCore.Repositories;
@@ -8,23 +9,36 @@ namespace Vet.Infrastructure.EfCore.Repositories;
 /// Репозиторий ветеринаров на базе Entity Framework Core
 /// </summary>
 /// <param name="context">Контекст базы данных</param>
-public class VeterinarianRepository(VetDbContext context) : IRepository<Veterinarian, int>
+public class VeterinarianRepository(VetDbContext context) : IVeterinarianRepository
 {
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Veterinarian>> GetAllAsync()
-    {
-        return await context.Veterinarians
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<Veterinarian>> GetAllAsync() =>
+        await context.Veterinarians
             .Include(v => v.Specialization)
+                .ThenInclude(s => s.Species)
             .ToListAsync();
-    }
 
     /// <inheritdoc />
-    public async Task<Veterinarian?> GetByIdAsync(int entityId)
-    {
-        return await context.Veterinarians
+    public async Task<Veterinarian?> GetByIdAsync(int entityId) =>
+        await context.Veterinarians
             .Include(v => v.Specialization)
+                .ThenInclude(s => s.Species)
             .FirstOrDefaultAsync(v => v.Id == entityId);
-    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<Veterinarian>> GetBySpeciesAsync(Species species) =>
+        await context.Veterinarians
+            .AsNoTracking()
+            .Include(v => v.Specialization)
+                .ThenInclude(s => s.Species)
+            .Where(v => v.Specialization.Species.Any(ss => ss.Species == species))
+            .OrderBy(v => v.FullName)
+            .ToListAsync();
+
+    /// <inheritdoc />
+    public async Task<bool> AnyBySpecializationIdAsync(int specializationId) =>
+        await context.Veterinarians.AnyAsync(v => v.Specialization.Id == specializationId);
 
     /// <inheritdoc />
     public async Task<Veterinarian> AddAsync(Veterinarian entity)
