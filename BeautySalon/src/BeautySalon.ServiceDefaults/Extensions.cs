@@ -9,12 +9,12 @@ using OpenTelemetry.Trace;
 namespace BeautySalon.ServiceDefaults;
 
 /// <summary>
-/// Общие настройки телеметрии и проверки готовности API.
+/// Общие настройки телеметрии и проверки готовности API
 /// </summary>
 public static class Extensions
 {
     /// <summary>
-    /// Регистрирует журналы, метрики и трассировку HTTP-запросов для панели Aspire.
+    /// Регистрирует журналы, метрики и трассировку HTTP-запросов для панели Aspire
     /// </summary>
     public static WebApplicationBuilder AddServiceDefaults(this WebApplicationBuilder builder)
     {
@@ -38,7 +38,7 @@ public static class Extensions
     }
 
     /// <summary>
-    /// Открывает проверку готовности для локального запуска через Aspire.
+    /// Открывает проверку готовности для локального запуска через Aspire
     /// </summary>
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {

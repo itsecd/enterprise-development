@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 namespace BeautySalon.Infrastructure.PostgreSQL;
 
 /// <summary>
-/// Позволяет инструментам миграций построить модель без запуска API и Aspire.
+/// Позволяет инструментам миграций построить модель без запуска API и Aspire
 /// </summary>
 public class DesignTimeSalonDbContextFactory : IDesignTimeDbContextFactory<SalonDbContext>
 {

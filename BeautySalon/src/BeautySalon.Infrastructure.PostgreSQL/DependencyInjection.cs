@@ -6,16 +6,13 @@ using Microsoft.Extensions.Hosting;
 namespace BeautySalon.Infrastructure.PostgreSQL;
 
 /// <summary>
-/// Регистрация PostgreSQL-хранилища в контейнере зависимостей.
+/// Регистрация PostgreSQL-хранилища в контейнере зависимостей
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Регистрирует контекст базы данных и репозитории сущностей (scoped: на каждый запрос свой контекст).
+    /// Регистрирует контекст базы данных и репозитории сущностей
     /// </summary>
-    /// <param name="builder">Построитель приложения.</param>
-    /// <param name="connectionName">Имя строки подключения к базе салона.</param>
-    /// <returns>Тот же построитель для цепочки вызовов.</returns>
     public static IHostApplicationBuilder AddPostgreSqlStorage(this IHostApplicationBuilder builder, string connectionName)
     {
         builder.AddNpgsqlDbContext<SalonDbContext>(connectionName, settings => settings.DisableRetry = true);

@@ -5,41 +5,39 @@ using Microsoft.EntityFrameworkCore;
 namespace BeautySalon.Infrastructure.PostgreSQL;
 
 /// <summary>
-/// Данные салона красоты в PostgreSQL.
+/// Данные салона красоты в PostgreSQL
 /// </summary>
 /// <param name="options">Настройки подключения и провайдера.</param>
 public class SalonDbContext(DbContextOptions<SalonDbContext> options) : DbContext(options)
 {
     /// <summary>
-    /// Имя индекса, который запрещает две записи одного мастера в одно время.
+    /// Имя индекса, который запрещает две записи одного мастера в одно время
     /// </summary>
     public const string AppointmentSlotIndex = "ux_appointments_master_datetime";
 
     /// <summary>
-    /// Клиенты салона.
+    /// Клиенты салона
     /// </summary>
     public DbSet<Client> Clients => Set<Client>();
 
     /// <summary>
-    /// Мастера салона.
+    /// Мастера салона
     /// </summary>
     public DbSet<Master> Masters => Set<Master>();
 
     /// <summary>
-    /// Услуги салона.
+    /// Услуги салона
     /// </summary>
     public DbSet<Service> Services => Set<Service>();
 
     /// <summary>
-    /// Записи клиентов на приём.
+    /// Записи клиентов на приём
     /// </summary>
     public DbSet<Appointment> Appointments => Set<Appointment>();
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Иерархия Person: у каждого конкретного типа своя таблица со всеми полями (TPC).
-        // Идентификаторы клиентов и мастеров независимы и могут совпадать.
         modelBuilder.Entity<Person>().UseTpcMappingStrategy();
         modelBuilder.Entity<Client>().ToTable("clients");
         modelBuilder.Entity<Master>().ToTable("masters");
@@ -54,7 +52,6 @@ public class SalonDbContext(DbContextOptions<SalonDbContext> options) : DbContex
         services.Property(s => s.Price).HasPrecision(10, 2);
         services.Property(s => s.Name).HasMaxLength(200);
 
-        // Перечисления хранятся строками, как они передаются в JSON API
         modelBuilder.Entity<Person>().Property(p => p.Gender).HasConversion<string>().HasMaxLength(20);
         services.Property(s => s.Category).HasConversion<string>().HasMaxLength(50);
         masters.Property(m => m.Specialization).HasConversion<string>().HasMaxLength(50);
