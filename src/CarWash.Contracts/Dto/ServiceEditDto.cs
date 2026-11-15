@@ -12,6 +12,7 @@ public class ServiceEditDto
     /// Название услуги
     /// </summary>
     [Required(ErrorMessage = "Название услуги обязательно")]
+    [MaxLength(200, ErrorMessage = "Название услуги не может быть длиннее 200 символов")]
     public required string Name { get; set; }
 
     /// <summary>

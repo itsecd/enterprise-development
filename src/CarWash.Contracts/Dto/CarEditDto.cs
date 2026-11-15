@@ -17,5 +17,6 @@ public class CarEditDto
     /// <summary>
     /// Марка автомобиля
     /// </summary>
+    [MaxLength(100, ErrorMessage = "Марка не может быть длиннее 100 символов")]
     public string? Brand { get; set; }
 }
