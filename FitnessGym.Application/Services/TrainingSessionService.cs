@@ -39,9 +39,13 @@ public class TrainingSessionService(
     {
         var client = await clientRepository.GetByIdAsync(dto.ClientId);
         var trainer = await trainerRepository.GetByIdAsync(dto.TrainerId);
-
         if (client is null || trainer is null)
             throw new ArgumentException("Клиент или тренер не найдены");
+
+        if (!Enum.TryParse<Hall>(dto.Hall, ignoreCase: true, out var hall))
+        {
+            throw new ArgumentException($"Недопустимое значение для зала: {dto.Hall}");
+        }
 
         var session = new TrainingSession
         {
@@ -49,7 +53,7 @@ public class TrainingSessionService(
             Trainer = trainer,
             StartsTraining = dto.StartsTraining,
             EndsTraining = dto.EndsTraining,
-            HallName = Enum.Parse<Hall>(dto.Hall),
+            HallName = hall,
             IsTrial = dto.IsTrial
         };
 
@@ -63,13 +67,13 @@ public class TrainingSessionService(
     public Task<bool> DeleteAsync(int id) => sessionRepository.DeleteAsync(id);
 
     private static TrainingSessionDto ToDto(TrainingSession s) => new(
-        s.Id, 
-        s.Client.Id, 
-        s.Client.FullName, 
+        s.Id,
+        s.Client.Id,
+        s.Client.FullName,
         s.Trainer.Id,
         s.Trainer.FullName,
-        s.StartsTraining, 
-        s.EndsTraining, 
-        s.HallName.ToString(), 
+        s.StartsTraining,
+        s.EndsTraining,
+        s.HallName.ToString(),
         s.IsTrial);
 }

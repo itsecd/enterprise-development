@@ -37,13 +37,19 @@ public class TrainerService(
     public async Task<TrainerDto> CreateAsync(TrainerEditDto dto)
     {
         var spec = await specRepository.GetByIdAsync(dto.SpecializationId);
-        if (spec is null) throw new ArgumentException("Специализация не найдена");
+        if (spec is null)
+            throw new ArgumentException("Специализация не найдена");
+
+        if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
+        {
+            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
+        }
 
         var trainer = new Trainer
         {
             PassportNumber = dto.PassportNumber,
             FullName = dto.FullName,
-            Gender = Enum.Parse<Gender>(dto.Gender),
+            Gender = gender,
             BirthDate = dto.BirthDate,
             Specialization = spec,
             ExperienceYears = dto.ExperienceYears
@@ -64,9 +70,14 @@ public class TrainerService(
         var spec = await specRepository.GetByIdAsync(dto.SpecializationId);
         if (spec is null) return false;
 
+        if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
+        {
+            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
+        }
+
         trainer.PassportNumber = dto.PassportNumber;
         trainer.FullName = dto.FullName;
-        trainer.Gender = Enum.Parse<Gender>(dto.Gender);
+        trainer.Gender = gender;
         trainer.BirthDate = dto.BirthDate;
         trainer.Specialization = spec;
         trainer.ExperienceYears = dto.ExperienceYears;
@@ -80,12 +91,12 @@ public class TrainerService(
     public Task<bool> DeleteAsync(int id) => trainerRepository.DeleteAsync(id);
 
     private static TrainerDto ToDto(Trainer t) => new(
-        t.Id, 
-        t.PassportNumber, 
-        t.FullName, 
+        t.Id,
+        t.PassportNumber,
+        t.FullName,
         t.Gender.ToString(),
-        t.BirthDate, 
-        t.Specialization.Id, 
-        t.Specialization.Name, 
+        t.BirthDate,
+        t.Specialization.Id,
+        t.Specialization.Name,
         t.ExperienceYears);
 }

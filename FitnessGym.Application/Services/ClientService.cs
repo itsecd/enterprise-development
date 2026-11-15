@@ -34,11 +34,16 @@ public class ClientService(IClientRepository repository) : IClientService
     /// </summary>
     public async Task<ClientDto> CreateAsync(ClientEditDto dto)
     {
+        if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
+        {
+            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
+        }
+
         var client = new Client
         {
             PassportNumber = dto.PassportNumber,
             FullName = dto.FullName,
-            Gender = Enum.Parse<Gender>(dto.Gender),
+            Gender = gender,
             BirthDate = dto.BirthDate,
             Phone = dto.Phone,
             SubscriptionStart = dto.SubscriptionStart,
@@ -57,9 +62,14 @@ public class ClientService(IClientRepository repository) : IClientService
         var client = await repository.GetByIdAsync(id);
         if (client is null) return false;
 
+        if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
+        {
+            throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
+        }
+
         client.PassportNumber = dto.PassportNumber;
         client.FullName = dto.FullName;
-        client.Gender = Enum.Parse<Gender>(dto.Gender);
+        client.Gender = gender;
         client.BirthDate = dto.BirthDate;
         client.Phone = dto.Phone;
         client.SubscriptionStart = dto.SubscriptionStart;
@@ -74,12 +84,12 @@ public class ClientService(IClientRepository repository) : IClientService
     public Task<bool> DeleteAsync(int id) => repository.DeleteAsync(id);
 
     private static ClientDto ToDto(Client c) => new(
-        c.Id, 
-        c.PassportNumber, 
-        c.FullName, 
+        c.Id,
+        c.PassportNumber,
+        c.FullName,
         c.Gender.ToString(),
-        c.BirthDate, 
-        c.Phone, 
-        c.SubscriptionStart, 
+        c.BirthDate,
+        c.Phone,
+        c.SubscriptionStart,
         c.SubscriptionEnd);
 }
