@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Элементы решения/">
+    <File Path=".gitignore" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="MuseumSystem.Api/MuseumSystem.Api.csproj" />
+  <Project Path="MuseumSystem.Contracts/MuseumSystem.Contracts.csproj" />
+  <Project Path="MuseumSystem.Domain/MuseumSystem.Domain.csproj" />
+  <Project Path="MuseumSystem.Infrastructure.InMemory/MuseumSystem.Infrastructure.InMemory.csproj" />
+  <Project Path="MuseumSystem.Services/MuseumSystem.Services.csproj" />
+  <Project Path="MuseumSystem.Shared/MuseumSystem.Shared.csproj" />
+  <Project Path="MuseumSystem.Tests/MuseumSystem.Tests.csproj" />
+</Solution>
