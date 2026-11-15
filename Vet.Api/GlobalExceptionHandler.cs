@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vet.Api;
 
@@ -31,6 +32,11 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
                 StatusCodes.Status409Conflict,
                 "Конфликт бизнес-логики",
                 conflict.Message),
+
+            DbUpdateException dbException => (
+                StatusCodes.Status409Conflict,
+                "Конфликт данных",
+                "Нарушено ограничение целостности данных"),
 
             _ => (
                 StatusCodes.Status500InternalServerError,
