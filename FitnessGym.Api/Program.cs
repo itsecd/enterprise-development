@@ -2,7 +2,9 @@ using FitnessGym.Api.ExceptionHandlers;
 using FitnessGym.Application.Services;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Interfaces;
-using FitnessGym.Infrastructure.InMemory.Repositories;
+using FitnessGym.Infrastructure.EFCore.Data;
+using FitnessGym.Infrastructure.EFCore.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -53,6 +55,11 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+// Получаем строку подключения из Aspire по имени ресурса
+var connectionString = builder.Configuration.GetConnectionString("fitnessgymdb");
+
+builder.Services.AddDbContext<FitnessGymDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
@@ -86,6 +93,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<FitnessGymDbContext>();
+    dbContext.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
