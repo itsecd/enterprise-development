@@ -43,16 +43,16 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
-builder.Services.AddSingleton<IClientRepository, ClientRepository>();
-builder.Services.AddSingleton<ITrainerRepository, TrainerRepository>();
-builder.Services.AddSingleton<ISpecializationRepository, SpecializationRepository>();
-builder.Services.AddSingleton<ITrainingSessionRepository, TrainingSessionRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
+builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
+builder.Services.AddScoped<ITrainingSessionRepository, TrainingSessionRepository>();
 
-builder.Services.AddSingleton<IClientService, ClientService>();
-builder.Services.AddSingleton<ITrainerService, TrainerService>();
-builder.Services.AddSingleton<ISpecializationService, SpecializationService>();
-builder.Services.AddSingleton<ITrainingSessionService, TrainingSessionService>();
-builder.Services.AddSingleton<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<ITrainerService, TrainerService>();
+builder.Services.AddScoped<ISpecializationService, SpecializationService>();
+builder.Services.AddScoped<ITrainingSessionService, TrainingSessionService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("SecretKey не найден");
