@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="VetClinic.Api.Host/VetClinic.Api.Host.csproj" />
+  <Project Path="VetClinic.Application.Contracts/VetClinic.Application.Contracts.csproj" />
+  <Project Path="VetClinic.Application/VetClinic.Application.csproj" />
+  <Project Path="VetClinic.Domain.Shared/VetClinic.Domain.Shared.csproj" />
+  <Project Path="VetClinic.Domain/VetClinic.Domain.csproj" />
+  <Project Path="VetClinic.InMemory/VetClinic.InMemory.csproj" />
+  <Project Path="VetClinic.Tests/VetClinic.Tests.csproj" Id="fceaf182-160a-4a29-8d4a-884804b9fe9d" />
+</Solution>
