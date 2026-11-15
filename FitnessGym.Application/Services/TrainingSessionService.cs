@@ -1,4 +1,5 @@
-﻿using FitnessGym.Contracts.Dtos;
+﻿using FitnessGym.Application.Mapping;
+using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Enums;
@@ -20,7 +21,7 @@ public class TrainingSessionService(
     public async Task<IReadOnlyList<TrainingSessionDto>> GetAllAsync()
     {
         var sessions = await sessionRepository.GetAllAsync();
-        return sessions.Select(ToDto).ToList();
+        return sessions.Select(DtoMapper.ToSessionDto).ToList();
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ public class TrainingSessionService(
     public async Task<TrainingSessionDto?> GetByIdAsync(int id)
     {
         var session = await sessionRepository.GetByIdAsync(id);
-        return session is null ? null : ToDto(session);
+        return session is null ? null : DtoMapper.ToSessionDto(session);
     }
 
     /// <summary>
@@ -43,9 +44,7 @@ public class TrainingSessionService(
             throw new ArgumentException("Клиент или тренер не найдены");
 
         if (!Enum.TryParse<Hall>(dto.Hall, ignoreCase: true, out var hall))
-        {
             throw new ArgumentException($"Недопустимое значение для зала: {dto.Hall}");
-        }
 
         var session = new TrainingSession
         {
@@ -58,22 +57,11 @@ public class TrainingSessionService(
         };
 
         var created = await sessionRepository.AddAsync(session);
-        return ToDto(created);
+        return DtoMapper.ToSessionDto(created);
     }
 
     /// <summary>
     /// Удалить запись о занятии
     /// </summary>
     public Task<bool> DeleteAsync(int id) => sessionRepository.DeleteAsync(id);
-
-    private static TrainingSessionDto ToDto(TrainingSession s) => new(
-        s.Id,
-        s.Client.Id,
-        s.Client.FullName,
-        s.Trainer.Id,
-        s.Trainer.FullName,
-        s.StartsTraining,
-        s.EndsTraining,
-        s.HallName.ToString(),
-        s.IsTrial);
 }

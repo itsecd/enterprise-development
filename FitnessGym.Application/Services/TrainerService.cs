@@ -1,4 +1,5 @@
-﻿using FitnessGym.Contracts.Dtos;
+﻿using FitnessGym.Application.Mapping;
+using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Enums;
@@ -19,7 +20,7 @@ public class TrainerService(
     public async Task<IReadOnlyList<TrainerDto>> GetAllAsync()
     {
         var trainers = await trainerRepository.GetAllAsync();
-        return trainers.Select(ToDto).ToList();
+        return trainers.Select(DtoMapper.ToTrainerDto).ToList();
     }
 
     /// <summary>
@@ -28,7 +29,7 @@ public class TrainerService(
     public async Task<TrainerDto?> GetByIdAsync(int id)
     {
         var trainer = await trainerRepository.GetByIdAsync(id);
-        return trainer is null ? null : ToDto(trainer);
+        return trainer is null ? null : DtoMapper.ToTrainerDto(trainer);
     }
 
     /// <summary>
@@ -41,9 +42,7 @@ public class TrainerService(
             throw new ArgumentException("Специализация не найдена");
 
         if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
-        {
             throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
-        }
 
         var trainer = new Trainer
         {
@@ -56,7 +55,7 @@ public class TrainerService(
         };
 
         var created = await trainerRepository.AddAsync(trainer);
-        return ToDto(created);
+        return DtoMapper.ToTrainerDto(created);
     }
 
     /// <summary>
@@ -71,9 +70,7 @@ public class TrainerService(
         if (spec is null) return false;
 
         if (!Enum.TryParse<Gender>(dto.Gender, ignoreCase: true, out var gender))
-        {
             throw new ArgumentException($"Недопустимое значение для пола: {dto.Gender}");
-        }
 
         trainer.PassportNumber = dto.PassportNumber;
         trainer.FullName = dto.FullName;
@@ -89,14 +86,4 @@ public class TrainerService(
     /// Удалить тренера
     /// </summary>
     public Task<bool> DeleteAsync(int id) => trainerRepository.DeleteAsync(id);
-
-    private static TrainerDto ToDto(Trainer t) => new(
-        t.Id,
-        t.PassportNumber,
-        t.FullName,
-        t.Gender.ToString(),
-        t.BirthDate,
-        t.Specialization.Id,
-        t.Specialization.Name,
-        t.ExperienceYears);
 }

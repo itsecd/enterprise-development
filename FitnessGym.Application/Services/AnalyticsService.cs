@@ -1,4 +1,5 @@
-﻿using FitnessGym.Contracts.Dtos;
+﻿using FitnessGym.Application.Mapping;
+using FitnessGym.Contracts.Dtos;
 using FitnessGym.Contracts.Interfaces;
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Enums;
@@ -23,7 +24,7 @@ public class AnalyticsService(
         return trainers
             .Where(t => t.ExperienceYears >= minExperience)
             .OrderBy(t => t.FullName)
-            .Select(ToTrainerDto)
+            .Select(DtoMapper.ToTrainerDto)
             .ToList();
     }
 
@@ -32,7 +33,7 @@ public class AnalyticsService(
     /// </summary>
     public async Task<bool> IsHallAvailableAsync(string hallName, DateTime moment)
     {
-        if (!Enum.TryParse<Hall>(hallName, true, out var hall))
+        if (!Enum.TryParse<Hall>(hallName, ignoreCase: true, out var hall))
             return false;
 
         var sessions = await sessionRepository.GetAllAsync();
@@ -55,8 +56,14 @@ public class AnalyticsService(
             .Where(c => c.SubscriptionEnd < dateOnly)
             .OrderBy(c => c.FullName)
             .Select(c => new ClientDto(
-                c.Id, c.PassportNumber, c.FullName, c.Gender.ToString(),
-                c.BirthDate, c.Phone, c.SubscriptionStart, c.SubscriptionEnd))
+                c.Id,
+                c.PassportNumber,
+                c.FullName,
+                c.Gender.ToString(),
+                c.BirthDate,
+                c.Phone,
+                c.SubscriptionStart,
+                c.SubscriptionEnd))
             .ToList();
     }
 
@@ -65,15 +72,16 @@ public class AnalyticsService(
     /// </summary>
     public async Task<IReadOnlyList<TrainingSessionDto>> GetSessionsForMonthInHallAsync(int year, int month, string hallName)
     {
-        if (!Enum.TryParse<Hall>(hallName, true, out var hall))
+        if (!Enum.TryParse<Hall>(hallName, ignoreCase: true, out var hall))
             return new List<TrainingSessionDto>();
 
         var sessions = await sessionRepository.GetAllAsync();
         return sessions
-            .Where(s => s.StartsTraining.Year == year &&
-                        s.StartsTraining.Month == month &&
-                        s.HallName == hall)
-            .Select(ToSessionDto)
+            .Where(s =>
+                s.StartsTraining.Year == year &&
+                s.StartsTraining.Month == month &&
+                s.HallName == hall)
+            .Select(DtoMapper.ToSessionDto)
             .ToList();
     }
 
@@ -87,28 +95,7 @@ public class AnalyticsService(
             .GroupBy(s => s.Trainer)
             .OrderByDescending(g => g.Count())
             .Take(5)
-            .Select(g => ToTrainerDto(g.Key))
+            .Select(g => DtoMapper.ToTrainerDto(g.Key))
             .ToList();
     }
-
-    private static TrainerDto ToTrainerDto(Trainer t) => new(
-        t.Id, 
-        t.PassportNumber, 
-        t.FullName, 
-        t.Gender.ToString(),
-        t.BirthDate, 
-        t.Specialization.Id, 
-        t.Specialization.Name, 
-        t.ExperienceYears);
-
-    private static TrainingSessionDto ToSessionDto(TrainingSession s) => new(
-        s.Id, 
-        s.Client.Id, 
-        s.Client.FullName, 
-        s.Trainer.Id, 
-        s.Trainer.FullName,
-        s.StartsTraining, 
-        s.EndsTraining, 
-        s.HallName.ToString(), 
-        s.IsTrial);
 }
