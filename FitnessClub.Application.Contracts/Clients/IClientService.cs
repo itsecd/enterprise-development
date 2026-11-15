@@ -14,5 +14,5 @@ public interface IClientService:
     /// <summary>
     /// Получает персональные тренировки клиента
     /// </summary>
-    IList<PersonalTrainingSessionDto> GetPersonalTrainingSessions(int id);
+    Task<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id);
 }

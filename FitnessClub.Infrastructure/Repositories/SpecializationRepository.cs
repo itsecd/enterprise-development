@@ -1,4 +1,4 @@
-using FitnessClub.Infrastructure.Data;
+using FitnessClub.Domain.Data;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Repositories;
 
@@ -10,24 +10,25 @@ namespace FitnessClub.Infrastructure.Repositories;
 public class SpecializationRepository: IRepository<Specialization, int>
 {
     /// <inheritdoc/>
-    public Specialization? Get(int id)
+    public Task<Specialization?> Get(int id)
     {
-        return FitnessClubData.Specializations.FirstOrDefault(specialization => specialization.Id == id);
+        return Task.FromResult(FitnessClubData.Specializations.FirstOrDefault(specialization => specialization.Id == id));
     }
     /// <inheritdoc/>
-    public IReadOnlyList<Specialization> GetAll()
+    public Task<IReadOnlyList<Specialization>> GetAll()
     {
-        return FitnessClubData.Specializations;
+        return Task.FromResult<IReadOnlyList<Specialization>>(FitnessClubData.Specializations);
     }
     /// <inheritdoc/>
-    public void Add(Specialization entity)
+    public Task Add(Specialization entity)
     {
         var specializations = FitnessClubData.Specializations;
         entity.Id = specializations.Count == 0?1:specializations.Max(x => x.Id) + 1;
         specializations.Add(entity);
+        return Task.CompletedTask;
     }
     /// <inheritdoc/>
-    public void Update(Specialization entity)
+    public Task Update(Specialization entity)
     {
         var specializations = FitnessClubData.Specializations;
         var index = specializations.FindIndex(specialization => specialization.Id == entity.Id);
@@ -36,11 +37,12 @@ public class SpecializationRepository: IRepository<Specialization, int>
             throw new KeyNotFoundException($"Специализация с Id: {entity.Id} не найдена");
         }
         specializations[index] = entity;
+        return Task.CompletedTask;
     }
     /// <inheritdoc/>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var specialization = Get(id);
+        var specialization = await Get(id);
         if (specialization is null)
         {
             return false;

@@ -10,9 +10,9 @@ namespace FitnessClub.Application.Services;
 /// Cервис для работы с персональными тренировками
 /// </summary>
 public class PersonalTrainingSessionService(
-    IRepository<PersonalTrainingSession, int> sessionRepository,
-    IRepository<Client, int> clientRepository,
-    IRepository<Trainer, int> trainerRepository,
+    IPersonalTrainingSessionRepository sessionRepository,
+    IClientRepository clientRepository,
+    ITrainerRepository trainerRepository,
     ILogger<PersonalTrainingSessionService> logger)
     : IApplicationService<
         PersonalTrainingSessionDto,
@@ -20,16 +20,16 @@ public class PersonalTrainingSessionService(
         int>
 {
     /// <inheritdoc/>
-    public PersonalTrainingSessionDto Create(PersonalTrainingSessionCreateUpdateDto dto)
+    public async Task<PersonalTrainingSessionDto> Create(PersonalTrainingSessionCreateUpdateDto dto)
     {
         logger.LogInformation("Создание персональной тренировки");
-        var client = clientRepository.Get(dto.ClientId);
+        var client = await clientRepository.Get(dto.ClientId);
         if (client is null)
         {
             logger.LogWarning("Клиент c Id: {Id} не найден",dto.ClientId);
             throw new KeyNotFoundException($"Клиент с Id: {dto.ClientId} не найден");
         }
-        var trainer = trainerRepository.Get(dto.TrainerId);
+        var trainer = await trainerRepository.Get(dto.TrainerId);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",dto.TrainerId);
@@ -44,7 +44,7 @@ public class PersonalTrainingSessionService(
             HallName = dto.HallName,
             IsTrial = dto.IsTrial
         };
-        sessionRepository.Add(personalTrainingSession);
+        await sessionRepository.Add(personalTrainingSession);
         var result = new PersonalTrainingSessionDto(
             personalTrainingSession.Id,
             client.Id,
@@ -56,10 +56,10 @@ public class PersonalTrainingSessionService(
         return result;
     }
     /// <inheritdoc/>
-    public PersonalTrainingSessionDto? Get(int id)
+    public async Task<PersonalTrainingSessionDto?> Get(int id)
     {
         logger.LogInformation("Получение персональной тренировки c Id: {Id}",id);
-        var personalTrainingSession = sessionRepository.Get(id);
+        var personalTrainingSession = await sessionRepository.Get(id);
         if (personalTrainingSession is null)
         {
             logger.LogWarning("Персональная тренировка c Id: {Id} не найдена",id);
@@ -76,11 +76,11 @@ public class PersonalTrainingSessionService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<PersonalTrainingSessionDto> GetAll()
+    public async Task<IList<PersonalTrainingSessionDto>> GetAll()
     {
         logger.LogInformation("Получение списка персональных тренировок");
-        var result = sessionRepository.GetAll()
-            .Select(session=>new PersonalTrainingSessionDto
+        var sessions = await sessionRepository.GetAll();
+        var result = sessions.Select(session=>new PersonalTrainingSessionDto
             (
                 session.Id,
                 session.Client.Id,
@@ -93,22 +93,22 @@ public class PersonalTrainingSessionService(
         return result;
     }
     /// <inheritdoc/>
-    public PersonalTrainingSessionDto Update(PersonalTrainingSessionCreateUpdateDto dto, int id)
+    public async Task<PersonalTrainingSessionDto> Update(PersonalTrainingSessionCreateUpdateDto dto, int id)
     {
         logger.LogInformation("Обновление персональной тренировки с Id: {Id}",id);
-        var personalTrainingSession = sessionRepository.Get(id);
+        var personalTrainingSession = await sessionRepository.Get(id);
         if (personalTrainingSession is null)
         {
             logger.LogWarning("Персональная тренировка c Id: {Id} не найдена",id);
             throw new KeyNotFoundException($"Персональная тренировка с Id: {id} не найдена");
         }
-        var client = clientRepository.Get(dto.ClientId);
+        var client = await clientRepository.Get(dto.ClientId);
         if (client is null)
         {
             logger.LogWarning("Клиент c Id: {Id} не найден",dto.ClientId);
             throw new KeyNotFoundException($"Клиент с Id: {dto.ClientId} не найден");
         }
-        var trainer = trainerRepository.Get(dto.TrainerId);
+        var trainer = await trainerRepository.Get(dto.TrainerId);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",dto.TrainerId);
@@ -119,7 +119,7 @@ public class PersonalTrainingSessionService(
         personalTrainingSession.TrainDay = dto.TrainDay;
         personalTrainingSession.HallName = dto.HallName;
         personalTrainingSession.IsTrial = dto.IsTrial;
-        sessionRepository.Update(personalTrainingSession);
+        await sessionRepository.Update(personalTrainingSession);
         var result = new PersonalTrainingSessionDto(
             personalTrainingSession.Id,
             personalTrainingSession.Client.Id,
@@ -131,16 +131,16 @@ public class PersonalTrainingSessionService(
         return result;
     }
     /// <inheritdoc/>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         logger.LogInformation("Удаление персональной тренировки с Id: {Id}",id);
-        var personalTrainingSession = sessionRepository.Get(id);
+        var personalTrainingSession = await sessionRepository.Get(id);
         if (personalTrainingSession is null)
         {
             logger.LogWarning("Персональная тренировка c Id: {Id} не найдена",id);
             return false;
         }
-        var result = sessionRepository.Delete(id);
+        var result = await sessionRepository.Delete(id);
         if (result)
         {
             logger.LogInformation("Персональная тренировка с Id: {Id} удалена",id);

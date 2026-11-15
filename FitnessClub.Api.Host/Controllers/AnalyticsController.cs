@@ -13,8 +13,7 @@ namespace FitnessClub.Api.Host.Controllers;
 [Route("api/[controller]")]
 public class AnalyticsController(
     IAnalyticsService service,
-    ILogger<AnalyticsController> logger)
-    : ControllerBase
+    ILogger<AnalyticsController> logger): ControllerBase
 {
     /// <summary>
     /// Получает информацию о всех тренерах, стаж работы которых не менее 5 лет
@@ -22,12 +21,12 @@ public class AnalyticsController(
     [HttpGet("experienced-trainers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<TrainerDto>> GetTrainersWithFiveOrMoreYearsOfExperience()
+    public async Task<ActionResult<IList<TrainerDto>>> GetTrainersWithFiveOrMoreYearsOfExperience()
     {
         try
         {
             logger.LogInformation("Получение тренеров со стажем не менее 5 лет");
-            var result = service.GetTrainersWithFiveOrMoreYearsOfExperience();
+            var result = await service.GetTrainersWithFiveOrMoreYearsOfExperience();
             logger.LogInformation("Получено тренеров со стажем не менее 5 лет: {Count}",result.Count);
             return Ok(result);
         }
@@ -37,7 +36,6 @@ public class AnalyticsController(
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
-
     /// <summary>
     /// Проверяет, является ли зал доступным для записи в данный момент
     /// </summary>
@@ -45,14 +43,14 @@ public class AnalyticsController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<bool> CheckHallAvailability(
+    public async Task<ActionResult<bool>> CheckHallAvailability(
         [FromQuery] string hallName,
         [FromQuery] DateTime checkTime)
     {
         try
         {
             logger.LogInformation("Проверка, является ли зал {HallName} доступным для записи в {CheckTime}",hallName,checkTime);
-            var result = service.CheckHallAvailability(hallName,checkTime);
+            var result = await service.CheckHallAvailability(hallName,checkTime);
             logger.LogInformation("Доступность зала {HallName} на {CheckTime}: {IsAvailable}",hallName,checkTime,result);
             return Ok(result);
         }
@@ -67,19 +65,18 @@ public class AnalyticsController(
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
-
     /// <summary>
     /// Выводит информацию о клиентах, у которых просрочен абонемент, упорядочена по ФИО
     /// </summary>
     [HttpGet("expired-subscriptions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ClientDto>> GetClientsWithExpiredSubscription()
+    public async Task<ActionResult<IList<ClientDto>>> GetClientsWithExpiredSubscription()
     {
         try
         {
             logger.LogInformation("Получение клиентов с просроченным абонементом");
-            var result = service.GetClientsWithExpiredSubscription();
+            var result = await service.GetClientsWithExpiredSubscription();
             logger.LogInformation("Получено клиентов с просроченным абонементом: {Count}",result.Count);
             return Ok(result);
         }
@@ -89,7 +86,6 @@ public class AnalyticsController(
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
-
     /// <summary>
     /// Выводит информацию о занятиях за текущий месяц, проходящих в выбранном зале
     /// </summary>
@@ -97,13 +93,13 @@ public class AnalyticsController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<PersonalTrainingSessionDto>> GetSessionsForCurrentMonthInSelectedHall(
+    public async Task<ActionResult<IList<PersonalTrainingSessionDto>>> GetSessionsForCurrentMonthInSelectedHall(
         [FromQuery] string hallName)
     {
         try
         {
             logger.LogInformation("Получение информации о занятиях за текущий месяц, проходящих в зале {HallName}",hallName);
-            var result = service.GetSessionsForCurrentMonthInSelectedHall(hallName);
+            var result = await service.GetSessionsForCurrentMonthInSelectedHall(hallName);
             logger.LogInformation("Получено занятий за текущий месяц в зале {HallName}: {Count}",hallName,result.Count);
             return Ok(result);
         }
@@ -113,19 +109,18 @@ public class AnalyticsController(
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
-
     /// <summary>
     /// Выводит топ 5 наиболее популярных тренеров
     /// </summary>
     [HttpGet("top-trainers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<TrainerDto>> GetTopFivePopularTrainers()
+    public async Task<ActionResult<IList<TrainerDto>>> GetTopFivePopularTrainers()
     {
         try
         {
             logger.LogInformation("Получение топ 5 наиболее популярных тренеров");
-            var result = service.GetTopFivePopularTrainers();
+            var result = await service.GetTopFivePopularTrainers();
             logger.LogInformation("Получено популярных тренеров: {Count}",result.Count);
             return Ok(result);
         }

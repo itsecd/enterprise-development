@@ -32,10 +32,10 @@ builder.Services.AddScoped<
 
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
-builder.Services.AddScoped<IRepository<Client, int>, ClientEfRepository>();
-builder.Services.AddScoped<IRepository<Trainer, int>, TrainerEfRepository>();
+builder.Services.AddScoped<IClientRepository, ClientEfRepository>();
+builder.Services.AddScoped<ITrainerRepository, TrainerEfRepository>();
 builder.Services.AddScoped<IRepository<Specialization, int>, SpecializationEfRepository>();
-builder.Services.AddScoped<IRepository<PersonalTrainingSession, int>, PersonalTrainingSessionEfRepository>();
+builder.Services.AddScoped<IPersonalTrainingSessionRepository, PersonalTrainingSessionEfRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

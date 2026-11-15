@@ -12,19 +12,17 @@ namespace FitnessClub.Application.Services;
 /// Cервис для аналитических запросов
 /// </summary>
 public class AnalyticsService(
-    IRepository<Trainer, int> trainerRepository,
-    IRepository<Client, int> clientRepository,
-    IRepository<PersonalTrainingSession, int> sessionRepository,
-    ILogger<AnalyticsService> logger)
-    : IAnalyticsService
+    ITrainerRepository trainerRepository,
+    IClientRepository clientRepository,
+    IPersonalTrainingSessionRepository sessionRepository,
+    ILogger<AnalyticsService> logger): IAnalyticsService
 {
     /// <inheritdoc/>
-    public IList<TrainerDto> GetTrainersWithFiveOrMoreYearsOfExperience()
+    public async Task<IList<TrainerDto>> GetTrainersWithFiveOrMoreYearsOfExperience()
     {
         logger.LogInformation("Получение тренеров со стажем не менее 5 лет");
-        var result = trainerRepository.GetAll()
-            .Where(trainer => trainer.WorkYears >= 5)
-            .Select(trainer=>new TrainerDto
+        var trainers = await trainerRepository.GetWithMinExperience(5);
+        var result = trainers.Select(trainer=>new TrainerDto
             (
                 trainer.Id,
                 trainer.PassportNumber,
@@ -40,22 +38,19 @@ public class AnalyticsService(
         return result;
     }
     /// <inheritdoc/>
-    public bool CheckHallAvailability(string hallName, DateTime checkTime)
+    public async Task<bool> CheckHallAvailability(string hallName, DateTime checkTime)
     {
         logger.LogInformation(
             "Проверка, является ли зал {hallName} доступным для записи в {checkTime}",
             hallName,
             checkTime);
-        var sessions = sessionRepository.GetAll();
-        if (!sessions.Any(session => session.HallName == hallName))
+        var hallExists = await sessionRepository.HallExists(hallName);
+        if (!hallExists)
         {
             logger.LogWarning("Зал {HallName} не существует",hallName);
             throw new ArgumentException($"Зал {hallName} не существует");
         }
-        var isAvailable = !sessionRepository.GetAll()
-            .Any(session =>
-                session.HallName == hallName &&
-                session.TrainDay == checkTime);
+        var isAvailable = !await sessionRepository.HasSessionInHall(hallName, checkTime);
         logger.LogInformation(
             "Доступность зала {HallName} на {CheckTime}: {IsAvailable}",
             hallName,
@@ -64,16 +59,13 @@ public class AnalyticsService(
         return isAvailable;
     }
     /// <inheritdoc/>
-    public IList<ClientDto> GetClientsWithExpiredSubscription()
+    public async Task<IList<ClientDto>> GetClientsWithExpiredSubscription()
     {
         logger.LogInformation("Получение клиентов с просроченным абонементом");
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var result = clientRepository.GetAll()
-            .Where(client => client.EndSub < today)
-            .OrderBy(client => client.LastName)
-            .ThenBy(client => client.FirstName)
-            .ThenBy(client => client.Patronymic)
-            .Select(client=>new ClientDto
+        var clients = await clientRepository.GetExpiredSubscriptions(today);
+        var result = clients
+            .Select(client => new ClientDto
             (
                 client.Id,
                 client.PassportNumber,
@@ -90,16 +82,14 @@ public class AnalyticsService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<PersonalTrainingSessionDto> GetSessionsForCurrentMonthInSelectedHall(string hallName)
+    public async Task<IList<PersonalTrainingSessionDto>> GetSessionsForCurrentMonthInSelectedHall(string hallName)
     {
         logger.LogInformation("Получение информации о занятиях за текущий месяц, проходящих в зале {hallName}",hallName);
         var today = DateTime.Today;
-        var result = sessionRepository.GetAll()
-            .Where(session =>
-                session.HallName == hallName &&
-                session.TrainDay.Year == today.Year &&
-                session.TrainDay.Month == today.Month)
-            .Select(p =>new PersonalTrainingSessionDto
+        var monthStart = new DateTime(today.Year, today.Month, 1);
+        var nextMonth = monthStart.AddMonths(1);
+        var sessions = await sessionRepository.GetByHallAndPeriod(hallName, monthStart, nextMonth);
+        var result = sessions.Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,
                 p.Client.Id,
@@ -113,16 +103,11 @@ public class AnalyticsService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<TrainerDto> GetTopFivePopularTrainers()
+    public async Task<IList<TrainerDto>> GetTopFivePopularTrainers()
     {
         logger.LogInformation("Получение топ 5 наиболее популярных тренеров");
-        var trainerIds = sessionRepository.GetAll()
-            .GroupBy(session => session.Trainer.Id)
-            .OrderByDescending(group => group.Count())
-            .Take(5)
-            .Select(group => group.Key)
-            .ToList();
-        var allTrainers = trainerRepository.GetAll();
+        var trainerIds = await sessionRepository.GetTopFiveTrainerIds();
+        var allTrainers = await trainerRepository.GetByIds(trainerIds);
         var trainers = trainerIds
             .Select(id => allTrainers
                 .First(trainer => trainer.Id == id))

@@ -10,21 +10,21 @@ public interface IRepository<TEntity, TKey>
     /// <summary>
     /// Получает сущность по идентификатору
     /// </summary>
-    TEntity? Get(TKey id);
+    Task<TEntity?> Get(TKey id);
     /// <summary>
     /// Получает все сущности
     /// </summary>
-    IReadOnlyList<TEntity> GetAll();
+    Task<IReadOnlyList<TEntity>> GetAll();
     /// <summary>
     /// Добавляет сущность
     /// </summary>
-    void Add(TEntity entity);
+    Task Add(TEntity entity);
     /// <summary>
     /// Обновляет сущность
     /// </summary>
-    void Update(TEntity entity);
+    Task Update(TEntity entity);
     /// <summary>
     /// Удаляет сущность по идентификатору
     /// </summary>
-    bool Delete(TKey id);
+    Task<bool> Delete(TKey id);
 }

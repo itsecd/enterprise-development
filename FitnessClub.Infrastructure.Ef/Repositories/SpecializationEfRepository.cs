@@ -1,5 +1,6 @@
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitnessClub.Infrastructure.Ef.Repositories;
 
@@ -9,34 +10,34 @@ namespace FitnessClub.Infrastructure.Ef.Repositories;
 public class SpecializationEfRepository(FitnessClubDbContext context): IRepository<Specialization, int>
 {
     /// <inheritdoc/>
-    public Specialization? Get(int id)
+    public async Task<Specialization?> Get(int id)
     {
-        return context.Specializations.Find(id);
+        return await context.Specializations.FindAsync(id);
     }
     /// <inheritdoc/>
-    public IReadOnlyList<Specialization> GetAll()
+    public async Task<IReadOnlyList<Specialization>> GetAll()
     {
-        return context.Specializations.ToList();
+        return await context.Specializations.ToListAsync();
     }
     /// <inheritdoc/>
-    public void Add(Specialization entity)
+    public async Task Add(Specialization entity)
     {
         context.Specializations.Add(entity);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
     /// <inheritdoc/>
-    public void Update(Specialization entity)
+    public async Task Update(Specialization entity)
     {
         context.Specializations.Update(entity);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
     /// <inheritdoc/>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var specialization = context.Specializations.Find(id);
+        var specialization = await context.Specializations.FindAsync(id);
         if (specialization is null) return false;
         context.Specializations.Remove(specialization);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return true;
     }
 }

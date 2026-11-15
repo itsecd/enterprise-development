@@ -10,13 +10,13 @@ namespace FitnessClub.Application.Services;
 /// Cервис для работы с клиентами
 /// </summary>
 public class ClientService(
-    IRepository<Client, int> clientRepository,
-    IRepository<PersonalTrainingSession, int> sessionRepository,
+    IClientRepository clientRepository,
+    IPersonalTrainingSessionRepository sessionRepository,
     ILogger<ClientService> logger):
     IClientService
 {
     /// <inheritdoc/>
-    public ClientDto Create(ClientCreateUpdateDto dto)
+    public async Task<ClientDto> Create(ClientCreateUpdateDto dto)
     {
         logger.LogInformation("Создание клиента");
         if (dto.StartSub >= dto.EndSub)
@@ -36,7 +36,7 @@ public class ClientService(
             StartSub = dto.StartSub,
             EndSub = dto.EndSub
         };
-        clientRepository.Add(client);
+        await clientRepository.Add(client);
         var result = new ClientDto(
             client.Id,
             client.PassportNumber,
@@ -53,10 +53,10 @@ public class ClientService(
         return result;
     }
     /// <inheritdoc/>
-    public ClientDto? Get(int id)
+    public async Task<ClientDto?> Get(int id)
     {
         logger.LogInformation("Получение клиента c Id: {Id}",id);
-        var client = clientRepository.Get(id);
+        var client = await clientRepository.Get(id);
         if (client is null)
         {
             logger.LogWarning("Клиент c Id: {Id} не найден",id);
@@ -78,11 +78,11 @@ public class ClientService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<ClientDto> GetAll()
+    public async Task<IList<ClientDto>> GetAll()
     {
         logger.LogInformation("Получение списка клиентов");
-        var result = clientRepository.GetAll()
-            .Select(client=>new ClientDto
+        var clients = await clientRepository.GetAll();
+        var result = clients.Select(client=>new ClientDto
             (
                 client.Id,
                 client.PassportNumber,
@@ -99,10 +99,10 @@ public class ClientService(
         return result;
     }
     /// <inheritdoc/>
-    public ClientDto Update(ClientCreateUpdateDto dto, int id)
+    public async Task<ClientDto> Update(ClientCreateUpdateDto dto, int id)
     {
         logger.LogInformation("Обновление клиента с Id: {Id}",id);
-        var client = clientRepository.Get(id);
+        var client = await clientRepository.Get(id);
         if (client is null)
         {
             logger.LogWarning("Клиент c Id: {Id} не найден",id);
@@ -121,7 +121,7 @@ public class ClientService(
         client.PhoneNumber = dto.PhoneNumber;
         client.StartSub = dto.StartSub;
         client.EndSub = dto.EndSub;
-        clientRepository.Update(client);
+        await clientRepository.Update(client);
         var result = new ClientDto
         (
             client.Id,
@@ -138,23 +138,23 @@ public class ClientService(
         return result;
     }
     /// <inheritdoc/>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         logger.LogInformation("Удаление клиента с Id: {Id}",id);
-        var client = clientRepository.Get(id);
+        var client = await clientRepository.Get(id);
         if (client is null)
         {
             logger.LogWarning("Клиент c Id: {Id} не найден",id);
             return false;
         }
-        var hasPersonalTrainingSessions = sessionRepository.GetAll().Any(x => x.Client.Id == id);
+        var hasPersonalTrainingSessions = await sessionRepository.HasSessionsForClient(id);
         if (hasPersonalTrainingSessions)
         {
             logger.LogWarning(
                 "Клиент с Id: {Id} не может быть удален, у него есть персональные тренировки",id);
             return false;
         }
-        var result = clientRepository.Delete(id);
+        var result = await clientRepository.Delete(id);
         if (result)
         {
             logger.LogInformation("Клиент с Id: {Id} удалён",id);
@@ -162,16 +162,16 @@ public class ClientService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<PersonalTrainingSessionDto> GetPersonalTrainingSessions(int id)
+    public async Task<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id)
     {
         logger.LogInformation("Получение персональных тренировок клиента с Id: {Id}",id);
-        var client = clientRepository.Get(id);
+        var client = await clientRepository.Get(id);
         if (client is null)
         {
             logger.LogWarning("Клиент c Id: {Id} не найден",id);
             throw new KeyNotFoundException($"Клиент с Id: {id} не найден");
         }
-        var result = sessionRepository.GetAll().Where(p => p.Client.Id==id)
+        var result = (await sessionRepository.GetByClient(id))
             .Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,

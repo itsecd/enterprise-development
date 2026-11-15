@@ -22,12 +22,12 @@ public class TrainersController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id)
+    public async Task<ActionResult<IList<PersonalTrainingSessionDto>>> GetPersonalTrainingSessions(int id)
     {
         try
         {
             logger.LogInformation("Получение тренировок тренера с Id {Id}",id);
-            var result = service.GetPersonalTrainingSessions(id);
+            var result = await service.GetPersonalTrainingSessions(id);
             return Ok(result);
         }
         catch (KeyNotFoundException exception)

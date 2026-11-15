@@ -10,16 +10,16 @@ namespace FitnessClub.Application.Services;
 /// Cервис для работы с тренерами
 /// </summary>
 public class TrainerService(
-    IRepository<Trainer, int> trainerRepository,
+    ITrainerRepository trainerRepository,
     IRepository<Specialization, int> specializationRepository,
-    IRepository<PersonalTrainingSession, int> sessionRepository,
+    IPersonalTrainingSessionRepository sessionRepository,
     ILogger<TrainerService> logger): ITrainerService
 {
     /// <inheritdoc/>
-    public TrainerDto Create(TrainerCreateUpdateDto dto)
+    public async Task<TrainerDto> Create(TrainerCreateUpdateDto dto)
     {
         logger.LogInformation("Создание тренера");
-        var specialization = specializationRepository.Get(dto.SpecializationId);
+        var specialization = await specializationRepository.Get(dto.SpecializationId);
         if (specialization is null)
         {
             logger.LogWarning("Специализация c Id: {Id} не найдена",dto.SpecializationId);
@@ -37,7 +37,7 @@ public class TrainerService(
             Specialization = specialization,
             WorkYears = dto.WorkYears
         };
-        trainerRepository.Add(trainer);
+        await trainerRepository.Add(trainer);
         var result = new TrainerDto(
             trainer.Id,
             trainer.PassportNumber,
@@ -53,10 +53,10 @@ public class TrainerService(
         return result;
     }
     /// <inheritdoc/>
-    public TrainerDto? Get(int id)
+    public async Task<TrainerDto?> Get(int id)
     {
         logger.LogInformation("Получение тренера c Id: {Id}",id);
-        var trainer = trainerRepository.Get(id);
+        var trainer = await trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
@@ -77,11 +77,11 @@ public class TrainerService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<TrainerDto> GetAll()
+    public async Task<IList<TrainerDto>> GetAll()
     {
         logger.LogInformation("Получение списка тренеров");
-        var result = trainerRepository.GetAll()
-            .Select(trainer=>new TrainerDto
+        var trainers = await trainerRepository.GetAll();
+        var result = trainers.Select(trainer=>new TrainerDto
             (
                 trainer.Id,
                 trainer.PassportNumber,
@@ -97,16 +97,16 @@ public class TrainerService(
         return result;
     }
     /// <inheritdoc/>
-    public TrainerDto Update(TrainerCreateUpdateDto dto, int id)
+    public async Task<TrainerDto> Update(TrainerCreateUpdateDto dto, int id)
     {
         logger.LogInformation("Обновление тренера с Id: {Id}",id);
-        var trainer = trainerRepository.Get(id);
+        var trainer = await trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
             throw new KeyNotFoundException($"Тренер с Id: {id} не найден");
         }
-        var specialization = specializationRepository.Get(dto.SpecializationId);
+        var specialization = await specializationRepository.Get(dto.SpecializationId);
         if (specialization is null)
         {
             logger.LogWarning("Специализация c Id: {Id} не найдена",dto.SpecializationId);
@@ -120,7 +120,7 @@ public class TrainerService(
         trainer.DateOfBirth = dto.DateOfBirth;
         trainer.Specialization = specialization;
         trainer.WorkYears = dto.WorkYears;
-        trainerRepository.Update(trainer);
+        await trainerRepository.Update(trainer);
         var result= new TrainerDto
         (
             trainer.Id,
@@ -136,16 +136,16 @@ public class TrainerService(
         return result;
     }
     /// <inheritdoc/>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         logger.LogInformation("Удаление тренера с Id: {Id}",id);
-        var trainer = trainerRepository.Get(id);
+        var trainer = await trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
             return false;
         }
-        var hasPersonalTrainingSessions = sessionRepository.GetAll().Any(x => x.Trainer.Id == id);
+        var hasPersonalTrainingSessions = await sessionRepository.HasSessionsForTrainer(id);
         if (hasPersonalTrainingSessions)
         {
             logger.LogWarning(
@@ -153,7 +153,7 @@ public class TrainerService(
                 id);
             return false;
         }
-        var result = trainerRepository.Delete(id);
+        var result = await trainerRepository.Delete(id);
         if (result)
         {
             logger.LogInformation("Тренер с Id: {Id} удалён",id);
@@ -161,16 +161,16 @@ public class TrainerService(
         return result;
     }
     /// <inheritdoc/>
-    public IList<PersonalTrainingSessionDto> GetPersonalTrainingSessions(int id)
+    public async Task<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id)
     {
         logger.LogInformation("Получение персональных тренировок тренера с Id: {Id}",id);
-        var trainer = trainerRepository.Get(id);
+        var trainer = await trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
             throw new KeyNotFoundException($"Тренер с Id: {id} не найден");
         }
-        var result = sessionRepository.GetAll().Where(p => p.Trainer.Id==id)
+        var result = (await sessionRepository.GetByTrainer(id))
             .Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,

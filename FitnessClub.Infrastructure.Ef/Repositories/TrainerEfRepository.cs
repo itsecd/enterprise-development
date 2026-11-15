@@ -1,47 +1,68 @@
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitnessClub.Infrastructure.Ef.Repositories;
 
 /// <summary>
 /// Репозиторий тренеров с хранением в БД
 /// </summary>
-public class TrainerEfRepository(FitnessClubDbContext context): IRepository<Trainer, int>
+public class TrainerEfRepository(FitnessClubDbContext context): ITrainerRepository
 {
     /// <inheritdoc/>
-    public Trainer? Get(int id)
+    public async Task<Trainer?> Get(int id)
     {
-        return context.Trainers.FirstOrDefault(t => t.Id == id);
+        return await context.Trainers.FirstOrDefaultAsync(t => t.Id == id);
     }
     /// <inheritdoc/>
-    public IReadOnlyList<Trainer> GetAll()
+    public async Task<IReadOnlyList<Trainer>> GetAll()
     {
-        return context.Trainers.ToList();
+        return await context.Trainers.ToListAsync();
     }
     /// <inheritdoc/>
-    public void Add(Trainer entity)
+    public async Task Add(Trainer entity)
     {
-        var specialization = context.Specializations.Find(entity.Specialization.Id)?? throw new ArgumentException("Специализация не найдена");
+        var specialization = await context.Specializations.FindAsync(entity.Specialization.Id)?? throw new ArgumentException("Специализация не найдена");
         entity.Specialization = specialization;
         context.Trainers.Add(entity);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
     /// <inheritdoc/>
-    public void Update(Trainer entity)
+    public async Task Update(Trainer entity)
     {
-        var trainer = context.Trainers.FirstOrDefault(t => t.Id == entity.Id)?? throw new ArgumentException("Тренер не найден");
-        var specialization = context.Specializations.Find(entity.Specialization.Id)?? throw new ArgumentException("Специализация не найдена");
+        var trainer = await context.Trainers.FirstOrDefaultAsync(t => t.Id == entity.Id)?? throw new ArgumentException("Тренер не найден");
+        var specialization = await context.Specializations.FindAsync(entity.Specialization.Id)?? throw new ArgumentException("Специализация не найдена");
         context.Entry(trainer).CurrentValues.SetValues(entity);
         trainer.Specialization = specialization;
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
     /// <inheritdoc/>
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        var trainer = context.Trainers.Find(id);
+        var trainer = await context.Trainers.FindAsync(id);
         if (trainer is null) return false;
         context.Trainers.Remove(trainer);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return true;
+    }
+    /// <inheritdoc/>
+    public Task<bool> HasTrainersForSpecialization(int specializationId)
+    {
+        return context.Trainers.AnyAsync(t => t.Specialization.Id == specializationId);
+    }
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Trainer>> GetBySpecialization(int specializationId)
+    {
+        return await context.Trainers.AsNoTracking().Where(t => t.Specialization.Id == specializationId).ToListAsync();
+    }
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Trainer>> GetWithMinExperience(int minYears)
+    {
+        return await context.Trainers.AsNoTracking().Where(t => t.WorkYears >= minYears).ToListAsync();
+    }
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Trainer>> GetByIds(IReadOnlyCollection<int> ids)
+    {
+        return await context.Trainers.AsNoTracking().Where(t => ids.Contains(t.Id)).ToListAsync();
     }
 }

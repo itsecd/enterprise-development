@@ -14,5 +14,5 @@ public interface ISpecializationService:
     /// <summary>
     /// Получает тренеров выбранной специализации
     /// </summary>
-    IList<TrainerDto> GetTrainers(int id);
+    Task<IList<TrainerDto>> GetTrainers(int id);
 }
