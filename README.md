@@ -1,94 +1,96 @@
-# FitnessClub
+# FitnessClub — лабораторная работа 3
 
-Учебный проект по дисциплине **«Разработка корпоративных приложений»**.
+Серверное приложение фитнес-клуба на ASP.NET Core с хранением данных в MySQL. В рамках третьей лабораторной работы InMemory-хранилище заменено на Entity Framework Core, добавлены миграции, начальное заполнение базы данных и оркестрация через .NET Aspire.
 
-## Лабораторные работы
+## Технологии
 
-### Лабораторная работа 1 — модель предметной области и unit-тесты
+- .NET 10 и ASP.NET Core;
+- Entity Framework Core с Pomelo.EntityFrameworkCore.MySql;
+- MySQL 9.7;
+- .NET Aspire 13.6;
+- xUnit v3;
+- Scalar и OpenAPI.
 
-Описана предметная область фитнес-клуба: клиенты, тренеры, специализации, залы и бронирования. Unit-тесты проверяют аналитические запросы:
-
-* поиск тренеров со стажем от заданного количества лет;
-* поиск клиентов с просроченным абонементом;
-* получение самых популярных тренеров;
-* проверка доступности зала;
-* получение бронирований выбранного зала за месяц.
-
-### Лабораторная работа 2 — серверное приложение с REST API
-
-Реализовано ASP.NET Core приложение, которое предоставляет CRUD-операции для сущностей первой лабораторной и HTTP-запросы аналитики. Данные хранятся в памяти в коллекциях и заполняются тестовыми данными при запуске. При перезапуске приложения изменения теряются, а исходные тестовые данные загружаются заново. Добавлено логирование с использованием Serilog.
-
-#### REST API
-
-Для клиентов, тренеров, специализаций, залов и бронирований доступны одинаковые операции:
-
-| Метод | Маршрут | Описание |
-|---|---|---|
-| `GET` | `/api/{resource}` | Получить все записи |
-| `GET` | `/api/{resource}/{id}` | Получить запись по ID |
-| `POST` | `/api/{resource}` | Создать запись |
-| `PUT` | `/api/{resource}/{id}` | Изменить запись |
-| `DELETE` | `/api/{resource}/{id}` | Удалить запись |
-
-Вместо `{resource}` используются `clients`, `trainers`, `specializations`, `halls` или `bookings`.
-
-Аналитические маршруты:
-
-| Метод и маршрут | Описание |
-|---|---|
-| `GET /api/analytics/experienced-trainers?minimumExperience=5` | Тренеры с указанным минимальным стажем |
-| `GET /api/analytics/overdue-subscriptions?asOfDate=2026-09-15` | Клиенты с просроченным абонементом на указанную дату |
-| `GET /api/analytics/popular-trainers?count=5` | Самые популярные тренеры |
-| `GET /api/analytics/halls/{hallId}/availability?dateTime=2026-09-15T10:30:00` | Проверка доступности зала в указанное время |
-| `GET /api/analytics/bookings?hallId=5&dateInMonth=2026-09-01` | Бронирования зала за месяц указанной даты |
-
-## Структура решения
-
-Исходный код и тестовые проекты расположены в `FitnessClub/`.
+## Архитектура
 
 ```text
-FitnessClub/
-├── src/
-│   ├── FitnessClub.Api/
-│   ├── FitnessClub.AppHost/
-│   ├── FitnessClub.Application/
-│   ├── FitnessClub.Contracts/
-│   ├── FitnessClub.Domain/
-│   ├── FitnessClub.Infrastructure.InMemory/
-│   └── FitnessClub.Shared/
-└── tests/
-    ├── FitnessClub.Application.Tests/
-    └── FitnessClub.IntegrationTests/
+FitnessClub
+├── aspire
+│   └── FitnessClub.AppHost                 # Запуск MySQL, миграций и API
+├── src
+│   ├── FitnessClub.Api                     # REST API и OpenAPI
+│   ├── FitnessClub.Application             # Сервисы, валидация и маппинг
+│   ├── FitnessClub.Contracts               # DTO и контракты сервисов
+│   ├── FitnessClub.Domain                  # Сущности и начальные данные
+│   ├── FitnessClub.Infrastructure.EfCore   # DbContext, репозитории и миграции
+│   ├── FitnessClub.MigrationService        # Одноразовое применение миграций
+│   └── FitnessClub.Shared                  # Общие типы
+└── tests
+    └── FitnessClub.Application.Tests       # Модульные тесты
 ```
 
-### Проекты и ответственность
+### Модель базы данных
 
-* **`FitnessClub.Api`** — точка входа веб-приложения, REST-контроллеры, обработка исключений, OpenAPI и Scalar. Тут HTTP-запросы передаются в сервисы приложения.
-* **`FitnessClub.Application`** — прикладные сервисы CRUD и аналитики, преобразование сущностей в DTO, проверки и валидаторы. Содержит бизнес-логику, не привязанную к HTTP.
-* **`FitnessClub.Contracts`** — DTO для чтения и редактирования, интерфейсы сервисов и общие контракты между слоями.
-* **`FitnessClub.Domain`** — сущности предметной области, интерфейс репозитория и исходные данные для заполнения хранилища.
-* **`FitnessClub.Infrastructure.InMemory`** — реализация репозитория на основе коллекций в памяти и загрузчик начальных данных.
-* **`FitnessClub.Shared`** — общие типы, используемые несколькими проектами, Enum`чики.
-* **`FitnessClub.AppHost`** — проект-заготовка для Aspire; конфигурация запуска сервисов. **В ПРОЦЕССЕ!**.
-* **`FitnessClub.Application.Tests`** — unit-тесты прикладной логики и аналитических запросов.
-* **`FitnessClub.IntegrationTests`** — проект-заготовка для интеграционных тестов. **В ПРОЦЕССЕ!**
+Для иерархии `Person → Client/Trainer` используется стратегия TPH: клиенты и тренеры хранятся в общей таблице `people` с дискриминатором. Залы, специализации и бронирования находятся в таблицах `halls`, `specializations` и `bookings`.
+
+Начальные данные берутся из `FitnessClub.Domain/Seeds/SeedData.cs` и добавляются через `UseAsyncSeeding` при создании базы данных. EF Core самостоятельно сохраняет связанный граф сущностей и устанавливает внешние ключи.
+
+## Требования
+
+Перед запуском необходимо установить:
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download);
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/);
+- [Aspire CLI](https://aspire.dev/reference/cli/install-script/).
 
 ## Запуск
 
-Требуется **.NET 10 SDK**.
+1. Запустить Docker Desktop.
+2. Открыть терминал в каталоге `FitnessClub`.
+3. Выполнить:
 
-Запустить сервер:
-
-```bash
-cd FitnessClub/src/FitnessClub.Api
-dotnet run
+```powershell
+aspire run
 ```
 
-После запуска описание OpenAPI доступно по `/openapi/v1.json`, интерактивная документация Scalar — по `/scalar/v1`. 
+Aspire скачает образ MySQL при необходимости и запустит ресурсы в следующем порядке:
 
-Запустить unit-тесты:
+```text
+MySQL → MigrationService → API
+```
 
-```bash
-cd FitnessClub
-dotnet test
+`MigrationService` применяет миграции, выполняет начальное заполнение созданной базы и завершает работу. API запускается только после успешного завершения миграций.
+
+Адрес Aspire Dashboard отображается в терминале. В нём доступны состояние ресурсов, журналы и endpoints.
+
+## Документация API
+
+После запуска перейти по адресу API:
+
+- Scalar: `/scalar/v1`;
+- OpenAPI JSON: `/openapi/v1.json`;
+- Health check: `/health`.
+
+Точный порт API указан в Aspire Dashboard.
+
+API поддерживает CRUD-операции для клиентов, тренеров, специализаций, залов и бронирований, а также аналитические запросы:
+
+- тренеры с заданным минимальным стажем;
+- клиенты с просроченными абонементами;
+- самые популярные тренеры;
+- доступность зала в указанное время;
+- бронирования зала за указанный месяц.
+
+## Работа с миграциями
+
+Миграции находятся в `src/FitnessClub.Infrastructure.EfCore/Migrations` и применяются автоматически при запуске через Aspire.
+
+`FitnessClubDbContextFactory` позволяет EF Core Tools создавать контекст во время проектирования без запуска Aspire и подключения к MySQL. Во время обычного запуска приложения эта фабрика не используется.
+
+## Сборка и тестирование
+
+Из каталога `FitnessClub`:
+```powershell
+dotnet build FitnessClub.slnx
+dotnet test tests/FitnessClub.Application.Tests/FitnessClub.Application.Tests.csproj
 ```
