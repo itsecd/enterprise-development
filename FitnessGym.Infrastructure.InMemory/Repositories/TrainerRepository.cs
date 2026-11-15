@@ -9,7 +9,7 @@ namespace FitnessGym.Infrastructure.InMemory.Repositories;
 /// </summary>
 public class TrainerRepository : ITrainerRepository
 {
-    private readonly List<Trainer> _trainers = new(DataSeeder.Trainers);
+    private readonly List<Trainer> _trainers = [.. DataSeeder.Trainers];
 
     /// <summary>
     /// Получить список всех тренеров
@@ -46,6 +46,8 @@ public class TrainerRepository : ITrainerRepository
         var existing = _trainers.FirstOrDefault(t => t.Id == trainer.Id);
         if (existing is null) return Task.FromResult(false);
 
+        var index = _trainers.IndexOf(existing);
+        _trainers[index] = trainer;
         return Task.FromResult(true);
     }
 

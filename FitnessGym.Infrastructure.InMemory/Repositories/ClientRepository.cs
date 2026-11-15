@@ -9,7 +9,7 @@ namespace FitnessGym.Infrastructure.InMemory.Repositories;
 /// </summary>
 public class ClientRepository : IClientRepository
 {
-    private readonly List<Client> _clients = new(DataSeeder.Clients);
+    private readonly List<Client> _clients = [.. DataSeeder.Clients];
 
     /// <summary>
     /// Получить список всех клиентов
@@ -46,6 +46,8 @@ public class ClientRepository : IClientRepository
         var existing = _clients.FirstOrDefault(c => c.Id == client.Id);
         if (existing is null) return Task.FromResult(false);
 
+        var index = _clients.IndexOf(existing);
+        _clients[index] = client;
         return Task.FromResult(true);
     }
 

@@ -9,7 +9,7 @@ namespace FitnessGym.Infrastructure.InMemory.Repositories;
 /// </summary>
 public class SpecializationRepository : ISpecializationRepository
 {
-    private readonly List<Specialization> _specializations = new(DataSeeder.Specializations);
+    private readonly List<Specialization> _specializations = [.. DataSeeder.Specializations];
 
     /// <summary>
     /// Получить список всех специализаций

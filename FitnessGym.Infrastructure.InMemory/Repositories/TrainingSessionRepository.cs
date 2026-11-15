@@ -9,7 +9,7 @@ namespace FitnessGym.Infrastructure.InMemory.Repositories;
 /// </summary>
 public class TrainingSessionRepository : ITrainingSessionRepository
 {
-    private readonly List<TrainingSession> _sessions = new(DataSeeder.Sessions);
+    private readonly List<TrainingSession> _sessions = [.. DataSeeder.Sessions];
 
     /// <summary>
     /// Получить список всех занятий
