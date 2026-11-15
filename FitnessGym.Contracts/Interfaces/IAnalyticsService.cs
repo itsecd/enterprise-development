@@ -30,5 +30,5 @@ public interface IAnalyticsService
     /// <summary>
     /// Вывести топ-5 наиболее популярных тренеров по количеству проведённых занятий
     /// </summary>
-    public Task<IReadOnlyList<TrainerDto>> GetTop5PopularTrainersAsync();
+    public Task<IReadOnlyList<TrainerPopularityDto>> GetTop5PopularTrainersAsync();
 }

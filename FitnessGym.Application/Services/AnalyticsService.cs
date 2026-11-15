@@ -86,14 +86,14 @@ public class AnalyticsService(
     /// <summary>
     /// Вывести топ 5 наиболее популярных тренеров
     /// </summary>
-    public async Task<IReadOnlyList<TrainerDto>> GetTop5PopularTrainersAsync()
+    public async Task<IReadOnlyList<TrainerPopularityDto>> GetTop5PopularTrainersAsync()
     {
         var sessions = await sessionRepository.GetAllAsync();
         return sessions
             .GroupBy(s => s.Trainer)
             .OrderByDescending(g => g.Count())
             .Take(5)
-            .Select(g => DtoMapper.ToTrainerDto(g.Key))
+            .Select(g => new TrainerPopularityDto(DtoMapper.ToTrainerDto(g.Key), g.Count()))
             .ToList();
     }
 }

@@ -102,9 +102,9 @@ public class AnalyticsController(IAnalyticsService service, ILogger<AnalyticsCon
     /// Топ-5 наиболее популярных тренеров
     /// </summary>
     [HttpGet("top-5-trainers")]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<TrainerPopularityDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IReadOnlyList<TrainerDto>>> GetTop5PopularTrainers()
+    public async Task<ActionResult<IReadOnlyList<TrainerPopularityDto>>> GetTop5PopularTrainers()
     {
         try
         {
