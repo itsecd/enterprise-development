@@ -2,8 +2,6 @@ using System.Text.Json.Serialization;
 using FitnessClub.Api.ExceptionHandlers;
 using FitnessClub.Application;
 using FitnessClub.Infrastructure.EfCore;
-using FitnessClub.Infrastructure.EfCore.Persistence;
-using FitnessClub.Infrastructure.EfCore.Seeding;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -12,10 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-builder.AddMySqlDbContext<FitnessClubDbContext>(
-    "fitnessclub-db",
-    configureDbContextOptions: options =>
-        options.UseFitnessClubSeeding());
 builder.Services.AddEfCoreStorage();
 
 builder.Services.AddControllers()
