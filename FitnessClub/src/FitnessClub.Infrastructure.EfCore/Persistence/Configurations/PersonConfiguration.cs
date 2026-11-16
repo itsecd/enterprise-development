@@ -18,5 +18,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.Property(p => p.PhoneNumber).HasMaxLength(20);
         builder.Property(p => p.Gender).HasConversion<string>().HasMaxLength(20);
         builder.HasIndex(p => p.PassportNumber).IsUnique();
+
+        builder.ToTable("people");
     }
 }

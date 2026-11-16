@@ -12,7 +12,6 @@ public class TrainerConfiguration : IEntityTypeConfiguration<Trainer>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Trainer> builder)
     {
-        builder.Property(t => t.Experience).IsRequired();
         builder.HasOne(t => t.Specialization)
             .WithMany()
             .HasForeignKey("SpecializationId")

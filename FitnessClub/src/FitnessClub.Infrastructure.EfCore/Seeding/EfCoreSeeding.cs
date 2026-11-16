@@ -1,6 +1,8 @@
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Seeds;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessClub.Infrastructure.EfCore.Seeding;
 
@@ -18,15 +20,23 @@ public static class EfCoreSeeding
     {
         options.UseAsyncSeeding(async (context, _, cancellationToken) =>
         {
+            var logger = context.GetService<ILoggerFactory>()
+                .CreateLogger("FitnessClub.Database.Seeding");
             if (await context.Set<Specialization>().AnyAsync(cancellationToken))
+            {
+                logger.LogInformation("Заполнение базы данных пропущено: специализации уже существуют");
                 return;
+            }
+            logger.LogInformation("Начато заполнение базы данных");
             var seedData = new SeedData();
             context.AddRange(seedData.Specializations);
             context.AddRange(seedData.Halls);
             context.AddRange(seedData.Trainers);
             context.AddRange(seedData.Clients);
             context.AddRange(seedData.Bookings);
+
             await context.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Заполнение базы данных завершено");
         });
         return options;
     }

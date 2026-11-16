@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySqlConnector" Version="2.6.1" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="MySqlConnector" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design"
+                      PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

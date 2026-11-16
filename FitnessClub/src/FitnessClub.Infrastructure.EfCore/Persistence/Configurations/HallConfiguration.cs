@@ -15,5 +15,7 @@ public class HallConfiguration : IEntityTypeConfiguration<Hall>
         builder.HasKey(h => h.Id);
         builder.Property(h => h.Name).HasMaxLength(200).IsRequired();
         builder.HasIndex(h => h.Name).IsUnique();
+
+        builder.ToTable("halls");
     }
 }
