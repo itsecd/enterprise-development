@@ -5,6 +5,12 @@ namespace Hotel.Application.Contracts.HotelClients;
 /// <summary>
 /// DTO для создания клиента
 /// </summary>
+/// <param name="PassportNumber">Номер паспорта</param>
+/// <param name="FirstName">Имя</param>
+/// <param name="LastName">Фамилия</param>
+/// <param name="MiddleName">Отчество</param>
+/// <param name="BirthDate">Дата рождения</param>
+/// <param name="Citizenship">Гражданство</param>
 public record CreateHotelClientDto(
     [Required(ErrorMessage = "Номер паспорта обязателен")]
     [StringLength(8, MinimumLength = 8, ErrorMessage = "Номер паспорта содержит ровно 8 символов")]

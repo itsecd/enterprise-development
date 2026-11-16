@@ -6,6 +6,11 @@ namespace Hotel.Application.Contracts.RoomTypes;
 /// <summary>
 /// DTO для создания типа номера
 /// </summary>
+/// <param name="Category">Категория номера</param>
+/// <param name="Area">Площадь номера</param>
+/// <param name="BedCount">Количество кроватей</param>
+/// <param name="HasBathroom">Наличие санузла</param>
+/// <param name="PricePerDay">Стоимость проживания за сутки</param>
 public record CreateRoomTypeDto(
     [EnumDataType(typeof(RoomCategory), ErrorMessage = "Указана неизвестная категория номера")]
     RoomCategory Category,

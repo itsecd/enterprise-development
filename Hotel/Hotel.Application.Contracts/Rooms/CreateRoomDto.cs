@@ -5,6 +5,10 @@ namespace Hotel.Application.Contracts.Rooms;
 /// <summary>
 /// DTO для создания номера
 /// </summary>
+/// <param name="RoomNumber">Номер комнаты</param>
+/// <param name="Floor">Этаж</param>
+/// <param name="HasBalcony">Наличие балкона</param>
+/// <param name="RoomTypeId">Идентификатор типа номера</param>
 public record CreateRoomDto(
     [Range(1, int.MaxValue, ErrorMessage = "Номер комнаты должен быть положительным")]
     int RoomNumber,
