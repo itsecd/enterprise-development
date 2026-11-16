@@ -1,5 +1,6 @@
 ﻿using CarWash.Application.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace CarWash.Api.Host.Controllers;
 
@@ -23,7 +24,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public ActionResult<TDto> Create(TCreateUpdateDto newDto)
+    public async Task<ActionResult<TDto>> Create(TCreateUpdateDto newDto)
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller} с параметром {@dto}",
@@ -31,7 +32,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
         try
         {
-            var result = appService.Create(newDto);
+            var result = await appService.Create(newDto);
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -58,7 +59,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<TDto> Edit(TKey id, TCreateUpdateDto newDto)
+    public async Task<ActionResult<TDto>> Edit(TKey id, TCreateUpdateDto newDto)
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller} с параметрами {key},{@dto}",
@@ -66,7 +67,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
         try
         {
-            var result = appService.Update(newDto, id);
+            var result = await appService.Update(newDto, id);
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -81,7 +82,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
                 "Запись с идентификатором {id} не найдена при выполнении метода {method} контроллера {controller}",
                 id, nameof(Edit), GetType().Name);
 
-            return NotFound();
+            return NotFound($"Запись с идентификатором {id} не найдена"); ;
         }
         catch (Exception ex)
         {
@@ -100,8 +101,9 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [HttpDelete("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult Delete(TKey id)
+    public async Task<IActionResult> Delete(TKey id)
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller} с параметром {id}",
@@ -109,7 +111,10 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
         try
         {
-            appService.Delete(id);
+            var isDeleted = await appService.Delete(id);
+
+            if (!isDeleted)
+                return NotFound($"Запись с идентификатором {id} не найдена");
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -117,14 +122,15 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
             return Ok();
         }
-        catch (KeyNotFoundException ex)
+        catch (SqlException ex) when (ex.Number == 547)
         {
             logger.LogWarning(
                 ex,
-                "Запись с идентификатором {id} не найдена при выполнении метода {method} контроллера {controller}",
-                id, nameof(Delete), GetType().Name);
+                "Невозможно удалить запись с идентификатором {id}: она используется другими записями",
+                id);
 
-            return NotFound();
+            return Conflict(
+                $"Невозможно удалить запись с идентификатором {id}, поскольку на неё ссылаются другие записи");
         }
         catch (Exception ex)
         {
@@ -143,7 +149,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<IList<TDto>> GetAll()
+    public async Task<ActionResult<IList<TDto>>> GetAll()
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller}",
@@ -151,7 +157,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
         try
         {
-            var result = appService.GetAll();
+            var result = await appService.GetAll();
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -177,7 +183,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<TDto> Get(TKey id)
+    public async Task<ActionResult<TDto>> Get(TKey id)
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller} с параметром {id}",
@@ -185,22 +191,16 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
 
         try
         {
-            var result = appService.Get(id);
+            var result = await appService.Get(id);
+
+            if (result is null)
+                return NotFound($"Запись с идентификатором {id} не найдена");
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
                 nameof(Get), GetType().Name);
 
             return Ok(result);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            logger.LogWarning(
-                ex,
-                "Запись с идентификатором {id} не найдена при выполнении метода {method} контроллера {controller}",
-                id, nameof(Get), GetType().Name);
-
-            return NotFound();
         }
         catch (Exception ex)
         {

@@ -19,7 +19,7 @@ public class AnalyticsController(
     [ProducesResponseType(200)]
     [ProducesResponseType(204)]
     [ProducesResponseType(500)]
-    public ActionResult<List<TopCustomerDto>>
+    public async Task<ActionResult<List<TopCustomerDto>>>
         GetTopFiveCustomersByVisitCount()
     {
         logger.LogInformation(
@@ -28,7 +28,7 @@ public class AnalyticsController(
 
         try
         {
-            var result = service.GetTopFiveCustomersByVisitCount();
+            var result = await service.GetTopFiveCustomersByVisitCount();
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -54,7 +54,7 @@ public class AnalyticsController(
     [ProducesResponseType(200)]
     [ProducesResponseType(204)]
     [ProducesResponseType(500)]
-    public ActionResult<List<int>> GetCarsCurrentlyAtCarWash()
+    public async Task<ActionResult<List<int>>> GetCarsCurrentlyAtCarWash()
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller}",
@@ -62,7 +62,7 @@ public class AnalyticsController(
 
         try
         {
-            var result = service.GetCarsCurrentlyAtCarWash();
+            var result = await service.GetCarsCurrentlyAtCarWash();
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -88,7 +88,7 @@ public class AnalyticsController(
     [ProducesResponseType(200)]
     [ProducesResponseType(204)]
     [ProducesResponseType(500)]
-    public ActionResult<List<int>> GetTopPopularProcedures()
+    public async Task<ActionResult<List<int>>> GetTopPopularProcedures()
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller}",
@@ -96,7 +96,7 @@ public class AnalyticsController(
 
         try
         {
-            var result = service.GetTopPopularProcedures();
+            var result = await service.GetTopPopularProcedures();
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -121,7 +121,7 @@ public class AnalyticsController(
     [HttpGet("wash-box-release-time")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<DateTime> GetWashBoxReleaseTime(
+    public async Task<ActionResult<DateTime>> GetWashBoxReleaseTime(
         [FromQuery] int washBoxNumber)
     {
         logger.LogInformation(
@@ -130,7 +130,7 @@ public class AnalyticsController(
 
         try
         {
-            var result = service.GetWashBoxReleaseTime(washBoxNumber);
+            var result = await service.GetWashBoxReleaseTime(washBoxNumber);
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -155,7 +155,7 @@ public class AnalyticsController(
     [HttpGet("procedure-revenue")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult<decimal> CalculateProcedureRevenue(
+    public async Task<ActionResult<decimal>> CalculateProcedureRevenue(
         [FromQuery] int procedureId)
     {
         logger.LogInformation(
@@ -164,7 +164,7 @@ public class AnalyticsController(
 
         try
         {
-            var result = service.CalculateProcedureRevenue(procedureId);
+            var result = await service.CalculateProcedureRevenue(procedureId);
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",

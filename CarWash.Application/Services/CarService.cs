@@ -13,11 +13,13 @@ public class CarService(
     IRepository<CarWashCustomer, int> customerRepository)
     : IApplicationService<CarDto, CarCreateUpdateDto, int>
 {
-    public CarDto Create(CarCreateUpdateDto dto)
+    public async Task<CarDto> Create(CarCreateUpdateDto dto)
     {
-        var customer = customerRepository.Read(dto.CustomerId);
+        var customer = await customerRepository.Read(dto.CustomerId)
+            ?? throw new KeyNotFoundException(
+                $"Клиент с Id {dto.CustomerId} не найден");
 
-        var newId = carRepository.ReadAll()
+        var newId = (await carRepository.ReadAll())
             .Select(car => car.Id)
             .DefaultIfEmpty(0)
             .Max() + 1;
@@ -32,33 +34,44 @@ public class CarService(
             Customer = customer
         };
 
-        carRepository.Create(car);
+        await carRepository.Create(car);
 
         customer.Cars.Add(car);
 
         return MapToDto(car);
     }
 
-    public CarDto Get(int dtoId)
+    public async Task<CarDto?> Get(int dtoId)
     {
-        return MapToDto(carRepository.Read(dtoId));
+        var car = await carRepository.Read(dtoId);
+
+        return car is null ? null : MapToDto(car);
     }
 
-    public List<CarDto> GetAll()
+    public async Task<IList<CarDto>> GetAll()
     {
-        return carRepository.ReadAll()
+        var cars = await carRepository.ReadAll();
+
+        return cars
             .Select(MapToDto)
             .ToList();
     }
 
-    public CarDto Update(CarCreateUpdateDto dto, int dtoId)
+    public async Task<CarDto> Update(
+        CarCreateUpdateDto dto,
+        int dtoId)
     {
-        var car = carRepository.Read(dtoId);
-        var customer = customerRepository.Read(dto.CustomerId);
+        var car = await carRepository.Read(dtoId)
+            ?? throw new KeyNotFoundException(
+                $"Автомобиль с Id {dtoId} не найден");
+
+        var customer = await customerRepository.Read(dto.CustomerId)
+            ?? throw new KeyNotFoundException(
+                $"Клиент с Id {dto.CustomerId} не найден");
 
         if (car.CustomerId != customer.Id)
         {
-            car.Customer.Cars.Remove(car);
+            car.Customer?.Cars.Remove(car);
             customer.Cars.Add(car);
         }
 
@@ -68,17 +81,21 @@ public class CarService(
         car.CustomerId = customer.Id;
         car.Customer = customer;
 
-        carRepository.Update(car);
+        var updatedCar = await carRepository.Update(car);
 
-        return MapToDto(car);
+        return MapToDto(updatedCar);
     }
 
-    public void Delete(int dtoId)
+    public async Task<bool> Delete(int dtoId)
     {
-        var car = carRepository.Read(dtoId);
+        var car = await carRepository.Read(dtoId);
 
-        car.Customer.Cars.Remove(car);
-        carRepository.Delete(dtoId);
+        if (car is null)
+            return false;
+
+        car.Customer?.Cars.Remove(car);
+
+        return await carRepository.Delete(dtoId);
     }
 
     private static CarDto MapToDto(Car car)

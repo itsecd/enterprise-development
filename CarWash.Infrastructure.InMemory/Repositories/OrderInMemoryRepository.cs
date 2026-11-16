@@ -10,26 +10,30 @@ namespace CarWash.Infrastructure.InMemory.Repositories;
 public class OrderInMemoryRepository(CarWashData data)
     : IRepository<Order, int>
 {
-    public void Create(Order entity)
+    public Task<Order> Create(Order entity)
     {
         data.Orders.Add(entity);
+        return Task.FromResult(entity);
     }
 
-    public Order Read(int entityId)
+    public Task<Order?> Read(int entityId)
     {
-        return data.Orders.FirstOrDefault(order => order.Id == entityId)
-        ?? throw new KeyNotFoundException(
-            $"Заказ с идентификатором {entityId} не найден.");
+        return Task.FromResult<Order?>(
+            data.Orders.FirstOrDefault(order => order.Id == entityId));
     }
 
-    public List<Order> ReadAll()
+    public Task<IList<Order>> ReadAll()
     {
-        return [.. data.Orders];
+        return Task.FromResult<IList<Order>>(
+            [.. data.Orders]);
     }
 
-    public void Update(Order entity)
+    public Task<Order> Update(Order entity)
     {
-        var existingOrder = Read(entity.Id);
+        var existingOrder = data.Orders.FirstOrDefault(
+            order => order.Id == entity.Id)
+            ?? throw new KeyNotFoundException(
+                $"Заказ с идентификатором {entity.Id} не найден");
 
         existingOrder.CarId = entity.CarId;
         existingOrder.Car = entity.Car;
@@ -37,11 +41,14 @@ public class OrderInMemoryRepository(CarWashData data)
         existingOrder.Procedure = entity.Procedure;
         existingOrder.StartTime = entity.StartTime;
         existingOrder.WashBoxNumber = entity.WashBoxNumber;
+
+        return Task.FromResult(existingOrder);
     }
 
-    public void Delete(int entityId)
+    public async Task<bool> Delete(int entityId)
     {
-        var order = Read(entityId);
-        data.Orders.Remove(order);
+        var order = await Read(entityId);
+
+        return order is not null && data.Orders.Remove(order);
     }
 }

@@ -10,36 +10,43 @@ namespace CarWash.Infrastructure.InMemory.Repositories;
 public class CarWashCustomerInMemoryRepository(CarWashData data)
     : IRepository<CarWashCustomer, int>
 {
-    public void Create(CarWashCustomer entity)
+    public Task<CarWashCustomer> Create(CarWashCustomer entity)
     {
         data.Customers.Add(entity);
+        return Task.FromResult(entity);
     }
 
-    public CarWashCustomer Read(int entityId)
+    public Task<CarWashCustomer?> Read(int entityId)
     {
-        return data.Customers.FirstOrDefault(customer => customer.Id == entityId)
-         ?? throw new KeyNotFoundException(
-             $"Клиент с идентификатором {entityId} не найден.");
+        return Task.FromResult<CarWashCustomer?>(
+            data.Customers.FirstOrDefault(customer => customer.Id == entityId));
     }
 
-    public List<CarWashCustomer> ReadAll()
+    public Task<IList<CarWashCustomer>> ReadAll()
     {
-        return [.. data.Customers];
+        return Task.FromResult<IList<CarWashCustomer>>(
+            [.. data.Customers]);
     }
 
-    public void Update(CarWashCustomer entity)
+    public Task<CarWashCustomer> Update(CarWashCustomer entity)
     {
-        var existingCustomer = Read(entity.Id);
+        var existingCustomer = data.Customers.FirstOrDefault(
+            customer => customer.Id == entity.Id)
+            ?? throw new KeyNotFoundException(
+                $"Клиент с идентификатором {entity.Id} не найден");
 
         existingCustomer.LastName = entity.LastName;
         existingCustomer.FirstName = entity.FirstName;
         existingCustomer.Patronymic = entity.Patronymic;
         existingCustomer.Phone = entity.Phone;
+
+        return Task.FromResult(existingCustomer);
     }
 
-    public void Delete(int entityId)
+    public async Task<bool> Delete(int entityId)
     {
-        var customer = Read(entityId);
-        data.Customers.Remove(customer);
+        var customer = await Read(entityId);
+
+        return customer is not null && data.Customers.Remove(customer);
     }
 }

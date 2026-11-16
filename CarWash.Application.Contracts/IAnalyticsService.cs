@@ -8,25 +8,25 @@ public interface IAnalyticsService
     /// <summary>
     /// Получает топ 5 клиентов по количеству посещений автомойки
     /// </summary>
-    List<TopCustomerDto> GetTopFiveCustomersByVisitCount();
+    Task<List<TopCustomerDto>> GetTopFiveCustomersByVisitCount();
 
     /// <summary>
     /// Получает автомобили, находящиеся на мойке в данный момент
     /// </summary>
-    List<int> GetCarsCurrentlyAtCarWash();
+    Task<List<int>> GetCarsCurrentlyAtCarWash();
 
     /// <summary>
     /// Получает топ 5 наиболее популярных услуг автомойки
     /// </summary>
-    List<int> GetTopPopularProcedures();
+    Task<List<int>> GetTopPopularProcedures();
 
     /// <summary>
     /// Получает время освобождения выбранного моечного бокса
     /// </summary>
-    DateTime GetWashBoxReleaseTime(int washBoxNumber);
+    Task<DateTime> GetWashBoxReleaseTime(int washBoxNumber);
 
     /// <summary>
     /// Рассчитывает суммарную выручку по выбранной процедуре
     /// </summary>
-    decimal CalculateProcedureRevenue(int procedureId);
+    Task<decimal> CalculateProcedureRevenue(int procedureId);
 }

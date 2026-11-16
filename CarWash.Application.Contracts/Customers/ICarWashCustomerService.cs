@@ -12,5 +12,5 @@ public interface ICarWashCustomerService
     /// <summary>
     /// Получает список автомобилей указанного клиента
     /// </summary>
-    List<CarDto> GetCustomerCars(int customerId);
+    Task<IList<CarDto>> GetCustomerCars(int customerId);
 }

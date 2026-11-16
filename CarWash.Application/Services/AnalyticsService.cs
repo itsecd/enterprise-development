@@ -7,12 +7,15 @@ namespace CarWash.Application.Services;
 /// <summary>
 /// Аналитическая служба автомойки
 /// </summary>
-public class AnalyticsService(IRepository<Order, int> orderRepository) : IAnalyticsService
+public class AnalyticsService(
+    IRepository<Order, int> orderRepository) : IAnalyticsService
 {
     /// <inheritdoc/>
-    public List<TopCustomerDto> GetTopFiveCustomersByVisitCount()
+    public async Task<List<TopCustomerDto>> GetTopFiveCustomersByVisitCount()
     {
-        return orderRepository.ReadAll()
+        var orders = await orderRepository.ReadAll();
+
+        return orders
             .GroupBy(order => order.Car.CustomerId)
             .Select(group => new TopCustomerDto(
                 group.Key,
@@ -24,22 +27,26 @@ public class AnalyticsService(IRepository<Order, int> orderRepository) : IAnalyt
     }
 
     /// <inheritdoc/>
-    public List<int> GetCarsCurrentlyAtCarWash()
+    public async Task<List<int>> GetCarsCurrentlyAtCarWash()
     {
         var now = DateTime.Now;
+        var orders = await orderRepository.ReadAll();
 
-        return orderRepository.ReadAll()
+        return orders
             .Where(order =>
                 order.StartTime <= now &&
                 now < order.StartTime.Add(order.Procedure.Duration))
             .Select(order => order.CarId)
+            .Distinct()
             .ToList();
     }
 
     /// <inheritdoc/>
-    public List<int> GetTopPopularProcedures()
+    public async Task<List<int>> GetTopPopularProcedures()
     {
-        return orderRepository.ReadAll()
+        var orders = await orderRepository.ReadAll();
+
+        return orders
             .GroupBy(order => order.ProcedureId)
             .Select(group => new
             {
@@ -54,9 +61,11 @@ public class AnalyticsService(IRepository<Order, int> orderRepository) : IAnalyt
     }
 
     /// <inheritdoc/>
-    public DateTime GetWashBoxReleaseTime(int washBoxNumber)
+    public async Task<DateTime> GetWashBoxReleaseTime(int washBoxNumber)
     {
-        return orderRepository.ReadAll()
+        var orders = await orderRepository.ReadAll();
+
+        return orders
             .Where(order => order.WashBoxNumber == washBoxNumber)
             .Select(order =>
                 order.StartTime.Add(order.Procedure.Duration))
@@ -65,9 +74,11 @@ public class AnalyticsService(IRepository<Order, int> orderRepository) : IAnalyt
     }
 
     /// <inheritdoc/>
-    public decimal CalculateProcedureRevenue(int procedureId)
+    public async Task<decimal> CalculateProcedureRevenue(int procedureId)
     {
-        return orderRepository.ReadAll()
+        var orders = await orderRepository.ReadAll();
+
+        return orders
             .Where(order => order.ProcedureId == procedureId)
             .Sum(order => order.Procedure.Price);
     }

@@ -19,10 +19,10 @@ public class CarWashCustomerController(
     /// Получение списка автомобилей клиента
     /// </summary>
     [HttpGet("{id}/cars")]
-    [ProducesResponseType(typeof(List<CarDto>), 200)]
+    [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult<List<CarDto>> GetCustomerCars(int id)
+    public async Task<ActionResult<IList<CarDto>>> GetCustomerCars(int id)
     {
         logger.LogInformation(
             "Вызван метод {method} контроллера {controller} с параметром {id}",
@@ -30,7 +30,7 @@ public class CarWashCustomerController(
 
         try
         {
-            var result = crudService.GetCustomerCars(id);
+            var result = await crudService.GetCustomerCars(id);
 
             logger.LogInformation(
                 "Метод {method} контроллера {controller} успешно выполнен",
@@ -45,7 +45,7 @@ public class CarWashCustomerController(
                 "Клиент с идентификатором {id} не найден",
                 id);
 
-            return NotFound();
+            return NotFound($"Клиент с идентификатором {id} не найден");
         }
         catch (Exception ex)
         {

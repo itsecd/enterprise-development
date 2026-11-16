@@ -7,16 +7,16 @@ namespace CarWash.Application.Contracts.Cars;
 /// DTO для POST/PUT запросов к авто
 /// </summary>
 public record CarCreateUpdateDto(
-    [property: EnumDataType(typeof(CarCategory))]
+    [param: EnumDataType(typeof(CarCategory))]
     CarCategory CarCategory,
 
-    [property: Required(ErrorMessage = "Гос номер авто обязателен")]
-    [property: RegularExpression(@"^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}$", 
+    [param: Required(ErrorMessage = "Гос номер авто обязателен")]
+    [param: RegularExpression(@"^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}$", 
         ErrorMessage = "Укажите корректный госномер (например, А111АА)")]
     string LicensePlate,
 
-    [property: Required(ErrorMessage = "Марка авто обязательна")]
+    [param: Required(ErrorMessage = "Марка авто обязательна")]
     string Brand,
 
-    [property: Range(1, int.MaxValue, ErrorMessage = "Идентификатор клиента должен быть положительным")]
+    [param: Range(1, int.MaxValue, ErrorMessage = "Идентификатор клиента должен быть положительным")]
     int CustomerId);

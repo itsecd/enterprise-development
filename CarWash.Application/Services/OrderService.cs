@@ -14,12 +14,17 @@ public class OrderService(
     IRepository<CarWashProcedure, int> procedureRepository)
     : IApplicationService<OrderDto, OrderCreateUpdateDto, int>
 {
-    public OrderDto Create(OrderCreateUpdateDto dto)
+    public async Task<OrderDto> Create(OrderCreateUpdateDto dto)
     {
-        var car = carRepository.Read(dto.CarId);
-        var procedure = procedureRepository.Read(dto.ProcedureId);
+        var car = await carRepository.Read(dto.CarId)
+            ?? throw new KeyNotFoundException(
+                $"Автомобиль с Id {dto.CarId} не найден");
 
-        var newId = orderRepository.ReadAll()
+        var procedure = await procedureRepository.Read(dto.ProcedureId)
+            ?? throw new KeyNotFoundException(
+                $"Процедура с Id {dto.ProcedureId} не найдена");
+
+        var newId = (await orderRepository.ReadAll())
             .Select(order => order.Id)
             .DefaultIfEmpty(0)
             .Max() + 1;
@@ -35,40 +40,55 @@ public class OrderService(
             WashBoxNumber = dto.WashBoxNumber
         };
 
-        orderRepository.Create(order);
+        await orderRepository.Create(order);
+
         car.Orders.Add(order);
         procedure.Orders.Add(order);
 
         return MapToDto(order);
     }
 
-    public OrderDto Get(int dtoId)
+    public async Task<OrderDto?> Get(int dtoId)
     {
-        return MapToDto(orderRepository.Read(dtoId));
+        var order = await orderRepository.Read(dtoId);
+
+        return order is null ? null : MapToDto(order);
     }
 
-    public List<OrderDto> GetAll()
+    public async Task<IList<OrderDto>> GetAll()
     {
-        return orderRepository.ReadAll()
+        var orders = await orderRepository.ReadAll();
+
+        return orders
             .Select(MapToDto)
             .ToList();
     }
 
-    public OrderDto Update(OrderCreateUpdateDto dto, int dtoId)
+    public async Task<OrderDto> Update(
+        OrderCreateUpdateDto dto,
+        int dtoId)
     {
-        var order = orderRepository.Read(dtoId);
-        var car = carRepository.Read(dto.CarId);
-        var procedure = procedureRepository.Read(dto.ProcedureId);
+        var order = await orderRepository.Read(dtoId)
+            ?? throw new KeyNotFoundException(
+                $"Заказ с Id {dtoId} не найден");
+
+        var car = await carRepository.Read(dto.CarId)
+            ?? throw new KeyNotFoundException(
+                $"Автомобиль с Id {dto.CarId} не найден");
+
+        var procedure = await procedureRepository.Read(dto.ProcedureId)
+            ?? throw new KeyNotFoundException(
+                $"Процедура с Id {dto.ProcedureId} не найдена");
 
         if (order.CarId != car.Id)
         {
-            order.Car.Orders.Remove(order);
+            order.Car?.Orders.Remove(order);
             car.Orders.Add(order);
         }
 
         if (order.ProcedureId != procedure.Id)
         {
-            order.Procedure.Orders.Remove(order);
+            order.Procedure?.Orders.Remove(order);
             procedure.Orders.Add(order);
         }
 
@@ -79,19 +99,22 @@ public class OrderService(
         order.StartTime = dto.StartTime;
         order.WashBoxNumber = dto.WashBoxNumber;
 
-        orderRepository.Update(order);
+        var updatedOrder = await orderRepository.Update(order);
 
-        return MapToDto(order);
+        return MapToDto(updatedOrder);
     }
 
-    public void Delete(int dtoId)
+    public async Task<bool> Delete(int dtoId)
     {
-        var order = orderRepository.Read(dtoId);
+        var order = await orderRepository.Read(dtoId);
 
-        order.Car.Orders.Remove(order);
-        order.Procedure.Orders.Remove(order);
+        if (order is null)
+            return false;
 
-        orderRepository.Delete(dtoId);
+        order.Car?.Orders.Remove(order);
+        order.Procedure?.Orders.Remove(order);
+
+        return await orderRepository.Delete(dtoId);
     }
 
     private static OrderDto MapToDto(Order order)

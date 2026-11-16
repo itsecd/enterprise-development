@@ -5,31 +5,43 @@ using CarWash.Application.Contracts.Orders;
 using CarWash.Application.Contracts.Procedures;
 using CarWash.Application.Services;
 using CarWash.Domain;
-using CarWash.Domain.Data;
 using CarWash.Domain.Entities;
-using CarWash.Infrastructure.InMemory.Repositories;
+using CarWash.Infrastructure.EfCore;
+using CarWash.Infrastructure.EfCore.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-// Единый источник данных для всех репозиториев и аналитики
-builder.Services.AddSingleton<CarWashData>();
+builder.AddSqlServerDbContext<CarWashDbContext>("CarWashDb");
 
-// Репозитории
-builder.Services.AddSingleton<IRepository<CarWashCustomer, int>, CarWashCustomerInMemoryRepository>();
-builder.Services.AddSingleton<IRepository<Car, int>, CarInMemoryRepository>();
-builder.Services.AddSingleton<IRepository<CarWashProcedure, int>, CarWashProcedureInMemoryRepository>();
-builder.Services.AddSingleton<IRepository<Order, int>, OrderInMemoryRepository>();
+builder.Services.AddScoped<IRepository<CarWashCustomer, int>,
+    CarWashCustomerEfCoreRepository>();
+
+builder.Services.AddScoped<IRepository<Car, int>,
+    CarEfCoreRepository>();
+
+builder.Services.AddScoped<IRepository<CarWashProcedure, int>,
+    CarWashProcedureEfCoreRepository>();
+
+builder.Services.AddScoped<IRepository<Order, int>,
+    OrderEfCoreRepository>();
 
 // CRUD-службы
 builder.Services.AddScoped<ICarWashCustomerService, CarWashCustomerService>();
-builder.Services.AddScoped<IApplicationService<CarDto, CarCreateUpdateDto, int>,
+
+builder.Services.AddScoped<
+    IApplicationService<CarDto, CarCreateUpdateDto, int>,
     CarService>();
-builder.Services.AddScoped<IApplicationService<CarWashProcedureDto, CarWashProcedureCreateUpdateDto, int>,
+
+builder.Services.AddScoped<
+    IApplicationService<CarWashProcedureDto, CarWashProcedureCreateUpdateDto, int>,
     CarWashProcedureService>();
-builder.Services.AddScoped<IApplicationService<OrderDto, OrderCreateUpdateDto, int>,
+
+builder.Services.AddScoped<
+    IApplicationService<OrderDto, OrderCreateUpdateDto, int>,
     OrderService>();
 
 // Аналитическая служба
@@ -42,12 +54,17 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(
             new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
     var assembly = Assembly.GetExecutingAssembly();
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{assembly.GetName().Name}.xml"));
+
+    options.IncludeXmlComments(
+        Path.Combine(
+            AppContext.BaseDirectory,
+            $"{assembly.GetName().Name}.xml"));
 
     foreach (var refAssembly in assembly.GetReferencedAssemblies())
     {
@@ -57,7 +74,9 @@ builder.Services.AddSwaggerGen(options =>
             continue;
         }
 
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{refAssembly.Name}.xml");
+        var xmlPath = Path.Combine(
+            AppContext.BaseDirectory,
+            $"{refAssembly.Name}.xml");
 
         if (File.Exists(xmlPath))
         {
@@ -68,8 +87,19 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Aspire health checks
+app.MapDefaultEndpoints();
+
 if (app.Environment.IsDevelopment())
 {
+    // Применение миграций при запуске приложения
+    using var scope = app.Services.CreateScope();
+
+    var db = scope.ServiceProvider
+        .GetRequiredService<CarWashDbContext>();
+
+    db.Database.Migrate();
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -79,7 +109,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.MapDefaultEndpoints();
 
 app.Run();

@@ -10,37 +10,43 @@ namespace CarWash.Infrastructure.InMemory.Repositories;
 public class CarInMemoryRepository(CarWashData data)
     : IRepository<Car, int>
 {
-    public void Create(Car entity)
+    public Task<Car> Create(Car entity)
     {
         data.Cars.Add(entity);
+        return Task.FromResult(entity);
     }
 
-    public Car Read(int entityId)
+    public Task<Car?> Read(int entityId)
     {
-        return data.Cars.FirstOrDefault(car => car.Id == entityId)
-        ?? throw new KeyNotFoundException(
-            $"Автомобиль с идентификатором {entityId} не найден.");
+        return Task.FromResult<Car?>(
+            data.Cars.FirstOrDefault(car => car.Id == entityId));
     }
 
-    public List<Car> ReadAll()
+    public Task<IList<Car>> ReadAll()
     {
-        return [.. data.Cars];
+        return Task.FromResult<IList<Car>>([.. data.Cars]);
     }
 
-    public void Update(Car entity)
+    public Task<Car> Update(Car entity)
     {
-        var existingCar = Read(entity.Id);
+        var existingCar = data.Cars.FirstOrDefault(
+            car => car.Id == entity.Id)
+            ?? throw new KeyNotFoundException(
+                $"Автомобиль с идентификатором {entity.Id} не найден");
 
         existingCar.CarCategory = entity.CarCategory;
         existingCar.LicensePlate = entity.LicensePlate;
         existingCar.Brand = entity.Brand;
         existingCar.CustomerId = entity.CustomerId;
         existingCar.Customer = entity.Customer;
+
+        return Task.FromResult(existingCar);
     }
 
-    public void Delete(int entityId)
+    public async Task<bool> Delete(int entityId)
     {
-        var car = Read(entityId);
-        data.Cars.Remove(car);
+        var car = await Read(entityId);
+
+        return car is not null && data.Cars.Remove(car);
     }
 }

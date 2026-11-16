@@ -12,9 +12,10 @@ public class CarWashProcedureService(
     IRepository<CarWashProcedure, int> procedureRepository)
     : IApplicationService<CarWashProcedureDto, CarWashProcedureCreateUpdateDto, int>
 {
-    public CarWashProcedureDto Create(CarWashProcedureCreateUpdateDto dto)
+    public async Task<CarWashProcedureDto> Create(
+        CarWashProcedureCreateUpdateDto dto)
     {
-        var newId = procedureRepository.ReadAll()
+        var newId = (await procedureRepository.ReadAll())
             .Select(procedure => procedure.Id)
             .DefaultIfEmpty(0)
             .Max() + 1;
@@ -28,28 +29,34 @@ public class CarWashProcedureService(
             Duration = dto.Duration
         };
 
-        procedureRepository.Create(procedure);
+        await procedureRepository.Create(procedure);
 
         return MapToDto(procedure);
     }
 
-    public CarWashProcedureDto Get(int dtoId)
+    public async Task<CarWashProcedureDto?> Get(int dtoId)
     {
-        return MapToDto(procedureRepository.Read(dtoId));
+        var procedure = await procedureRepository.Read(dtoId);
+
+        return procedure is null ? null : MapToDto(procedure);
     }
 
-    public List<CarWashProcedureDto> GetAll()
+    public async Task<IList<CarWashProcedureDto>> GetAll()
     {
-        return procedureRepository.ReadAll()
+        var procedures = await procedureRepository.ReadAll();
+
+        return procedures
             .Select(MapToDto)
             .ToList();
     }
 
-    public CarWashProcedureDto Update(
+    public async Task<CarWashProcedureDto> Update(
         CarWashProcedureCreateUpdateDto dto,
         int dtoId)
     {
-        var oldProcedure = procedureRepository.Read(dtoId);
+        var oldProcedure = await procedureRepository.Read(dtoId)
+            ?? throw new KeyNotFoundException(
+                $"Процедура с Id {dtoId} не найдена");
 
         var procedure = new CarWashProcedure
         {
@@ -61,14 +68,14 @@ public class CarWashProcedureService(
             Orders = oldProcedure.Orders
         };
 
-        procedureRepository.Update(procedure);
+        var updatedProcedure = await procedureRepository.Update(procedure);
 
-        return MapToDto(procedure);
+        return MapToDto(updatedProcedure);
     }
 
-    public void Delete(int dtoId)
+    public async Task<bool> Delete(int dtoId)
     {
-        procedureRepository.Delete(dtoId);
+        return await procedureRepository.Delete(dtoId);
     }
 
     private static CarWashProcedureDto MapToDto(

@@ -12,25 +12,25 @@ public interface IRepository<TEntity, TKey>
     /// <summary>
     /// Создание новой сущности
     /// </summary>
-    void Create(TEntity entity);
+    Task<TEntity> Create(TEntity entity);
 
     /// <summary>
     /// Получение сущности по идентификатору
     /// </summary>
-    TEntity Read(TKey entityId);
+    Task<TEntity?> Read(TKey entityId);
 
     /// <summary>
     /// Получение всего списка сущностей
     /// </summary> 
-    List<TEntity> ReadAll();
+    Task<IList<TEntity>> ReadAll();
 
     /// <summary>
     /// Обновление сущности в коллекции
     /// </summary>
-    void Update(TEntity entity);
+    Task<TEntity> Update(TEntity entity);
 
     /// <summary>
     /// Удаление сущности из коллекции
     /// </summary>
-    void Delete(TKey entityId);
+    Task<bool> Delete(TKey entityId);
 }

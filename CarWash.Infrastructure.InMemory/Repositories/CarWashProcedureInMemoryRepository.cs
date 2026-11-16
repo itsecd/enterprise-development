@@ -10,36 +10,43 @@ namespace CarWash.Infrastructure.InMemory.Repositories;
 public class CarWashProcedureInMemoryRepository(CarWashData data)
     : IRepository<CarWashProcedure, int>
 {
-    public void Create(CarWashProcedure entity)
+    public Task<CarWashProcedure> Create(CarWashProcedure entity)
     {
         data.Procedures.Add(entity);
+        return Task.FromResult(entity);
     }
 
-    public CarWashProcedure Read(int entityId)
+    public Task<CarWashProcedure?> Read(int entityId)
     {
-        return data.Procedures.FirstOrDefault(procedure => procedure.Id == entityId)
-        ?? throw new KeyNotFoundException(
-            $"Процедура с идентификатором {entityId} не найдена.");
+        return Task.FromResult<CarWashProcedure?>(
+            data.Procedures.FirstOrDefault(procedure => procedure.Id == entityId));
     }
 
-    public List<CarWashProcedure> ReadAll()
+    public Task<IList<CarWashProcedure>> ReadAll()
     {
-        return [.. data.Procedures];
+        return Task.FromResult<IList<CarWashProcedure>>(
+            [.. data.Procedures]);
     }
 
-    public void Update(CarWashProcedure entity)
+    public Task<CarWashProcedure> Update(CarWashProcedure entity)
     {
-        var existingProcedure = Read(entity.Id);
+        var existingProcedure = data.Procedures.FirstOrDefault(
+            procedure => procedure.Id == entity.Id)
+            ?? throw new KeyNotFoundException(
+                $"Процедура с идентификатором {entity.Id} не найдена");
 
         existingProcedure.Name = entity.Name;
         existingProcedure.CarCategory = entity.CarCategory;
         existingProcedure.Price = entity.Price;
         existingProcedure.Duration = entity.Duration;
+
+        return Task.FromResult(existingProcedure);
     }
 
-    public void Delete(int entityId)
+    public async Task<bool> Delete(int entityId)
     {
-        var procedure = Read(entityId);
-        data.Procedures.Remove(procedure);
+        var procedure = await Read(entityId);
+
+        return procedure is not null && data.Procedures.Remove(procedure);
     }
 }

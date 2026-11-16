@@ -12,9 +12,10 @@ public class CarWashCustomerService(
     IRepository<CarWashCustomer, int> customerRepository)
     : ICarWashCustomerService
 {
-    public CarWashCustomerDto Create(CarWashCustomerCreateUpdateDto dto)
+    public async Task<CarWashCustomerDto> Create(
+        CarWashCustomerCreateUpdateDto dto)
     {
-        var newId = customerRepository.ReadAll()
+        var newId = (await customerRepository.ReadAll())
             .Select(customer => customer.Id)
             .DefaultIfEmpty(0)
             .Max() + 1;
@@ -28,24 +29,28 @@ public class CarWashCustomerService(
             Phone = dto.Phone
         };
 
-        customerRepository.Create(customer);
+        await customerRepository.Create(customer);
 
         return MapToDto(customer);
     }
 
-    public CarWashCustomerDto Get(int dtoId)
+    public async Task<CarWashCustomerDto?> Get(int dtoId)
     {
-        return MapToDto(customerRepository.Read(dtoId));
+        var customer = await customerRepository.Read(dtoId);
+
+        return customer is null ? null : MapToDto(customer);
     }
 
-    public List<CarWashCustomerDto> GetAll()
+    public async Task<IList<CarWashCustomerDto>> GetAll()
     {
-        return customerRepository.ReadAll()
+        var customers = await customerRepository.ReadAll();
+
+        return customers
             .Select(MapToDto)
             .ToList();
     }
 
-    public CarWashCustomerDto Update(
+    public async Task<CarWashCustomerDto> Update(
         CarWashCustomerCreateUpdateDto dto,
         int dtoId)
     {
@@ -58,19 +63,21 @@ public class CarWashCustomerService(
             Phone = dto.Phone
         };
 
-        customerRepository.Update(customer);
+        var updatedCustomer = await customerRepository.Update(customer);
 
-        return MapToDto(customer);
+        return MapToDto(updatedCustomer);
     }
 
-    public void Delete(int dtoId)
+    public async Task<bool> Delete(int dtoId)
     {
-        customerRepository.Delete(dtoId);
+        return await customerRepository.Delete(dtoId);
     }
 
-    public List<CarDto> GetCustomerCars(int customerId)
+    public async Task<IList<CarDto>> GetCustomerCars(int customerId)
     {
-        var customer = customerRepository.Read(customerId);
+        var customer = await customerRepository.Read(customerId)
+            ?? throw new KeyNotFoundException(
+                $"Клиент с Id {customerId} не найден");
 
         return customer.Cars
             .Select(car => new CarDto(
@@ -82,7 +89,8 @@ public class CarWashCustomerService(
             .ToList();
     }
 
-    private static CarWashCustomerDto MapToDto(CarWashCustomer customer)
+    private static CarWashCustomerDto MapToDto(
+        CarWashCustomer customer)
     {
         return new CarWashCustomerDto(
             customer.Id,
