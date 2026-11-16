@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using EnterpriseDevelopment.Infrastructure.Persistence;
 using Scalar.AspNetCore;
 using EnterpriseDevelopment.Api.Exceptions;
@@ -38,6 +39,17 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 var app = builder.Build();
+
+// Применение миграций при локальном запуске
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+
+    var context = scope.ServiceProvider
+        .GetRequiredService<ApplicationDbContext>();
+
+    await context.Database.MigrateAsync();
+}
 
 app.UseExceptionHandler();
 
