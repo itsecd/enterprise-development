@@ -131,17 +131,16 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить клиентов, бронировавших номер указанной категории
     /// </summary>
-    public async Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category)
+    public async Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(
+        RoomCategory category)
     {
-        var bookings = await bookingRepository.GetAll();
-        var clients = await clientRepository.GetAll();
+        var clients = await bookingRepository.QueryAsync(bookings => bookings
+            .Where(booking => booking.Room.RoomType.Category == category)
+            .Select(booking => booking.Client)
+            .Distinct()
+            .OrderBy(client => client.Id));
 
-        return clients
-            .Where(client => bookings.Any(booking =>
-                booking.Client.Id == client.Id &&
-                booking.Room.RoomType.Category == category))
-            .Select(ToDto)
-            .ToList();
+        return clients.Select(ToDto).ToList();
     }
 
     /// <summary>
