@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FitnessClub.Infrastructure.EfCore\FitnessClub.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\FitnessClub.ServiceDefaults\FitnessClub.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
