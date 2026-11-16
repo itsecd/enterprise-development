@@ -10,32 +10,32 @@ namespace Hotel.Infrastructure.EfCore.Repositories;
 public class RoomTypeRepository(HotelDbContext context) : IRepository<RoomType, int>
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<RoomType>> GetAll()
+    public async Task<IReadOnlyList<RoomType>> GetAll(CancellationToken cancellationToken = default)
     {
         return await context.RoomTypes
             .AsNoTracking()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<RoomType?> GetById(int id)
+    public async Task<RoomType?> GetById(int id, CancellationToken cancellationToken = default)
     {
-        return await context.RoomTypes.FindAsync(id);
+        return await context.RoomTypes.FindAsync([id], cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<RoomType> Add(RoomType roomType)
+    public async Task<RoomType> Add(RoomType roomType, CancellationToken cancellationToken = default)
     {
         context.RoomTypes.Add(roomType);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         return roomType;
     }
 
     /// <inheritdoc/>
-    public async Task<RoomType?> Update(RoomType roomType)
+    public async Task<RoomType?> Update(RoomType roomType, CancellationToken cancellationToken = default)
     {
-        var existingRoomType = await GetById(roomType.Id);
+        var existingRoomType = await GetById(roomType.Id, cancellationToken);
 
         if (existingRoomType is null) return null;
 
@@ -45,20 +45,20 @@ public class RoomTypeRepository(HotelDbContext context) : IRepository<RoomType, 
         existingRoomType.HasBathroom = roomType.HasBathroom;
         existingRoomType.PricePerDay = roomType.PricePerDay;
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         return existingRoomType;
     }
 
     /// <inheritdoc/>
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var roomType = await GetById(id);
+        var roomType = await GetById(id, cancellationToken);
 
         if (roomType is null) return false;
 
         context.RoomTypes.Remove(roomType);
-        await context.SaveDeletionAsync("Нельзя удалить тип номера, к которому привязаны номера");
+        await context.SaveDeletionAsync("Нельзя удалить тип номера, к которому привязаны номера", cancellationToken);
 
         return true;
     }

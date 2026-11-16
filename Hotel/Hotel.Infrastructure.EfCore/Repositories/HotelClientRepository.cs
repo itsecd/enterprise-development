@@ -10,32 +10,32 @@ namespace Hotel.Infrastructure.EfCore.Repositories;
 public class HotelClientRepository(HotelDbContext context) : IRepository<HotelClient, int>
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<HotelClient>> GetAll()
+    public async Task<IReadOnlyList<HotelClient>> GetAll(CancellationToken cancellationToken = default)
     {
         return await context.HotelClients
             .AsNoTracking()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<HotelClient?> GetById(int id)
+    public async Task<HotelClient?> GetById(int id, CancellationToken cancellationToken = default)
     {
-        return await context.HotelClients.FindAsync(id);
+        return await context.HotelClients.FindAsync([id], cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<HotelClient> Add(HotelClient client)
+    public async Task<HotelClient> Add(HotelClient client, CancellationToken cancellationToken = default)
     {
         context.HotelClients.Add(client);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         return client;
     }
 
     /// <inheritdoc/>
-    public async Task<HotelClient?> Update(HotelClient client)
+    public async Task<HotelClient?> Update(HotelClient client, CancellationToken cancellationToken = default)
     {
-        var existingClient = await GetById(client.Id);
+        var existingClient = await GetById(client.Id, cancellationToken);
 
         if (existingClient is null) return null;
 
@@ -46,20 +46,20 @@ public class HotelClientRepository(HotelDbContext context) : IRepository<HotelCl
         existingClient.BirthDate = client.BirthDate;
         existingClient.Citizenship = client.Citizenship;
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
         return existingClient;
     }
 
     /// <inheritdoc/>
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var client = await GetById(id);
+        var client = await GetById(id, cancellationToken);
 
         if (client is null) return false;
 
         context.HotelClients.Remove(client);
-        await context.SaveDeletionAsync("Нельзя удалить клиента, у которого есть бронирования");
+        await context.SaveDeletionAsync("Нельзя удалить клиента, у которого есть бронирования", cancellationToken);
 
         return true;
     }

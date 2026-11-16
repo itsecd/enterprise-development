@@ -18,13 +18,13 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetBookingsByRoomId(int id)
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetBookingsByRoomId(int id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetBookingsByRoomId), GetType().Name);
 
         try
         {
-            var result = await roomService.GetBookingsByRoomId(id);
+            var result = await roomService.GetBookingsByRoomId(id, cancellationToken);
 
             if (result is null)
             {
@@ -35,6 +35,10 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetBookingsByRoomId), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -51,17 +55,21 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
     [HttpGet("top-five-most-booked")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<RoomBookingCountDto>>> GetTopFiveMostBookedRooms()
+    public async Task<ActionResult<IReadOnlyList<RoomBookingCountDto>>> GetTopFiveMostBookedRooms(CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetTopFiveMostBookedRooms), GetType().Name);
 
         try
         {
-            var result = await roomService.GetTopFiveMostBookedRooms();
+            var result = await roomService.GetTopFiveMostBookedRooms(cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetTopFiveMostBookedRooms), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -78,17 +86,21 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
     [HttpGet("booking-counts")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<RoomBookingCountDto>>> GetBookingCountForEachRoom()
+    public async Task<ActionResult<IReadOnlyList<RoomBookingCountDto>>> GetBookingCountForEachRoom(CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetBookingCountForEachRoom), GetType().Name);
 
         try
         {
-            var result = await roomService.GetBookingCountForEachRoom();
+            var result = await roomService.GetBookingCountForEachRoom(cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetBookingCountForEachRoom), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {

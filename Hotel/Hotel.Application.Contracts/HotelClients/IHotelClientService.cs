@@ -12,15 +12,20 @@ public interface IHotelClientService
     /// <summary>
     /// Получить бронирования указанного клиента
     /// </summary>
-    public Task<IReadOnlyList<BookingDto>?> GetBookingsByClientId(int clientId);
+    /// <param name="clientId">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<BookingDto>?> GetBookingsByClientId(int clientId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить топ пять клиентов по общей стоимости проживания
     /// </summary>
-    public Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost();
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить клиентов, бронировавших номера указанной категории
     /// </summary>
-    public Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category);
+    /// <param name="category">Категория номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category, CancellationToken cancellationToken = default);
 }

@@ -16,19 +16,22 @@ public class BookingsController(IBookingService bookingService, ILogger<Bookings
     [HttpGet("current")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetCurrentBookings()
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetCurrentBookings(CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetCurrentBookings), GetType().Name);
 
         try
         {
-            var result = await bookingService.GetBookedRooms();
+            var result = await bookingService.GetBookedRooms(cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetCurrentBookings), GetType().Name);
 
             return Ok(result);
         }
-
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception exception)
         {
             logger.LogError(exception, "При получении текущих бронирований произошла ошибка");

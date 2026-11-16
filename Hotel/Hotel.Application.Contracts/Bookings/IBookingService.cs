@@ -9,5 +9,6 @@ public interface IBookingService
     /// <summary>
     /// Получить текущие бронирования
     /// </summary>
-    public Task<IReadOnlyList<BookingDto>> GetBookedRooms();
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<BookingDto>> GetBookedRooms(CancellationToken cancellationToken = default);
 }

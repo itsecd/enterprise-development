@@ -13,9 +13,10 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить все номера
     /// </summary>
-    public async Task<IReadOnlyList<RoomDto>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<RoomDto>> GetAll(CancellationToken cancellationToken = default)
     {
-        var rooms = await roomRepository.GetAll();
+        var rooms = await roomRepository.GetAll(cancellationToken);
 
         return rooms
             .Select(ToDto)
@@ -25,9 +26,11 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить номер по идентификатору
     /// </summary>
-    public async Task<RoomDto?> GetById(int id)
+    /// <param name="id">Идентификатор номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<RoomDto?> GetById(int id, CancellationToken cancellationToken = default)
     {
-        var room = await roomRepository.GetById(id);
+        var room = await roomRepository.GetById(id, cancellationToken);
 
         return room is null ? null : ToDto(room);
     }
@@ -35,9 +38,11 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Создать номер
     /// </summary>
-    public async Task<RoomDto> Create(CreateRoomDto dto)
+    /// <param name="dto">Данные для создания номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<RoomDto> Create(CreateRoomDto dto, CancellationToken cancellationToken = default)
     {
-        var roomType = await roomTypeRepository.GetById(dto.RoomTypeId);
+        var roomType = await roomTypeRepository.GetById(dto.RoomTypeId, cancellationToken);
 
         if (roomType is null) throw new ArgumentException(
             $"Не удалось найти тип номера с идентификатором {dto.RoomTypeId}");
@@ -51,7 +56,7 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
             RoomType = roomType
         };
 
-        var createdRoom = await roomRepository.Add(room);
+        var createdRoom = await roomRepository.Add(room, cancellationToken);
 
         return ToDto(createdRoom);
     }
@@ -59,13 +64,16 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Обновить номер
     /// </summary>
-    public async Task<RoomDto?> Update(int id, CreateRoomDto dto)
+    /// <param name="id">Идентификатор номера</param>
+    /// <param name="dto">Данные для обновления номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<RoomDto?> Update(int id, CreateRoomDto dto, CancellationToken cancellationToken = default)
     {
-        var existingRoom = await roomRepository.GetById(id);
+        var existingRoom = await roomRepository.GetById(id, cancellationToken);
 
         if (existingRoom is null) return null;
 
-        var roomType = await roomTypeRepository.GetById(dto.RoomTypeId);
+        var roomType = await roomTypeRepository.GetById(dto.RoomTypeId, cancellationToken);
 
         if (roomType is null) throw new ArgumentException(
             $"Не удалось найти тип номера с идентификатором {dto.RoomTypeId}");
@@ -79,7 +87,7 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
             RoomType = roomType
         };
 
-        var updatedRoom = await roomRepository.Update(room);
+        var updatedRoom = await roomRepository.Update(room, cancellationToken);
 
         return updatedRoom is null ? null : ToDto(updatedRoom);
     }
@@ -87,21 +95,25 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Удалить номер
     /// </summary>
-    public Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        return roomRepository.Delete(id);
+        return roomRepository.Delete(id, cancellationToken);
     }
 
     /// <summary>
     /// Получить бронирования указанного номера
     /// </summary>
-    public async Task<IReadOnlyList<BookingDto>?> GetBookingsByRoomId(int roomId)
+    /// <param name="roomId">Идентификатор номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<BookingDto>?> GetBookingsByRoomId(int roomId, CancellationToken cancellationToken = default)
     {
-        var room = await roomRepository.GetById(roomId);
+        var room = await roomRepository.GetById(roomId, cancellationToken);
 
         if (room is null) return null;
 
-        var bookings = await bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll(cancellationToken);
 
         return bookings
             .Where(booking => booking.Room.Id == roomId)
@@ -117,10 +129,11 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить пять самых часто бронируемых номеров
     /// </summary>
-    public async Task<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms(CancellationToken cancellationToken = default)
     {
-        var bookings = await bookingRepository.GetAll();
-        var rooms = await roomRepository.GetAll();
+        var bookings = await bookingRepository.GetAll(cancellationToken);
+        var rooms = await roomRepository.GetAll(cancellationToken);
 
         return rooms
             .Select(room => new RoomBookingCountDto(
@@ -135,7 +148,8 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <summary>
     /// Получить количество бронирований каждого номера
     /// </summary>
-    public async Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom(CancellationToken cancellationToken = default)
     {
         var bookingCounts = await bookingRepository.QueryAsync(bookings => bookings
             .GroupBy(booking => booking.Room.Id)
@@ -143,13 +157,13 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
             {
                 RoomId = group.Key,
                 BookingCount = group.Count()
-            }));
+            }), cancellationToken);
 
         var countsByRoomId = bookingCounts.ToDictionary(
             item => item.RoomId,
             item => item.BookingCount);
 
-        var rooms = await roomRepository.GetAll();
+        var rooms = await roomRepository.GetAll(cancellationToken);
 
         return rooms
             .OrderBy(room => room.Id)

@@ -25,24 +25,32 @@ public class HotelClientRepository : IRepository<HotelClient, int>
     /// <summary>
     /// Получить всех клиентов
     /// </summary>
-    public Task<IReadOnlyList<HotelClient>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<HotelClient>> GetAll(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult<IReadOnlyList<HotelClient>>(_clients.AsReadOnly());
     }
 
     /// <summary>
     /// Получить клиента по идентификатору
     /// </summary>
-    public Task<HotelClient?> GetById(int id)
+    /// <param name="id">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<HotelClient?> GetById(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(_clients.FirstOrDefault(client => client.Id == id));
     }
 
     /// <summary>
     /// Добавить нового клиента
     /// </summary>
-    public Task<HotelClient> Add(HotelClient client)
+    /// <param name="client">Новый клиент</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<HotelClient> Add(HotelClient client, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         _clients.Add(client);
 
         return Task.FromResult(client);
@@ -51,9 +59,11 @@ public class HotelClientRepository : IRepository<HotelClient, int>
     /// <summary>
     /// Обновить существующего клиента
     /// </summary>
-    public async Task<HotelClient?> Update(HotelClient client)
+    /// <param name="client">Обновлённые данные клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<HotelClient?> Update(HotelClient client, CancellationToken cancellationToken = default)
     {
-        var existingClient = await GetById(client.Id);
+        var existingClient = await GetById(client.Id, cancellationToken);
 
         if (existingClient is null) return null;
 
@@ -70,9 +80,11 @@ public class HotelClientRepository : IRepository<HotelClient, int>
     /// <summary>
     /// Удалить клиента по идентификатору
     /// </summary>
-    public async Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var client = await GetById(id);
+        var client = await GetById(id, cancellationToken);
 
         if (client is null) return false;
 

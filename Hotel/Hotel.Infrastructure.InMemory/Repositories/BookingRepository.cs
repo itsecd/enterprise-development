@@ -26,24 +26,32 @@ public class BookingRepository : IBookingRepository
     /// <summary>
     /// Получить все бронирования
     /// </summary>
-    public Task<IReadOnlyList<Booking>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<Booking>> GetAll(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult<IReadOnlyList<Booking>>(_bookings.AsReadOnly());
     }
 
     /// <summary>
     /// Получить бронирование по идентификатору
     /// </summary>
-    public Task<Booking?> GetById(int id)
+    /// <param name="id">Идентификатор бронирования</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<Booking?> GetById(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(_bookings.FirstOrDefault(booking => booking.Id == id));
     }
 
     /// <summary>
     /// Добавить новое бронирование
     /// </summary>
-    public Task<Booking> Add(Booking booking)
+    /// <param name="booking">Новое бронирование</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<Booking> Add(Booking booking, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         _bookings.Add(booking);
 
         return Task.FromResult(booking);
@@ -52,8 +60,11 @@ public class BookingRepository : IBookingRepository
     /// <summary>
     /// Обновить существующее бронирование
     /// </summary>
-    public Task<Booking?> Update(Booking booking)
+    /// <param name="booking">Обновлённое бронирование</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<Booking?> Update(Booking booking, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var index = _bookings.FindIndex(item => item.Id == booking.Id);
 
         if (index == -1) return Task.FromResult<Booking?>(null);
@@ -66,9 +77,11 @@ public class BookingRepository : IBookingRepository
     /// <summary>
     /// Удалить бронирование по идентификатору
     /// </summary>
-    public async Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор бронирования</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var booking = await GetById(id);
+        var booking = await GetById(id, cancellationToken);
 
         if (booking is null) return false;
 
@@ -76,15 +89,19 @@ public class BookingRepository : IBookingRepository
     }
 
     /// <inheritdoc/>
-    public Task<bool> AnyAsync(Expression<Func<Booking, bool>> predicate)
+    public Task<bool> AnyAsync(Expression<Func<Booking, bool>> predicate, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(_bookings.Any(predicate.Compile()));
     }
 
     /// <inheritdoc/>
     public Task<IReadOnlyList<TResult>> QueryAsync<TResult>(
-        Func<IQueryable<Booking>, IQueryable<TResult>> query)
+        Func<IQueryable<Booking>, IQueryable<TResult>> query,
+        CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         return Task.FromResult<IReadOnlyList<TResult>>(
             query(_bookings.AsQueryable()).ToList());
     }

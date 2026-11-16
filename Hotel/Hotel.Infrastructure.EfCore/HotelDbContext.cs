@@ -34,13 +34,15 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
     /// <summary>
     /// Сохранить удаление записи и обработать запрет по внешнему ключу
     /// </summary>
-    internal async Task SaveDeletionAsync(string conflictMessage)
+    /// <param name="conflictMessage">Сообщение при наличии связанных записей</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    internal async Task SaveDeletionAsync(string conflictMessage, CancellationToken cancellationToken)
     {
         const int referencedRowErrorNumber = 1451;
 
         try
         {
-            await SaveChangesAsync();
+            await SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException exception)
             when (exception.InnerException is MySqlException { Number: referencedRowErrorNumber })

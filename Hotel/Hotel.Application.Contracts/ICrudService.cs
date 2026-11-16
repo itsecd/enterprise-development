@@ -12,25 +12,35 @@ public interface ICrudService<TDto, TInputDto, TKey>
     /// <summary>
     /// Получить список всех объектов
     /// </summary>
-    public Task<IReadOnlyList<TDto>> GetAll();
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<TDto>> GetAll(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить объект по идентификатору
     /// </summary>
-    public Task<TDto?> GetById(TKey id);
+    /// <param name="id">Идентификатор объекта</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<TDto?> GetById(TKey id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Создать объект
     /// </summary>
-    public Task<TDto> Create(TInputDto dto);
+    /// <param name="dto">Данные для создания записи</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<TDto> Create(TInputDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Обновить существующий объект
     /// </summary>
-    public Task<TDto?> Update(TKey id, TInputDto dto);
+    /// <param name="id">Идентификатор объекта</param>
+    /// <param name="dto">Данные для обновления</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<TDto?> Update(TKey id, TInputDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить объект по идентификатору
     /// </summary>
-    public Task<bool> Delete(TKey id);
+    /// <param name="id">Идентификатор записи</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<bool> Delete(TKey id, CancellationToken cancellationToken = default);
 }

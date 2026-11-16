@@ -11,15 +11,19 @@ public interface IRoomService
     /// <summary>
     /// Получить пять номеров с наибольшим количеством бронирований
     /// </summary>
-    public Task<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms();
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<RoomBookingCountDto>> GetTopFiveMostBookedRooms(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить количество бронирований для каждого номера
     /// </summary>
-    public Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom();
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить бронирования указанного номера
     /// </summary>
-    public Task<IReadOnlyList<BookingDto>?> GetBookingsByRoomId(int roomId);
+    /// <param name="roomId">Идентификатор номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<BookingDto>?> GetBookingsByRoomId(int roomId, CancellationToken cancellationToken = default);
 }

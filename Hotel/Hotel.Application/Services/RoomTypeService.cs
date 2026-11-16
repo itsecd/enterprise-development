@@ -12,9 +12,10 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Получить все типы номеров
     /// </summary>
-    public async Task<IReadOnlyList<RoomTypeDto>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<RoomTypeDto>> GetAll(CancellationToken cancellationToken = default)
     {
-        var roomTypes = await repository.GetAll();
+        var roomTypes = await repository.GetAll(cancellationToken);
 
         return roomTypes
             .Select(ToDto)
@@ -24,9 +25,11 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Получить тип номера по идентификатору
     /// </summary>
-    public async Task<RoomTypeDto?> GetById(int id)
+    /// <param name="id">Идентификатор типа номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<RoomTypeDto?> GetById(int id, CancellationToken cancellationToken = default)
     {
-        var roomType = await repository.GetById(id);
+        var roomType = await repository.GetById(id, cancellationToken);
 
         return roomType is null ? null : ToDto(roomType);
     }
@@ -34,7 +37,9 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Создать тип номера
     /// </summary>
-    public async Task<RoomTypeDto> Create(CreateRoomTypeDto dto)
+    /// <param name="dto">Данные для создания типа номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<RoomTypeDto> Create(CreateRoomTypeDto dto, CancellationToken cancellationToken = default)
     {
         var roomType = new RoomType
         {
@@ -46,7 +51,7 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
             PricePerDay = dto.PricePerDay
         };
 
-        var createdRoomType = await repository.Add(roomType);
+        var createdRoomType = await repository.Add(roomType, cancellationToken);
 
         return ToDto(createdRoomType);
     }
@@ -54,7 +59,10 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Обновить тип номера
     /// </summary>
-    public async Task<RoomTypeDto?> Update(int id, CreateRoomTypeDto dto)
+    /// <param name="id">Идентификатор типа номера</param>
+    /// <param name="dto">Данные для обновления типа номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<RoomTypeDto?> Update(int id, CreateRoomTypeDto dto, CancellationToken cancellationToken = default)
     {
         var roomType = new RoomType
         {
@@ -66,7 +74,7 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
             PricePerDay = dto.PricePerDay
         };
 
-        var updatedRoomType = await repository.Update(roomType);
+        var updatedRoomType = await repository.Update(roomType, cancellationToken);
 
         return updatedRoomType is null ? null : ToDto(updatedRoomType);
     }
@@ -74,9 +82,11 @@ public class RoomTypeService(IRepository<RoomType, int> repository) : IRoomTypeS
     /// <summary>
     /// Удалить тип номера
     /// </summary>
-    public Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор типа номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        return repository.Delete(id);
+        return repository.Delete(id, cancellationToken);
     }
 
     /// <summary>

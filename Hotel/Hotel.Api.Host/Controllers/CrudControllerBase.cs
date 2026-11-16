@@ -23,13 +23,13 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<TDto>> Create([FromBody] TInputDto dto)
+    public async Task<ActionResult<TDto>> Create([FromBody] TInputDto dto, CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}. Данные: {@Dto}", nameof(Create), GetType().Name, dto);
 
         try
         {
-            var result = await appService.Create(dto);
+            var result = await appService.Create(dto, cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(Create), GetType().Name);
 
@@ -40,6 +40,10 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
             logger.LogWarning(exception, "При создании записи переданы некорректные данные");
 
             return BadRequest(new { message = exception.Message });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -58,22 +62,19 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<TDto>> Update(TKey id, [FromBody] TInputDto dto)
+    public async Task<ActionResult<TDto>> Update(TKey id, [FromBody] TInputDto dto, CancellationToken cancellationToken)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван с идентификатором {Id} и данными {@Dto}", nameof(Update), GetType().Name, id, dto);
 
         try
         {
-            var result = await appService.Update(id, dto);
+            var result = await appService.Update(id, dto, cancellationToken);
 
             if (result is null)
             {
                 logger.LogWarning("Запись с идентификатором {Id} не найдена для обновления", id);
 
-                return NotFound(new
-                {
-                    message = $"Запись с идентификатором {id} не найдена"
-                });
+                return NotFound(new { message = $"Запись с идентификатором {id} не найдена" });
             }
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(Update), GetType().Name);
@@ -85,6 +86,10 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
             logger.LogWarning(exception, "При обновлении записи с идентификатором {Id} переданы некорректные данные", id);
 
             return BadRequest(new { message = exception.Message });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -103,22 +108,19 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(404)]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public async Task<IActionResult> Delete(TKey id)
+    public async Task<IActionResult> Delete(TKey id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван с идентификатором {Id}", nameof(Delete), GetType().Name, id);
 
         try
         {
-            var result = await appService.Delete(id);
+            var result = await appService.Delete(id, cancellationToken);
 
             if (!result)
             {
                 logger.LogWarning("Запись с идентификатором {Id} не найдена для удаления", id);
 
-                return NotFound(new
-                {
-                    message = $"Запись с идентификатором {id} не найдена"
-                });
+                return NotFound(new { message = $"Запись с идентификатором {id} не найдена" });
             }
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(Delete), GetType().Name);
@@ -129,6 +131,10 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
         {
             logger.LogWarning(exception, "Не удалось удалить запись с идентификатором {Id}, так как есть связанные записи", id);
             return Conflict(new { message = exception.Message });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -145,17 +151,21 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<TDto>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<TDto>>> GetAll(CancellationToken cancellationToken)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван", nameof(GetAll), GetType().Name);
 
         try
         {
-            var result = await appService.GetAll();
+            var result = await appService.GetAll(cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetAll), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -173,27 +183,28 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<TDto>> GetById(TKey id)
+    public async Task<ActionResult<TDto>> GetById(TKey id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Метод {Method} контроллера {Controller} вызван с идентификатором {Id}", nameof(GetById), GetType().Name, id);
 
         try
         {
-            var result = await appService.GetById(id);
+            var result = await appService.GetById(id, cancellationToken);
 
             if (result is null)
             {
                 logger.LogWarning("Запись с идентификатором {Id} не найдена", id);
 
-                return NotFound(new
-                {
-                    message = $"Запись с идентификатором {id} не найдена"
-                });
+                return NotFound(new { message = $"Запись с идентификатором {id} не найдена" });
             }
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetById), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {

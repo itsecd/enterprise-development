@@ -26,24 +26,32 @@ public class RoomRepository : IRepository<Room, int>
     /// <summary>
     /// Получить все номера
     /// </summary>
-    public Task<IReadOnlyList<Room>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<IReadOnlyList<Room>> GetAll(CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult<IReadOnlyList<Room>>(_rooms.AsReadOnly());
     }
 
     /// <summary>
     /// Получить номер по идентификатору
     /// </summary>
-    public Task<Room?> GetById(int id)
+    /// <param name="id">Идентификатор номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<Room?> GetById(int id, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(_rooms.FirstOrDefault(room => room.Id == id));
     }
 
     /// <summary>
     /// Добавить новый номер
     /// </summary>
-    public Task<Room> Add(Room room)
+    /// <param name="room">Новый номер</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<Room> Add(Room room, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         _rooms.Add(room);
 
         return Task.FromResult(room);
@@ -52,9 +60,11 @@ public class RoomRepository : IRepository<Room, int>
     /// <summary>
     /// Обновить существующий номер
     /// </summary>
-    public async Task<Room?> Update(Room room)
+    /// <param name="room">Обновлённые данные номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<Room?> Update(Room room, CancellationToken cancellationToken = default)
     {
-        var existingRoom = await GetById(room.Id);
+        var existingRoom = await GetById(room.Id, cancellationToken);
 
         if (existingRoom is null) return null;
 
@@ -69,9 +79,11 @@ public class RoomRepository : IRepository<Room, int>
     /// <summary>
     /// Удалить номер по идентификатору
     /// </summary>
-    public async Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        var room = await GetById(id);
+        var room = await GetById(id, cancellationToken);
 
         if (room is null) return false;
 

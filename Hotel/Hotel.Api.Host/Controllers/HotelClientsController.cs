@@ -19,13 +19,13 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetBookingsByClientId(int id)
+    public async Task<ActionResult<IReadOnlyList<BookingDto>>> GetBookingsByClientId(int id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetBookingsByClientId), GetType().Name);
 
         try
         {
-            var result = await hotelClientService.GetBookingsByClientId(id);
+            var result = await hotelClientService.GetBookingsByClientId(id, cancellationToken);
 
             if (result is null)
             {
@@ -36,6 +36,10 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetBookingsByClientId), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {
@@ -52,19 +56,22 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
     [HttpGet("top-five-by-total-stay-cost")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<IReadOnlyList<HotelClientStayCostDto>>> GetTopFiveClientsByTotalStayCost()
+    public async Task<ActionResult<IReadOnlyList<HotelClientStayCostDto>>> GetTopFiveClientsByTotalStayCost(CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}", nameof(GetTopFiveClientsByTotalStayCost), GetType().Name);
 
         try
         {
-            var result = await hotelClientService.GetTopFiveClientsByTotalStayCost();
+            var result = await hotelClientService.GetTopFiveClientsByTotalStayCost(cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetTopFiveClientsByTotalStayCost), GetType().Name);
 
             return Ok(result);
         }
-
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception exception)
         {
             logger.LogError(exception, "При получении пяти клиентов с наибольшей стоимостью проживания произошла ошибка");
@@ -83,17 +90,21 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<IReadOnlyList<HotelClientDto>>> GetClientsByRoomCategory(
-        RoomCategory category)
+        RoomCategory category, CancellationToken cancellationToken)
     {
         logger.LogInformation("Вызван метод {Method} контроллера {Controller}. Категория комнаты: {Category}", nameof(GetClientsByRoomCategory), GetType().Name, category);
 
         try
         {
-            var result = await hotelClientService.GetClientsByRoomCategory(category);
+            var result = await hotelClientService.GetClientsByRoomCategory(category, cancellationToken);
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetClientsByRoomCategory), GetType().Name);
 
             return Ok(result);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception exception)
         {

@@ -12,9 +12,10 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
     /// <summary>
     /// Получить все бронирования
     /// </summary>
-    public async Task<IReadOnlyList<BookingDto>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<BookingDto>> GetAll(CancellationToken cancellationToken = default)
     {
-        var bookings = await bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll(cancellationToken);
 
         return bookings
             .Select(ToDto)
@@ -24,28 +25,32 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
     /// <summary>
     /// Получить бронирование по идентификатору
     /// </summary>
-    public async Task<BookingDto?> GetById(int id)
+    /// <param name="id">Идентификатор бронирования</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<BookingDto?> GetById(int id, CancellationToken cancellationToken = default)
     {
-        var booking = await bookingRepository.GetById(id);
+        var booking = await bookingRepository.GetById(id, cancellationToken);
         return booking is null ? null : ToDto(booking);
     }
 
     /// <summary>
     /// Создать бронирование
     /// </summary>
-    public async Task<BookingDto> Create(CreateBookingDto dto)
+    /// <param name="dto">Данные для создания бронирования</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<BookingDto> Create(CreateBookingDto dto, CancellationToken cancellationToken = default)
     {
-        var client = await clientRepository.GetById(dto.ClientId);
+        var client = await clientRepository.GetById(dto.ClientId, cancellationToken);
 
         if (client is null) throw new ArgumentException(
             $"Не удалось найти клиента с идентификатором {dto.ClientId}");
 
-        var room = await roomRepository.GetById(dto.RoomId);
+        var room = await roomRepository.GetById(dto.RoomId, cancellationToken);
 
         if (room is null) throw new ArgumentException(
             $"Не удалось найти номер с идентификатором {dto.RoomId}");
 
-        if (await IsRoomOccupiedAsync(dto.RoomId, dto.CheckInDate, dto.DaysCount))
+        if (await IsRoomOccupiedAsync(dto.RoomId, dto.CheckInDate, dto.DaysCount, cancellationToken: cancellationToken))
             throw new ArgumentException(
                 $"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
 
@@ -58,7 +63,7 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
             DaysCount = dto.DaysCount
         };
 
-        var createdBooking = await bookingRepository.Add(booking);
+        var createdBooking = await bookingRepository.Add(booking, cancellationToken);
 
         return ToDto(createdBooking);
     }
@@ -66,23 +71,26 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
     /// <summary>
     /// Обновить бронирование
     /// </summary>
-    public async Task<BookingDto?> Update(int id, CreateBookingDto dto)
+    /// <param name="id">Идентификатор бронирования</param>
+    /// <param name="dto">Данные для обновления бронирования</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<BookingDto?> Update(int id, CreateBookingDto dto, CancellationToken cancellationToken = default)
     {
-        var existingBooking = await bookingRepository.GetById(id);
+        var existingBooking = await bookingRepository.GetById(id, cancellationToken);
 
         if (existingBooking is null) return null;
 
-        var client = await clientRepository.GetById(dto.ClientId);
+        var client = await clientRepository.GetById(dto.ClientId, cancellationToken);
 
         if (client is null) throw new ArgumentException(
             $"Не удалось найти клиента с идентификатором {dto.ClientId}");
 
-        var room = await roomRepository.GetById(dto.RoomId);
+        var room = await roomRepository.GetById(dto.RoomId, cancellationToken);
 
         if (room is null) throw new ArgumentException(
             $"Не удалось найти номер с идентификатором {dto.RoomId}");
 
-        if (await IsRoomOccupiedAsync(dto.RoomId, dto.CheckInDate, dto.DaysCount, id))
+        if (await IsRoomOccupiedAsync(dto.RoomId, dto.CheckInDate, dto.DaysCount, id, cancellationToken))
         {
             throw new ArgumentException(
                 $"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
@@ -97,7 +105,7 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
             DaysCount = dto.DaysCount
         };
 
-        var updatedBooking = await bookingRepository.Update(booking);
+        var updatedBooking = await bookingRepository.Update(booking, cancellationToken);
 
         return updatedBooking is null ? null : ToDto(updatedBooking);
     }
@@ -105,18 +113,21 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
     /// <summary>
     /// Удалить бронирование
     /// </summary>
-    public Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор бронирования</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        return bookingRepository.Delete(id);
+        return bookingRepository.Delete(id, cancellationToken);
     }
 
     /// <summary>
     /// Получить текущие бронирования
     /// </summary>
-    public async Task<IReadOnlyList<BookingDto>> GetBookedRooms()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<BookingDto>> GetBookedRooms(CancellationToken cancellationToken = default)
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var bookings = await bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll(cancellationToken);
 
         return bookings
             .Where(booking =>
@@ -129,11 +140,12 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
     /// <summary>
     /// Проверить занятость номера на указанный период
     /// </summary>
-    private Task<bool> IsRoomOccupiedAsync(
-        int roomId,
-        DateOnly checkInDate,
-        int daysCount,
-        int? excludedBookingId = null)
+    /// <param name="roomId">Идентификатор номера</param>
+    /// <param name="checkInDate">Дата заезда</param>
+    /// <param name="daysCount">Количество дней проживания</param>
+    /// <param name="excludedBookingId">Идентификатор бронирования, которое пропускаем при проверке</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    private Task<bool> IsRoomOccupiedAsync(int roomId, DateOnly checkInDate, int daysCount, int? excludedBookingId = null, CancellationToken cancellationToken = default)
     {
         var checkOutDate = checkInDate.AddDays(daysCount);
 
@@ -141,7 +153,7 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
             booking.Room.Id == roomId &&
             booking.Id != excludedBookingId &&
             booking.CheckInDate < checkOutDate &&
-            booking.CheckInDate.AddDays(booking.DaysCount) > checkInDate);
+            booking.CheckInDate.AddDays(booking.DaysCount) > checkInDate, cancellationToken);
     }
 
     /// <summary>

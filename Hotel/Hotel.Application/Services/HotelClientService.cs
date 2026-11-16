@@ -14,9 +14,10 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить всех клиентов
     /// </summary>
-    public async Task<IReadOnlyList<HotelClientDto>> GetAll()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<HotelClientDto>> GetAll(CancellationToken cancellationToken = default)
     {
-        var clients = await clientRepository.GetAll();
+        var clients = await clientRepository.GetAll(cancellationToken);
 
         return clients
             .Select(ToDto)
@@ -26,9 +27,11 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить клиента по идентификатору
     /// </summary>
-    public async Task<HotelClientDto?> GetById(int id)
+    /// <param name="id">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<HotelClientDto?> GetById(int id, CancellationToken cancellationToken = default)
     {
-        var client = await clientRepository.GetById(id);
+        var client = await clientRepository.GetById(id, cancellationToken);
 
         return client is null ? null : ToDto(client);
     }
@@ -36,7 +39,9 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Создать клиента
     /// </summary>
-    public async Task<HotelClientDto> Create(CreateHotelClientDto dto)
+    /// <param name="dto">Данные для создания клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<HotelClientDto> Create(CreateHotelClientDto dto, CancellationToken cancellationToken = default)
     {
         var client = new HotelClient
         {
@@ -49,7 +54,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
             Citizenship = dto.Citizenship
         };
 
-        var createdClient = await clientRepository.Add(client);
+        var createdClient = await clientRepository.Add(client, cancellationToken);
 
         return ToDto(createdClient);
     }
@@ -57,7 +62,10 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Обновить клиента
     /// </summary>
-    public async Task<HotelClientDto?> Update(int id, CreateHotelClientDto dto)
+    /// <param name="id">Идентификатор клиента</param>
+    /// <param name="dto">Данные для обновления клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<HotelClientDto?> Update(int id, CreateHotelClientDto dto, CancellationToken cancellationToken = default)
     {
         var client = new HotelClient
         {
@@ -70,7 +78,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
             Citizenship = dto.Citizenship
         };
 
-        var updatedClient = await clientRepository.Update(client);
+        var updatedClient = await clientRepository.Update(client, cancellationToken);
 
         return updatedClient is null ? null : ToDto(updatedClient);
     }
@@ -78,21 +86,25 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Удалить клиента
     /// </summary>
-    public Task<bool> Delete(int id)
+    /// <param name="id">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        return clientRepository.Delete(id);
+        return clientRepository.Delete(id, cancellationToken);
     }
 
     /// <summary>
     /// Получить бронирования указанного клиента
     /// </summary>
-    public async Task<IReadOnlyList<BookingDto>?> GetBookingsByClientId(int clientId)
+    /// <param name="clientId">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<BookingDto>?> GetBookingsByClientId(int clientId, CancellationToken cancellationToken = default)
     {
-        var client = await clientRepository.GetById(clientId);
+        var client = await clientRepository.GetById(clientId, cancellationToken);
 
         if (client is null) return null;
 
-        var bookings = await bookingRepository.GetAll();
+        var bookings = await bookingRepository.GetAll(cancellationToken);
 
         return bookings
             .Where(booking => booking.Client.Id == clientId)
@@ -108,7 +120,8 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить пять клиентов с наибольшей общей стоимостью проживания
     /// </summary>
-    public async Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost()
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost(CancellationToken cancellationToken = default)
     {
         var topClients = await bookingRepository.QueryAsync(bookings => bookings
             .GroupBy(booking => booking.Client.Id)
@@ -121,7 +134,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
             })
             .OrderByDescending(item => item.TotalStayCost)
             .ThenBy(item => item.ClientId)
-            .Take(5));
+            .Take(5), cancellationToken);
 
         return topClients
             .Select(item => new HotelClientStayCostDto(ToDto(item.Client), item.TotalStayCost))
@@ -131,14 +144,15 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <summary>
     /// Получить клиентов, бронировавших номер указанной категории
     /// </summary>
-    public async Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(
-        RoomCategory category)
+    /// <param name="category">Категория номера</param>
+    /// <param name="cancellationToken">Токен отмены запроса</param>
+    public async Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category, CancellationToken cancellationToken = default)
     {
         var clients = await bookingRepository.QueryAsync(bookings => bookings
             .Where(booking => booking.Room.RoomType.Category == category)
             .Select(booking => booking.Client)
             .Distinct()
-            .OrderBy(client => client.Id));
+            .OrderBy(client => client.Id), cancellationToken);
 
         return clients.Select(ToDto).ToList();
     }
