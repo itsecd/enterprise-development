@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Dish> Dishes => Set<Dish>();
     public DbSet<DishCategory> DishCategories => Set<DishCategory>();
     public DbSet<Order> Orders => Set<Order>();
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<Restaurant> Restaurants => Set<Restaurant>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,6 +55,7 @@ public class ApplicationDbContext : DbContext
 
             entity.Ignore(order => order.TotalAmount);
             entity.Ignore(order => order.DeliveryTime);
+            entity.Ignore(order => order.Dishes);
 
             entity.HasOne(order => order.Client)
                 .WithMany()
@@ -62,10 +64,26 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(order => order.Restaurant)
                 .WithMany()
                 .HasForeignKey(order => order.RestaurantId);
+        });
 
-            entity.HasMany(order => order.Dishes)
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasKey(item => new
+            {
+                item.OrderId,
+                item.DishId
+            });
+
+            entity.Property(item => item.Quantity)
+                .IsRequired();
+
+            entity.HasOne(item => item.Order)
                 .WithMany()
-                .UsingEntity(join => join.ToTable("OrderDishes"));
+                .HasForeignKey(item => item.OrderId);
+
+            entity.HasOne(item => item.Dish)
+                .WithMany()
+                .HasForeignKey(item => item.DishId);
         });
     }
 }
