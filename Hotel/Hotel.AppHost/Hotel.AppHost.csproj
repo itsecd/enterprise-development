@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.5.0">
+<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.MySql" Version="13.5.0" />
+    <PackageReference Include="Aspire.Hosting.MySql" Version="13.6.5" />
     <ProjectReference Include="..\Hotel.Api.Host\Hotel.Api.Host.csproj" />
   </ItemGroup>
 

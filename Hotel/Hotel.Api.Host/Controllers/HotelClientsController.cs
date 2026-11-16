@@ -30,7 +30,7 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
             if (result is null)
             {
                 logger.LogWarning("Клиент с идентификатором {ClientId} не найден", id);
-                return NotFound();
+                return NotFound(new { message = $"Клиент с идентификатором {id} не найден" });
             }
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetBookingsByClientId), GetType().Name);

@@ -29,7 +29,7 @@ public class RoomsController(IRoomService roomService, ILogger<RoomsController> 
             if (result is null)
             {
                 logger.LogWarning("Номер с идентификатором {RoomId} не найден", id);
-                return NotFound();
+                return NotFound(new { message = $"Номер с идентификатором {id} не найден" });
             }
 
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(GetBookingsByRoomId), GetType().Name);
