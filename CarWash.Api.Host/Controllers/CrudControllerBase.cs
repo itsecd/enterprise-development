@@ -23,6 +23,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [HttpPost]
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<TDto>> Create(TCreateUpdateDto newDto)
     {
@@ -39,6 +40,15 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
                 nameof(Create), GetType().Name);
 
             return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(
+                ex,
+                "Не удалось создать запись: {Message}",
+                ex.Message);
+
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {
