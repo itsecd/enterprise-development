@@ -12,7 +12,6 @@ public class InMemoryCategoryRepository : ICategoryRepository
 
     public void Add(Category entity)
     {
-        // Генерация ID теперь тут, как и просил ревьюер
         entity.Id = _categories.Any() ? _categories.Max(c => c.Id) + 1 : 1;
         _categories.Add(entity);
     }
