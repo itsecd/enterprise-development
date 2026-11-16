@@ -61,24 +61,20 @@ public class EfOrderRepository(ApplicationDbContext context)
     /// </summary>
     public Order Add(Order order)
     {
-        using var transaction = context.Database.BeginTransaction();
-
-        context.Orders.Add(order);
-        context.SaveChanges();
-
         var items = order.Dishes
             .GroupBy(dish => dish.Id)
             .Select(group => new OrderItem
             {
-                OrderId = order.Id,
+                Order = order,
                 DishId = group.Key,
                 Quantity = group.Count()
-            });
+            })
+            .ToList();
 
+        context.Orders.Add(order);
         context.OrderItems.AddRange(items);
-        context.SaveChanges();
 
-        transaction.Commit();
+        context.SaveChanges();
 
         return order;
     }
@@ -88,8 +84,6 @@ public class EfOrderRepository(ApplicationDbContext context)
     /// </summary>
     public void Update(Order order)
     {
-        using var transaction = context.Database.BeginTransaction();
-
         var quantities = order.Dishes
             .GroupBy(dish => dish.Id)
             .ToDictionary(
@@ -123,8 +117,9 @@ public class EfOrderRepository(ApplicationDbContext context)
             });
         }
 
+        // Заказ получен через отслеживаемый DbContext
+        // Изменения полей заказа и позиций сохраняются вместе
         context.SaveChanges();
-        transaction.Commit();
     }
 
     /// <summary>
@@ -132,8 +127,6 @@ public class EfOrderRepository(ApplicationDbContext context)
     /// </summary>
     public void Delete(Order order)
     {
-        using var transaction = context.Database.BeginTransaction();
-
         var items = context.OrderItems
             .Where(item => item.OrderId == order.Id)
             .ToList();
@@ -142,6 +135,5 @@ public class EfOrderRepository(ApplicationDbContext context)
         context.Orders.Remove(order);
 
         context.SaveChanges();
-        transaction.Commit();
     }
 }
