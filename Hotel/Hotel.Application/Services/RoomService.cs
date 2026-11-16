@@ -8,7 +8,7 @@ namespace Hotel.Application.Services;
 /// <summary>
 /// Служба работы с номерами гостиницы
 /// </summary>
-public class RoomService(IRepository<Room, int> roomRepository, IRepository<RoomType, int> roomTypeRepository, IRepository<Booking, int> bookingRepository) : IRoomService
+public class RoomService(IRepository<Room, int> roomRepository, IRepository<RoomType, int> roomTypeRepository, IBookingRepository bookingRepository) : IRoomService
 {
     /// <summary>
     /// Получить все номера
@@ -137,14 +137,25 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// </summary>
     public async Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom()
     {
-        var bookings = await bookingRepository.GetAll();
+        var bookingCounts = await bookingRepository.QueryAsync(bookings => bookings
+            .GroupBy(booking => booking.Room.Id)
+            .Select(group => new
+            {
+                RoomId = group.Key,
+                BookingCount = group.Count()
+            }));
+
+        var countsByRoomId = bookingCounts.ToDictionary(
+            item => item.RoomId,
+            item => item.BookingCount);
+
         var rooms = await roomRepository.GetAll();
 
         return rooms
+            .OrderBy(room => room.Id)
             .Select(room => new RoomBookingCountDto(
                 ToDto(room),
-                bookings.Count(booking => booking.Room.Id == room.Id)))
-            .OrderBy(item => item.Room.Id)
+                countsByRoomId.GetValueOrDefault(room.Id)))
             .ToList();
     }
 
