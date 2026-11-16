@@ -1,6 +1,6 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var mysql = builder.AddMySql("mysql");
+var mysql = builder.AddMySql("mysql").WithDataVolume("fitnessclub-mysql-data");
 var db = mysql.AddDatabase("fitnessclub-db");
 
 var migrations = builder
