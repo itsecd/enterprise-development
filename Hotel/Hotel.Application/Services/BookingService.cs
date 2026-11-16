@@ -7,7 +7,7 @@ namespace Hotel.Application.Services;
 /// <summary>
 /// Служба работы с бронированиями гостиницы
 /// </summary>
-public class BookingService(IRepository<Booking, int> bookingRepository, IRepository<HotelClient, int> clientRepository, IRepository<Room, int> roomRepository) : IBookingService
+public class BookingService(IBookingRepository bookingRepository, IRepository<HotelClient, int> clientRepository, IRepository<Room, int> roomRepository) : IBookingService
 {
     /// <summary>
     /// Получить все бронирования
@@ -45,10 +45,9 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
         if (room is null) throw new ArgumentException(
             $"Не удалось найти номер с идентификатором {dto.RoomId}");
 
-        var bookings = await bookingRepository.GetAll();
-
-        if (IsRoomOccupied(bookings, dto.RoomId, dto.CheckInDate, dto.DaysCount))
-            throw new ArgumentException($"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
+        if (await IsRoomOccupiedAsync(dto.RoomId, dto.CheckInDate, dto.DaysCount))
+            throw new ArgumentException(
+                $"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
 
         var booking = new Booking
         {
@@ -83,9 +82,7 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
         if (room is null) throw new ArgumentException(
             $"Не удалось найти номер с идентификатором {dto.RoomId}");
 
-        var bookings = await bookingRepository.GetAll();
-
-        if (IsRoomOccupied(bookings, dto.RoomId, dto.CheckInDate, dto.DaysCount, id))
+        if (await IsRoomOccupiedAsync(dto.RoomId, dto.CheckInDate, dto.DaysCount, id))
         {
             throw new ArgumentException(
                 $"Номер с идентификатором {dto.RoomId} уже забронирован на указанный период");
@@ -132,8 +129,7 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     /// <summary>
     /// Проверить занятость номера на указанный период
     /// </summary>
-    private static bool IsRoomOccupied(
-        IReadOnlyList<Booking> bookings,
+    private Task<bool> IsRoomOccupiedAsync(
         int roomId,
         DateOnly checkInDate,
         int daysCount,
@@ -141,11 +137,11 @@ public class BookingService(IRepository<Booking, int> bookingRepository, IReposi
     {
         var checkOutDate = checkInDate.AddDays(daysCount);
 
-        return bookings.Any(booking =>
+        return bookingRepository.AnyAsync(booking =>
             booking.Room.Id == roomId &&
             booking.Id != excludedBookingId &&
-            checkInDate < booking.CheckInDate.AddDays(booking.DaysCount) &&
-            booking.CheckInDate < checkOutDate);
+            booking.CheckInDate < checkOutDate &&
+            booking.CheckInDate.AddDays(booking.DaysCount) > checkInDate);
     }
 
     /// <summary>

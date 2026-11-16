@@ -1,13 +1,14 @@
 ﻿using Hotel.Domain;
 using Hotel.Domain.Data;
 using Hotel.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace Hotel.Infrastructure.InMemory.Repositories;
 
 /// <summary>
 /// Репозиторий бронирований гостиницы в памяти
 /// </summary>
-public class BookingRepository : IRepository<Booking, int>
+public class BookingRepository : IBookingRepository
 {
     /// <summary>
     /// Список бронирований
@@ -72,5 +73,11 @@ public class BookingRepository : IRepository<Booking, int>
         if (booking is null) return false;
 
         return _bookings.Remove(booking);
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> AnyAsync(Expression<Func<Booking, bool>> predicate)
+    {
+        return Task.FromResult(_bookings.Any(predicate.Compile()));
     }
 }

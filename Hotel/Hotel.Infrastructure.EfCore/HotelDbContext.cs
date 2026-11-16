@@ -1,8 +1,8 @@
 ﻿using Hotel.Domain.Data;
 using Hotel.Domain.Entities;
 using Hotel.Domain.Shared.Exceptions;
-using MySql.Data.MySqlClient;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 
 namespace Hotel.Infrastructure.EfCore;
 
@@ -41,7 +41,8 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
         try
         {
             await SaveChangesAsync();
-        } catch (DbUpdateException exception)
+        }
+        catch (DbUpdateException exception)
             when (exception.InnerException is MySqlException { Number: referencedRowErrorNumber })
         {
             throw new DeleteConflictException(conflictMessage, exception);

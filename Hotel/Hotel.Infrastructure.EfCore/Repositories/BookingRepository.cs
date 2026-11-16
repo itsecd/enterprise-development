@@ -1,13 +1,15 @@
 ﻿using Hotel.Domain;
 using Hotel.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
 
 namespace Hotel.Infrastructure.EfCore.Repositories;
 
 /// <summary>
 /// Репозиторий бронирований
 /// </summary>
-public class BookingRepository(HotelDbContext context) : IRepository<Booking, int>
+public class BookingRepository(HotelDbContext context) : IBookingRepository
 {
     /// <inheritdoc/>
     public async Task<IReadOnlyList<Booking>> GetAll()
@@ -44,9 +46,7 @@ public class BookingRepository(HotelDbContext context) : IRepository<Booking, in
             .FirstOrDefaultAsync(room => room.Id == roomId)
             ?? throw new ArgumentException($"Не удалось найти номер с идентификатором {roomId}");
 
-        booking.ClientId = client.Id;
         booking.Client = client;
-        booking.RoomId = room.Id;
         booking.Room = room;
 
         context.Bookings.Add(booking);
@@ -74,9 +74,7 @@ public class BookingRepository(HotelDbContext context) : IRepository<Booking, in
             .FirstOrDefaultAsync(room => room.Id == roomId)
             ?? throw new ArgumentException($"Не удалось найти номер с идентификатором {roomId}");
 
-        existingBooking.ClientId = client.Id;
         existingBooking.Client = client;
-        existingBooking.RoomId = room.Id;
         existingBooking.Room = room;
         existingBooking.CheckInDate = booking.CheckInDate;
         existingBooking.DaysCount = booking.DaysCount;
@@ -97,5 +95,11 @@ public class BookingRepository(HotelDbContext context) : IRepository<Booking, in
         await context.SaveChangesAsync();
 
         return true;
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> AnyAsync(Expression<Func<Booking, bool>> predicate)
+    {
+        return context.Bookings.AnyAsync(predicate);
     }
 }

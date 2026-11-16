@@ -24,7 +24,9 @@ builder.Services.AddDbContext<HotelDbContext>(options => options.UseMySQL(connec
 builder.Services.AddScoped<IRepository<RoomType, int>, RoomTypeRepository>();
 builder.Services.AddScoped<IRepository<Room, int>, RoomRepository>();
 builder.Services.AddScoped<IRepository<HotelClient, int>, HotelClientRepository>();
-builder.Services.AddScoped<IRepository<Booking, int>, BookingRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IRepository<Booking, int>>(services =>
+    services.GetRequiredService<IBookingRepository>());
 
 // Регистрация сервисов приложения
 builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();

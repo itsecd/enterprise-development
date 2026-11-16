@@ -41,7 +41,7 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
         {
             logger.LogError(exception, "При получении бронирований клиента {ClientId} произошла ошибка", id);
 
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Произошла внутренняя ошибка сервера." });
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Произошла внутренняя ошибка сервера" });
         }
     }
 
@@ -69,7 +69,7 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
         {
             logger.LogError(exception, "При получении пяти клиентов с наибольшей стоимостью проживания произошла ошибка");
 
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Произошла внутренняя ошибка сервера." });
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Произошла внутренняя ошибка сервера" });
         }
 
     }
@@ -99,7 +99,7 @@ public class HotelClientsController(IHotelClientService hotelClientService, ILog
         {
             logger.LogError(exception, "При получении клиентов по категории комнат произошла ошибка");
 
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Произошла внутренняя ошибка сервера." });
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Произошла внутренняя ошибка сервера" });
         }
     }
 }
