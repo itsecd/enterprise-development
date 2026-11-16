@@ -1,0 +1,585 @@
+﻿using EnterpriseDevelopment.Domain.Entities;
+
+namespace EnterpriseDevelopment.Domain;
+
+/// <summary>
+/// Генератор тестовых данных
+/// </summary>
+public class DataSeeder
+{
+    /// <summary>
+    /// Список категорий блюд
+    /// </summary>
+    public List<DishCategory> Categories { get; }
+
+    /// <summary>
+    /// Список ресторанов
+    /// </summary>
+    public List<Restaurant> Restaurants { get; }
+
+    /// <summary>
+    /// Список клиентов
+    /// </summary>
+    public List<Client> Clients { get; }
+
+    /// <summary>
+    /// Список блюд
+    /// </summary>
+    public List<Dish> Dishes { get; }
+
+    /// <summary>
+    /// Список заказов
+    /// </summary>
+    public List<Order> Orders { get; }
+
+    /// <summary>
+    /// Инициализация тестовых данных
+    /// </summary>
+    public DataSeeder()
+    {
+        Categories = CreateCategories();
+        Restaurants = CreateRestaurants();
+        Clients = CreateClients();
+        Dishes = CreateDishes(Categories, Restaurants);
+        Orders = CreateOrders(Clients, Restaurants, Dishes);
+    }
+
+    /// <summary>
+    /// Создаёт список категорий блюд
+    /// </summary>
+    /// <returns>Список категорий блюд</returns>
+    private static List<DishCategory> CreateCategories()
+    {
+        return
+        [
+            new DishCategory
+            {
+                Id = 1,
+                Name = "Пицца"
+            },
+            new DishCategory
+            {
+                Id = 2,
+                Name = "Суши"
+            },
+            new DishCategory
+            {
+                Id = 3,
+                Name = "Бургеры"
+            },
+            new DishCategory
+            {
+                Id = 4,
+                Name = "Супы"
+            },
+            new DishCategory
+            {
+                Id = 5,
+                Name = "Салаты"
+            },
+            new DishCategory
+            {
+                Id = 6,
+                Name = "Десерты"
+            },
+            new DishCategory
+            {
+                Id = 7,
+                Name = "Напитки"
+            },
+            new DishCategory
+            {
+                Id = 8,
+                Name = "Закуски"
+            },
+            new DishCategory
+            {
+                Id = 9,
+                Name = "Паста"
+            },
+            new DishCategory
+            {
+                Id = 10,
+                Name = "Горячие блюда"
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Создаёт список ресторанов
+    /// </summary>
+    /// <returns>Список ресторанов</returns>
+    private static List<Restaurant> CreateRestaurants()
+    {
+        return
+        [
+            new Restaurant
+            {
+                Id = 1,
+                Name = "Сицилия",
+                Address = "ул. Гагарина, 10",
+                Rating = 4.7,
+                OpeningTime = new TimeOnly(10, 0),
+                ClosingTime = new TimeOnly(23, 0)
+            },
+            new Restaurant
+            {
+                Id = 2,
+                Name = "Токио",
+                Address = "ул. Московская, 25",
+                Rating = 4.6,
+                OpeningTime = new TimeOnly(11, 0),
+                ClosingTime = new TimeOnly(23, 30)
+            },
+            new Restaurant
+            {
+                Id = 3,
+                Name = "Burger House",
+                Address = "ул. Победы, 15",
+                Rating = 4.4,
+                OpeningTime = new TimeOnly(9, 0),
+                ClosingTime = new TimeOnly(22, 0)
+            },
+            new Restaurant
+            {
+                Id = 4,
+                Name = "Хачапури",
+                Address = "ул. Ленинградская, 40",
+                Rating = 4.8,
+                OpeningTime = new TimeOnly(10, 0),
+                ClosingTime = new TimeOnly(23, 0)
+            },
+            new Restaurant
+            {
+                Id = 5,
+                Name = "Вилка",
+                Address = "ул. Советской Армии, 30",
+                Rating = 4.3,
+                OpeningTime = new TimeOnly(8, 0),
+                ClosingTime = new TimeOnly(21, 0)
+            },
+            new Restaurant
+            {
+                Id = 6,
+                Name = "Паста Бар",
+                Address = "ул. Самарская, 81",
+                Rating = 4.5,
+                OpeningTime = new TimeOnly(11, 0),
+                ClosingTime = new TimeOnly(23, 0)
+            },
+            new Restaurant
+            {
+                Id = 7,
+                Name = "Шашлык №1",
+                Address = "ул. Победы, 90",
+                Rating = 4.2,
+                OpeningTime = new TimeOnly(10, 0),
+                ClosingTime = new TimeOnly(22, 0)
+            },
+            new Restaurant
+            {
+                Id = 8,
+                Name = "Green Food",
+                Address = "ул. Осипенко, 12",
+                Rating = 4.6,
+                OpeningTime = new TimeOnly(9, 0),
+                ClosingTime = new TimeOnly(21, 0)
+            },
+            new Restaurant
+            {
+                Id = 9,
+                Name = "Sweet Home",
+                Address = "ул. Полевая, 55",
+                Rating = 4.9,
+                OpeningTime = new TimeOnly(9, 0),
+                ClosingTime = new TimeOnly(22, 0)
+            },
+            new Restaurant
+            {
+                Id = 10,
+                Name = "Горячий двор",
+                Address = "ул. Авроры, 100",
+                Rating = 4.1,
+                OpeningTime = new TimeOnly(10, 0),
+                ClosingTime = new TimeOnly(23, 0)
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Создаёт список клиентов
+    /// </summary>
+    /// <returns>Список клиентов</returns>
+    private static List<Client> CreateClients()
+    {
+        return
+        [
+            new Client
+            {
+                Id = 1,
+                FullName = "Иванов Иван Иванович",
+                PhoneNumber = "+79991234501",
+                DeliveryAddress = "ул. Гагарина, 10"
+            },
+            new Client
+            {
+                Id = 2,
+                FullName = "Петров Пётр Сергеевич",
+                PhoneNumber = "+79991234502",
+                DeliveryAddress = "ул. Московская, 25"
+            },
+            new Client
+            {
+                Id = 3,
+                FullName = "Сидорова Анна Андреевна",
+                PhoneNumber = "+79991234503",
+                DeliveryAddress = "ул. Победы, 15"
+            },
+            new Client
+            {
+                Id = 4,
+                FullName = "Кузнецов Алексей Олегович",
+                PhoneNumber = "+79991234504",
+                DeliveryAddress = "ул. Ленинградская, 40"
+            },
+            new Client
+            {
+                Id = 5,
+                FullName = "Смирнова Екатерина Павловна",
+                PhoneNumber = "+79991234505",
+                DeliveryAddress = "ул. Советской Армии, 30"
+            },
+            new Client
+            {
+                Id = 6,
+                FullName = "Попов Дмитрий Игоревич",
+                PhoneNumber = "+79991234506",
+                DeliveryAddress = "ул. Самарская, 81"
+            },
+            new Client
+            {
+                Id = 7,
+                FullName = "Соколова Мария Олеговна",
+                PhoneNumber = "+79991234507",
+                DeliveryAddress = "ул. Осипенко, 12"
+            },
+            new Client
+            {
+                Id = 8,
+                FullName = "Морозов Артём Сергеевич",
+                PhoneNumber = "+79991234508",
+                DeliveryAddress = "ул. Полевая, 55"
+            },
+            new Client
+            {
+                Id = 9,
+                FullName = "Волкова Алина Романовна",
+                PhoneNumber = "+79991234509",
+                DeliveryAddress = "ул. Авроры, 100"
+            },
+            new Client
+            {
+                Id = 10,
+                FullName = "Орлов Максим Евгеньевич",
+                PhoneNumber = "+79991234510",
+                DeliveryAddress = "Московское шоссе, 20"
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Создаёт список блюд
+    /// </summary>
+    /// <param name="categories">Список категорий блюд</param>
+    /// <param name="restaurants">Список ресторанов</param>
+    /// <returns>Список блюд</returns>
+    private static List<Dish> CreateDishes(
+        List<DishCategory> categories,
+        List<Restaurant> restaurants)
+    {
+        return
+        [
+            new Dish
+            {
+                Id = 1,
+                Name = "Пепперони",
+                Weight = 450,
+                Price = 520,
+                CategoryId = 1,
+                Category = categories[0],
+                RestaurantId = 1,
+                Restaurant = restaurants[0]
+            },
+            new Dish
+            {
+                Id = 2,
+                Name = "Маргарита",
+                Weight = 420,
+                Price = 450,
+                CategoryId = 1,
+                Category = categories[0],
+                RestaurantId = 1,
+                Restaurant = restaurants[0]
+            },
+            new Dish
+            {
+                Id = 3,
+                Name = "Филадельфия",
+                Weight = 260,
+                Price = 650,
+                CategoryId = 2,
+                Category = categories[1],
+                RestaurantId = 2,
+                Restaurant = restaurants[1]
+            },
+            new Dish
+            {
+                Id = 4,
+                Name = "Калифорния",
+                Weight = 240,
+                Price = 590,
+                CategoryId = 2,
+                Category = categories[1],
+                RestaurantId = 2,
+                Restaurant = restaurants[1]
+            },
+            new Dish
+            {
+                Id = 5,
+                Name = "Чизбургер",
+                Weight = 320,
+                Price = 390,
+                CategoryId = 3,
+                Category = categories[2],
+                RestaurantId = 3,
+                Restaurant = restaurants[2]
+            },
+            new Dish
+            {
+                Id = 6,
+                Name = "Хачапури по-аджарски",
+                Weight = 400,
+                Price = 480,
+                CategoryId = 10,
+                Category = categories[9],
+                RestaurantId = 4,
+                Restaurant = restaurants[3]
+            },
+            new Dish
+            {
+                Id = 7,
+                Name = "Борщ",
+                Weight = 350,
+                Price = 300,
+                CategoryId = 4,
+                Category = categories[3],
+                RestaurantId = 5,
+                Restaurant = restaurants[4]
+            },
+            new Dish
+            {
+                Id = 8,
+                Name = "Карбонара",
+                Weight = 330,
+                Price = 510,
+                CategoryId = 9,
+                Category = categories[8],
+                RestaurantId = 6,
+                Restaurant = restaurants[5]
+            },
+            new Dish
+            {
+                Id = 9,
+                Name = "Шашлык из свинины",
+                Weight = 300,
+                Price = 560,
+                CategoryId = 10,
+                Category = categories[9],
+                RestaurantId = 7,
+                Restaurant = restaurants[6]
+            },
+            new Dish
+            {
+                Id = 10,
+                Name = "Цезарь",
+                Weight = 250,
+                Price = 420,
+                CategoryId = 5,
+                Category = categories[4],
+                RestaurantId = 8,
+                Restaurant = restaurants[7]
+            },
+            new Dish
+            {
+                Id = 11,
+                Name = "Чизкейк",
+                Weight = 180,
+                Price = 350,
+                CategoryId = 6,
+                Category = categories[5],
+                RestaurantId = 9,
+                Restaurant = restaurants[8]
+            },
+            new Dish
+            {
+                Id = 12,
+                Name = "Лимонад",
+                Weight = 500,
+                Price = 230,
+                CategoryId = 7,
+                Category = categories[6],
+                RestaurantId = 10,
+                Restaurant = restaurants[9]
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Создаёт список заказов
+    /// </summary>
+    /// <param name="clients">Список клиентов</param>
+    /// <param name="restaurants">Список ресторанов</param>
+    /// <param name="dishes">Список блюд</param>
+    /// <returns>Список заказов</returns>
+    private static List<Order> CreateOrders(
+        List<Client> clients,
+        List<Restaurant> restaurants,
+        List<Dish> dishes)
+    {
+        return
+        [
+            new Order
+            {
+                Id = 1,
+                ClientId = 1,
+                Client = clients[0],
+                RestaurantId = 1,
+                Restaurant = restaurants[0],
+                Dishes = [dishes[0], dishes[1]],
+                CreatedAt = new DateTimeOffset(2026, 9, 1, 12, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 1, 12, 30, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 2,
+                ClientId = 2,
+                Client = clients[1],
+                RestaurantId = 1,
+                Restaurant = restaurants[0],
+                Dishes = [dishes[1], dishes[1]],
+                CreatedAt = new DateTimeOffset(2026, 9, 2, 13, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 2, 13, 25, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 3,
+                ClientId = 3,
+                Client = clients[2],
+                RestaurantId = 1,
+                Restaurant = restaurants[0],
+                Dishes = [dishes[0], dishes[0], dishes[1]],
+                CreatedAt = new DateTimeOffset(2026, 9, 3, 18, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 3, 18, 20, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 4,
+                ClientId = 1,
+                Client = clients[0],
+                RestaurantId = 1,
+                Restaurant = restaurants[0],
+                Dishes = [dishes[0], dishes[1], dishes[1]],
+                CreatedAt = new DateTimeOffset(2026, 9, 4, 19, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 4, 19, 20, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 5,
+                ClientId = 4,
+                Client = clients[3],
+                RestaurantId = 2,
+                Restaurant = restaurants[1],
+                Dishes = [dishes[2], dishes[3]],
+                CreatedAt = new DateTimeOffset(2026, 9, 5, 12, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 5, 12, 40, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 6,
+                ClientId = 5,
+                Client = clients[4],
+                RestaurantId = 2,
+                Restaurant = restaurants[1],
+                Dishes = [dishes[2], dishes[2]],
+                CreatedAt = new DateTimeOffset(2026, 9, 6, 14, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 6, 14, 35, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 7,
+                ClientId = 1,
+                Client = clients[0],
+                RestaurantId = 2,
+                Restaurant = restaurants[1],
+                Dishes = [dishes[2], dishes[3], dishes[3]],
+                CreatedAt = new DateTimeOffset(2026, 9, 7, 18, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 7, 18, 45, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 8,
+                ClientId = 6,
+                Client = clients[5],
+                RestaurantId = 3,
+                Restaurant = restaurants[2],
+                Dishes = [dishes[4], dishes[4]],
+                CreatedAt = new DateTimeOffset(2026, 9, 8, 16, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 8, 16, 15, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 9,
+                ClientId = 7,
+                Client = clients[6],
+                RestaurantId = 3,
+                Restaurant = restaurants[2],
+                Dishes = [dishes[4]],
+                CreatedAt = new DateTimeOffset(2026, 9, 9, 16, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 9, 16, 30, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 10,
+                ClientId = 1,
+                Client = clients[0],
+                RestaurantId = 3,
+                Restaurant = restaurants[2],
+                Dishes = [dishes[4], dishes[4], dishes[4]],
+                CreatedAt = new DateTimeOffset(2026, 9, 10, 16, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 10, 16, 15, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 11,
+                ClientId = 8,
+                Client = clients[7],
+                RestaurantId = 4,
+                Restaurant = restaurants[3],
+                Dishes = [dishes[5], dishes[5]],
+                CreatedAt = new DateTimeOffset(2026, 9, 11, 12, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 11, 12, 25, 0, TimeSpan.Zero)
+            },
+            new Order
+            {
+                Id = 12,
+                ClientId = 9,
+                Client = clients[8],
+                RestaurantId = 5,
+                Restaurant = restaurants[4],
+                Dishes = [dishes[6], dishes[6]],
+                CreatedAt = new DateTimeOffset(2026, 9, 12, 13, 0, 0, TimeSpan.Zero),
+                DeliveredAt = new DateTimeOffset(2026, 9, 12, 13, 40, 0, TimeSpan.Zero)
+            }
+        ];
+    }
+}
