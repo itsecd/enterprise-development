@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarWash.Domain\CarWash.Domain.csproj" />
+    <ProjectReference Include="..\CarWash.Domain.Shared\CarWash.Domain.Shared.csproj" />
+    <ProjectReference Include="..\CarWash.Application.Contracts\CarWash.Application.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
