@@ -102,4 +102,11 @@ public class BookingRepository(HotelDbContext context) : IBookingRepository
     {
         return context.Bookings.AnyAsync(predicate);
     }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<TResult>> QueryAsync<TResult>(
+    Func<IQueryable<Booking>, IQueryable<TResult>> query)
+    {
+        return await query(context.Bookings.AsNoTracking()).ToListAsync();
+    }
 }

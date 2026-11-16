@@ -80,4 +80,12 @@ public class BookingRepository : IBookingRepository
     {
         return Task.FromResult(_bookings.Any(predicate.Compile()));
     }
+
+    /// <inheritdoc/>
+    public Task<IReadOnlyList<TResult>> QueryAsync<TResult>(
+        Func<IQueryable<Booking>, IQueryable<TResult>> query)
+    {
+        return Task.FromResult<IReadOnlyList<TResult>>(
+            query(_bookings.AsQueryable()).ToList());
+    }
 }

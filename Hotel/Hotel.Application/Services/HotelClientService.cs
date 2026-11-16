@@ -9,7 +9,7 @@ namespace Hotel.Application.Services;
 /// <summary>
 /// Служба работы с клиентами гостиницы
 /// </summary>
-public class HotelClientService(IRepository<HotelClient, int> clientRepository, IRepository<Booking, int> bookingRepository) : IHotelClientService
+public class HotelClientService(IRepository<HotelClient, int> clientRepository, IBookingRepository bookingRepository) : IHotelClientService
 {
     /// <summary>
     /// Получить всех клиентов
@@ -110,17 +110,21 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// </summary>
     public async Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost()
     {
-        var bookings = await bookingRepository.GetAll();
-
-        return bookings
+        var topClients = await bookingRepository.QueryAsync(bookings => bookings
             .GroupBy(booking => booking.Client.Id)
-            .Select(group => new HotelClientStayCostDto(
-                ToDto(group.First().Client),
-                group.Sum(booking =>
-                    booking.Room.RoomType.PricePerDay * booking.DaysCount)))
+            .Select(group => new
+            {
+                ClientId = group.Key,
+                group.First().Client,
+                TotalStayCost = group.Sum(booking =>
+                    booking.Room.RoomType.PricePerDay * booking.DaysCount)
+            })
             .OrderByDescending(item => item.TotalStayCost)
-            .ThenBy(item => item.Client.Id)
-            .Take(5)
+            .ThenBy(item => item.ClientId)
+            .Take(5));
+
+        return topClients
+            .Select(item => new HotelClientStayCostDto(ToDto(item.Client), item.TotalStayCost))
             .ToList();
     }
 
