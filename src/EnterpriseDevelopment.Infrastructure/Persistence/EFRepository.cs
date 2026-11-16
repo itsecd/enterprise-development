@@ -23,7 +23,7 @@ public class EfRepository<T> : IRepository<T> where T : class
     /// <summary>
     /// Получает все сущности
     /// </summary>
-    public IEnumerable<T> GetAll()
+    public virtual IEnumerable<T> GetAll()
     {
         return _entities.ToList();
     }
@@ -31,7 +31,7 @@ public class EfRepository<T> : IRepository<T> where T : class
     /// <summary>
     /// Получает сущность по идентификатору
     /// </summary>
-    public T? GetById(int id)
+    public virtual T? GetById(int id)
     {
         return _entities.Find(id);
     }
