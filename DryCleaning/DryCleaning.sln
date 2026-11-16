@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DryCleaning.Api", "DryClean
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DryCleaning.Infrastructure", "DryCleaning.Infrastructure\DryCleaning.Infrastructure.csproj", "{D6181E74-478A-4476-80F8-3F299DB719FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DryCleaning.AppHost", "DryCleaning.AppHost\DryCleaning.AppHost.csproj", "{D92BD1E2-41A3-43C9-8C2A-0DF11BA3E377}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D6181E74-478A-4476-80F8-3F299DB719FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6181E74-478A-4476-80F8-3F299DB719FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6181E74-478A-4476-80F8-3F299DB719FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D92BD1E2-41A3-43C9-8C2A-0DF11BA3E377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D92BD1E2-41A3-43C9-8C2A-0DF11BA3E377}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D92BD1E2-41A3-43C9-8C2A-0DF11BA3E377}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D92BD1E2-41A3-43C9-8C2A-0DF11BA3E377}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
