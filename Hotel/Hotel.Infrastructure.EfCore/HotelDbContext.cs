@@ -1,5 +1,7 @@
 ﻿using Hotel.Domain.Data;
 using Hotel.Domain.Entities;
+using Hotel.Domain.Shared.Exceptions;
+using MySql.Data.MySqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Infrastructure.EfCore;
@@ -28,6 +30,23 @@ public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContex
     /// Бронирования номеров
     /// </summary>
     public DbSet<Booking> Bookings => Set<Booking>();
+
+    /// <summary>
+    /// Сохранить удаление записи и обработать запрет по внешнему ключу
+    /// </summary>
+    internal async Task SaveDeletionAsync(string conflictMessage)
+    {
+        const int referencedRowErrorNumber = 1451;
+
+        try
+        {
+            await SaveChangesAsync();
+        } catch (DbUpdateException exception)
+            when (exception.InnerException is MySqlException { Number: referencedRowErrorNumber })
+        {
+            throw new DeleteConflictException(conflictMessage, exception);
+        }
+    }
 
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)

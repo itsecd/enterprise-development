@@ -58,7 +58,7 @@ public class RoomTypeRepository(HotelDbContext context) : IRepository<RoomType, 
         if (roomType is null) return false;
 
         context.RoomTypes.Remove(roomType);
-        await context.SaveChangesAsync();
+        await context.SaveDeletionAsync("Нельзя удалить тип номера, к которому привязаны номера");
 
         return true;
     }

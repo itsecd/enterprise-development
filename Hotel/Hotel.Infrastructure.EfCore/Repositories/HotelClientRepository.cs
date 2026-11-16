@@ -59,7 +59,7 @@ public class HotelClientRepository(HotelDbContext context) : IRepository<HotelCl
         if (client is null) return false;
 
         context.HotelClients.Remove(client);
-        await context.SaveChangesAsync();
+        await context.SaveDeletionAsync("Нельзя удалить клиента, у которого есть бронирования");
 
         return true;
     }

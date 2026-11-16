@@ -68,7 +68,7 @@ public class RoomRepository(HotelDbContext context) : IRepository<Room, int>
         if (room is null) return false;
 
         context.Rooms.Remove(room);
-        await context.SaveChangesAsync();
+        await context.SaveDeletionAsync("Нельзя удалить номер, для которого есть бронирования");
 
         return true;
     }

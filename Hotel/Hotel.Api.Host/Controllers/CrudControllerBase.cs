@@ -1,7 +1,9 @@
 ﻿using Hotel.Application.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Hotel.Domain.Shared.Exceptions;
 
 namespace Hotel.Api.Host.Controllers;
+
 
 /// <summary>
 /// Базовый контроллер для CRUD операций над сущностями
@@ -99,6 +101,7 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
     [HttpDelete("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(409)]
     [ProducesResponseType(500)]
     public async Task<IActionResult> Delete(TKey id)
     {
@@ -121,6 +124,11 @@ public abstract class CrudControllerBase<TDto, TInputDto, TKey>(ICrudService<TDt
             logger.LogInformation("Метод {Method} контроллера {Controller} успешно выполнен", nameof(Delete), GetType().Name);
 
             return Ok();
+        }
+        catch (DeleteConflictException exception)
+        {
+            logger.LogWarning(exception, "Не удалось удалить запись с идентификатором {Id}, так как есть связанные записи", id);
+            return Conflict(new { message = exception.Message });
         }
         catch (Exception exception)
         {
