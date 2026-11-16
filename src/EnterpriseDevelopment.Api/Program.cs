@@ -1,11 +1,9 @@
+using EnterpriseDevelopment.Infrastructure.Persistence;
 using Scalar.AspNetCore;
 using EnterpriseDevelopment.Api.Exceptions;
 using EnterpriseDevelopment.Application.Interfaces;
 using EnterpriseDevelopment.Application.Repositories;
 using EnterpriseDevelopment.Application.Services;
-using EnterpriseDevelopment.Domain;
-using EnterpriseDevelopment.Infrastructure.Repositories;
-using EnterpriseDevelopment.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,18 +17,15 @@ builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-// Начальные данные
-builder.Services.AddSingleton<DataSeeder>();
+// Подключение PostgreSQL через Aspire
+builder.AddNpgsqlDbContext<ApplicationDbContext>("fooddeliverydb");
 
-// Общее хранилище
-builder.Services.AddSingleton<InMemoryDataStore>();
-
-// Репозитории
-builder.Services.AddSingleton<IRestaurantRepository, RestaurantRepository>();
-builder.Services.AddSingleton<IClientRepository, ClientRepository>();
-builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
-builder.Services.AddSingleton<IDishRepository, DishRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+// Репозитории PostgreSQL
+builder.Services.AddScoped<IRestaurantRepository, EfRestaurantRepository>();
+builder.Services.AddScoped<IClientRepository, EfClientRepository>();
+builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
+builder.Services.AddScoped<IDishRepository, EfDishRepository>();
+builder.Services.AddScoped<IOrderRepository, EfOrderRepository>();
 
 // CRUD-сервисы
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
