@@ -33,11 +33,6 @@ public class TrainerService(
     /// <inheritdoc/>
     public async Task<TrainerDto?> UpdateTrainerAsync(int id, UpsertTrainerDto trainer)
     {
-        if (await trainerRepository.GetByIdAsync(id) is null)
-        {
-            return null;
-        }
-
         var entity = await MapToEntityAsync(trainer);
         if (!await trainerRepository.UpdateAsync(id, entity))
         {

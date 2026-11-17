@@ -35,11 +35,6 @@ public class TrainingSessionService(
     /// <inheritdoc/>
     public async Task<TrainingSessionDto?> UpdateSessionAsync(int id, UpsertTrainingSessionDto session)
     {
-        if (await sessionRepository.GetByIdAsync(id) is null)
-        {
-            return null;
-        }
-
         var entity = await MapToEntityAsync(session);
         if (!await sessionRepository.UpdateAsync(id, entity))
         {

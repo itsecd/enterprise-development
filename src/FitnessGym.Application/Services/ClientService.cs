@@ -35,11 +35,6 @@ public class ClientService(
     /// <inheritdoc/>
     public async Task<ClientDto?> UpdateClientAsync(int id, UpsertClientDto client)
     {
-        if (await clientRepository.GetByIdAsync(id) is null)
-        {
-            return null;
-        }
-
         var entity = MapToEntity(client);
         if (!await clientRepository.UpdateAsync(id, entity))
         {

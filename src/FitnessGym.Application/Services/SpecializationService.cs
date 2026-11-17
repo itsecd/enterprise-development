@@ -32,11 +32,6 @@ public class SpecializationService(
     /// <inheritdoc/>
     public async Task<SpecializationDto?> UpdateSpecializationAsync(int id, UpsertSpecializationDto specialization)
     {
-        if (await specializationRepository.GetByIdAsync(id) is null)
-        {
-            return null;
-        }
-
         var entity = MapToEntity(specialization);
         if (!await specializationRepository.UpdateAsync(id, entity))
         {
