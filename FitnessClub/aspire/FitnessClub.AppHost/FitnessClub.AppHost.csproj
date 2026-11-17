@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.MySql" />
+    <PackageReference Include="MySqlConnector" />
   </ItemGroup>
 
 </Project>
