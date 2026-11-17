@@ -9,8 +9,8 @@ namespace FitnessClub.Infrastructure.EfCore.Queries;
 public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalyticsQueries
 {
     public async Task<IReadOnlyList<TrainerDto>> GetExperiencedTrainersAsync(
-        int minimumExperience = 5,
-        CancellationToken cancellationToken = default)
+        int minimumExperience,
+        CancellationToken cancellationToken)
     {
         return await dbContext.Trainers
             .AsNoTracking()
@@ -57,7 +57,7 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
 
     public async Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
         DateOnly asOfDate,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         return await dbContext.Clients
             .AsNoTracking()
@@ -79,8 +79,8 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
 
 
     public async Task<IReadOnlyList<PopularTrainerDto>>GetMostPopularTrainersAsync(
-        int count = 5,
-        CancellationToken cancellationToken = default)
+        int count,
+        CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
@@ -110,7 +110,7 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
     /// <returns><see langword="true"/>, если на указанное время нет бронирования, иначе <see langword="false"/></returns>
     /// >Зал с указанным идентификатором не найден
     /// </exception>
-    public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime, CancellationToken cancellationToken = default)
+    public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime, CancellationToken cancellationToken)
     {
         return await dbContext.Bookings
             .AsNoTracking()
