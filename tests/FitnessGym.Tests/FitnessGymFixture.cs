@@ -10,8 +10,7 @@ public class FitnessGymFixture
 {
     /// <summary>
     /// Момент времени, относительно которого построены тестовые данные.
-    /// Фиксируется один раз при создании фикстуры, чтобы результаты тестов
-    /// не зависели от времени выполнения тестов.
+    /// Постоянная дата исключает случайные пересечения занятий при проверке доступности залов.
     /// </summary>
     public DateTime Now { get; }
 
@@ -52,7 +51,7 @@ public class FitnessGymFixture
     /// </summary>
     public FitnessGymFixture()
     {
-        Now = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
+        Now = new DateTime(2026, 11, 8, 12, 0, 0);
         Today = DateOnly.FromDateTime(Now);
         Data = ClubDataSeeder.Create(Now);
     }

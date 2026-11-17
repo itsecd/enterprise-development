@@ -1,3 +1,5 @@
+using FitnessGym.Domain.Entities;
+
 namespace FitnessGym.Tests;
 
 /// <summary>
@@ -9,14 +11,14 @@ public class HallAvailabilityTests(FitnessGymFixture fixture) : IClassFixture<Fi
     /// <summary>
     /// Должен определить, что зал недоступен, если в нём идёт занятие, пересекающееся по времени с текущим моментом,
     /// и доступен, если занятие уже закончилось или в зале ещё не было занятий.
-    /// Занятия с ещё не проставленным временем окончания в проверке не участвуют.
+    /// Для занятий без времени окончания используется длительность по умолчанию.
     /// </summary>
     /// <param name="hallName">Название проверяемого зала.</param>
     /// <param name="expectedAvailability">Ожидаемая доступность зала.</param>
     [Theory]
     [InlineData("Зал групповых занятий", false)] // прямо сейчас в зале идёт занятие
     [InlineData("Зал единоборств", true)] // занятие в зале закончилось 10 минут назад
-    [InlineData("Кардио-зал", true)] // занятий в зале ещё не было
+    [InlineData("Кардио-зал", true)] // в зафиксированный момент занятий в зале нет
     public void HallAvailabilityShouldBeDeterminedByOverlappingSession(string hallName, bool expectedAvailability)
     {
         // arrange
@@ -24,7 +26,8 @@ public class HallAvailabilityTests(FitnessGymFixture fixture) : IClassFixture<Fi
 
         // act
         var isHallAvailable = !fixture.Sessions.Any(s =>
-            s.HallName == hallName && s.EndsAt != null && s.StartsAt <= now && now < s.EndsAt.Value);
+            s.HallName == hallName && s.StartsAt <= now
+                && now < (s.EndsAt ?? s.StartsAt.AddMinutes(TrainingSession.DefaultDurationMinutes)));
 
         // assert
         Assert.Equal(expectedAvailability, isHallAvailable);

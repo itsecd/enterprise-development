@@ -33,7 +33,8 @@ public interface ITrainingSessionRepository : IRepository<TrainingSession>
     public Task<IReadOnlyList<string>> GetHallsAsync();
 
     /// <summary>
-    /// Проверяет доступность зала; занятия без времени окончания не учитываются.
+    /// Проверяет доступность зала в интервале [начало, окончание).
+    /// Если окончание не указано, используется длительность <see cref="TrainingSession.DefaultDurationMinutes"/> минут.
     /// </summary>
     public Task<bool> IsHallAvailableAsync(string hallName, DateTime at);
 }

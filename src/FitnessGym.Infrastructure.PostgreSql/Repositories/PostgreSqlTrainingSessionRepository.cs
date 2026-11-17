@@ -37,6 +37,7 @@ public class PostgreSqlTrainingSessionRepository(FitnessGymDbContext context)
 
     public async Task<bool> IsHallAvailableAsync(string hallName, DateTime at) =>
         !await Context.Sessions.AnyAsync(session => session.HallName == hallName
-                                                   && session.EndsAt != null
-                                                   && session.StartsAt <= at && at < session.EndsAt);
+                                                   && session.StartsAt <= at
+                                                   && at < (session.EndsAt
+                                                       ?? session.StartsAt.AddMinutes(TrainingSession.DefaultDurationMinutes)));
 }

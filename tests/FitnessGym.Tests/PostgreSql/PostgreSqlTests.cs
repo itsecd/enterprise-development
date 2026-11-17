@@ -166,7 +166,8 @@ public class PostgreSqlTests
         Assert.False(await sessions.IsHallAvailableAsync("Зал групповых занятий", _seedTime.AddMinutes(-30)));
         Assert.False(await sessions.IsHallAvailableAsync("Зал групповых занятий", _seedTime));
         Assert.True(await sessions.IsHallAvailableAsync("Зал групповых занятий", _seedTime.AddMinutes(30)));
-        Assert.True(await sessions.IsHallAvailableAsync("Силовой зал", new DateTime(2026, 11, 5, 10, 0, 0)));
+        Assert.False(await sessions.IsHallAvailableAsync("Силовой зал", new DateTime(2026, 11, 5, 10, 0, 0)));
+        Assert.True(await sessions.IsHallAvailableAsync("Силовой зал", new DateTime(2026, 11, 5, 11, 0, 0)));
 
         await sessions.AddAsync(new TrainingSession
         {
@@ -247,6 +248,40 @@ public class PostgreSqlTests
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsJsonAsync("/api/sessions", payload, token)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest,
             (await client.GetAsync("/api/halls/Test/availability?at=2026-11-01T10:00:00Z", token)).StatusCode);
+    }
+
+    [Theory(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
+        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [InlineData(null, -1, true)]
+    [InlineData(null, 0, false)]
+    [InlineData(null, 59, false)]
+    [InlineData(null, 60, true)]
+    [InlineData(30, -1, true)]
+    [InlineData(30, 0, false)]
+    [InlineData(30, 29, false)]
+    [InlineData(30, 30, true)]
+    [InlineData(90, 60, false)]
+    [InlineData(90, 90, true)]
+    public async Task HallAvailabilityShouldRespectEffectiveSessionEnd(
+        int? durationMinutes, int minutesFromStart, bool expectedAvailability)
+    {
+        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var context = database.CreateContext();
+        var sessions = new PostgreSqlTrainingSessionRepository(context);
+        var start = new DateTime(2026, 11, 8, 23, 30, 0);
+        var session = await sessions.AddAsync(new TrainingSession
+        {
+            ClientId = 0,
+            TrainerId = 0,
+            StartsAt = start,
+            EndsAt = durationMinutes is { } duration ? start.AddMinutes(duration) : null,
+            HallName = "Тестовый зал длительности",
+            IsTrial = false,
+        });
+        var at = start.AddMinutes(minutesFromStart);
+
+        Assert.Equal(expectedAvailability, await sessions.IsHallAvailableAsync(session.HallName, at));
+        Assert.True(await sessions.IsHallAvailableAsync("Другой зал", at));
     }
 
     private static WebApplicationFactory<ClientsController> CreateFactory(PostgreSqlDatabase database) =>

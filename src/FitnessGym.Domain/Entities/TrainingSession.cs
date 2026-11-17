@@ -7,6 +7,11 @@ namespace FitnessGym.Domain.Entities;
 public class TrainingSession : IIdentified
 {
     /// <summary>
+    /// Длительность занятия для проверки занятости зала, если время окончания ещё не указано.
+    /// </summary>
+    public const int DefaultDurationMinutes = 60;
+
+    /// <summary>
     /// Идентификатор.
     /// </summary>
     public int Id { get; set; }
@@ -39,7 +44,8 @@ public class TrainingSession : IIdentified
     /// <summary>
     /// Дата и время окончания занятия.
     /// В момент записи клиента точное время окончания может быть неизвестно,
-    /// поэтому значение может не быть проставлено.
+    /// поэтому значение может не быть проставлено. В таком случае зал считается занятым
+    /// в течение <see cref="DefaultDurationMinutes"/> минут с начала занятия.
     /// </summary>
     public DateTime? EndsAt { get; set; }
 

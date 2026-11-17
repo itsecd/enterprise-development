@@ -40,8 +40,9 @@ public class InMemoryTrainingSessionRepository(IReadOnlyList<TrainingSession> se
     /// <inheritdoc/>
     public Task<bool> IsHallAvailableAsync(string hallName, DateTime at) =>
         ReadAsync(items => !items.Any(session => session.HallName == hallName
-                                                && session.EndsAt != null
-                                                && session.StartsAt <= at && at < session.EndsAt));
+                                                && session.StartsAt <= at
+                                                && at < (session.EndsAt
+                                                    ?? session.StartsAt.AddMinutes(TrainingSession.DefaultDurationMinutes))));
 
     /// <inheritdoc/>
     protected override void CopyProperties(TrainingSession source, TrainingSession target)
