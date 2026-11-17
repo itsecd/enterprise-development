@@ -28,6 +28,8 @@ public class Vet
     /// <summary>
     /// Специализация врача
     /// </summary>
+    public int? SpecializationId { get; set; }
+
     public Specialization? Specialization { get; set; }
 
     /// <summary>

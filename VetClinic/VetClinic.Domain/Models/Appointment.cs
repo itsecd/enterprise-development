@@ -28,10 +28,14 @@ public class Appointment
     /// <summary>
     /// Питомец, записанный на прием
     /// </summary>
+    public int PetId { get; set; }
+
     public Pet? Pet { get; set; }
 
     /// <summary>
     /// Врач, который ведет прием
     /// </summary>
+    public int VetId { get; set; }
+
     public Vet? Vet { get; set; }
 }

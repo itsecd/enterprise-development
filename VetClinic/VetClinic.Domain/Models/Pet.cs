@@ -25,6 +25,8 @@ public class Pet
     /// <summary>
     /// Порода
     /// </summary>
+    public int? BreedId { get; set; }
+
     public Breed? Breed { get; set; }
 
     /// <summary>
@@ -40,5 +42,7 @@ public class Pet
     /// <summary>
     /// Владелец питомца
     /// </summary>
+    public int OwnerId { get; set; }
+
     public Owner? Owner { get; set; }
 }
