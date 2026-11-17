@@ -12,7 +12,6 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Person> builder)
     {
-        builder.HasKey(p => p.Id);
         builder.Property(p => p.PassportNumber).HasMaxLength(20).IsRequired();
         builder.Property(p => p.FullName).HasMaxLength(200).IsRequired();
         builder.Property(p => p.PhoneNumber).HasMaxLength(20);

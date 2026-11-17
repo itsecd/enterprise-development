@@ -12,7 +12,6 @@ public class SpecializationConfiguration : IEntityTypeConfiguration<Specializati
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Specialization> builder)
     {
-        builder.HasKey(s => s.Id);
         builder.Property(s => s.Name).HasMaxLength(200).IsRequired();
         builder.HasIndex(s => s.Name).IsUnique();
 

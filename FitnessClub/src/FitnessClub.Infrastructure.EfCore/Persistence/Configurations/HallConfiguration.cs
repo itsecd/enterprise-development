@@ -12,7 +12,6 @@ public class HallConfiguration : IEntityTypeConfiguration<Hall>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Hall> builder)
     {
-        builder.HasKey(h => h.Id);
         builder.Property(h => h.Name).HasMaxLength(200).IsRequired();
         builder.HasIndex(h => h.Name).IsUnique();
 
