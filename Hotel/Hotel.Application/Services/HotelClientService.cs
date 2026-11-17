@@ -152,7 +152,9 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
             .Where(booking => booking.Room.RoomType.Category == category)
             .Select(booking => booking.Client)
             .Distinct()
-            .OrderBy(client => client.Id), cancellationToken);
+            .OrderBy(client => client.LastName)
+            .ThenBy(client => client.FirstName)
+            .ThenBy(client => client.MiddleName), cancellationToken);
 
         return clients.Select(ToDto).ToList();
     }
