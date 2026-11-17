@@ -17,7 +17,7 @@ public class VetClinicTests(VetClinicSeed data) : IClassFixture<VetClinicSeed>
     [InlineData(AnimalSpecies.Bird, new[] { 3 })]
     [InlineData(AnimalSpecies.Rabbit, new[] { 4 })]
     [InlineData(AnimalSpecies.Hamster, new[] { 8 })]
-    public void GetVetsBySpecies(AnimalSpecies species, int[] expectedIds)
+    public void GetVetsBySpecies_SeedData_ReturnsMatchingVets(AnimalSpecies species, int[] expectedIds)
     {
         var result = data.Vets
             .Where(v => v.Specialization?.FocusSpecies == species)
@@ -33,7 +33,7 @@ public class VetClinicTests(VetClinicSeed data) : IClassFixture<VetClinicSeed>
     [Theory]
     [InlineData(1, new[] { "Буян", "Жучка", "Рекс", "Тоби" })]
     [InlineData(6, new[] { "Буян", "Лаки" })]
-    public void GetPetsByVetOrderedByNickname(int vetId, string[] expectedNicknames)
+    public void GetPetsByVet_SeedData_ReturnsPetsOrderedByNickname(int vetId, string[] expectedNicknames)
     {
         var result = data.Appointments
             .Where(a => a.Vet?.Id == vetId && a.Pet is not null)
@@ -53,7 +53,7 @@ public class VetClinicTests(VetClinicSeed data) : IClassFixture<VetClinicSeed>
     [InlineData(1, 3)]
     [InlineData(3, 1)]
     [InlineData(4, 0)]
-    public void GetRepeatAppointmentCountByBreed(int breedId, int expectedCount)
+    public void GetRepeatAppointmentCountByBreed_SeedData_ReturnsExpectedCount(int breedId, int expectedCount)
     {
         var result = data.Appointments
             .Count(a => a.IsRepeat && a.Pet?.Breed?.Id == breedId);
@@ -65,7 +65,7 @@ public class VetClinicTests(VetClinicSeed data) : IClassFixture<VetClinicSeed>
     /// Владельцы, у которых больше одного питомца, упорядоченные по ФИО
     /// </summary>
     [Fact]
-    public void GetOwnersWithMultiplePetsOrderedByFullName()
+    public void GetOwnersWithMultiplePets_SeedData_ReturnsOwnersOrderedByFullName()
     {
         var expectedIds = new[] { 1, 2, 3 };
 
@@ -87,7 +87,7 @@ public class VetClinicTests(VetClinicSeed data) : IClassFixture<VetClinicSeed>
     [InlineData("303", 2024, 6, new[] { 6, 7 })]
     [InlineData("404", 2024, 6, new[] { 14, 15 })]
     [InlineData("101", 2024, 5, new[] { 8, 9 })]
-    public void GetAppointmentsByRoomAndMonth(string room, int year, int month, int[] expectedIds)
+    public void GetAppointmentsByRoomAndMonth_SeedData_ReturnsAppointmentsInRoom(string room, int year, int month, int[] expectedIds)
     {
         var result = data.Appointments
             .Where(a => a.RoomNumber == room && a.DateTime.Year == year && a.DateTime.Month == month)

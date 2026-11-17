@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.15" />
     <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.1" />
   </ItemGroup>
 
@@ -19,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VetClinic.Application\VetClinic.Application.csproj" />
     <ProjectReference Include="..\VetClinic.Domain\VetClinic.Domain.csproj" />
-    <ProjectReference Include="..\VetClinic.Infrastructure.InMemory\VetClinic.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\VetClinic.Infrastructure.SqlServer\VetClinic.Infrastructure.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

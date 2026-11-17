@@ -1,7 +1,6 @@
-using VetClinic.Application.Services;
+using Microsoft.EntityFrameworkCore;
 using VetClinic.Contracts.Dto.Pets;
-using VetClinic.Domain.Seeds;
-using VetClinic.Infrastructure.InMemory.Repositories;
+using VetClinic.Contracts.Dto.Vets;
 using VetClinic.Shared;
 using VetClinic.Tests.Fixtures;
 
@@ -35,11 +34,11 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     {
         var s = NewServices();
 
-        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4));
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
 
         Assert.Equal(12, created.Id);
         Assert.Equal(4, created.OwnerId);
-        Assert.Contains(s.Seed.Owners[3].Pets, p => p.Id == created.Id);
+        Assert.Contains(await s.Pets.GetAllAsync(TestContext.Current.CancellationToken), p => p.Id == created.Id && p.OwnerId == 4);
     }
 
     /// <summary>
@@ -49,12 +48,12 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     public async Task UpdatePet_MovesPetBetweenOwners()
     {
         var s = NewServices();
-        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4));
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
 
-        await s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 5));
+        await s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 5), TestContext.Current.CancellationToken);
 
-        Assert.DoesNotContain(s.Seed.Owners[3].Pets, p => p.Id == created.Id);
-        Assert.Contains(s.Seed.Owners[4].Pets, p => p.Id == created.Id);
+        var moved = await s.Pets.GetByIdAsync(created.Id, TestContext.Current.CancellationToken);
+        Assert.Equal(5, moved!.OwnerId);
     }
 
     /// <summary>
@@ -63,7 +62,7 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     [Fact]
     public async Task UpdatePet_NotFound_ReturnsNull()
     {
-        var result = await NewServices().Pets.UpdateAsync(999, NewPet(ownerId: 1));
+        var result = await NewServices().Pets.UpdateAsync(999, NewPet(ownerId: 1), TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -76,7 +75,7 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     {
         var s = NewServices();
 
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => s.Pets.CreateAsync(NewPet(ownerId: 999)));
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => s.Pets.CreateAsync(NewPet(ownerId: 999), TestContext.Current.CancellationToken));
     }
 
     /// <summary>
@@ -87,11 +86,11 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     {
         var s = NewServices();
 
-        await s.Owners.DeleteAsync(1);
+        await s.Owners.DeleteAsync(1, TestContext.Current.CancellationToken);
 
-        Assert.Null(await s.Owners.GetByIdAsync(1));
-        Assert.Equal(9, (await s.Pets.GetAllAsync()).Count);
-        Assert.Equal(13, (await s.Appointments.GetAllAsync()).Count);
+        Assert.Null(await s.Owners.GetByIdAsync(1, TestContext.Current.CancellationToken));
+        Assert.Equal(9, (await s.Pets.GetAllAsync(TestContext.Current.CancellationToken)).Count);
+        Assert.Equal(13, (await s.Appointments.GetAllAsync(TestContext.Current.CancellationToken)).Count);
     }
 
     /// <summary>
@@ -102,9 +101,9 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     {
         var s = NewServices();
 
-        await s.Vets.DeleteAsync(6);
+        await s.Vets.DeleteAsync(6, TestContext.Current.CancellationToken);
 
-        Assert.DoesNotContain(await s.Appointments.GetAllAsync(), a => a.VetId == 6);
+        Assert.DoesNotContain(await s.Appointments.GetAllAsync(TestContext.Current.CancellationToken), a => a.VetId == 6);
     }
 
     /// <summary>
@@ -114,11 +113,11 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     public async Task DeleteBreed_SetsPetBreedToNull()
     {
         var s = NewServices();
-        var petsBefore = (await s.Pets.GetAllAsync()).Count;
+        var petsBefore = (await s.Pets.GetAllAsync(TestContext.Current.CancellationToken)).Count;
 
-        await s.Breeds.DeleteAsync(1);
+        await s.Breeds.DeleteAsync(1, TestContext.Current.CancellationToken);
 
-        var pets = await s.Pets.GetAllAsync();
+        var pets = await s.Pets.GetAllAsync(TestContext.Current.CancellationToken);
         Assert.Equal(petsBefore, pets.Count);
         Assert.DoesNotContain(pets, p => p.BreedId == 1);
     }
@@ -130,11 +129,29 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     public async Task DeletePet_Twice_DoesNotThrow()
     {
         var s = NewServices();
-        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4));
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
 
-        await s.Pets.DeleteAsync(created.Id);
-        await s.Pets.DeleteAsync(created.Id);
+        await s.Pets.DeleteAsync(created.Id, TestContext.Current.CancellationToken);
+        await s.Pets.DeleteAsync(created.Id, TestContext.Current.CancellationToken);
 
-        Assert.Null(await s.Pets.GetByIdAsync(created.Id));
+        Assert.Null(await s.Pets.GetByIdAsync(created.Id, TestContext.Current.CancellationToken));
+    }
+
+    /// <summary>
+    /// Номер паспорта врача уникален, повтор отклоняет база
+    /// </summary>
+    [Fact]
+    public async Task CreateVet_DuplicatePassport_Throws()
+    {
+        var s = NewServices();
+        var vet = new VetEditDto
+        {
+            PassportNumber = "4501 000001",
+            FullName = "Тестов Тест Тестович",
+            BirthYear = 1990,
+            WorkExperienceYears = 5
+        };
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => s.Vets.CreateAsync(vet, TestContext.Current.CancellationToken));
     }
 }

@@ -1,14 +1,13 @@
 using VetClinic.Application.Services;
-using VetClinic.Domain.Seeds;
-using VetClinic.Infrastructure.InMemory.Repositories;
+using VetClinic.Infrastructure.SqlServer.Repositories;
 
 namespace VetClinic.Tests.Fixtures;
 
 /// <summary>
-/// Набор CRUD-сервисов вместе с начальными данными
+/// Набор CRUD-сервисов поверх отдельной базы
 /// </summary>
 public sealed record CrudServices(
-    VetClinicSeed Seed,
+    TestDatabase Database,
     OwnerService Owners,
     PetService Pets,
     AppointmentService Appointments,
@@ -16,31 +15,43 @@ public sealed record CrudServices(
     VetService Vets);
 
 /// <summary>
-/// Собирает CRUD-сервисы с репозиториями.
-/// Тесты CRUD меняют данные, поэтому каждый тест получает свой набор сервисов
+/// Собирает CRUD-сервисы. Тесты CRUD меняют данные, поэтому каждый тест получает свою базу
 /// </summary>
-public sealed class CrudServicesFixture
+public sealed class CrudServicesFixture : IAsyncDisposable
 {
+    private readonly List<TestDatabase> _databases = [];
+
     /// <summary>
-    /// Создать набор сервисов поверх новых начальных данных
+    /// Создать набор сервисов поверх новой базы с начальными данными
     /// </summary>
     public CrudServices Create()
     {
-        var seed = new VetClinicSeed();
+        var database = new TestDatabase();
+        _databases.Add(database);
+        var context = database.Context;
 
-        var ownerRepo        = new OwnerRepository(seed);
-        var petRepo          = new PetRepository(seed);
-        var vetRepo          = new VetRepository(seed);
-        var appointmentRepo  = new AppointmentRepository(seed);
-        var breedRepo        = new BreedRepository(seed);
-        var specializationRepo = new SpecializationRepository(seed);
+        var ownerRepo = new OwnerRepository(context);
+        var petRepo = new PetRepository(context);
+        var vetRepo = new VetRepository(context);
+        var appointmentRepo = new AppointmentRepository(context);
+        var breedRepo = new BreedRepository(context);
+        var specializationRepo = new SpecializationRepository(context);
 
         return new CrudServices(
-            seed,
-            new OwnerService(ownerRepo, petRepo, appointmentRepo),
-            new PetService(petRepo, ownerRepo, breedRepo, appointmentRepo),
+            database,
+            new OwnerService(ownerRepo),
+            new PetService(petRepo, ownerRepo, breedRepo),
             new AppointmentService(appointmentRepo, petRepo, vetRepo),
-            new BreedService(breedRepo, petRepo),
-            new VetService(vetRepo, specializationRepo, appointmentRepo));
+            new BreedService(breedRepo),
+            new VetService(vetRepo, specializationRepo));
+    }
+
+    /// <inheritdoc/>
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var database in _databases)
+        {
+            await database.DisposeAsync();
+        }
     }
 }
