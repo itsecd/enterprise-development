@@ -24,8 +24,6 @@ builder.Services.AddApplication();
 builder.Services.AddExceptionHandler<ApplicationExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddHealthChecks();
-
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -37,7 +35,5 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 
 app.MapControllers();
-
-app.MapHealthChecks("/health");
 
 app.Run();
