@@ -1,7 +1,7 @@
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Enums;
 
-namespace FitnessGym.Domain.Seeds;
+namespace FitnessGym.Tests.Seeds;
 
 /// <summary>
 /// Генератор набора данных фитнес-клуба: не менее 10 экземпляров каждого класса.

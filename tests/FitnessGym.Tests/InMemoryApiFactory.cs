@@ -1,6 +1,6 @@
 using FitnessGym.Api.Controllers;
 using FitnessGym.Domain.Interfaces;
-using FitnessGym.Domain.Seeds;
+using FitnessGym.Tests.Seeds;
 using FitnessGym.Infrastructure.InMemory;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

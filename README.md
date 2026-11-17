@@ -15,7 +15,7 @@
 
 ## Структура решения
 
-- `src/FitnessGym.Domain` — сущности предметной области, перечисления, интерфейсы репозиториев (паттерн Repository), генератор тестовых данных.
+- `src/FitnessGym.Domain` — сущности предметной области, перечисления, интерфейсы репозиториев (паттерн Repository).
 - `src/FitnessGym.Contracts` — DTO с валидационными атрибутами и интерфейсы сервисов.
 - `src/FitnessGym.Application` — реализация сервисов: маппинг сущностей в DTO, бизнес-логика, аналитические запросы.
 - `src/FitnessGym.Infrastructure.InMemory` — реализации репозиториев для unit-тестов предыдущих лабораторных.
@@ -25,6 +25,7 @@
 - `src/FitnessGym.ServiceDefaults` — health checks и телеметрия Aspire.
 - `src/FitnessGym.Api` — REST API сервер (ASP.NET Core, .NET 10).
 - `tests/FitnessGym.Tests` — unit-тесты и HTTP-тесты API через `WebApplicationFactory` (xUnit v3).
+- `tests/FitnessGym.Tests/Seeds` — тестовый датасид и контейнер его данных; рабочая база заполняется миграциями.
 
 Рабочий API использует PostgreSQL через интерфейсы репозиториев. Контекст EF Core
 и репозитории создаются в области HTTP-запроса; чтение выполняется без отслеживания.

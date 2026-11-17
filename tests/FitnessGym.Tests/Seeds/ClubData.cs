@@ -1,6 +1,6 @@
 using FitnessGym.Domain.Entities;
 
-namespace FitnessGym.Domain.Seeds;
+namespace FitnessGym.Tests.Seeds;
 
 /// <summary>
 /// Набор данных фитнес-клуба для наполнения хранилища в памяти.

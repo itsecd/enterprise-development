@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FitnessGym.Application.Exceptions;
-using FitnessGym.Domain.Seeds;
+using FitnessGym.Tests.Seeds;
 using FitnessGym.Application.Services;
 using FitnessGym.Contracts.Dto;
 using FitnessGym.Domain.Enums;

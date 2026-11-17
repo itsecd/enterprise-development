@@ -1,4 +1,4 @@
-using FitnessGym.Domain.Seeds;
+using FitnessGym.Tests.Seeds;
 using FitnessGym.Domain.Entities;
 
 namespace FitnessGym.Tests;

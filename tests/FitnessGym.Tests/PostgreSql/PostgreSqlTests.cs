@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using FitnessGym.Api.Controllers;
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Exceptions;
-using FitnessGym.Domain.Seeds;
+using FitnessGym.Tests.Seeds;
 using FitnessGym.Infrastructure.PostgreSql.Repositories;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;

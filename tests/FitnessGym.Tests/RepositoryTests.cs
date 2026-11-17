@@ -1,7 +1,7 @@
 using FitnessGym.Application.Services;
 using FitnessGym.Contracts.Dto;
 using FitnessGym.Domain.Entities;
-using FitnessGym.Domain.Seeds;
+using FitnessGym.Tests.Seeds;
 using FitnessGym.Infrastructure.InMemory;
 
 namespace FitnessGym.Tests;
