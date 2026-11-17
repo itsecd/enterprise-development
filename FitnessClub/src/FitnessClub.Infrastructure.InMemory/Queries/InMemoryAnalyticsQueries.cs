@@ -75,7 +75,6 @@ public class InMemoryAnalyticsQueries(
         int count,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return [.. bookings
             .GroupBy(booking => booking.Trainer.Id)

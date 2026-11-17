@@ -82,8 +82,6 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
         int count,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
-
         return await dbContext.Bookings
             .AsNoTracking()
             .GroupBy(booking => new

@@ -13,12 +13,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FitnessClub.Api\FitnessClub.Api.csproj" />
-    <Projectreference Include="..\..\src\FitnessClub.MigrationService\FitnessClub.MigrationService.csproj" />
+    <ProjectReference Include="..\..\src\FitnessClub.MigrationService\FitnessClub.MigrationService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.MySql" />
-    <PackageReference Include="MySqlConnector" />
   </ItemGroup>
 
 </Project>
