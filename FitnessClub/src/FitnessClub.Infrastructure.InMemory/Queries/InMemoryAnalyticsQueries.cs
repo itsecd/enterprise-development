@@ -6,10 +6,10 @@ using FitnessClub.Domain.Interfaces;
 
 
 namespace FitnessClub.Infrastructure.InMemory.Queries;
-public class AnalyticsService(
+public class InMemoryAnalyticsQueries(
     IRepository<Trainer> trainerRepository,
     IRepository<Client> clientRepository,
-    IRepository<Booking> bookingRepository) : IAnalyticsService
+    IRepository<Booking> bookingRepository) : IAnalyticsQueries
 {
     /// <summary>
     /// Возвращает тренеров, чей стаж не меньше заданного
@@ -17,14 +17,13 @@ public class AnalyticsService(
     /// <param name="minimumExperience">Минимальный стаж в годах</param>
     /// <returns>Список тренеров, удовлетворяющих условию</returns>
     public async Task<IReadOnlyList<TrainerDto>> GetExperiencedTrainersAsync(
-        int minimumExperience = 5,
-        CancellationToken cancellationToken = default)
+        int minimumExperience,
+        CancellationToken cancellationToken)
     {
         var trainers = await trainerRepository.GetAllAsync(cancellationToken);
         return [.. trainers
             .Where(trainer => trainer.Experience >= minimumExperience)
-            .OrderByDescending(trainer => trainer.Experience)
-            .ThenBy(trainer => trainer.Id)
+            .OrderBy(trainer => trainer.Id)
             .Select(trainer => new TrainerDto(
                 trainer.Id,
                 trainer.FullName,
@@ -45,7 +44,7 @@ public class AnalyticsService(
     /// <returns>Список клиентов, у которых подписка закончилась до указанной даты</returns>
     public async Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
         DateOnly asOfDate,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var clients = await clientRepository.GetAllAsync(cancellationToken);
         return [.. clients
@@ -73,8 +72,8 @@ public class AnalyticsService(
     /// ><paramref name="count"/> меньше или равен нулю
     /// </exception>
     public async Task<IReadOnlyList<PopularTrainerDto>> GetMostPopularTrainersAsync(
-        int count = 5,
-        CancellationToken cancellationToken = default)
+        int count,
+        CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         var bookings = await bookingRepository.GetAllAsync(cancellationToken);
@@ -98,7 +97,7 @@ public class AnalyticsService(
     /// <returns><see langword="true"/>, если на указанное время нет бронирования, иначе <see langword="false"/></returns>
     /// >Зал с указанным идентификатором не найден
     /// </exception>
-    public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime, CancellationToken cancellationToken = default)
+    public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime, CancellationToken cancellationToken)
     {
         var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return !bookings.Any(booking =>
@@ -115,10 +114,10 @@ public class AnalyticsService(
     /// <returns>Список бронирований зала за указанный месяц</returns>
     /// >Зал с указанным идентификатором не найден
     /// </exception>
-    public async Task<IReadOnlyList<BookingDto>> GetBookingsInHallForMonthAsync(
+    public async Task<IReadOnlyList<BookingDto>> GetHallBookingsForMonthAsync(
         int hallId,
         DateOnly dateInMonth,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var bookings = await bookingRepository.GetAllAsync(cancellationToken);
         return [.. bookings

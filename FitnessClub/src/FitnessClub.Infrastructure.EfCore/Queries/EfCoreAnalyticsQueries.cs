@@ -15,8 +15,7 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
         return await dbContext.Trainers
             .AsNoTracking()
             .Where(trainer => trainer.Experience >= minimumExperience)
-            .OrderByDescending(trainer => trainer.Experience)
-            .ThenBy(trainer => trainer.Id)
+            .OrderBy(trainer => trainer.Id)
             .Select(trainer => new TrainerDto(
                 trainer.Id,
                 trainer.FullName,

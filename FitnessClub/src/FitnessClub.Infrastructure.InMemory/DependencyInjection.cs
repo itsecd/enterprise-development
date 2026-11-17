@@ -1,6 +1,8 @@
+using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Interfaces;
 using FitnessClub.Domain.Seeds;
 using FitnessClub.Infrastructure.InMemory.Repositories;
+using FitnessClub.Infrastructure.InMemory.Queries;
 using FitnessClub.Infrastructure.InMemory.Seeding;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +13,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInMemoryStorage(this IServiceCollection services)
     {
         services.AddSingleton(typeof(IRepository<>), typeof(InMemoryRepository<>));
+        services.AddScoped<IAnalyticsQueries, InMemoryAnalyticsQueries>();
         services.AddTransient<DataSeeder>();
         return services;
     }

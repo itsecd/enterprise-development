@@ -1,4 +1,6 @@
+using FitnessClub.Contracts.Interfaces;
 using FitnessClub.Domain.Interfaces;
+using FitnessClub.Infrastructure.EfCore.Queries;
 using FitnessClub.Infrastructure.EfCore.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +19,7 @@ public static class DependencyInjection
     public static IServiceCollection AddEfCoreStorage(this IServiceCollection services)
     {
         services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
+        services.AddScoped<IAnalyticsQueries, EfCoreAnalyticsQueries>();
         return services;
     }
 }
