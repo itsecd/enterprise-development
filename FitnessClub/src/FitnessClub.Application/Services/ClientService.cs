@@ -41,7 +41,7 @@ public class ClientService(
     public async Task<ClientDto> AddAsync(ClientEditDto editDto, CancellationToken cancellationToken = default)
     {
         await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, cancellationToken: cancellationToken);
-        var client = await clientRepository.AddAsync(editDto.ToEntity());
+        var client = await clientRepository.AddAsync(editDto.ToEntity(), cancellationToken);
         if (logger.IsEnabled(LogLevel.Information))
             logger.LogInformation("Создан клиент {ClientId}: {FullName}", client.Id, client.FullName);
         return client.ToDto();
