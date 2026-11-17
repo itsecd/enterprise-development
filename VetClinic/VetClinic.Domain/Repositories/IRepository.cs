@@ -10,29 +10,34 @@ public interface IRepository<TEntity>
     /// <summary>
     /// Получить все сущности
     /// </summary>
-    public Task<IReadOnlyList<TEntity>> GetAllAsync();
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Получить сущность по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор сущности</param>
-    public Task<TEntity?> GetByIdAsync(int id);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Добавить сущность
     /// </summary>
     /// <param name="entity">Новая сущность</param>
-    public Task<TEntity> CreateAsync(TEntity entity);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Сохранить изменения существующей сущности
+    /// Сохранить изменения сущности, полученной из репозитория
     /// </summary>
     /// <param name="entity">Изменённая сущность</param>
-    public Task UpdateAsync(TEntity entity);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить сущность по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор сущности</param>
-    public Task<bool> DeleteAsync(int id);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
