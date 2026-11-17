@@ -1,6 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var mysql = builder.AddMySql("mysql").WithDataVolume("fitnessclub-mysql-data");
+var mysqlPassword = builder.AddParameter("mysql-password", secret: true);
+var mysql = builder.AddMySql("mysql", mysqlPassword, port: 3306)
+    .WithDataVolume("fitnessclub-mysql-data");
 var db = mysql.AddDatabase("fitnessclub-db");
 
 var migrations = builder
