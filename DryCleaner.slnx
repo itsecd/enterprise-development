@@ -6,6 +6,7 @@
   <Project Path="DryCleaner.Domain/DryCleaner.Domain.csproj" />
   <Project Path="DryCleaner.Infrastructure.EfCore/DryCleaner.Infrastructure.EfCore.csproj" />
   <Project Path="DryCleaner.Infrastructure.InMemory/DryCleaner.Infrastructure.InMemory.csproj" />
+  <Project Path="DryCleaner.ServiceDefaults/DryCleaner.ServiceDefaults.csproj" />
   <Project Path="DryCleaner.Shared/DryCleaner.Shared.csproj" />
   <Project Path="DryCleaner.Tests/DryCleaner.Tests.csproj" />
 </Solution>

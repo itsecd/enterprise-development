@@ -23,6 +23,7 @@
     <ProjectReference Include="..\DryCleaner.Domain\DryCleaner.Domain.csproj" />
     <ProjectReference Include="..\DryCleaner.Shared\DryCleaner.Shared.csproj" />
     <ProjectReference Include="..\DryCleaner.Infrastructure.EfCore\DryCleaner.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\DryCleaner.ServiceDefaults\DryCleaner.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
