@@ -15,24 +15,28 @@ public interface IAnalyticsService
     /// Все ветеринары, специализирующиеся на выбранном виде животных
     /// </summary>
     /// <param name="species">Вид животного</param>
-    public Task<IReadOnlyList<VetDto>> GetVetsBySpeciesAsync(AnimalSpecies species);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<IReadOnlyList<VetDto>> GetVetsBySpeciesAsync(AnimalSpecies species, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Все питомцы, записанные на прием к указанному врачу, упорядоченные по кличке
     /// </summary>
     /// <param name="vetId">Идентификатор врача</param>
-    public Task<IReadOnlyList<PetDto>> GetPetsByVetOrderedByNicknameAsync(int vetId);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<IReadOnlyList<PetDto>> GetPetsByVetOrderedByNicknameAsync(int vetId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Количество повторных приемов выбранной породы животного
     /// </summary>
     /// <param name="breedId">Идентификатор породы</param>
-    public Task<int> GetRepeatAppointmentCountByBreedAsync(int breedId);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<int> GetRepeatAppointmentCountByBreedAsync(int breedId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Владельцы, у которых больше одного питомца, упорядоченные по ФИО, с количеством питомцев
     /// </summary>
-    public Task<IReadOnlyList<OwnerPetsCountDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync();
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<IReadOnlyList<OwnerPetsCountDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Приемы за выбранный месяц в выбранном кабинете
@@ -40,5 +44,6 @@ public interface IAnalyticsService
     /// <param name="roomNumber">Номер кабинета</param>
     /// <param name="year">Год</param>
     /// <param name="month">Месяц от 1 до 12</param>
-    public Task<IReadOnlyList<AppointmentDto>> GetAppointmentsByRoomAndMonthAsync(string roomNumber, int year, int month);
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<IReadOnlyList<AppointmentDto>> GetAppointmentsByRoomAndMonthAsync(string roomNumber, int year, int month, CancellationToken cancellationToken = default);
 }

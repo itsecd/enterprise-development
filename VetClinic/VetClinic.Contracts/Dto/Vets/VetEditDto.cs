@@ -18,6 +18,7 @@ public class VetEditDto
     /// ФИО врача
     /// </summary>
     [Required]
+    [MaxLength(200)]
     public required string FullName { get; init; }
 
     /// <summary>
