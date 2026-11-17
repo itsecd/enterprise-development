@@ -8,13 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VetClinic.Application\VetClinic.Application.csproj" />
-    <ProjectReference Include="..\VetClinic.Infrastructure.InMemory\VetClinic.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\VetClinic.Infrastructure.SqlServer\VetClinic.Infrastructure.SqlServer.csproj" />
+    <ProjectReference Include="..\VetClinic.ServiceDefaults\VetClinic.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
