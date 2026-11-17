@@ -33,7 +33,7 @@ public sealed class AnalyticsService(
         {
             logger.LogDebug("Поиск клиентов с просроченной подпиской на {AsOfDate}", asOfDate);
         }
-        return await analyticsQueries.GetOverdueClientsAsync(asOfDate, cancellationToken);
+        return await analyticsQueries.GetClientsWithOverdueSubscriptionsAsync(asOfDate, cancellationToken);
     }
 
     public async Task<IReadOnlyList<PopularTrainerDto>> GetMostPopularTrainersAsync(
@@ -45,7 +45,7 @@ public sealed class AnalyticsService(
         {
             logger.LogDebug("Поиск {Count} самых популярных тренеров", count);
         }
-        return await analyticsQueries.GetPopularTrainersAsync(count, cancellationToken);
+        return await analyticsQueries.GetMostPopularTrainersAsync(count, cancellationToken);
     }
 
     public async Task<bool> IsHallAvailableAsync(

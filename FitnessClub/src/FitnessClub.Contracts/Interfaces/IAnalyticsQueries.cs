@@ -24,7 +24,7 @@ public interface IAnalyticsQueries
     /// <param name="asOfDate">Дата, относительно которой проверяется срок действия абонемента</param>
     /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список клиентов с просроченными абонементами</returns>
-    public Task<IReadOnlyList<ClientDto>> GetOverdueClientsAsync(
+    public Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
         DateOnly asOfDate,
         CancellationToken cancellationToken);
 
@@ -34,7 +34,7 @@ public interface IAnalyticsQueries
     /// <param name="count">Количество тренеров, которое мы хотим получить в результате</param>
     /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список популярных тренеров с количеством их бронирований</returns>
-    public Task<IReadOnlyList<PopularTrainerDto>> GetPopularTrainersAsync(
+    public Task<IReadOnlyList<PopularTrainerDto>> GetMostPopularTrainersAsync(
         int count,
         CancellationToken cancellationToken);
 
