@@ -20,12 +20,12 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [HttpGet]
     [ProducesResponseType(typeof(IList<OrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> GetAll()
+    public async Task<ActionResult<IList<OrderDto>>> GetAll()
     {
         try 
         {
             logger.LogInformation("Запрос на получение всех заказов");
-            return Ok(service.GetAll()); 
+            return Ok(await service.GetAllAsync()); 
         }
         catch (Exception ex)
         {
@@ -41,13 +41,13 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [ProducesResponseType(typeof(OrderDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<OrderDto> Get(int id)
+    public async Task<ActionResult<OrderDto>> Get(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Получение заказа по идентификатору");
 
-            var result = service.Get(id);
+            var result = await service.GetAsync(id);
             if (result is null) return NotFound();
             return Ok(result);
         }
@@ -65,14 +65,14 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [ProducesResponseType(typeof(OrderDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<OrderDto> Create([FromBody] OrderCreateUpdateDto dto)
+    public async Task<ActionResult<OrderDto>> Create([FromBody] OrderCreateUpdateDto dto)
     {
         try
         {
             logger.LogInformation("Запрос: Создание заказа");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var created = service.Create(dto);
+            var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
         catch (KeyNotFoundException ex)
@@ -94,14 +94,14 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<OrderDto> Update(int id, [FromBody] OrderCreateUpdateDto dto)
+    public async Task<ActionResult<OrderDto>> Update(int id, [FromBody] OrderCreateUpdateDto dto)
     {
         try
         {
             logger.LogInformation("Запрос: Обновление заказа");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(service.Update(dto, id));
+            return Ok(await service.UpdateAsync(dto, id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -120,13 +120,13 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Удаление заказа");
 
-            if (!service.Delete(id))
+            if (! (await service.DeleteAsync(id)))
             {
                 logger.LogWarning("Заказ не существует или уже удален");
             }

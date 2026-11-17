@@ -11,13 +11,10 @@ public class OrderRepository()
     : InMemoryRepository<Order>(DataSeed.Orders.ToList())
 {
     /// <inheritdoc />
-    public override Order? Update(Order entity)
+    public override Task<Order?> UpdateAsync(Order entity)
     {
-        var existing = GetById(entity.Id);
-        if (existing is null)
-        {
-            return null;
-        }
+        var existing = GetByIdAsync(entity.Id).Result;
+        if (existing is null) return Task.FromResult<Order?>(null);
 
         existing.CustomerId = entity.CustomerId;
         existing.Customer = entity.Customer;
@@ -27,6 +24,6 @@ public class OrderRepository()
         existing.CompletionDays = entity.CompletionDays;
         existing.Status = entity.Status;
 
-        return existing;
+        return Task.FromResult<Order?>(existing);
     }
 }

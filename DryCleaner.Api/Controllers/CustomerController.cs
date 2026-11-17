@@ -21,12 +21,12 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [HttpGet]
     [ProducesResponseType(typeof(IList<CustomerDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CustomerDto>> GetAll()
+    public async Task<ActionResult<IList<CustomerDto>>> GetAll()
     {
         try
         {
             logger.LogInformation("Запрос всех клиентов");
-            return Ok(service.GetAll());
+            return Ok(await service.GetAllAsync());
         }
         catch (Exception ex)
         {
@@ -42,13 +42,13 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<CustomerDto> Get(int id)
+    public async Task<ActionResult<CustomerDto>> Get(int id)
     {
         try
         {
             logger.LogInformation("Запрос клиента по идентификатору");
 
-            var result = service.Get(id);
+            var result = await service.GetAsync(id);
             if (result is null)
             {
                 logger.LogWarning("Клиент с указанным идентификатором не найден");
@@ -70,20 +70,20 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(typeof(IList<OrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> GetCustomerOrders(int id)
+    public async Task<ActionResult<IList<OrderDto>>> GetCustomerOrders(int id)
     {
         try
         {
             logger.LogInformation("Запрос заказов для клиента с указанным идентификатором");
 
-            var customerExists = service.Get(id) != null;
+            var customerExists = await service.GetAsync(id) != null;
             if (!customerExists)
             {
                 logger.LogWarning("Клиент с указанным идентификатором не найден");
                 return NotFound("Клиент с указанным идентификатором не найден");
             }
 
-            var orders = orderService.GetByCustomerId(id);
+            var orders = await orderService.GetByCustomerIdAsync(id);
             return Ok(orders);
         }
         catch (Exception ex)
@@ -100,7 +100,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<CustomerDto> Create([FromBody] CustomerCreateUpdateDto dto)
+    public async Task<ActionResult<CustomerDto>> Create([FromBody] CustomerCreateUpdateDto dto)
     {
         try
         {
@@ -108,7 +108,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var created = service.Create(dto);
+            var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
         catch (Exception ex)
@@ -126,7 +126,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<CustomerDto> Update(int id, [FromBody] CustomerCreateUpdateDto dto)
+    public async Task<ActionResult<CustomerDto>> Update(int id, [FromBody] CustomerCreateUpdateDto dto)
     {
         try
         {
@@ -134,7 +134,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var updated = service.Update(dto, id);
+            var updated = await service.UpdateAsync(dto, id);
             return Ok(updated);
         }
         catch (KeyNotFoundException ex)
@@ -155,13 +155,13 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос на удаление клиента");
 
-            var deleted = service.Delete(id);
+            var deleted = await service.DeleteAsync(id);
             if (!deleted)
             {
                 logger.LogWarning("Клиент не существует или уже удален");

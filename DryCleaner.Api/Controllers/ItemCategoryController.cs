@@ -20,12 +20,12 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [HttpGet]
     [ProducesResponseType(typeof(IList<ItemCategoryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemCategoryDto>> GetAll()
+    public async Task<ActionResult<IList<ItemCategoryDto>>> GetAll()
     {
         try 
         {
             logger.LogInformation("Запрос: Вывод всех категорий изделий");
-            return Ok(service.GetAll()); 
+            return Ok(await service.GetAllAsync()); 
         }
         catch (Exception ex)
         {
@@ -41,13 +41,13 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ItemCategoryDto> Get(int id)
+    public async Task<ActionResult<ItemCategoryDto>> Get(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Получение категории по идентификатору");
 
-            var result = service.Get(id);
+            var result = await service.GetAsync(id);
             if (result is null) return NotFound();
             return Ok(result);
         }
@@ -65,20 +65,20 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(typeof(IList<ItemDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemDto>> GetCategoryItems(int id)
+    public async Task<ActionResult<IList<ItemDto>>> GetCategoryItems(int id)
     {
         try
         {
             logger.LogInformation("Запрос списка изделий для категории с указанным идентификатором");
 
-            var categoryExists = service.Get(id) != null;
+            var categoryExists = await service.GetAsync(id) != null;
             if (!categoryExists)
             {
                 logger.LogWarning("Категория с указанным идентификатором не найдена");
                 return NotFound("Категория с указанным идентификатором не найдена");
             }
 
-            var items = itemService.GetByCategoryId(id);
+            var items = await itemService.GetByCategoryIdAsync(id);
             return Ok(items);
         }
         catch (Exception ex)
@@ -95,14 +95,14 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(typeof(ItemCategoryDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ItemCategoryDto> Create([FromBody] ItemCategoryCreateUpdateDto dto)
+    public async Task<ActionResult<ItemCategoryDto>> Create([FromBody] ItemCategoryCreateUpdateDto dto)
     {
         try
         {
             logger.LogInformation("Запрос: Создание категории");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var created = service.Create(dto);
+            var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
         catch (Exception ex)
@@ -120,14 +120,14 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ItemCategoryDto> Update(int id, [FromBody] ItemCategoryCreateUpdateDto dto)
+    public async Task<ActionResult<ItemCategoryDto>> Update(int id, [FromBody] ItemCategoryCreateUpdateDto dto)
     {
         try
         {
             logger.LogInformation("Запрос: Обновление категории");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(service.Update(dto, id));
+            return Ok(await service.UpdateAsync(dto, id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -146,13 +146,13 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Удаление категории");
 
-            if (!service.Delete(id))
+            if (!(await service.DeleteAsync(id)))
             {
                 logger.LogWarning("Категория изделия не существует или уже удалена");
             }

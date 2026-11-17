@@ -14,7 +14,7 @@ namespace DryCleaner.Application.Services;
 public class CustomerService(IRepository<Customer> customerRepository) : ICustomerService
 {
     /// <inheritdoc />
-    public CustomerDto Create(CustomerCreateUpdateDto dto)
+    public async Task<CustomerDto> CreateAsync(CustomerCreateUpdateDto dto)
     {
         var customer = new Customer
         {
@@ -25,7 +25,7 @@ public class CustomerService(IRepository<Customer> customerRepository) : ICustom
             PhoneNumber = dto.PhoneNumber
         };
 
-        var created = customerRepository.Add(customer);
+        var created = await customerRepository.AddAsync(customer);
 
         return new CustomerDto(
             created.Id,
@@ -36,9 +36,9 @@ public class CustomerService(IRepository<Customer> customerRepository) : ICustom
     }
 
     /// <inheritdoc />
-    public CustomerDto? Get(int id)
+    public async Task<CustomerDto?> GetAsync(int id)
     {
-        var customer = customerRepository.GetById(id);
+        var customer = await customerRepository.GetByIdAsync(id);
         if (customer is null) return null;
 
         return new CustomerDto(
@@ -50,20 +50,14 @@ public class CustomerService(IRepository<Customer> customerRepository) : ICustom
     }
 
     /// <inheritdoc />
-    public IList<CustomerDto> GetAll()
+    public async Task<IList<CustomerDto>> GetAllAsync()
     {
-        return customerRepository.GetAll()
-            .Select(c => new CustomerDto(
-                c.Id,
-                c.FirstName,
-                c.Patronymic,
-                c.LastName,
-                c.PhoneNumber))
-            .ToList();
+        var customers = await customerRepository.GetAllAsync();
+        return customers.Select(c => new CustomerDto(c.Id, c.FirstName, c.Patronymic, c.LastName, c.PhoneNumber)).ToList();
     }
 
     /// <inheritdoc />
-    public CustomerDto Update(CustomerCreateUpdateDto dto, int id)
+    public async Task<CustomerDto> UpdateAsync(CustomerCreateUpdateDto dto, int id)
     {
         var customer = new Customer
         {
@@ -74,7 +68,7 @@ public class CustomerService(IRepository<Customer> customerRepository) : ICustom
             PhoneNumber = dto.PhoneNumber
         };
 
-        var updated = customerRepository.Update(customer);
+        var updated = await customerRepository.UpdateAsync(customer);
         if (updated is null)
         {
             throw new KeyNotFoundException($"Клиент с идентификатором {id} не найден");
@@ -89,8 +83,8 @@ public class CustomerService(IRepository<Customer> customerRepository) : ICustom
     }
 
     /// <inheritdoc />
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        return customerRepository.Delete(id);
+        return await customerRepository.DeleteAsync(id);
     }
 }

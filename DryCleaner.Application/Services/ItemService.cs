@@ -14,9 +14,9 @@ namespace DryCleaner.Application.Services;
 public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCategory> categoryRepository) : IItemService
 {
     /// <inheritdoc />
-    public ItemDto Create(ItemCreateUpdateDto dto)
+    public async Task<ItemDto> CreateAsync(ItemCreateUpdateDto dto)
     {
-        var category = categoryRepository.GetById(dto.CategoryId) ?? throw new KeyNotFoundException($"Категория с идентификатором {dto.CategoryId} не найдена");
+        var category = await categoryRepository.GetByIdAsync(dto.CategoryId) ?? throw new KeyNotFoundException($"Категория с идентификатором {dto.CategoryId} не найдена");
 
         var item = new Item
         {
@@ -27,7 +27,7 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
             Material = dto.Material
         };
 
-        var created = itemRepository.Add(item);
+        var created = await itemRepository.AddAsync(item);
 
         return new ItemDto(
             created.Id,
@@ -38,9 +38,9 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
     }
 
     /// <inheritdoc />
-    public ItemDto? Get(int id)
+    public async Task<ItemDto?> GetAsync(int id)
     {
-        var item = itemRepository.GetById(id);
+        var item = await itemRepository.GetByIdAsync(id);
         if (item is null) return null;
 
         return new ItemDto(
@@ -52,36 +52,23 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
     }
 
     /// <inheritdoc />
-    public IList<ItemDto> GetByCategoryId(int categoryId)
+    public async Task<IList<ItemDto>> GetByCategoryIdAsync(int categoryId)
     {
-        return itemRepository.GetAll()
-            .Where(i => i.CategoryId == categoryId)
-            .Select(i => new ItemDto(
-                i.Id,
-                i.Name,
-                new ItemCategoryDto(i.Category.Id, i.Category.Name, i.Category.RecommendedCleaning, i.Category.Price),
-                i.CategoryId,
-                i.Material))
-            .ToList();
+        var items = await itemRepository.GetAllAsync();
+        return items.Where(i => i.CategoryId == categoryId).Select(MapToDto).ToList();
     }
 
     /// <inheritdoc />
-    public IList<ItemDto> GetAll()
+    public async Task<IList<ItemDto>> GetAllAsync()
     {
-        return itemRepository.GetAll()
-            .Select(i => new ItemDto(
-                i.Id,
-                i.Name,
-                new ItemCategoryDto(i.Category.Id, i.Category.Name, i.Category.RecommendedCleaning, i.Category.Price),
-                i.CategoryId,
-                i.Material))
-            .ToList();
+        var items = await itemRepository.GetAllAsync();
+        return items.Select(MapToDto).ToList();
     }
 
     /// <inheritdoc />
-    public ItemDto Update(ItemCreateUpdateDto dto, int id)
+    public async Task<ItemDto> UpdateAsync(ItemCreateUpdateDto dto, int id)
     {
-        var category = categoryRepository.GetById(dto.CategoryId) ?? throw new KeyNotFoundException($"Категория с идентификатором {dto.CategoryId} не найдена");
+        var category = await categoryRepository.GetByIdAsync(dto.CategoryId) ?? throw new KeyNotFoundException($"Категория с идентификатором {dto.CategoryId} не найдена");
 
         var item = new Item
         {
@@ -92,7 +79,7 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
             Material = dto.Material
         };
 
-        var updated = itemRepository.Update(item);
+        var updated = await itemRepository.UpdateAsync(item);
         if (updated is null)
         {
             throw new KeyNotFoundException($"Изделие с идентификатором {id} не найдено");
@@ -107,8 +94,13 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
     }
 
     /// <inheritdoc />
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        return itemRepository.Delete(id);
+        return await itemRepository.DeleteAsync(id);
     }
+
+    private static ItemDto MapToDto(Item item) => new(
+        item.Id, item.Name,
+        new ItemCategoryDto(item.Category.Id, item.Category.Name, item.Category.RecommendedCleaning, item.Category.Price),
+        item.CategoryId, item.Material);
 }

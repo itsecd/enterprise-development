@@ -14,7 +14,7 @@ namespace DryCleaner.Application.Services;
 public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) : IItemCategoryService
 {
     /// <inheritdoc />
-    public ItemCategoryDto Create(ItemCategoryCreateUpdateDto dto)
+    public async Task<ItemCategoryDto> CreateAsync(ItemCategoryCreateUpdateDto dto)
     {
         var category = new ItemCategory
         {
@@ -24,7 +24,7 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
             Price = dto.Price
         };
 
-        var created = categoryRepository.Add(category);
+        var created = await categoryRepository.AddAsync(category);
 
         return new ItemCategoryDto(
             created.Id,
@@ -34,9 +34,9 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
     }
 
     /// <inheritdoc />
-    public ItemCategoryDto? Get(int id)
+    public async Task<ItemCategoryDto?> GetAsync(int id)
     {
-        var category = categoryRepository.GetById(id);
+        var category = await categoryRepository.GetByIdAsync(id);
         if (category is null) return null;
 
         return new ItemCategoryDto(
@@ -47,19 +47,14 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
     }
 
     /// <inheritdoc />
-    public IList<ItemCategoryDto> GetAll()
+    public async Task<IList<ItemCategoryDto>> GetAllAsync()
     {
-        return categoryRepository.GetAll()
-            .Select(c => new ItemCategoryDto(
-                c.Id,
-                c.Name,
-                c.RecommendedCleaning,
-                c.Price))
-            .ToList();
+        var categories = await categoryRepository.GetAllAsync();
+        return categories.Select(c => new ItemCategoryDto(c.Id, c.Name, c.RecommendedCleaning, c.Price)).ToList();
     }
 
     /// <inheritdoc />
-    public ItemCategoryDto Update(ItemCategoryCreateUpdateDto dto, int id)
+    public async Task<ItemCategoryDto> UpdateAsync(ItemCategoryCreateUpdateDto dto, int id)
     {
         var category = new ItemCategory
         {
@@ -69,7 +64,7 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
             Price = dto.Price
         };
 
-        var updated = categoryRepository.Update(category);
+        var updated = await categoryRepository.UpdateAsync(category);
         if (updated is null)
         {
             throw new KeyNotFoundException($"Категория с идентификатором {id} не найдена");
@@ -83,8 +78,8 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
     }
 
     /// <inheritdoc />
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        return categoryRepository.Delete(id);
+        return await categoryRepository.DeleteAsync(id);
     }
 }

@@ -8,6 +8,6 @@ namespace DryCleaner.Application.Contracts.Interfaces;
 public interface IOrderService
     : IApplicationService<OrderDto, OrderCreateUpdateDto, int>
 {
-    IList<OrderDto> GetByCustomerId(int customerId);
-    IList<OrderDto> GetByItemId(int itemId);
+    Task<IList<OrderDto>> GetByCustomerIdAsync(int customerId);
+    Task<IList<OrderDto>> GetByItemIdAsync(int itemId);
 }

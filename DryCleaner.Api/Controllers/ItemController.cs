@@ -20,12 +20,12 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [HttpGet]
     [ProducesResponseType(typeof(IList<ItemDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<ItemDto>> GetAll()
+    public async Task<ActionResult<IList<ItemDto>>> GetAll()
     {
         try 
         {
             logger.LogInformation("Запрос на получение всех изделий");
-            return Ok(service.GetAll()); 
+            return Ok(await service.GetAllAsync()); 
         }
         catch (Exception ex)
         {
@@ -41,13 +41,13 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(typeof(ItemDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ItemDto> Get(int id)
+    public async Task<ActionResult<ItemDto>> Get(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Получение изделия по идентификатору");
 
-            var result = service.Get(id);
+            var result = await service.GetAsync(id);
             if (result is null) return NotFound();
             return Ok(result);
         }
@@ -65,20 +65,20 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(typeof(IList<OrderDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderDto>> GetItemOrders(int id)
+    public async Task<ActionResult<IList<OrderDto>>> GetItemOrders(int id)
     {
         try
         {
             logger.LogInformation("Запрос заказов для изделия с указанным идентификатором");
 
-            var itemExists = service.Get(id) != null;
+            var itemExists = await service.GetAsync(id) != null;
             if (!itemExists)
             {
                 logger.LogWarning("Изделие с указанным идентификатором не найдено");
                 return NotFound("Изделие с указанным идентификатором не найдено");
             }
 
-            var orders = orderService.GetByItemId(id);
+            var orders = await orderService.GetByItemIdAsync(id);
             return Ok(orders);
         }
         catch (Exception ex)
@@ -95,14 +95,14 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(typeof(ItemDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ItemDto> Create([FromBody] ItemCreateUpdateDto dto)
+    public async Task<ActionResult<ItemDto>> Create([FromBody] ItemCreateUpdateDto dto)
     {
         try
         {
             logger.LogInformation("Запрос: Создание изделия");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var created = service.Create(dto);
+            var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
         catch (KeyNotFoundException ex)
@@ -124,14 +124,14 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ItemDto> Update(int id, [FromBody] ItemCreateUpdateDto dto)
+    public async Task<ActionResult<ItemDto>> Update(int id, [FromBody] ItemCreateUpdateDto dto)
     {
         try
         {
             logger.LogInformation("Запрос: Обновление изделия");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(service.Update(dto, id));
+            return Ok(await service.UpdateAsync(dto, id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -150,13 +150,13 @@ public class ItemController(IItemService service, IOrderService orderService, IL
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос: Удаление изделия");
 
-            if (!service.Delete(id))
+            if (! (await service.DeleteAsync(id)))
             {
                 logger.LogWarning("Изделие не существует или уже удалено");
             }

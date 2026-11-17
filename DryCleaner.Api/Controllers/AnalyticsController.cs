@@ -17,12 +17,12 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [HttpGet("in-progress-orders")]
     [ProducesResponseType(typeof(IList<OrderInProgressDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderInProgressDto>> GetInProgressOrders()
+    public async Task<ActionResult<IList<OrderInProgressDto>>> GetInProgressOrders()
     {
         try
         {
             logger.LogInformation("Запрос на получение заказов в обработке");
-            return Ok(analyticsService.GetOrdersInProgress());
+            return Ok(await analyticsService.GetOrdersInProgressAsync());
         }
         catch (Exception ex)
         {
@@ -38,7 +38,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [ProducesResponseType(typeof(IList<CustomerOrderCountDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CustomerOrderCountDto>> GetTop5Customers([FromQuery] DateOnly start, [FromQuery] DateOnly end)
+    public async Task<ActionResult<IList<CustomerOrderCountDto>>> GetTop5Customers([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
         if (end < start)
         {
@@ -49,7 +49,7 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
         {
             logger.LogInformation("Запрос: Топ-5 клиентов за период");
 
-            return Ok(analyticsService.GetTop5CustomersByItems(start, end));
+            return Ok(await analyticsService.GetTop5CustomersByItemsAsync(start, end));
         }
         catch (Exception ex)
         {
@@ -64,12 +64,12 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [HttpGet("longest-processing")]
     [ProducesResponseType(typeof(IList<OrderProcessingTimeDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<OrderProcessingTimeDto>> GetLongestProcessing()
+    public async Task<ActionResult<IList<OrderProcessingTimeDto>>> GetLongestProcessing()
     {
         try
         {
             logger.LogInformation("Запрос: Клиенты с наибольшим временем обработки заказов");
-            return Ok(analyticsService.GetCustomersWithLongestProcessing());
+            return Ok(await analyticsService.GetCustomersWithLongestProcessingAsync());
         }
         catch (Exception ex)
         {
@@ -84,12 +84,12 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [HttpGet("popular-categories")]
     [ProducesResponseType(typeof(IList<CategoryPopularityDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CategoryPopularityDto>> GetPopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
+    public async Task<ActionResult<IList<CategoryPopularityDto>>> GetPopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
         try
         {
             logger.LogInformation("Запрос: Наиболее популярные категории");
-            return Ok(analyticsService.GetTop5PopularCategories(start, end));
+            return Ok(await analyticsService.GetTop5PopularCategoriesAsync(start, end));
         }
         catch (Exception ex)
         {
@@ -104,12 +104,12 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [HttpGet("unpopular-categories")]
     [ProducesResponseType(typeof(IList<CategoryPopularityDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IList<CategoryPopularityDto>> GetUnpopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
+    public async Task<ActionResult<IList<CategoryPopularityDto>>> GetUnpopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
         try
         {
             logger.LogInformation("Запрос: Наименее популярные категории");
-            return Ok(analyticsService.GetTop5UnpopularCategories(start, end));
+            return Ok(await analyticsService.GetTop5UnpopularCategoriesAsync(start, end));
         }
         catch (Exception ex)
         {
@@ -125,12 +125,12 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [ProducesResponseType(typeof(TotalSpentCustomerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<TotalSpentCustomerDto> GetTopSpender()
+    public async Task<ActionResult<TotalSpentCustomerDto>> GetTopSpender()
     {
         try
         {
             logger.LogInformation("Запрос: Клиент с наибольшими тратами");
-            var result = analyticsService.GetCustomerWithMaxTotalSpent();
+            var result = await analyticsService.GetCustomerWithMaxTotalSpentAsync();
             if (result is null) return NotFound("Клиент не найден");
             return Ok(result);
         }

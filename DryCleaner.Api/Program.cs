@@ -5,12 +5,16 @@ using DryCleaner.Application.Contracts.Interfaces;
 using DryCleaner.Domain.Entities;
 using DryCleaner.Domain.Repositories;
 using DryCleaner.Application.Services;
-using DryCleaner.Infrastructure.InMemory.Repositories;
+using DryCleaner.Infrastructure.EfCore.Data;
+using DryCleaner.Infrastructure.EfCore.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
+builder.AddNpgsqlDbContext<DryCleanerDbContext>("drycleanerdb");
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -33,10 +37,10 @@ builder.Services.AddSwaggerGen(options =>
     }
 });
 
-builder.Services.AddSingleton<IRepository<Customer>, CustomerRepository>();
-builder.Services.AddSingleton<IRepository<Item>, ItemRepository>();
-builder.Services.AddSingleton<IRepository<ItemCategory>, ItemCategoryRepository>();
-builder.Services.AddSingleton<IRepository<Order>, OrderRepository>();
+builder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
+builder.Services.AddScoped<IRepository<Item>, ItemRepository>();
+builder.Services.AddScoped<IRepository<ItemCategory>, ItemCategoryRepository>();
+builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IItemService, ItemService>();

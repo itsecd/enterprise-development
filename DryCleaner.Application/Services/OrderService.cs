@@ -19,51 +19,25 @@ public class OrderService(
 
 {
     /// <inheritdoc />
-    public IList<OrderDto> GetByCustomerId(int customerId)
+    public async Task<IList<OrderDto>> GetByCustomerIdAsync(int customerId)
     {
-        return orderRepository.GetAll()
-            .Where(o => o.CustomerId == customerId)
-            .Select(order => new OrderDto(
-                order.Id,
-                new CustomerDto(order.Customer.Id, order.Customer.FirstName, order.Customer.Patronymic, order.Customer.LastName, order.Customer.PhoneNumber),
-                order.CustomerId,
-                new ItemDto(
-                    order.Item.Id, order.Item.Name,
-                    new ItemCategoryDto(order.Item.Category.Id, order.Item.Category.Name, order.Item.Category.RecommendedCleaning, order.Item.Category.Price),
-                    order.Item.CategoryId, order.Item.Material),
-                order.ItemId,
-                order.AcceptanceDate,
-                order.CompletionDays,
-                order.Status))
-            .ToList();
+        var orders = await orderRepository.GetAllAsync();
+        return orders.Where(o => o.CustomerId == customerId).Select(MapToDto).ToList();
     }
 
     /// <inheritdoc />
-    public IList<OrderDto> GetByItemId(int itemId)
+    public async Task<IList<OrderDto>> GetByItemIdAsync(int itemId)
     {
-        return orderRepository.GetAll()
-            .Where(o => o.ItemId == itemId)
-            .Select(order => new OrderDto(
-                order.Id,
-                new CustomerDto(order.Customer.Id, order.Customer.FirstName, order.Customer.Patronymic, order.Customer.LastName, order.Customer.PhoneNumber),
-                order.CustomerId,
-                new ItemDto(
-                    order.Item.Id, order.Item.Name,
-                    new ItemCategoryDto(order.Item.Category.Id, order.Item.Category.Name, order.Item.Category.RecommendedCleaning, order.Item.Category.Price),
-                    order.Item.CategoryId, order.Item.Material),
-                order.ItemId,
-                order.AcceptanceDate,
-                order.CompletionDays,
-                order.Status))
-            .ToList();
+        var orders = await orderRepository.GetAllAsync();
+        return orders.Where(o => o.ItemId == itemId).Select(MapToDto).ToList();
     }
 
     /// <inheritdoc />
-    public OrderDto Create(OrderCreateUpdateDto dto)
+    public async Task<OrderDto> CreateAsync(OrderCreateUpdateDto dto)
     {
-        var customer = customerRepository.GetById(dto.CustomerId) ?? throw new KeyNotFoundException($"Клиент с идентификатором {dto.CustomerId} не найден");
+        var customer = await customerRepository.GetByIdAsync(dto.CustomerId) ?? throw new KeyNotFoundException($"Клиент с идентификатором {dto.CustomerId} не найден");
 
-        var item = itemRepository.GetById(dto.ItemId) ?? throw new KeyNotFoundException($"Изделие с идентификатором {dto.ItemId} не найдено");
+        var item = await itemRepository.GetByIdAsync(dto.ItemId) ?? throw new KeyNotFoundException($"Изделие с идентификатором {dto.ItemId} не найдено");
 
         var order = new Order
         {
@@ -77,7 +51,7 @@ public class OrderService(
             Status = dto.Status
         };
 
-        var created = orderRepository.Add(order);
+        var created = await orderRepository.AddAsync(order);
 
         return new OrderDto(
             created.Id,
@@ -96,9 +70,9 @@ public class OrderService(
     }
 
     /// <inheritdoc />
-    public OrderDto? Get(int id)
+    public async Task<OrderDto?> GetAsync(int id)
     {
-        var order = orderRepository.GetById(id);
+        var order = await orderRepository.GetByIdAsync(id);
         if (order is null) return null;
 
         return new OrderDto(
@@ -118,32 +92,18 @@ public class OrderService(
     }
 
     /// <inheritdoc />
-    public IList<OrderDto> GetAll()
+    public async Task<IList<OrderDto>> GetAllAsync()
     {
-        return orderRepository.GetAll()
-            .Select(order => new OrderDto(
-                order.Id,
-                new CustomerDto(order.Customer.Id, order.Customer.FirstName, order.Customer.Patronymic, order.Customer.LastName, order.Customer.PhoneNumber),
-                order.CustomerId,
-                new ItemDto(
-                    order.Item.Id,
-                    order.Item.Name,
-                    new ItemCategoryDto(order.Item.Category.Id, order.Item.Category.Name, order.Item.Category.RecommendedCleaning, order.Item.Category.Price),
-                    order.Item.CategoryId,
-                    order.Item.Material),
-                order.ItemId,
-                order.AcceptanceDate,
-                order.CompletionDays,
-                order.Status))
-            .ToList();
+        var orders = await orderRepository.GetAllAsync();
+        return orders.Select(MapToDto).ToList();
     }
 
     /// <inheritdoc />
-    public OrderDto Update(OrderCreateUpdateDto dto, int id)
+    public async Task<OrderDto> UpdateAsync(OrderCreateUpdateDto dto, int id)
     {
-        var customer = customerRepository.GetById(dto.CustomerId) ?? throw new KeyNotFoundException($"Клиент с идентификатором {dto.CustomerId} не найден");
+        var customer = await customerRepository.GetByIdAsync(dto.CustomerId) ?? throw new KeyNotFoundException($"Клиент с идентификатором {dto.CustomerId} не найден");
 
-        var item = itemRepository.GetById(dto.ItemId) ?? throw new KeyNotFoundException($"Изделие с идентификатором {dto.ItemId} не найдено");
+        var item = await itemRepository.GetByIdAsync(dto.ItemId) ?? throw new KeyNotFoundException($"Изделие с идентификатором {dto.ItemId} не найдено");
 
         var order = new Order
         {
@@ -157,7 +117,7 @@ public class OrderService(
             Status = dto.Status
         };
 
-        var updated = orderRepository.Update(order);
+        var updated = await orderRepository.UpdateAsync(order);
         if (updated is null)
         {
             throw new KeyNotFoundException($"Заказ с идентификатором {id} не найден");
@@ -180,8 +140,15 @@ public class OrderService(
     }
 
     /// <inheritdoc />
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        return orderRepository.Delete(id);
+        return await orderRepository.DeleteAsync(id);
     }
+
+    private static OrderDto MapToDto(Order order) => new(
+        order.Id,
+        new CustomerDto(order.Customer.Id, order.Customer.FirstName, order.Customer.Patronymic, order.Customer.LastName, order.Customer.PhoneNumber),
+        order.CustomerId,
+        new ItemDto(order.Item.Id, order.Item.Name, new ItemCategoryDto(order.Item.Category.Id, order.Item.Category.Name, order.Item.Category.RecommendedCleaning, order.Item.Category.Price), order.Item.CategoryId, order.Item.Material),
+        order.ItemId, order.AcceptanceDate, order.CompletionDays, order.Status);
 }

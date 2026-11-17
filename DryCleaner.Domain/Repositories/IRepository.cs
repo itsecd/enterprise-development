@@ -10,25 +10,25 @@ public interface IRepository<T> where T : IEntity
     /// <summary>
     /// Получить все записи
     /// </summary>
-    IList<T> GetAll();
+    Task<IList<T>> GetAllAsync();
 
     /// <summary>
     /// Получить запись по идентификатору
     /// </summary>
-    T? GetById(int id);
+    Task<T?> GetByIdAsync(int id);
 
     /// <summary>
     /// Добавить запись
     /// </summary>
-    T Add(T entity);
+    Task<T> AddAsync(T entity);
 
     /// <summary>
     /// Обновить запись
     /// </summary>
-    T? Update(T entity);
+    Task<T?> UpdateAsync(T entity);
 
     /// <summary>
     /// Удалить запись
     /// </summary>
-    bool Delete(int id);
+    Task<bool> DeleteAsync(int id);
 }

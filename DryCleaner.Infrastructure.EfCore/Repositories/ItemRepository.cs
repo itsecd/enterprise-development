@@ -1,0 +1,46 @@
+using DryCleaner.Domain.Entities;
+using DryCleaner.Domain.Repositories;
+using DryCleaner.Infrastructure.EfCore.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace DryCleaner.Infrastructure.EfCore.Repositories;
+
+public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
+{
+    public async Task<IList<Item>> GetAllAsync()
+    {
+        return await context.Items.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<Item?> GetByIdAsync(int id)
+    {
+        return await context.Items.FindAsync(id);
+    }
+
+    public async Task<Item> AddAsync(Item entity)
+    {
+        context.Items.Add(entity);
+        await context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task<Item?> UpdateAsync(Item entity)
+    {
+        var existing = await context.Items.FindAsync(entity.Id);
+        if (existing == null) return null;
+
+        context.Entry(existing).CurrentValues.SetValues(entity);
+        await context.SaveChangesAsync();
+        return existing;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var entity = await context.Items.FindAsync(id);
+        if (entity == null) return false;
+
+        context.Items.Remove(entity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+}

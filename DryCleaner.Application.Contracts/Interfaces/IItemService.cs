@@ -8,5 +8,5 @@ namespace DryCleaner.Application.Contracts.Interfaces;
 public interface IItemService
     : IApplicationService<ItemDto, ItemCreateUpdateDto, int>
 {
-    IList<ItemDto> GetByCategoryId(int categoryId);
+    Task<IList<ItemDto>> GetByCategoryIdAsync(int categoryId);
 }

@@ -11,9 +11,9 @@ public class CustomerRepository()
     : InMemoryRepository<Customer>(DataSeed.Customers.ToList())
 {
     /// <inheritdoc />
-    public override Customer? Update(Customer entity)
+    public override Task<Customer?> UpdateAsync(Customer entity)
     {
-        var existing = GetById(entity.Id);
+        var existing = GetByIdAsync(entity.Id).Result;
         if (existing is null)
         {
             return null;
@@ -24,6 +24,6 @@ public class CustomerRepository()
         existing.LastName = entity.LastName;
         existing.PhoneNumber = entity.PhoneNumber;
 
-        return existing;
+        return Task.FromResult<Customer?>(existing);
     }
 }

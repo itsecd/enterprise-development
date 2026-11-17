@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.6.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />
   </ItemGroup>
 
@@ -17,6 +22,7 @@
     <ProjectReference Include="..\DryCleaner.Infrastructure.InMemory\DryCleaner.Infrastructure.InMemory.csproj" />
     <ProjectReference Include="..\DryCleaner.Domain\DryCleaner.Domain.csproj" />
     <ProjectReference Include="..\DryCleaner.Shared\DryCleaner.Shared.csproj" />
+    <ProjectReference Include="..\DryCleaner.Infrastructure.EfCore\DryCleaner.Infrastructure.EfCore.csproj" />
   </ItemGroup>
 
 </Project>

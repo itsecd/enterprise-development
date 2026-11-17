@@ -12,9 +12,9 @@ namespace DryCleaner.Application.Services;
 public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsService
 {
     /// <inheritdoc />
-    public IList<OrderInProgressDto> GetOrdersInProgress()
+    public async Task<IList<OrderInProgressDto>> GetOrdersInProgressAsync()
     {
-        return orderRepository.GetAll()
+        return (await orderRepository.GetAllAsync())
             .Where(o => o.Status == OrderStatus.InProgress)
             .OrderBy(o => o.AcceptanceDate)
             .Select(o => new OrderInProgressDto(
@@ -26,9 +26,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     }
 
     /// <inheritdoc />
-    public IList<CustomerOrderCountDto> GetTop5CustomersByItems(DateOnly periodStart, DateOnly periodEnd)
+    public async Task<IList<CustomerOrderCountDto>> GetTop5CustomersByItemsAsync(DateOnly periodStart, DateOnly periodEnd)
     {
-        return orderRepository.GetAll()
+        return (await orderRepository.GetAllAsync())
             .Where(o => o.AcceptanceDate >= periodStart && o.AcceptanceDate <= periodEnd)
             .GroupBy(o => o.CustomerId)
             .Select(group => new CustomerOrderCountDto(
@@ -42,9 +42,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     }
 
     /// <inheritdoc />
-    public IList<OrderProcessingTimeDto> GetCustomersWithLongestProcessing()
+    public async Task<IList<OrderProcessingTimeDto>> GetCustomersWithLongestProcessingAsync()
     {
-        var orders = orderRepository.GetAll().ToList();
+        var orders = await orderRepository.GetAllAsync();
         if (orders.Count == 0)
         {
             return [];
@@ -66,9 +66,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     }
 
     /// <inheritdoc />
-    public IList<CategoryPopularityDto> GetTop5PopularCategories(DateOnly start, DateOnly end)
+    public async Task<IList<CategoryPopularityDto>> GetTop5PopularCategoriesAsync(DateOnly start, DateOnly end)
     {
-        return orderRepository.GetAll()
+        return (await orderRepository.GetAllAsync())
             .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
             .GroupBy(o => o.Item.CategoryId)
             .Select(group => new CategoryPopularityDto(
@@ -82,9 +82,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     }
 
     /// <inheritdoc />
-    public IList<CategoryPopularityDto> GetTop5UnpopularCategories(DateOnly start, DateOnly end)
+    public async Task<IList<CategoryPopularityDto>> GetTop5UnpopularCategoriesAsync(DateOnly start, DateOnly end)
     {
-        return orderRepository.GetAll()
+        return (await orderRepository.GetAllAsync())
             .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
             .GroupBy(o => o.Item.CategoryId)
             .Select(group => new CategoryPopularityDto(
@@ -99,9 +99,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     }
 
     /// <inheritdoc />
-    public TotalSpentCustomerDto? GetCustomerWithMaxTotalSpent()
+    public async Task<TotalSpentCustomerDto?> GetCustomerWithMaxTotalSpentAsync()
     {
-        return orderRepository.GetAll()
+        return (await orderRepository.GetAllAsync())
             .GroupBy(o => o.CustomerId)
             .Select(group => new TotalSpentCustomerDto(
                 group.Key,

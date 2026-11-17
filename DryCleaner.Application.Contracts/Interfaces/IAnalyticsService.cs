@@ -10,30 +10,30 @@ public interface IAnalyticsService
     /// <summary>
     /// Получает заказы в обработке, упорядоченные по дате приема
     /// </summary>
-    IList<OrderInProgressDto> GetOrdersInProgress();
+    Task<IList<OrderInProgressDto>> GetOrdersInProgressAsync();
 
     /// <summary>
     /// Получает топ-5 клиентов по числу сданных изделий за выбранный период
     /// </summary>
-    IList<CustomerOrderCountDto> GetTop5CustomersByItems(DateOnly periodStart, DateOnly periodEnd);
+    Task<IList<CustomerOrderCountDto>> GetTop5CustomersByItemsAsync(DateOnly periodStart, DateOnly periodEnd);
 
     /// <summary>
     /// Получает клиентов, чьи заказы обрабатывались дольше всего
     /// </summary>
-    IList<OrderProcessingTimeDto> GetCustomersWithLongestProcessing();
+    Task<IList<OrderProcessingTimeDto>> GetCustomersWithLongestProcessingAsync();
 
     /// <summary>
     /// Получает топ-5 популярных категорий изделий
     /// </summary>
-    IList<CategoryPopularityDto> GetTop5PopularCategories(DateOnly start, DateOnly end);
+    Task<IList<CategoryPopularityDto>> GetTop5PopularCategoriesAsync(DateOnly start, DateOnly end);
 
     /// <summary>
     /// Получает топ-5 непопулярных категорий изделий
     /// </summary>
-    IList<CategoryPopularityDto> GetTop5UnpopularCategories(DateOnly start, DateOnly end);
+    Task<IList<CategoryPopularityDto>> GetTop5UnpopularCategoriesAsync(DateOnly start, DateOnly end);
 
     /// <summary>
     /// Получает клиента с наибольшей суммой заказов
     /// </summary>
-    TotalSpentCustomerDto? GetCustomerWithMaxTotalSpent();
+    Task<TotalSpentCustomerDto?> GetCustomerWithMaxTotalSpentAsync();
 }
