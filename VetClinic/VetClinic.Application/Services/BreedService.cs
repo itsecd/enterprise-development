@@ -6,58 +6,49 @@ using VetClinic.Domain.Repositories;
 namespace VetClinic.Application.Services;
 
 /// <summary>
-/// Сервис пород, при удалении породы у питомцев порода сбрасывается
+/// Сервис пород, при удалении породы у питомцев она сбрасывается на стороне базы
 /// </summary>
 /// <param name="breeds">Репозиторий пород</param>
-/// <param name="pets">Репозиторий питомцев</param>
 public class BreedService(
-    IBreedRepository breeds,
-    IPetRepository pets) : IBreedService
+    IBreedRepository breeds) : IBreedService
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<BreedDto>> GetAllAsync()
+    public async Task<IReadOnlyList<BreedDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var all = await breeds.GetAllAsync();
+        var all = await breeds.GetAllAsync(cancellationToken);
         return [.. all.Select(b => b.ToDto())];
     }
 
     /// <inheritdoc/>
-    public async Task<BreedDto?> GetByIdAsync(int id)
+    public async Task<BreedDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var breed = await breeds.GetByIdAsync(id);
-        return breed?.ToDto();
+        var entity = await breeds.GetByIdAsync(id, cancellationToken);
+        return entity?.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task<BreedDto> CreateAsync(BreedEditDto dto)
+    public async Task<BreedDto> CreateAsync(BreedEditDto dto, CancellationToken cancellationToken = default)
     {
-        var created = await breeds.CreateAsync(dto.ToEntity());
+        var entity = dto.ToEntity();
+        var created = await breeds.CreateAsync(entity, cancellationToken);
         return created.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task<BreedDto?> UpdateAsync(int id, BreedEditDto dto)
+    public async Task<BreedDto?> UpdateAsync(int id, BreedEditDto dto, CancellationToken cancellationToken = default)
     {
-        var breed = await breeds.GetByIdAsync(id);
-        if (breed is null)
+        var entity = await breeds.GetByIdAsync(id, cancellationToken);
+        if (entity is null)
         {
             return null;
         }
 
-        breed.Apply(dto);
-        await breeds.UpdateAsync(breed);
-        return breed.ToDto();
+        entity.Apply(dto);
+        await breeds.UpdateAsync(entity, cancellationToken);
+        return entity.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(int id)
-    {
-        var allPets = await pets.GetAllAsync();
-        foreach (var pet in allPets.Where(p => p.Breed?.Id == id))
-        {
-            pet.Breed = null;
-            await pets.UpdateAsync(pet);
-        }
-        await breeds.DeleteAsync(id);
-    }
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default) =>
+        await breeds.DeleteAsync(id, cancellationToken);
 }

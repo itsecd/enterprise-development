@@ -6,70 +6,49 @@ using VetClinic.Domain.Repositories;
 namespace VetClinic.Application.Services;
 
 /// <summary>
-/// Сервис владельцев, при удалении владельца удаляются его питомцы и их записи на прием
+/// Сервис владельцев, питомцы и их записи на прием удаляются вместе с владельцем каскадом в базе
 /// </summary>
 /// <param name="owners">Репозиторий владельцев</param>
-/// <param name="pets">Репозиторий питомцев</param>
-/// <param name="appointments">Репозиторий записей на прием</param>
 public class OwnerService(
-    IOwnerRepository owners,
-    IPetRepository pets,
-    IAppointmentRepository appointments) : IOwnerService
+    IOwnerRepository owners) : IOwnerService
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<OwnerDto>> GetAllAsync()
+    public async Task<IReadOnlyList<OwnerDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var all = await owners.GetAllAsync();
+        var all = await owners.GetAllAsync(cancellationToken);
         return [.. all.Select(o => o.ToDto())];
     }
 
     /// <inheritdoc/>
-    public async Task<OwnerDto?> GetByIdAsync(int id)
+    public async Task<OwnerDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var owner = await owners.GetByIdAsync(id);
-        return owner?.ToDto();
+        var entity = await owners.GetByIdAsync(id, cancellationToken);
+        return entity?.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task<OwnerDto> CreateAsync(OwnerEditDto dto)
+    public async Task<OwnerDto> CreateAsync(OwnerEditDto dto, CancellationToken cancellationToken = default)
     {
-        var created = await owners.CreateAsync(dto.ToEntity());
+        var entity = dto.ToEntity();
+        var created = await owners.CreateAsync(entity, cancellationToken);
         return created.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task<OwnerDto?> UpdateAsync(int id, OwnerEditDto dto)
+    public async Task<OwnerDto?> UpdateAsync(int id, OwnerEditDto dto, CancellationToken cancellationToken = default)
     {
-        var owner = await owners.GetByIdAsync(id);
-        if (owner is null)
+        var entity = await owners.GetByIdAsync(id, cancellationToken);
+        if (entity is null)
         {
             return null;
         }
 
-        owner.Apply(dto);
-        await owners.UpdateAsync(owner);
-        return owner.ToDto();
+        entity.Apply(dto);
+        await owners.UpdateAsync(entity, cancellationToken);
+        return entity.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(int id)
-    {
-        var owner = await owners.GetByIdAsync(id);
-        if (owner is null)
-        {
-            return;
-        }
-
-        var petIds = owner.Pets.Select(p => p.Id).ToHashSet();
-        var allAppointments = await appointments.GetAllAsync();
-        foreach (var appointment in allAppointments.Where(a => a.Pet is not null && petIds.Contains(a.Pet.Id)))
-        {
-            await appointments.DeleteAsync(appointment.Id);
-        }
-        foreach (var petId in petIds)
-        {
-            await pets.DeleteAsync(petId);
-        }
-        await owners.DeleteAsync(id);
-    }
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default) =>
+        await owners.DeleteAsync(id, cancellationToken);
 }

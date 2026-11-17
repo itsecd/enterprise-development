@@ -17,10 +17,10 @@ public static class PetMapping
         Id = entity.Id,
         Nickname = entity.Nickname,
         Species = entity.Species,
-        BreedId = entity.Breed?.Id,
+        BreedId = entity.BreedId,
         BirthDate = entity.BirthDate,
         Weight = entity.Weight,
-        OwnerId = entity.Owner?.Id ?? 0
+        OwnerId = entity.OwnerId
     };
 
     /// <summary>

@@ -6,58 +6,49 @@ using VetClinic.Domain.Repositories;
 namespace VetClinic.Application.Services;
 
 /// <summary>
-/// Сервис специализаций врачей, при удалении специализации у врачей она сбрасывается
+/// Сервис специализаций врачей, при удалении специализации у врачей она сбрасывается на стороне базы
 /// </summary>
 /// <param name="specializations">Репозиторий специализаций</param>
-/// <param name="vets">Репозиторий ветеринаров</param>
 public class SpecializationService(
-    ISpecializationRepository specializations,
-    IVetRepository vets) : ISpecializationService
+    ISpecializationRepository specializations) : ISpecializationService
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<SpecializationDto>> GetAllAsync()
+    public async Task<IReadOnlyList<SpecializationDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var all = await specializations.GetAllAsync();
+        var all = await specializations.GetAllAsync(cancellationToken);
         return [.. all.Select(s => s.ToDto())];
     }
 
     /// <inheritdoc/>
-    public async Task<SpecializationDto?> GetByIdAsync(int id)
+    public async Task<SpecializationDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var specialization = await specializations.GetByIdAsync(id);
-        return specialization?.ToDto();
+        var entity = await specializations.GetByIdAsync(id, cancellationToken);
+        return entity?.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task<SpecializationDto> CreateAsync(SpecializationEditDto dto)
+    public async Task<SpecializationDto> CreateAsync(SpecializationEditDto dto, CancellationToken cancellationToken = default)
     {
-        var created = await specializations.CreateAsync(dto.ToEntity());
+        var entity = dto.ToEntity();
+        var created = await specializations.CreateAsync(entity, cancellationToken);
         return created.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task<SpecializationDto?> UpdateAsync(int id, SpecializationEditDto dto)
+    public async Task<SpecializationDto?> UpdateAsync(int id, SpecializationEditDto dto, CancellationToken cancellationToken = default)
     {
-        var specialization = await specializations.GetByIdAsync(id);
-        if (specialization is null)
+        var entity = await specializations.GetByIdAsync(id, cancellationToken);
+        if (entity is null)
         {
             return null;
         }
 
-        specialization.Apply(dto);
-        await specializations.UpdateAsync(specialization);
-        return specialization.ToDto();
+        entity.Apply(dto);
+        await specializations.UpdateAsync(entity, cancellationToken);
+        return entity.ToDto();
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(int id)
-    {
-        var allVets = await vets.GetAllAsync();
-        foreach (var vet in allVets.Where(v => v.Specialization?.Id == id))
-        {
-            vet.Specialization = null;
-            await vets.UpdateAsync(vet);
-        }
-        await specializations.DeleteAsync(id);
-    }
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default) =>
+        await specializations.DeleteAsync(id, cancellationToken);
 }

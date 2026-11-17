@@ -18,7 +18,7 @@ public static class VetMapping
         PassportNumber = entity.PassportNumber,
         FullName = entity.FullName,
         BirthYear = entity.BirthYear,
-        SpecializationId = entity.Specialization?.Id,
+        SpecializationId = entity.SpecializationId,
         WorkExperienceYears = entity.WorkExperienceYears
     };
 

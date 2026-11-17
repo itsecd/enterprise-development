@@ -18,8 +18,8 @@ public static class AppointmentMapping
         DateTime = entity.DateTime,
         RoomNumber = entity.RoomNumber,
         IsRepeat = entity.IsRepeat,
-        PetId = entity.Pet?.Id ?? 0,
-        VetId = entity.Vet?.Id ?? 0
+        PetId = entity.PetId,
+        VetId = entity.VetId
     };
 
     /// <summary>
