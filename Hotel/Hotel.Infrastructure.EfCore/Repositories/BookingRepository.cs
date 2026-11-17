@@ -1,8 +1,7 @@
 ﻿using Hotel.Domain;
 using Hotel.Domain.Entities;
+using Hotel.Domain.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
 
 namespace Hotel.Infrastructure.EfCore.Repositories;
 
@@ -98,17 +97,58 @@ public class BookingRepository(HotelDbContext context) : IBookingRepository
     }
 
     /// <inheritdoc/>
-    public Task<bool> AnyAsync(Expression<Func<Booking, bool>> predicate, CancellationToken cancellationToken = default)
+    public Task<bool> HasOverlappingBookingAsync(int roomId, DateOnly checkInDate, DateOnly checkOutDate, int? excludedBookingId, CancellationToken cancellationToken = default)
     {
-        return context.Bookings.AnyAsync(predicate, cancellationToken);
+        return context.Bookings.AnyAsync(booking =>
+            booking.RoomId == roomId &&
+            booking.Id != excludedBookingId &&
+            booking.CheckInDate < checkOutDate &&
+            booking.CheckInDate.AddDays(booking.DaysCount) > checkInDate, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<TResult>> QueryAsync<TResult>(
-        Func<IQueryable<Booking>, IQueryable<TResult>> query,
-        CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<HotelClient>> GetClientsByRoomCategoryAsync(RoomCategory category, CancellationToken cancellationToken = default)
     {
-        return await query(context.Bookings.AsNoTracking())
+        return await context.Bookings
+            .AsNoTracking()
+            .Where(booking => booking.Room.RoomType.Category == category)
+            .Select(booking => booking.Client)
+            .Distinct()
+            .OrderBy(client => client.LastName)
+            .ThenBy(client => client.FirstName)
+            .ThenBy(client => client.MiddleName)
             .ToListAsync(cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<(HotelClient Client, decimal TotalStayCost)>> GetTopFiveClientsByTotalStayCostAsync(CancellationToken cancellationToken = default)
+    {
+        var topClients = await context.Bookings
+            .AsNoTracking()
+            .GroupBy(booking => booking.Client.Id)
+            .Select(group => new
+            {
+                ClientId = group.Key,
+                group.First().Client,
+                TotalStayCost = group.Sum(booking =>
+                    booking.Room.RoomType.PricePerDay * booking.DaysCount)
+            })
+            .OrderByDescending(item => item.TotalStayCost)
+            .ThenBy(item => item.ClientId)
+            .Take(5)
+            .ToListAsync(cancellationToken);
+
+        return topClients
+            .Select(item => (item.Client, item.TotalStayCost))
+            .ToList();
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyDictionary<int, int>> GetBookingCountsByRoomAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.Bookings
+            .GroupBy(booking => booking.RoomId)
+            .Select(group => new { RoomId = group.Key, BookingCount = group.Count() })
+            .ToDictionaryAsync(item => item.RoomId, item => item.BookingCount, cancellationToken);
     }
 }

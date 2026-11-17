@@ -123,18 +123,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <param name="cancellationToken">Токен отмены запроса</param>
     public async Task<IReadOnlyList<HotelClientStayCostDto>> GetTopFiveClientsByTotalStayCost(CancellationToken cancellationToken = default)
     {
-        var topClients = await bookingRepository.QueryAsync(bookings => bookings
-            .GroupBy(booking => booking.Client.Id)
-            .Select(group => new
-            {
-                ClientId = group.Key,
-                group.First().Client,
-                TotalStayCost = group.Sum(booking =>
-                    booking.Room.RoomType.PricePerDay * booking.DaysCount)
-            })
-            .OrderByDescending(item => item.TotalStayCost)
-            .ThenBy(item => item.ClientId)
-            .Take(5), cancellationToken);
+        var topClients = await bookingRepository.GetTopFiveClientsByTotalStayCostAsync(cancellationToken);
 
         return topClients
             .Select(item => new HotelClientStayCostDto(ToDto(item.Client), item.TotalStayCost))
@@ -148,13 +137,7 @@ public class HotelClientService(IRepository<HotelClient, int> clientRepository, 
     /// <param name="cancellationToken">Токен отмены запроса</param>
     public async Task<IReadOnlyList<HotelClientDto>> GetClientsByRoomCategory(RoomCategory category, CancellationToken cancellationToken = default)
     {
-        var clients = await bookingRepository.QueryAsync(bookings => bookings
-            .Where(booking => booking.Room.RoomType.Category == category)
-            .Select(booking => booking.Client)
-            .Distinct()
-            .OrderBy(client => client.LastName)
-            .ThenBy(client => client.FirstName)
-            .ThenBy(client => client.MiddleName), cancellationToken);
+        var clients = await bookingRepository.GetClientsByRoomCategoryAsync(category, cancellationToken);
 
         return clients.Select(ToDto).ToList();
     }

@@ -151,17 +151,7 @@ public class RoomService(IRepository<Room, int> roomRepository, IRepository<Room
     /// <param name="cancellationToken">Токен отмены запроса</param>
     public async Task<IReadOnlyList<RoomBookingCountDto>> GetBookingCountForEachRoom(CancellationToken cancellationToken = default)
     {
-        var bookingCounts = await bookingRepository.QueryAsync(bookings => bookings
-            .GroupBy(booking => booking.Room.Id)
-            .Select(group => new
-            {
-                RoomId = group.Key,
-                BookingCount = group.Count()
-            }), cancellationToken);
-
-        var countsByRoomId = bookingCounts.ToDictionary(
-            item => item.RoomId,
-            item => item.BookingCount);
+        var countsByRoomId = await bookingRepository.GetBookingCountsByRoomAsync(cancellationToken);
 
         var rooms = await roomRepository.GetAll(cancellationToken);
 

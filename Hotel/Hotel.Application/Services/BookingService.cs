@@ -149,11 +149,7 @@ public class BookingService(IBookingRepository bookingRepository, IRepository<Ho
     {
         var checkOutDate = checkInDate.AddDays(daysCount);
 
-        return bookingRepository.AnyAsync(booking =>
-            booking.Room.Id == roomId &&
-            booking.Id != excludedBookingId &&
-            booking.CheckInDate < checkOutDate &&
-            booking.CheckInDate.AddDays(booking.DaysCount) > checkInDate, cancellationToken);
+        return bookingRepository.HasOverlappingBookingAsync(roomId, checkInDate, checkOutDate, excludedBookingId, cancellationToken);
     }
 
     /// <summary>
