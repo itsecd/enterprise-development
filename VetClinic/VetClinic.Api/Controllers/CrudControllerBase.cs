@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VetClinic.Contracts.Services;
 
@@ -21,28 +22,30 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     /// <summary>
     /// Получить все записи
     /// </summary>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Список записей</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<TDto>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<TDto>>> GetAll(CancellationToken cancellationToken)
     {
         logger.LogInformation("{Controller}: запрос всех записей", GetType().Name);
-        return Ok(await service.GetAllAsync());
+        return Ok(await service.GetAllAsync(cancellationToken));
     }
 
     /// <summary>
     /// Получить запись по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Найденная запись</response>
     /// <response code="404">Запись не найдена</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TDto>> GetById(int id)
+    public async Task<ActionResult<TDto>> GetById(int id, CancellationToken cancellationToken)
     {
         logger.LogInformation("{Controller}: запрос записи {Id}", GetType().Name, id);
-        var dto = await service.GetByIdAsync(id);
+        var dto = await service.GetByIdAsync(id, cancellationToken);
         if (dto is null)
         {
             logger.LogWarning("{Controller}: запись {Id} не найдена", GetType().Name, id);
@@ -55,16 +58,22 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     /// Создать запись
     /// </summary>
     /// <param name="dto">Данные новой записи</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="201">Запись создана</response>
     /// <response code="400">Данные не прошли валидацию</response>
+    /// <response code="401">Нужен токен доступа</response>
     /// <response code="404">Связанная сущность не найдена</response>
+    /// <response code="409">Изменение нарушает ограничения базы данных</response>
+    [Authorize]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TDto>> Create([FromBody] TEditDto dto)
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<TDto>> Create([FromBody] TEditDto dto, CancellationToken cancellationToken)
     {
-        var created = await service.CreateAsync(dto);
+        var created = await service.CreateAsync(dto, cancellationToken);
         var id = GetId(created);
         logger.LogInformation("{Controller}: создана запись {Id}", GetType().Name, id);
         return CreatedAtAction(nameof(GetById), new { id }, created);
@@ -75,16 +84,22 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="dto">Новые данные</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Запись изменена</response>
     /// <response code="400">Данные не прошли валидацию</response>
+    /// <response code="401">Нужен токен доступа</response>
     /// <response code="404">Запись или связанная сущность не найдена</response>
+    /// <response code="409">Изменение нарушает ограничения базы данных</response>
+    [Authorize]
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TDto>> Update(int id, [FromBody] TEditDto dto)
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<TDto>> Update(int id, [FromBody] TEditDto dto, CancellationToken cancellationToken)
     {
-        var updated = await service.UpdateAsync(id, dto);
+        var updated = await service.UpdateAsync(id, dto, cancellationToken);
         if (updated is null)
         {
             logger.LogWarning("{Controller}: запись {Id} для изменения не найдена", GetType().Name, id);
@@ -98,12 +113,16 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     /// Удалить запись
     /// </summary>
     /// <param name="id">Идентификатор</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="204">Записи больше нет</response>
+    /// <response code="401">Нужен токен доступа</response>
+    [Authorize]
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete(int id)
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await service.DeleteAsync(id);
+        await service.DeleteAsync(id, cancellationToken);
         logger.LogInformation("{Controller}: удалена запись {Id}", GetType().Name, id);
         return NoContent();
     }
