@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+п»їusing System.Text.Json.Serialization;
 using System.Globalization;
 using System.Reflection;
 using DryCleaner.Application.Contracts.Interfaces;
@@ -62,7 +62,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ошибка при применении миграций базы данных.");
+        logger.LogError(ex, "РћС€РёР±РєР° РїСЂРё РїСЂРёРјРµРЅРµРЅРёРё РјРёРіСЂР°С†РёР№ Р±Р°Р·С‹ РґР°РЅРЅС‹С….");
         throw;
     }
 }
