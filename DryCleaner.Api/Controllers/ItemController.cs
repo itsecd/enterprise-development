@@ -105,9 +105,9 @@ public class ItemController(IItemService service, IOrderService orderService, IL
             var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException)
         {
-            return NotFound(new { Message = ex.Message });
+            return NotFound(new { Message = "Ошибка при создании изделия" });
         }
         catch (Exception ex)
         {
@@ -133,9 +133,9 @@ public class ItemController(IItemService service, IOrderService orderService, IL
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await service.UpdateAsync(dto, id));
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException)
         {
-            return NotFound(new { Message = ex.Message });
+            return NotFound(new { Message = "Изделие не найдено" });
         }
         catch (Exception ex)
         {

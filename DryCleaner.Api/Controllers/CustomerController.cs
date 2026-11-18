@@ -140,7 +140,7 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
         catch (KeyNotFoundException ex)
         {
             logger.LogWarning(ex, "Клиент по указанному идентификатору не найден");
-            return NotFound(new { Message = ex.Message });
+            return NotFound(new { Message = "Клиент по указанному идентификатору не найден" });
         }
         catch (Exception ex)
         {

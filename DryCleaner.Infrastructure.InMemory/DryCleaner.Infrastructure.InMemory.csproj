@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\DryCleaner.Application.Contracts\DryCleaner.Application.Contracts.csproj" />
     <ProjectReference Include="..\DryCleaner.Domain\DryCleaner.Domain.csproj" />
   </ItemGroup>
 

@@ -129,9 +129,9 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await service.UpdateAsync(dto, id));
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException)
         {
-            return NotFound(new { Message = ex.Message });
+            return NotFound(new { Message = "Категория не найдена" });
         }
         catch (Exception ex)
         {

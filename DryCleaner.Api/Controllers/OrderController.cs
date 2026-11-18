@@ -75,9 +75,9 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
             var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException)
         {
-            return NotFound(new { Message = ex.Message });
+            return NotFound(new { Message = "Ошибка при создании заказа" });
         }
         catch (Exception ex)
         {
@@ -103,9 +103,9 @@ public class OrderController(IOrderService service, ILogger<OrderController> log
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await service.UpdateAsync(dto, id));
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException)
         {
-            return NotFound(new { Message = ex.Message });
+            return NotFound(new { Message = "Заказ не найден" });
         }
         catch (Exception ex)
         {
