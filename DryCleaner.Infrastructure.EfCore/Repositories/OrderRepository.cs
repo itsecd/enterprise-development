@@ -1,4 +1,4 @@
-using DryCleaner.Domain.Entities;
+п»їusing DryCleaner.Domain.Entities;
 using DryCleaner.Domain.Repositories;
 using DryCleaner.Infrastructure.EfCore.Data;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DryCleaner.Infrastructure.EfCore.Repositories;
 
 /// <summary>
-/// Реализация репозитория заказов с использованием EfCore
+/// Р РµР°Р»РёР·Р°С†РёСЏ СЂРµРїРѕР·РёС‚РѕСЂРёСЏ Р·Р°РєР°Р·РѕРІ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј EfCore
 /// </summary>
 public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
 {
