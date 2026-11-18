@@ -1,0 +1,20 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>61395685-4126-49f9-bd04-dc65249c5612</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.6.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DryCleaner.Api\DryCleaner.Api.csproj" />
+  </ItemGroup>
+
+</Project>
