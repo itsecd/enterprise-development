@@ -5,18 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DryCleaner.Infrastructure.EfCore.Repositories;
 
+/// <summary>
+/// Реализация репозитория изделий с использованием EfCore
+/// </summary>
 public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
 {
+    /// <inheritdoc />
     public async Task<IList<Item>> GetAllAsync()
     {
         return await context.Items.AsNoTracking().ToListAsync();
     }
 
+    /// <inheritdoc />
     public async Task<Item?> GetByIdAsync(int id)
     {
         return await context.Items.FindAsync(id);
     }
 
+    /// <inheritdoc />
     public async Task<Item> AddAsync(Item entity)
     {
         context.Items.Add(entity);
@@ -24,6 +30,7 @@ public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
         return entity;
     }
 
+    /// <inheritdoc />
     public async Task<Item?> UpdateAsync(Item entity)
     {
         var existing = await context.Items.FindAsync(entity.Id);
@@ -34,6 +41,7 @@ public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
         return existing;
     }
 
+    /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
         var entity = await context.Items.FindAsync(id);

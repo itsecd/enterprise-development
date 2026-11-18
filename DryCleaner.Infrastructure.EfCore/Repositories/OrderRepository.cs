@@ -5,8 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DryCleaner.Infrastructure.EfCore.Repositories;
 
+/// <summary>
+/// Реализация репозитория заказов с использованием EfCore
+/// </summary>
 public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
 {
+    /// <inheritdoc />
     public async Task<IList<Order>> GetAllAsync()
     {
         return await context.Orders
@@ -17,6 +21,7 @@ public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
             .ToListAsync();
     }
 
+    /// <inheritdoc />
     public async Task<Order?> GetByIdAsync(int id)
     {
         return await context.Orders
@@ -26,6 +31,7 @@ public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
+    /// <inheritdoc />
     public async Task<Order> AddAsync(Order entity)
     {
         context.Orders.Add(entity);
@@ -33,6 +39,7 @@ public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
         return entity;
     }
 
+    /// <inheritdoc />
     public async Task<Order?> UpdateAsync(Order entity)
     {
         var existing = await context.Orders.FindAsync(entity.Id);
@@ -43,6 +50,7 @@ public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
         return existing;
     }
 
+    /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
         var entity = await context.Orders.FindAsync(id);
