@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AspireUseCliBundle>true</AspireUseCliBundle>
+        <UserSecretsId>220e9dcd-0e1f-4c01-97ad-1a70e0af601a</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FitnessClub.Server\FitnessClub.Server.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Aspire.Hosting.AppHost" Version="17.0.0" />
+      <PackageReference Include="Aspire.Hosting.Dotnet" Version="17.0.0" />
+      <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="17.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.15" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    </ItemGroup>
+
+</Project>
