@@ -1,0 +1,147 @@
+﻿using FoodDelivery.Application.Interfaces.Repositories;
+using FoodDelivery.Application.Interfaces.Services;
+using FoodDelivery.Application.Mappers;
+using FoodDelivery.Contracts.Dtos.Orders;
+using FoodDelivery.Domain.Entities;
+
+namespace FoodDelivery.Application.Services;
+
+/// <summary>
+/// Сервис управления заказами
+/// </summary>
+public class OrderService(
+    IOrderRepository orderRepository,
+    IClientRepository clientRepository,
+    IRestaurantRepository restaurantRepository,
+    IDishRepository dishRepository)
+    : IOrderService
+{
+    /// <summary>
+    /// Создает новый заказ
+    /// </summary>
+    public async Task<OrderDto> Create(OrderCreateUpdateDto dto)
+    {
+        var client = await clientRepository.GetById(dto.ClientId)
+            ?? throw new KeyNotFoundException("Клиент не найден");
+        var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
+            ?? throw new KeyNotFoundException("Ресторан не найден");
+
+        var createdAtVar = DateTime.UtcNow;
+
+        if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < createdAtVar)
+            throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
+
+
+        var items = new List<OrderItem>();
+        foreach (var itemDto in dto.Items)
+        {
+            var dish = await dishRepository.GetById(itemDto.DishId)
+                ?? throw new KeyNotFoundException($"Блюдо {itemDto.DishId} не найдено");
+
+            var item = OrderMapper.Map(itemDto);
+            item.Dish = dish;
+            item.PriceAtOrder = dish.Price;
+            items.Add(item);
+        }
+
+        var order = new Order
+        {
+            Id = 0,
+            ClientId = client.Id,
+            Client = client,
+            RestaurantId = restaurant.Id,
+            Restaurant = restaurant,
+            CreatedAt = createdAtVar,
+            DeliveredAt = dto.DeliveredAt,
+            Items = items
+        };
+        order.TotalAmount = order.Items.Sum(i => i.Quantity * i.PriceAtOrder);
+
+        var createdOrder = await orderRepository.Add(order);
+        return OrderMapper.Map(createdOrder);
+    }
+
+    /// <summary>
+    /// Возвращает заказ по идентификатору
+    /// </summary>
+    public async Task<OrderDto?> Get(int id)
+    {
+        var order = await orderRepository.GetById(id);
+        return order is null ? null : OrderMapper.Map(order);
+    }
+
+    /// <summary>
+    /// Возвращает список всех заказов
+    /// </summary>
+    public async Task<IList<OrderDto>> GetAll()
+    {
+        var orders = await orderRepository.GetAll();
+        return OrderMapper.Map(orders.ToList());
+    }
+
+    /// <summary>
+    /// Обновляет данные заказа
+    /// </summary>
+    public async Task<OrderDto> Update(int id, OrderCreateUpdateDto dto)
+    {
+        var existing = await orderRepository.GetById(id)
+            ?? throw new KeyNotFoundException("Заказ не найден");
+        var client = await clientRepository.GetById(dto.ClientId)
+            ?? throw new KeyNotFoundException("Клиент не найден");
+        var restaurant = await restaurantRepository.GetById(dto.RestaurantId)
+            ?? throw new KeyNotFoundException("Ресторан не найден");
+
+        if (dto.DeliveredAt.HasValue && dto.DeliveredAt.Value < existing.CreatedAt)
+            throw new ArgumentException("Время доставки не может быть раньше времени создания заказа");
+
+        if (existing.DeliveredAt.HasValue && !dto.DeliveredAt.HasValue)
+            throw new ArgumentException("Нельзя обновить время доставки на null");
+
+        var items = new List<OrderItem>();
+        foreach (var itemDto in dto.Items)
+        {
+            var dish = await dishRepository.GetById(itemDto.DishId)
+                ?? throw new KeyNotFoundException($"Блюдо {itemDto.DishId} не найдено");
+
+            var item = OrderMapper.Map(itemDto);
+            item.DishId = dish.Id;
+            item.Dish = dish;
+            item.PriceAtOrder = dish.Price;
+            items.Add(item);
+        }
+
+        var updated = new Order
+        {
+            Id = id,
+            ClientId = client.Id,
+            Client = client,
+            RestaurantId = restaurant.Id,
+            Restaurant = restaurant,
+            CreatedAt = existing.CreatedAt,
+            DeliveredAt = dto.DeliveredAt,
+            Items = items,
+            TotalAmount = items.Sum(i => i.Quantity * i.PriceAtOrder)
+        };
+
+        await orderRepository.Update(updated);
+
+        var result = await orderRepository.GetById(id);
+        return OrderMapper.Map(result!);
+    }
+
+    /// <summary>
+    /// Удаляет заказ
+    /// </summary>
+    public Task<bool> Delete(int id) => orderRepository.Delete(id);
+
+    /// <summary>
+    /// Возвращает позиции указанного заказа
+    /// </summary>
+    public async Task<IList<OrderItemDto>> GetItems(int orderId)
+    {
+        var order = await orderRepository.GetById(orderId)
+            ?? throw new KeyNotFoundException("Заказ не найден");
+
+        return order.Items.Select(OrderMapper.Map).ToList();
+    }
+}
