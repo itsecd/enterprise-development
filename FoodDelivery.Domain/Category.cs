@@ -1,4 +1,5 @@
-﻿namespace FoodDelivery.Domain;
+namespace FoodDelivery.Domain;
+
 /// <summary>
 /// Категория блюда
 /// </summary>
@@ -8,8 +9,9 @@ public class Category
     /// ID категории
     /// </summary>
     public int Id { get; set; }
+
     /// <summary>
-    /// название категории
+    /// Название категории
     /// </summary>
     public required string Name { get; set; }
 }
