@@ -1,0 +1,179 @@
+﻿using AutoService.Contracts.Dto;
+using AutoService.Contracts.Interfaces;
+using AutoService.Domain.Entities;
+using AutoService.Domain.Interfaces.Repositories;
+using AutoService.Domain.Shared.Results;
+using Microsoft.Extensions.Logging;
+
+namespace AutoService.Application.Services;
+
+/// <summary>
+/// Operations for managing cars
+/// </summary>
+public class CarService(ICarRepository carRepository, IClientRepository clientRepository, ILogger<CarService> logger) : ICarService
+{
+    /// <inheritdoc />
+    public async Task<List<CarDto>> GetAllAsync()
+    {
+        logger.LogInformation("Getting all cars");
+
+        List<Car> cars = await carRepository.GetAllAsync();
+
+        return [.. cars.Select(ToDto)];
+    }
+
+    /// <inheritdoc />
+    public async Task<CarDto?> GetByIdAsync(int id)
+    {
+        logger.LogInformation("Getting car with ID {CarId}", id);
+
+        Car? car = await carRepository.GetByIdAsync(id);
+
+        return car is null ? null : ToDto(car);
+    }
+
+    /// <inheritdoc />
+    public async Task<CarDto?> CreateAsync(UpsertCarDto dto)
+    {
+        logger.LogInformation("Creating a car for client with ID {ClientId}", dto.ClientId);
+
+        Client? client = await clientRepository.GetByIdAsync(dto.ClientId);
+
+        if (client is null)
+        {
+            logger.LogWarning("Cannot create car, client with ID {ClientId} was not found", dto.ClientId);
+
+            return null;
+        }
+
+        var car = new Car
+        {
+            LicensePlate = dto.LicensePlate,
+            Brand = dto.Brand,
+            Model = dto.Model,
+            Year = dto.Year,
+            ClientId = client.Id,
+            Client = client
+        };
+
+        car = await carRepository.AddAsync(car);
+
+        logger.LogInformation("Car with ID {CarId} was created", car.Id);
+
+        return ToDto(car);
+    }
+
+    /// <inheritdoc />
+    public async Task<UpdateResult<CarDto>> UpdateAsync(int id, UpsertCarDto dto)
+    {
+        logger.LogInformation("Updating car with ID {CarId}", id);
+
+        Car? car = await carRepository.GetByIdAsync(id);
+
+        if (car is null)
+        {
+            logger.LogWarning("Car with ID {CarId} was not found", id);
+
+            return new UpdateResult<CarDto>(UpdateStatus.NotFound);
+        }
+
+        Client? client = await clientRepository.GetByIdAsync(dto.ClientId);
+
+        if (client is null)
+        {
+            logger.LogWarning("Cannot update car, client with ID {ClientId} was not found", dto.ClientId);
+
+            return new UpdateResult<CarDto>(UpdateStatus.InvalidReference);
+        }
+
+        car.ClientId = client.Id;
+        car.Client = client;
+
+        car.LicensePlate = dto.LicensePlate;
+        car.Brand = dto.Brand;
+        car.Model = dto.Model;
+        car.Year = dto.Year;
+
+        var updated = await carRepository.UpdateAsync(car);
+
+        if (!updated)
+        {
+            logger.LogWarning("Car with ID {CarId} could not be updated", id);
+
+            return new UpdateResult<CarDto>(UpdateStatus.Failed);
+        }
+
+        logger.LogInformation("Car with ID {CarId} was updated", car.Id);
+
+        return new UpdateResult<CarDto>(UpdateStatus.Success, ToDto(car));
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteResult> DeleteAsync(int id)
+    {
+        logger.LogInformation("Deleting car with ID {CarId}", id);
+
+        Car? car = await carRepository.GetByIdAsync(id);
+
+        if (car is null)
+        {
+            logger.LogWarning("Car with ID {CarId} was not found.", id);
+
+            return DeleteResult.NotFound;
+        }
+
+        var hasOrders = await carRepository.HasOrdersAsync(id);
+
+        if (hasOrders)
+        {
+            logger.LogWarning("Cannot delete car with ID {CarId} because it has repair orders.", id);
+
+            return DeleteResult.HasRelatedEntities;
+        }
+
+        var deleted = await carRepository.DeleteAsync(car);
+
+        if (!deleted)
+        {
+            logger.LogWarning("Car with ID {CarId} could not be deleted", id);
+
+            return DeleteResult.NotFound;
+        }
+
+        logger.LogInformation("Car with ID {CarId} was deleted", id);
+
+        return DeleteResult.Deleted;
+    }
+
+    /// <inheritdoc />
+    public async Task<List<CarDto>?> GetByClientIdAsync(int clientId)
+    {
+        logger.LogInformation("Getting cars for client with ID {ClientId}", clientId);
+
+        Client? client = await clientRepository.GetByIdAsync(clientId);
+
+        if (client is null)
+        {
+            logger.LogWarning("Client with ID {ClientId} was not found", clientId);
+
+            return null;
+        }
+
+        List<Car> cars = await carRepository.GetByClientIdAsync(clientId);
+
+        return [.. cars.Select(ToDto)];
+    }
+
+    private static CarDto ToDto(Car car)
+    {
+        return new CarDto
+        {
+            Id = car.Id,
+            LicensePlate = car.LicensePlate,
+            Brand = car.Brand,
+            Model = car.Model,
+            Year = car.Year,
+            ClientId = car.ClientId
+        };
+    }
+}

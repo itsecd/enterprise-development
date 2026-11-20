@@ -1,0 +1,22 @@
+﻿namespace AutoService.Contracts.Dto;
+
+/// <summary>
+/// Work type with the number of times it was performed
+/// </summary>
+public class FrequentWorkTypeDto
+{
+    /// <summary>
+    /// Unique id of the type
+    /// </summary>
+    public int WorkTypeId { get; init; }
+
+    /// <summary>
+    /// Name of the work type
+    /// </summary>
+    public string? Name { get; init; }
+
+    /// <summary>
+    /// Number of times the work type was performed
+    /// </summary>
+    public required int Count { get; init; }
+}

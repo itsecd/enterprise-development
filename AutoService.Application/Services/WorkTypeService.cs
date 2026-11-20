@@ -1,0 +1,157 @@
+﻿using AutoService.Contracts.Dto;
+using AutoService.Contracts.Interfaces;
+using AutoService.Domain.Entities;
+using AutoService.Domain.Interfaces.Repositories;
+using AutoService.Domain.Shared.Results;
+using Microsoft.Extensions.Logging;
+
+namespace AutoService.Application.Services;
+
+/// <summary>
+/// Operations for managing work types
+/// </summary>
+public class WorkTypeService(
+    IWorkTypeRepository workTypeRepository,
+    IRepairOrderRepository repairOrderRepository,
+    ILogger<WorkTypeService> logger) : IWorkTypeService
+{
+    /// <inheritdoc />
+    public async Task<List<WorkTypeDto>> GetAllAsync()
+    {
+        logger.LogInformation("Getting all work types");
+
+        List<WorkType> workTypes = await workTypeRepository.GetAllAsync();
+
+        return [.. workTypes.Select(ToDto)];
+    }
+
+    /// <inheritdoc />
+    public async Task<WorkTypeDto?> GetByIdAsync(int id)
+    {
+        logger.LogInformation("Getting work type with ID {WorkTypeId}", id);
+
+        WorkType? workType = await workTypeRepository.GetByIdAsync(id);
+
+        return workType is null ? null : ToDto(workType);
+    }
+
+    /// <inheritdoc />
+    public async Task<List<FrequentWorkTypeDto>> GetTop5MostFrequentAsync()
+    {
+        logger.LogInformation("Getting top 5 most frequently performed work types");
+
+        List<(WorkType WorkType, int Count)> frequentWorkTypes = await repairOrderRepository.GetTop5MostFrequentWorkTypesAsync();
+
+        return [.. frequentWorkTypes.Select(item => new FrequentWorkTypeDto
+        {
+            WorkTypeId = item.WorkType.Id,
+            Name = item.WorkType.Name,
+            Count = item.Count
+        })];
+    }
+
+    /// <inheritdoc />
+    public async Task<WorkTypeDto> CreateAsync(UpsertWorkTypeDto dto)
+    {
+        logger.LogInformation("Creating a new work type");
+
+        var workType = new WorkType
+        {
+            Name = dto.Name,
+            Category = dto.Category,
+            Cost = dto.Cost,
+            Duration = dto.Duration,
+            Description = dto.Description
+        };
+
+        workType = await workTypeRepository.AddAsync(workType);
+
+        logger.LogInformation("Work type with ID {WorkTypeId} was created", workType.Id);
+
+        return ToDto(workType);
+    }
+
+    /// <inheritdoc />
+    public async Task<UpdateResult<WorkTypeDto>> UpdateAsync(int id, UpsertWorkTypeDto dto)
+    {
+        logger.LogInformation("Updating work type with ID {WorkTypeId}", id);
+
+        WorkType? workType = await workTypeRepository.GetByIdAsync(id);
+
+        if (workType is null)
+        {
+            logger.LogWarning("Work type with ID {WorkTypeId} was not found", id);
+
+            return new UpdateResult<WorkTypeDto>(UpdateStatus.NotFound);
+        }
+
+        workType.Name = dto.Name;
+        workType.Category = dto.Category;
+        workType.Cost = dto.Cost;
+        workType.Duration = dto.Duration;
+        workType.Description = dto.Description;
+
+        var updated = await workTypeRepository.UpdateAsync(workType);
+
+        if (!updated)
+        {
+            logger.LogWarning("Work type with ID {WorkTypeId} could not be updated", id);
+
+            return new UpdateResult<WorkTypeDto>(UpdateStatus.Failed);
+        }
+
+        logger.LogInformation("Work type with ID {WorkTypeId} was updated", id);
+
+        return new UpdateResult<WorkTypeDto>(UpdateStatus.Success, ToDto(workType));
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteResult> DeleteAsync(int id)
+    {
+        logger.LogInformation("Deleting work type with ID {WorkTypeId}", id);
+
+        WorkType? workType = await workTypeRepository.GetByIdAsync(id);
+
+        if (workType is null)
+        {
+            logger.LogWarning("Work type with ID {WorkTypeId} was not found", id);
+
+            return DeleteResult.NotFound;
+        }
+
+        var hasOrders = await workTypeRepository.HasOrdersAsync(id);
+
+        if (hasOrders)
+        {
+            logger.LogWarning("Cannot delete work type with ID {WorkTypeId} because it has repair orders", id);
+
+            return DeleteResult.HasRelatedEntities;
+        }
+
+        var deleted = await workTypeRepository.DeleteAsync(workType);
+
+        if (!deleted)
+        {
+            logger.LogWarning("Work type with ID {WorkTypeId} could not be deleted", id);
+
+            return DeleteResult.NotFound;
+        }
+
+        logger.LogInformation("Work type with ID {WorkTypeId} was deleted", id);
+
+        return DeleteResult.Deleted;
+    }
+
+    private static WorkTypeDto ToDto(WorkType workType)
+    {
+        return new WorkTypeDto
+        {
+            Id = workType.Id,
+            Name = workType.Name,
+            Category = workType.Category,
+            Cost = workType.Cost,
+            Duration = workType.Duration,
+            Description = workType.Description
+        };
+    }
+}
