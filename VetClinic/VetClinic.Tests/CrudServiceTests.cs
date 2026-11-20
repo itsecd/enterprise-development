@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using VetClinic.Application.Exceptions;
+using VetClinic.Contracts.Dto.Breeds;
 using VetClinic.Contracts.Dto.Pets;
 using VetClinic.Contracts.Dto.Vets;
 using VetClinic.Shared;
@@ -176,5 +178,31 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
         var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
 
         await Assert.ThrowsAsync<ArgumentException>(() => s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
+    }
+
+    /// <summary>
+    /// Вид породы нельзя сменить, если к ней привязаны питомцы: «Лабрадор» есть у Рекса и Лаки
+    /// </summary>
+    [Fact]
+    public async Task UpdateBreed_SpeciesWithPetsAttached_Throws()
+    {
+        var s = NewServices();
+        var breed = new BreedEditDto { Name = "Лабрадор", Species = AnimalSpecies.Cat };
+
+        await Assert.ThrowsAsync<ConflictException>(() => s.Breeds.UpdateAsync(1, breed, TestContext.Current.CancellationToken));
+    }
+
+    /// <summary>
+    /// У породы без питомцев вид меняется
+    /// </summary>
+    [Fact]
+    public async Task UpdateBreed_SpeciesWithoutPets_ChangesSpecies()
+    {
+        var s = NewServices();
+        var created = await s.Breeds.CreateAsync(new BreedEditDto { Name = "Новая", Species = AnimalSpecies.Dog }, TestContext.Current.CancellationToken);
+
+        var updated = await s.Breeds.UpdateAsync(created.Id, new BreedEditDto { Name = "Новая", Species = AnimalSpecies.Cat }, TestContext.Current.CancellationToken);
+
+        Assert.Equal(AnimalSpecies.Cat, updated!.Species);
     }
 }

@@ -13,4 +13,11 @@ public interface IPetRepository : IRepository<Pet>
     /// <param name="vetId">Идентификатор врача</param>
     /// <param name="cancellationToken">Токен отмены</param>
     public Task<IReadOnlyList<Pet>> GetByVetOrderedByNicknameAsync(int vetId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Есть ли питомцы указанной породы
+    /// </summary>
+    /// <param name="breedId">Идентификатор породы</param>
+    /// <param name="cancellationToken">Токен отмены</param>
+    public Task<bool> AnyByBreedAsync(int breedId, CancellationToken cancellationToken = default);
 }

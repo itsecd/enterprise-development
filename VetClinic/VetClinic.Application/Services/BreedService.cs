@@ -1,3 +1,4 @@
+using VetClinic.Application.Exceptions;
 using VetClinic.Application.Mapping;
 using VetClinic.Contracts.Dto.Breeds;
 using VetClinic.Contracts.Services;
@@ -9,8 +10,10 @@ namespace VetClinic.Application.Services;
 /// Сервис пород, при удалении породы у питомцев она сбрасывается на стороне базы
 /// </summary>
 /// <param name="breeds">Репозиторий пород</param>
+/// <param name="pets">Репозиторий питомцев</param>
 public class BreedService(
-    IBreedRepository breeds) : IBreedService
+    IBreedRepository breeds,
+    IPetRepository pets) : IBreedService
 {
     /// <inheritdoc/>
     public async Task<IReadOnlyList<BreedDto>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -41,6 +44,11 @@ public class BreedService(
         if (entity is null)
         {
             return null;
+        }
+
+        if (entity.Species != dto.Species && await pets.AnyByBreedAsync(id, cancellationToken))
+        {
+            throw new ConflictException($"Вид породы «{entity.Name}» нельзя изменить: к ней привязаны питомцы");
         }
 
         entity.Apply(dto);

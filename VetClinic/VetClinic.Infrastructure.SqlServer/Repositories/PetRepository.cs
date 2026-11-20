@@ -18,4 +18,8 @@ public class PetRepository(VetClinicDbContext context) : EfRepository<Pet>(conte
             .OrderBy(p => p.Nickname)
             .ThenBy(p => p.Id)
             .ToListAsync(cancellationToken);
+
+    /// <inheritdoc/>
+    public async Task<bool> AnyByBreedAsync(int breedId, CancellationToken cancellationToken = default) =>
+        await Entities.AnyAsync(p => p.BreedId == breedId, cancellationToken);
 }

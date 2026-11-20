@@ -55,6 +55,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<KeyNotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<ArgumentExceptionHandler>();
+builder.Services.AddExceptionHandler<ConflictExceptionHandler>();
 builder.Services.AddExceptionHandler<DbUpdateExceptionHandler>();
 builder.Services.AddProblemDetails();
 

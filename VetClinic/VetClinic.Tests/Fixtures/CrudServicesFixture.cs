@@ -42,7 +42,7 @@ public sealed class CrudServicesFixture : IAsyncDisposable
             new OwnerService(ownerRepo),
             new PetService(petRepo, ownerRepo, breedRepo),
             new AppointmentService(appointmentRepo, petRepo, vetRepo),
-            new BreedService(breedRepo),
+            new BreedService(breedRepo, petRepo),
             new VetService(vetRepo, specializationRepo));
     }
 

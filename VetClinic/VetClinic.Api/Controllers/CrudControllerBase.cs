@@ -89,7 +89,7 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     /// <response code="400">Данные не прошли валидацию</response>
     /// <response code="401">Нужен токен доступа</response>
     /// <response code="404">Запись или связанная сущность не найдена</response>
-    /// <response code="409">Изменение нарушает ограничения базы данных</response>
+    /// <response code="409">Изменение нарушает ограничения базы данных или противоречит связанным записям</response>
     [Authorize]
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
