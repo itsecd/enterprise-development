@@ -4,7 +4,8 @@ using VetClinic.Domain.Repositories;
 namespace VetClinic.Infrastructure.SqlServer.Repositories;
 
 /// <summary>
-/// Базовый репозиторий поверх EF Core: чтение без отслеживания, удаление с каскадом на стороне базы
+/// Базовый репозиторий поверх EF Core: списки читаются без отслеживания, а одна запись — с отслеживанием,
+/// поэтому UpdateAsync только сохраняет изменения найденной сущности; удаление каскадное на стороне базы
 /// </summary>
 /// <typeparam name="TEntity">Тип сущности</typeparam>
 /// <param name="context">Контекст базы данных</param>
