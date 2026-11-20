@@ -1,0 +1,146 @@
+using BeautySalon.Contracts.Dtos;
+using BeautySalon.Contracts.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.ComponentModel.DataAnnotations;
+
+namespace BeautySalon.Api.Controllers;
+
+/// <summary>
+/// Управление клиентами салона красоты
+/// </summary>
+[ApiController]
+[Route("api/customers")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+public sealed class CustomerController(ICrudService<CustomerDto, CustomerEditDto> service, ILogger<CustomerController> logger) : ControllerBase
+{
+    /// <summary>
+    /// Возвращает всех клиентов
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<CustomerDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return Ok(await service.GetAllAsync(cancellationToken));
+    }
+
+    /// <summary>
+    /// Возвращает клиента по идентификатору
+    /// </summary>
+    [HttpGet("{id:int}", Name = "CustomerById")]
+    [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CustomerDto>> GetByIdAsync(
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
+    {
+        var customer = await service.GetByIdAsync(id, cancellationToken);
+        return customer is null ? (ActionResult<CustomerDto>)NotFound() : (ActionResult<CustomerDto>)Ok(customer);
+    }
+
+    /// <summary>
+    /// Создаёт клиента
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<CustomerDto>> CreateAsync(
+        [FromBody] CustomerEditDto request,
+        CancellationToken cancellationToken)
+    {
+        var created = await service.CreateAsync(request, cancellationToken);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation(
+                "Создан клиент с ID {CustomerId}",
+                created.Id);
+        }
+        return CreatedAtRoute("CustomerById", new { id = created.Id }, created);
+    }
+
+    /// <summary>
+    /// Обновляет данные клиента
+    /// </summary>
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> UpdateAsync(
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        [FromBody] CustomerEditDto request,
+        CancellationToken cancellationToken)
+    {
+        var updated = await service.UpdateAsync(id, request, cancellationToken);
+
+        if (updated is null)
+        {
+            logger.LogWarning("Клиент с ID {CustomerId} не найден для обновления", id);
+            return NotFound();
+        }
+
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Обновлен клиент с ID {CustomerId}", id);
+        }
+
+        return NoContent();
+    }
+
+
+    /// <summary>
+    /// Удаляет клиента
+    /// </summary>
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> DeleteAsync(
+        [FromRoute, Range(1, int.MaxValue)] int id,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var deleted = await service.DeleteAsync(id, cancellationToken);
+
+            if (!deleted)
+            {
+                logger.LogWarning(
+                    "Клиент с ID {CustomerId} не найден для удаления",
+                    id);
+
+                return NotFound();
+            }
+
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation(
+                    "Удален клиент с ID {CustomerId}",
+                    id);
+            }
+
+            return NoContent();
+        }
+        catch (DbUpdateException exception)
+            when (exception.GetBaseException() is PostgresException postgresException
+                && (postgresException.SqlState == PostgresErrorCodes.ForeignKeyViolation
+                    || postgresException.SqlState == PostgresErrorCodes.RestrictViolation))
+        {
+            logger.LogWarning(
+                exception,
+                "Невозможно удалить клиента с ID {CustomerId}: существуют связанные записи",
+                id);
+
+            return Conflict(new ProblemDetails
+            {
+                Title = "Невозможно удалить клиента",
+                Detail = "У клиента есть связанные записи на услуги.",
+                Status = StatusCodes.Status409Conflict
+            });
+        }
+    }
+}

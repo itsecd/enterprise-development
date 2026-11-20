@@ -1,0 +1,121 @@
+using BeautySalon.Contracts.Dtos;
+using BeautySalon.Contracts.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+
+namespace BeautySalon.Api.Controllers;
+
+/// <summary>
+/// Класс аналитики по записям салона
+/// </summary>
+[ApiController]
+[Route("api/analytics")]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+public sealed class AnalyticsController(
+    ISalonAnalyticsService analyticsService,
+    ILogger<AnalyticsController> logger) : ControllerBase
+{
+    /// <summary>
+    /// Мастера с заданным минимальным стажем
+    /// </summary>
+    [HttpGet("experienced-specialists")]
+    [ProducesResponseType(typeof(IReadOnlyList<SpecialistDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<SpecialistDto>>> GetExperiencedSpecialistsAsync(
+        [FromQuery, Range(0, 80)] int minimumExperienceYears = 5,
+        CancellationToken cancellationToken = default)
+    {
+        var specialists = await analyticsService.GetExperiencedSpecialistsAsync(minimumExperienceYears, cancellationToken);
+
+        return Ok(specialists);
+    }
+
+    /// <summary>
+    /// Свободные "окошки" у мастера
+    /// </summary>
+    [HttpGet("specialist-windows/{specialistId:int}")]
+    [ProducesResponseType(typeof(IReadOnlyList<TimeSlotDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<TimeSlotDto>>> GetSpecialistWindowsAsync(
+        [FromRoute, Range(1, int.MaxValue)] int specialistId,
+        CancellationToken cancellationToken)
+    {
+        var windows = await analyticsService.GetSpecialistWindowsAsync(specialistId, cancellationToken);
+
+        if (windows is null)
+        {
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(
+                    "Специалист с ID {SpecialistId} не найден при запросе свободных окон.",
+                    specialistId);
+            }
+
+            return NotFound();
+        }
+
+        return Ok(windows);
+    }
+
+    /// <summary>
+    /// Самые популярные услуги
+    /// </summary>
+    [HttpGet("top-services")]
+    [ProducesResponseType(typeof(IReadOnlyList<PopularServiceDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IReadOnlyList<PopularServiceDto>>> GetTopServicesAsync(
+        [FromQuery, Range(1, 100)] int count = 5,
+        CancellationToken cancellationToken = default)
+    {
+        var services = await analyticsService.GetTopServicesAsync(count, cancellationToken);
+
+        return Ok(services);
+    }
+
+    /// <summary>
+    /// Количество повторных записей клиентов за указанный период
+    /// </summary>
+    [HttpGet("repeat-bookings")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<int>> GetRepeatBookingCountAsync(
+        [FromQuery, Required] DateTimeOffset? from,
+        [FromQuery, Required] DateTimeOffset? to,
+        CancellationToken cancellationToken)
+    {
+        if (from is null || to is null || from.Value >= to.Value)
+        {
+            var problem = new ValidationProblemDetails()
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Некорректный период"
+            };
+
+            problem.Errors.Add(
+                "period",
+                ["Параметры from и to обязательны; from должен быть раньше to."]);
+
+            return ValidationProblem(problem);
+        }
+
+        var result = await analyticsService.GetRepeatBookingCountAsync(
+            from.Value,
+            to.Value,
+            cancellationToken);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Клиенты записанные к нескольким мастерам упорядоченные по дате рождения
+    /// </summary>
+    [HttpGet("customers-with-multiple-specialists")]
+    [ProducesResponseType(typeof(IReadOnlyList<CustomerDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<CustomerDto>>> GetCustomersWithMultipleSpecialistsAsync(CancellationToken cancellationToken)
+    {
+        var customers = await analyticsService.GetCustomersWithMultipleSpecialistsAsync(cancellationToken);
+
+        return Ok(customers);
+    }
+}
