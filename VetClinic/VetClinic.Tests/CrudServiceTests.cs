@@ -154,4 +154,27 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
 
         await Assert.ThrowsAsync<DbUpdateException>(() => s.Vets.CreateAsync(vet, TestContext.Current.CancellationToken));
     }
+
+    /// <summary>
+    /// Питомца нельзя создать с породой другого вида: «Персидская» относится к кошкам
+    /// </summary>
+    [Fact]
+    public async Task CreatePet_BreedOfOtherSpecies_Throws()
+    {
+        var s = NewServices();
+
+        await Assert.ThrowsAsync<ArgumentException>(() => s.Pets.CreateAsync(NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
+    }
+
+    /// <summary>
+    /// При изменении питомца вид и порода тоже должны совпадать
+    /// </summary>
+    [Fact]
+    public async Task UpdatePet_BreedOfOtherSpecies_Throws()
+    {
+        var s = NewServices();
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
+    }
 }
