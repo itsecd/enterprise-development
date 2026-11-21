@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="FitnessClub.Api/FitnessClub.Api.csproj" Id="4ecd7717-5fff-4941-9446-9b9537ecfbaa" />
+    <Project Path="FitnessClub.Application/FitnessClub.Application.csproj" Id="fb901a38-c04f-402a-9a98-a5ddacfbf347" />
+    <Project Path="FitnessClub.Contracts/FitnessClub.Contracts.csproj" Id="33f02860-98a4-4b4b-af32-6a9a5eff9965" />
+    <Project Path="FitnessClub.Domain/FitnessClub.Domain.csproj" />
+    <Project Path="FitnessClub.Infrastructure.EfCore/FitnessClub.Infrastructure.EfCore.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="FitnessClub.Tests/FitnessClub.Tests.csproj" />
+  </Folder>
+  <Project Path="FitnessClub.AppHost/FitnessClub.AppHost.csproj" Id="fb4ecbb8-5243-40d0-b2ad-51328b420394" />
+</Solution>
