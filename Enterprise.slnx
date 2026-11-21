@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TransportCompany.Api/TransportCompany.Api.csproj" />
+    <Project Path="src/TransportCompany.AppHost/TransportCompany.AppHost.csproj" />
+    <Project Path="src/TransportCompany.Application/TransportCompany.Application.csproj" />
+    <Project Path="src/TransportCompany.Contracts/TransportCompany.Contracts.csproj" />
+    <Project Path="src/TransportCompany.Infrastructure.InMemory/TransportCompany.Infrastructure.InMemory.csproj" />
+    <Project Path="src/TransportCompany.Infrastructure.MsSqlServer/TransportCompany.Infrastructure.MsSqlServer.csproj" />
+    <Project Path="src/TransportCompany.ServiceDefaults/TransportCompany.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Project Path="src/TransportCompany.Domain/TransportCompany.Domain.csproj" />
+  <Project Path="tests/TransportCompany.Tests/TransportCompany.Tests.csproj" />
+</Solution>

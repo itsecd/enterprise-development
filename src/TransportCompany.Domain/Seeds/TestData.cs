@@ -1,0 +1,97 @@
+using TransportCompany.Domain.Entities;
+using TransportCompany.Domain.Enums;
+
+namespace TransportCompany.Domain.Seeds;
+
+/// <summary>
+/// Статические тестовые данные для инициализации БД и тестов
+/// </summary>
+public static class TestData
+{
+    private static readonly DateTime _baseDate = new(2026, 3, 1, 12, 0, 0, DateTimeKind.Utc);
+
+    /// <summary>
+    /// Создаёт список моделей транспортных средств
+    /// </summary>
+    public static List<VehicleModel> GetVehicleModels() =>
+    [
+        new VehicleModel { Id = 1, BodyType = BodyType.Sedan, BodyVolume = 82 },
+        new VehicleModel { Id = 2, BodyType = BodyType.Hatchback, BodyVolume = 90 },
+        new VehicleModel { Id = 3, BodyType = BodyType.Coupe, BodyVolume = 75 },
+        new VehicleModel { Id = 4, BodyType = BodyType.Cabriolet, BodyVolume = 70 },
+        new VehicleModel { Id = 5, BodyType = BodyType.SUV, BodyVolume = 150 },
+        new VehicleModel { Id = 6, BodyType = BodyType.Crossover, BodyVolume = 120 },
+        new VehicleModel { Id = 7, BodyType = BodyType.StationWagon, BodyVolume = 110 },
+        new VehicleModel { Id = 8, BodyType = BodyType.Minivan, BodyVolume = 130 },
+        new VehicleModel { Id = 9, BodyType = BodyType.Van, BodyVolume = 200 },
+        new VehicleModel { Id = 10, BodyType = BodyType.PickupTruck, BodyVolume = 180 }
+    ];
+
+    /// <summary>
+    /// Создаёт список клиентов
+    /// </summary>
+    public static List<Client> GetClients() =>
+    [
+        new Client { Id = 1, Name = "Donald Truck", Phone = "88005553535" },
+        new Client { Id = 2, Name = "Cat Dog", Phone = "89991112233" },
+        new Client { Id = 3, Name = "John Smith", Phone = "89001234567" },
+        new Client { Id = 4, Name = "Emma Watson", Phone = "89112345678" },
+        new Client { Id = 5, Name = "Michael Brown", Phone = "89223456789" },
+        new Client { Id = 6, Name = "Sarah Johnson", Phone = "89334567890" },
+        new Client { Id = 7, Name = "David Miller", Phone = "89445678901" },
+        new Client { Id = 8, Name = "Lisa Davis", Phone = "89556789012" },
+        new Client { Id = 9, Name = "James Wilson", Phone = "89667890123" },
+        new Client { Id = 10, Name = "Maria Garcia", Phone = "89778901234" }
+    ];
+
+    /// <summary>
+    /// Создаёт список водителей
+    /// </summary>
+    public static List<Driver> GetDrivers() =>
+    [
+        new Driver { Id = 1, PassportNumber = "1234 567890", FullName = "John Johnson", Experience = 5, License = DrivingLicense.C },
+        new Driver { Id = 2, PassportNumber = "2345 678901", FullName = "Mike Tyson", Experience = 8, License = DrivingLicense.CE },
+        new Driver { Id = 3, PassportNumber = "3456 789012", FullName = "Conor McGregor", Experience = 3, License = DrivingLicense.CE },
+        new Driver { Id = 4, PassportNumber = "4567 890123", FullName = "Anderson Silva", Experience = 15, License = DrivingLicense.CE },
+        new Driver { Id = 5, PassportNumber = "5678 901234", FullName = "Georges St-Pierre", Experience = 10, License = DrivingLicense.CE },
+        new Driver { Id = 6, PassportNumber = "6789 012345", FullName = "Jon Jones", Experience = 7, License = DrivingLicense.CE },
+        new Driver { Id = 7, PassportNumber = "7890 123456", FullName = "Daniel Cormier", Experience = 20, License = DrivingLicense.C1 },
+        new Driver { Id = 8, PassportNumber = "8901 234567", FullName = "Stipe Miocic", Experience = 6, License = DrivingLicense.C },
+        new Driver { Id = 9, PassportNumber = "9012 345678", FullName = "Israel Adesanya", Experience = 4, License = DrivingLicense.M },
+        new Driver { Id = 10, PassportNumber = "1111 345678", FullName = "Aaaaaa Uuuuuuuu", Experience = 1, License = DrivingLicense.M }
+    ];
+
+    /// <summary>
+    /// Создаёт список транспортных средств
+    /// </summary>
+    public static List<Vehicle> GetVehicles(List<VehicleModel> models) =>
+    [
+        new Vehicle { Id = 1, LicensePlate = "X005XX05", LoadCapacity = 20.0, ModelId = 1, Model = models[0] },
+        new Vehicle { Id = 2, LicensePlate = "E001MP777", LoadCapacity = 15.0, ModelId = 2, Model = models[1] },
+        new Vehicle { Id = 3, LicensePlate = "A123BC77", LoadCapacity = 25.5, ModelId = 3, Model = models[2] },
+        new Vehicle { Id = 4, LicensePlate = "B456DE99", LoadCapacity = 18.0, ModelId = 4, Model = models[3] },
+        new Vehicle { Id = 5, LicensePlate = "C789FG11", LoadCapacity = 30.0, ModelId = 2, Model = models[1] },
+        new Vehicle { Id = 6, LicensePlate = "D012HI33", LoadCapacity = 12.5, ModelId = 6, Model = models[5] },
+        new Vehicle { Id = 7, LicensePlate = "E345JK55", LoadCapacity = 22.0, ModelId = 2, Model = models[1] },
+        new Vehicle { Id = 8, LicensePlate = "F678LM77", LoadCapacity = 28.0, ModelId = 2, Model = models[1] },
+        new Vehicle { Id = 9, LicensePlate = "G901NO88", LoadCapacity = 16.0, ModelId = 9, Model = models[8] },
+        new Vehicle { Id = 10, LicensePlate = "H234PQ00", LoadCapacity = 35.0, ModelId = 10, Model = models[9] }
+    ];
+
+    /// <summary>
+    /// Создаёт список рейсов
+    /// </summary>
+    public static List<Trip> GetTrips(List<Vehicle> vehicles, List<Driver> drivers, List<Client> clients) =>
+    [
+        new Trip { Id = 1, DriverId = 1, VehicleId = 1, ClientId = 1, Origin = "Москва", Destination = "Казань", Driver = drivers[0], Vehicle = vehicles[0], Client = clients[0], Date = _baseDate.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
+        new Trip { Id = 2, DriverId = 2, VehicleId = 2, ClientId = 2, Origin = "Самара", Destination = "Уфа", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[1], Date = _baseDate.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
+        new Trip { Id = 3, DriverId = 2, VehicleId = 2, ClientId = 3, Origin = "Уфа", Destination = "Пермь", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[2], Date = _baseDate.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
+        new Trip { Id = 4, DriverId = 3, VehicleId = 4, ClientId = 4, Origin = "Ростов", Destination = "Краснодар", Driver = drivers[2], Vehicle = vehicles[3], Client = clients[3], Date = _baseDate.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
+        new Trip { Id = 5, DriverId = 3, VehicleId = 3, ClientId = 5, Origin = "Сочи", Destination = "Москва", Driver = drivers[2], Vehicle = vehicles[2], Client = clients[4], Date = _baseDate.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
+        new Trip { Id = 6, DriverId = 4, VehicleId = 6, ClientId = 6, Origin = "Новосибирск", Destination = "Омск", Driver = drivers[3], Vehicle = vehicles[5], Client = clients[5], Date = _baseDate.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
+        new Trip { Id = 7, DriverId = 4, VehicleId = 7, ClientId = 7, Origin = "Омск", Destination = "Тюмень", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[6], Date = _baseDate.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
+        new Trip { Id = 8, DriverId = 4, VehicleId = 7, ClientId = 8, Origin = "Тюмень", Destination = "Екатеринбург", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[7], Date = _baseDate.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
+        new Trip { Id = 9, DriverId = 5, VehicleId = 7, ClientId = 9, Origin = "Екатеринбург", Destination = "Челябинск", Driver = drivers[4], Vehicle = vehicles[6], Client = clients[8], Date = _baseDate.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
+        new Trip { Id = 10, DriverId = 6, VehicleId = 10, ClientId = 10, Origin = "Волгоград", Destination = "Астрахань", Driver = drivers[5], Vehicle = vehicles[9], Client = clients[9], Date = _baseDate.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
+    ];
+}
