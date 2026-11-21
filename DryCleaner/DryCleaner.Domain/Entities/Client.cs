@@ -10,7 +10,7 @@ public class Client
 {
     /// <summary>
     /// Идинтификатор
-    /// </summary
+    /// </summary>
     [Column("id")]
     public required int Id { get; set; }
 
