@@ -9,6 +9,9 @@ namespace DryCleaner.Domain.Data;
 /// </summary>
 public static class DataSeed
 {
+    /// <summary>
+    /// Набор тестовых данных для категорий товаров
+    /// </summary>
     public static List<ProductCategory> Categories { get; } =
     [
         new ProductCategory
@@ -83,6 +86,9 @@ public static class DataSeed
         }
     ];
 
+    /// <summary>
+    /// Набор тестовых данных для клиентов
+    /// </summary>
     public static List<Client> Clients { get; } =
     [
         new Client { Id = 1, Name = "Иванов Иван Иванович", Phone = "+79990000001" },
@@ -97,6 +103,9 @@ public static class DataSeed
         new Client { Id = 10, Name = "Волков Сергей Александрович", Phone = "+79990000010" }
     ];
 
+    /// <summary>
+    /// Набор тестовых данных для изделий
+    /// </summary>
     public static List<Product> Products { get; } =
     [
         new Product
@@ -180,6 +189,9 @@ public static class DataSeed
         }
     ];
 
+    /// <summary>
+    /// Набор тестовых данных для заказов
+    /// </summary>
     public static List<Order> Orders { get; } =
     [
         new Order

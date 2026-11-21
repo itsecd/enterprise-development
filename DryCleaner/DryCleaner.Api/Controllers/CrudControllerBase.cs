@@ -70,7 +70,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
                 nameof(GetAll), GetType().Name, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -101,13 +101,13 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
         }
         catch (KeyNotFoundException notFound)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
                 nameof(Create), GetType().Name, notFound.Message);
             return NotFound(notFound.Message);
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called with parameter: {dto}. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called with parameter: {dto}. Ended with an error: {errorText}",
                 nameof(Create), GetType().Name, dto, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -140,13 +140,13 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
         }
         catch (KeyNotFoundException notFound)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
                 nameof(Update), GetType().Name, notFound.Message);
             return NotFound(notFound.Message);
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called with parameter: id={id}, {dto}. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called with parameter: id={id}, {dto}. Ended with an error: {errorText}",
                 nameof(Update), GetType().Name, id, dto, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -177,7 +177,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called with parameter: id={id}. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called with parameter: id={id}. Ended with an error: {errorText}",
                 nameof(Delete), GetType().Name, id, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }

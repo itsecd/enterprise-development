@@ -39,7 +39,7 @@ public class AnalyticController(IAnalyticService service, ILogger<AnalyticContro
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
                 nameof(GetInProgressOrders), GetType().Name, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -70,7 +70,7 @@ public class AnalyticController(IAnalyticService service, ILogger<AnalyticContro
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called with parameters: dateFrom={dateFrom}, dateTo={dateTo}. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called with parameters: dateFrom={dateFrom}, dateTo={dateTo}. Ended with an error: {errorText}",
                 nameof(GetTop5MostActiveClients), GetType().Name, dateFrom, dateTo, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -99,7 +99,7 @@ public class AnalyticController(IAnalyticService service, ILogger<AnalyticContro
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
                 nameof(GetClientsAverageProcessingDays), GetType().Name, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -131,7 +131,7 @@ public class AnalyticController(IAnalyticService service, ILogger<AnalyticContro
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called with parameters: dateFrom={dateFrom}, dateTo={dateTo}. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called with parameters: dateFrom={dateFrom}, dateTo={dateTo}. Ended with an error: {errorText}",
                 nameof(GetTop5MostPopularCategories), GetType().Name, dateFrom, dateTo, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -163,7 +163,7 @@ public class AnalyticController(IAnalyticService service, ILogger<AnalyticContro
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called with parameters: dateFrom={dateFrom}, dateTo={dateTo}. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called with parameters: dateFrom={dateFrom}, dateTo={dateTo}. Ended with an error: {errorText}",
                 nameof(GetTop5LeastPopularCategories), GetType().Name, dateFrom, dateTo, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
@@ -193,7 +193,7 @@ public class AnalyticController(IAnalyticService service, ILogger<AnalyticContro
         }
         catch (Exception ex)
         {
-            logger.LogInformation("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
+            logger.LogError("{method} method of {Pcontroller} was called. Ended with an error: {errorText}",
                 nameof(GetClientWhoSpentTheMostMoney), GetType().Name, ex.Message);
             return StatusCode(500, $"{ex.Message}");
         }
