@@ -1,4 +1,5 @@
-﻿using CarWash.Contracts.Dto;
+﻿using CarWash.Application.Mapping;
+using CarWash.Contracts.Dto;
 using CarWash.Contracts.Interfaces;
 using CarWash.Domain.Entities;
 using CarWash.Domain.Interfaces;
@@ -91,12 +92,9 @@ public class OrderService(
         return new OrderDto
         {
             Id = order.Id,
-            ClientId = order.Client.Id,
-            ClientFullName = order.Client.FullName,
-            CarId = order.Car.Id,
-            CarLicensePlate = order.Car.LicensePlate,
-            ServiceId = order.Service.Id,
-            ServiceName = order.Service.Name,
+            Client = order.Client.ToDto(),
+            Car = order.Car.ToDto(),
+            Service = order.Service.ToDto(),
             StartTime = order.StartTime,
             BoxNumber = order.BoxNumber
         };
