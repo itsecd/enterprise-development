@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="Hotel.API/Hotel.API.csproj" Id="fc04ba78-6b9e-4219-895e-079eb2b1c733" />
+  <Project Path="Hotel.AppHost/Hotel.AppHost.csproj" Id="bc6f495e-91f9-46fb-b626-1fd8e8f2155f" />
+  <Project Path="Hotel.Application/Hotel.Application.csproj" />
+  <Project Path="Hotel.Contracts/Hotel.Contracts.csproj" />
+  <Project Path="Hotel.Domain/Hotel.Domain.csproj" />
+  <Project Path="Hotel.Infrastructure.Database/Hotel.Infrastructure.Database.csproj" Id="78c7f3c9-b6c0-40b3-a668-23a8f7450aa0" />
+  <Project Path="Hotel.Infrastructure.InMemory/Hotel.Infrastructure.InMemory.csproj" />
+  <Project Path="Hotel.Tests/Hotel.Tests.csproj" />
+</Solution>

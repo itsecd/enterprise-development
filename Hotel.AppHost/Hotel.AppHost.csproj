@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<UserSecretsId>cbd886ae-129d-4867-bea0-8b60d21061b4</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.AppHost" Version="17.0.0" />
+		<PackageReference Include="Aspire.Hosting.Dotnet" Version="17.0.0" />
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="17.0.0" />
+	</ItemGroup>
+
+</Project>
