@@ -13,7 +13,6 @@ public class ServiceConfiguration : IEntityTypeConfiguration<Service>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Service> builder)
     {
-        builder.ToTable("Services");
         builder.HasKey(s => s.Id);
 
         builder.Property(s => s.Name).IsRequired().HasMaxLength(200);

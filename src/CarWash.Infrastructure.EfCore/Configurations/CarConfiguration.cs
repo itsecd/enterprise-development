@@ -13,7 +13,6 @@ public class CarConfiguration : IEntityTypeConfiguration<Car>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Car> builder)
     {
-        builder.ToTable("Cars");
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.LicensePlate).IsRequired().HasMaxLength(20);

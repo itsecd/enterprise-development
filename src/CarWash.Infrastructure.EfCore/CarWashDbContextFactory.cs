@@ -12,7 +12,10 @@ public class CarWashDbContextFactory : IDesignTimeDbContextFactory<CarWashDbCont
     public CarWashDbContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder<CarWashDbContext>()
-            .UseMySql("Server=localhost;Database=carwashdb;User=root;Password=design-time", CarWashDbContext.MySqlVersion)
+            .UseMySql(
+                "Server=localhost;Database=carwashdb;User=root;Password=design-time",
+                CarWashDbContext.MySqlVersion,
+                mySqlOptions => mySqlOptions.MigrationsHistoryTable(CarWashDbContext.MigrationsHistoryTableName))
             .Options;
 
         return new CarWashDbContext(options);

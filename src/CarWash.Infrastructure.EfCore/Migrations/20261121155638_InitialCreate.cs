@@ -18,104 +18,104 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Clients",
+                name: "clients",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FullName = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    full_name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Phone = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true)
+                    phone = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.PrimaryKey("pk_clients", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Services",
+                name: "services",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Category = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                    category = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    DurationMinutes = table.Column<int>(type: "int", nullable: false)
+                    price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    duration_minutes = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.PrimaryKey("pk_services", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Cars",
+                name: "cars",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    LicensePlate = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                    license_plate = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Brand = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                    brand = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClientId = table.Column<int>(type: "int", nullable: true)
+                    client_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cars", x => x.Id);
+                    table.PrimaryKey("pk_cars", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Cars_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
+                        name: "fk_cars_clients_client_id",
+                        column: x => x.client_id,
+                        principalTable: "clients",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.SetNull);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "orders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
-                    CarId = table.Column<int>(type: "int", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    BoxNumber = table.Column<int>(type: "int", nullable: false)
+                    client_id = table.Column<int>(type: "int", nullable: false),
+                    service_id = table.Column<int>(type: "int", nullable: false),
+                    car_id = table.Column<int>(type: "int", nullable: false),
+                    start_time = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    box_number = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("pk_orders", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Orders_Cars_CarId",
-                        column: x => x.CarId,
-                        principalTable: "Cars",
-                        principalColumn: "Id",
+                        name: "fk_orders_cars_car_id",
+                        column: x => x.car_id,
+                        principalTable: "cars",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Orders_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
+                        name: "fk_orders_clients_client_id",
+                        column: x => x.client_id,
+                        principalTable: "clients",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Orders_Services_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "Services",
-                        principalColumn: "Id",
+                        name: "fk_orders_services_service_id",
+                        column: x => x.service_id,
+                        principalTable: "services",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
-                table: "Clients",
-                columns: new[] { "Id", "FullName", "Phone" },
+                table: "clients",
+                columns: new[] { "id", "full_name", "phone" },
                 values: new object[,]
                 {
                     { 1, "Иванов Иван Иванович", "+78461112233" },
@@ -131,8 +131,8 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Services",
-                columns: new[] { "Id", "Category", "DurationMinutes", "Name", "Price" },
+                table: "services",
+                columns: new[] { "id", "category", "duration_minutes", "name", "price" },
                 values: new object[,]
                 {
                     { 1, "Passenger", 20, "Экспресс-мойка", 600m },
@@ -148,8 +148,8 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Cars",
-                columns: new[] { "Id", "Brand", "ClientId", "LicensePlate" },
+                table: "cars",
+                columns: new[] { "id", "brand", "client_id", "license_plate" },
                 values: new object[,]
                 {
                     { 1, "Lada Ballada", 1, "А101АА663" },
@@ -166,8 +166,8 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Orders",
-                columns: new[] { "Id", "BoxNumber", "CarId", "ClientId", "ServiceId", "StartTime" },
+                table: "orders",
+                columns: new[] { "id", "box_number", "car_id", "client_id", "service_id", "start_time" },
                 values: new object[,]
                 {
                     { 1, 1, 1, 1, 1, new DateTime(2026, 6, 1, 10, 0, 0, 0, DateTimeKind.Unspecified) },
@@ -194,40 +194,40 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_ClientId",
-                table: "Cars",
-                column: "ClientId");
+                name: "ix_cars_client_id",
+                table: "cars",
+                column: "client_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CarId",
-                table: "Orders",
-                column: "CarId");
+                name: "ix_orders_car_id",
+                table: "orders",
+                column: "car_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_ClientId",
-                table: "Orders",
-                column: "ClientId");
+                name: "ix_orders_client_id",
+                table: "orders",
+                column: "client_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_ServiceId",
-                table: "Orders",
-                column: "ServiceId");
+                name: "ix_orders_service_id",
+                table: "orders",
+                column: "service_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "orders");
 
             migrationBuilder.DropTable(
-                name: "Cars");
+                name: "cars");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "services");
 
             migrationBuilder.DropTable(
-                name: "Clients");
+                name: "clients");
         }
     }
 }

@@ -26,27 +26,33 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Brand")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("brand");
 
                     b.Property<int?>("ClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("client_id");
 
                     b.Property<string>("LicensePlate")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("license_plate");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_cars");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId")
+                        .HasDatabaseName("ix_cars_client_id");
 
-                    b.ToTable("Cars", (string)null);
+                    b.ToTable("cars", (string)null);
 
                     b.HasData(
                         new
@@ -132,22 +138,26 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("full_name");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("phone");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_clients");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("clients", (string)null);
 
                     b.HasData(
                         new
@@ -216,34 +226,44 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BoxNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("box_number");
 
                     b.Property<int>("CarId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("car_id");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("client_id");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("service_id");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("start_time");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orders");
 
-                    b.HasIndex("CarId");
+                    b.HasIndex("CarId")
+                        .HasDatabaseName("ix_orders_car_id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId")
+                        .HasDatabaseName("ix_orders_client_id");
 
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("ServiceId")
+                        .HasDatabaseName("ix_orders_service_id");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("orders", (string)null);
 
                     b.HasData(
                         new
@@ -441,30 +461,36 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("category");
 
                     b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("duration_minutes");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("name");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_services");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("services", (string)null);
 
                     b.HasData(
                         new
@@ -554,7 +580,8 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                     b.HasOne("CarWash.Domain.Entities.Client", null)
                         .WithMany("Cars")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_cars_clients_client_id");
                 });
 
             modelBuilder.Entity("CarWash.Domain.Entities.Order", b =>
@@ -563,19 +590,22 @@ namespace CarWash.Infrastructure.EfCore.Migrations
                         .WithMany()
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_cars_car_id");
 
                     b.HasOne("CarWash.Domain.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_clients_client_id");
 
                     b.HasOne("CarWash.Domain.Entities.Service", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_services_service_id");
 
                     b.Navigation("Car");
 

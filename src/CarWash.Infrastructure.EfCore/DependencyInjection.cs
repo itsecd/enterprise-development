@@ -21,7 +21,8 @@ public static class DependencyInjection
         services.AddDbContext<CarWashDbContext>((serviceProvider, options) =>
             options.UseMySql(
                 serviceProvider.GetRequiredService<MySqlDataSource>(),
-                CarWashDbContext.MySqlVersion));
+                CarWashDbContext.MySqlVersion,
+                mySqlOptions => mySqlOptions.MigrationsHistoryTable(CarWashDbContext.MigrationsHistoryTableName)));
 
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();

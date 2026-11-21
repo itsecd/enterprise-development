@@ -13,7 +13,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.ToTable("Orders");
         builder.HasKey(o => o.Id);
 
         builder.HasOne(o => o.Client)

@@ -13,7 +13,6 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Client> builder)
     {
-        builder.ToTable("Clients");
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.FullName).IsRequired().HasMaxLength(200);

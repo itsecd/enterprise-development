@@ -16,6 +16,11 @@ public class CarWashDbContext(DbContextOptions<CarWashDbContext> options) : DbCo
     public static readonly ServerVersion MySqlVersion = new MySqlServerVersion(new Version(8, 4, 0));
 
     /// <summary>
+    /// Имя таблицы истории миграций
+    /// </summary>
+    public const string MigrationsHistoryTableName = "__ef_migrations_history";
+
+    /// <summary>
     /// Автомобили
     /// </summary>
     public DbSet<Car> Cars => Set<Car>();
@@ -34,6 +39,12 @@ public class CarWashDbContext(DbContextOptions<CarWashDbContext> options) : DbCo
     /// Заказы
     /// </summary>
     public DbSet<Order> Orders => Set<Order>();
+
+    /// <inheritdoc />
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSnakeCaseNamingConvention();
+    }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
