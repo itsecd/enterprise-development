@@ -24,7 +24,7 @@ public class ClientEfCoreRepository(DryCleanerDbContext context) : IRepository<C
         var result = await context.Clients.AddAsync(entity);
         await context.SaveChangesAsync();
 
-        return entity;
+        return result.Entity;
     }
 
     /// <summary>
