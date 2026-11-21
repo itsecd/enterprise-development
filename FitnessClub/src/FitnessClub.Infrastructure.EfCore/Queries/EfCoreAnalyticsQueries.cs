@@ -6,8 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitnessClub.Infrastructure.EfCore.Queries;
 
+/// <summary>
+/// Выполняет аналитические запросы к базе данных с помощью EFCore
+/// </summary>
 public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalyticsQueries
 {
+    /// <summary>
+    /// Возвращает тренеров, стаж которых не меньше заданного
+    /// </summary>
+    /// <param name="minimumExperience">Минимальный стаж в годах</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Тренеры, удовлетворяющие условию, в порядке возрастания идентификатора</returns>
     public async Task<IReadOnlyList<TrainerDto>> GetExperiencedTrainersAsync(
         int minimumExperience,
         CancellationToken cancellationToken)
@@ -30,7 +39,14 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<BookingDto>> GetHallBookingsForMonthAsync(int hallId, DateOnly dateInMonth, CancellationToken cancellationToken)
+    /// <summary>
+    /// Возвращает бронирования указанного зала за календарный месяц, заданный датой
+    /// </summary>
+    /// <param name="hallId">Идентификатор зала</param>
+    /// <param name="dateInMonth">Дата, определяющая месяц и год выборки</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Бронирования зала за указанный месяц, отсортированные по дате и идентификатору</returns>
+    public async Task<IReadOnlyList<BookingDto>> GetBookingsInHallForMonthAsync(int hallId, DateOnly dateInMonth, CancellationToken cancellationToken)
     {
         var start = new DateTime(dateInMonth.Year, dateInMonth.Month, 1);
         var end = start.AddMonths(1);
@@ -55,6 +71,12 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
             .ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Возвращает клиентов, срок действия подписки которых истёк до указанной даты
+    /// </summary>
+    /// <param name="asOfDate">Дата, относительно которой проверяется срок действия подписки</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Клиенты с просроченными подписками, отсортированные по имени и идентификатору</returns>
     public async Task<IReadOnlyList<ClientDto>> GetClientsWithOverdueSubscriptionsAsync(
         DateOnly asOfDate,
         CancellationToken cancellationToken)
@@ -77,8 +99,13 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
             .ToListAsync(cancellationToken);
     }
 
-
-    public async Task<IReadOnlyList<PopularTrainerDto>>GetMostPopularTrainersAsync(
+    /// <summary>
+    /// Возвращает тренеров с наибольшим количеством бронирований
+    /// </summary>
+    /// <param name="count">Максимальное количество тренеров в результате</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Тренеры, отсортированные по числу бронирований по убыванию, затем по идентификатору</returns>
+    public async Task<IReadOnlyList<PopularTrainerDto>> GetMostPopularTrainersAsync(
         int count,
         CancellationToken cancellationToken)
     {
@@ -100,14 +127,15 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
     }
 
     /// <summary>
-    /// Проверяет, свободен ли зал в указанное время ищет бронирование этого зала,
-    /// интервал которого включает указанное время
+    /// Проверяет, нет ли бронирования зала, интервал которого включает указанное время
     /// </summary>
     /// <param name="hallId">Идентификатор зала</param>
-    /// <param name="dateTime">Дата и время, для которого проверяется доступность</param>
-    /// <returns><see langword="true"/>, если на указанное время нет бронирования, иначе <see langword="false"/></returns>
-    /// >Зал с указанным идентификатором не найден
-    /// </exception>
+    /// <param name="dateTime">Дата и время проверки</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>
+    /// <see langword="true"/>, если на указанное время нет бронирования;
+    /// в противном случае — <see langword="false"/>
+    /// </returns>
     public async Task<bool> IsHallAvailableAsync(int hallId, DateTime dateTime, CancellationToken cancellationToken)
     {
         return await dbContext.Bookings

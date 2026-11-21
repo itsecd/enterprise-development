@@ -71,7 +71,7 @@ public sealed class AnalyticsService(
         {
             logger.LogDebug("Поиск бронирований зала {HallId} за месяц {DateInMonth}", hallId, dateInMonth);
         }
-        return await analyticsQueries.GetHallBookingsForMonthAsync(hallId, dateInMonth, cancellationToken);
+        return await analyticsQueries.GetBookingsInHallForMonthAsync(hallId, dateInMonth, cancellationToken);
     }
 
     private async Task EnsureHallExistsAsync(

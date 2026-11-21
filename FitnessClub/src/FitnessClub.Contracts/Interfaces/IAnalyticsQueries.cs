@@ -60,7 +60,7 @@ public interface IAnalyticsQueries
     /// <param name="dateInMonth"> Месяц и год выборки</param>
     /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Список бронирований зала за указанный месяц</returns>
-    public Task<IReadOnlyList<BookingDto>> GetHallBookingsForMonthAsync(
+    public Task<IReadOnlyList<BookingDto>> GetBookingsInHallForMonthAsync(
         int hallId,
         DateOnly dateInMonth,
         CancellationToken cancellationToken);

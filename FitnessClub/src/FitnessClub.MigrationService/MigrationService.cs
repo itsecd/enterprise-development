@@ -17,11 +17,11 @@ public sealed class MigrationService(
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-            logger.LogInformation("Начали применять миграции");
-            await using var scope = serviceProvider.CreateAsyncScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<FitnessClubDbContext>();
-            await dbContext.Database.MigrateAsync(stoppingToken);
-            logger.LogInformation("Миграции успешно применены");
-            applicationLifetime.StopApplication();
+        logger.LogInformation("Начали применять миграции");
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FitnessClubDbContext>();
+        await dbContext.Database.MigrateAsync(stoppingToken);
+        logger.LogInformation("Миграции успешно применены");
+        applicationLifetime.StopApplication();
     }
 }

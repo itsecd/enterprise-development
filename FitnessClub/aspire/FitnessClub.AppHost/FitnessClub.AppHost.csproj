@@ -8,7 +8,7 @@
     <IsAspireHost>true</IsAspireHost>
     <AspireUseCliBundle>true</AspireUseCliBundle>
     <AspireCliInvocationMode>DnxPinned</AspireCliInvocationMode>
-    <UserSecretsId>81d2efcc-2f16-428f-b913-9f765e0d3b43</UserSecretsId>
+    <UserSecretsId>81d2efcc-2f16-428f-b913-9f765e0d3b43</UserSecretsId> 
   </PropertyGroup>
 
   <ItemGroup>
