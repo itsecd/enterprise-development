@@ -24,7 +24,7 @@ public static class EfCoreSeeding
                 .CreateLogger("FitnessClub.Database.Seeding");
             if (await context.Set<Specialization>().AnyAsync(cancellationToken))
             {
-                logger.LogInformation("Заполнение базы данных пропущено: специализации уже существуют");
+                logger.LogInformation("Заполнение базы данных пропущено: данные уже существуют");
                 return;
             }
             logger.LogInformation("Начато заполнение базы данных");

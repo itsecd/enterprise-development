@@ -10,6 +10,7 @@
     <Project Path="src/FitnessClub.Infrastructure.EfCore/FitnessClub.Infrastructure.EfCore.csproj" />
     <Project Path="src/FitnessClub.Infrastructure.InMemory/FitnessClub.Infrastructure.InMemory.csproj" />
     <Project Path="src/FitnessClub.MigrationService/FitnessClub.MigrationService.csproj" />
+    <Project Path="src/FitnessClub.ServiceDefaults/FitnessClub.ServiceDefaults.csproj" />
     <Project Path="src/FitnessClub.Shared/FitnessClub.Shared.csproj" />
   </Folder>
   <Folder Name="/tests/">

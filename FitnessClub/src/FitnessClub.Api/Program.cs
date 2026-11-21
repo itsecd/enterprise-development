@@ -36,4 +36,6 @@ app.MapScalarApiReference();
 
 app.MapControllers();
 
+app.Logger.LogInformation("Environment: {EnvironmentName}", app.Environment.EnvironmentName);
+
 app.Run();
