@@ -5,7 +5,7 @@ namespace DryCleaner.Domain.Entities;
 /// <summary>
 /// Клиент химчистки
 /// </summary>
-[Table("students")]
+[Table("clients")]
 public class Client
 {
     /// <summary>
