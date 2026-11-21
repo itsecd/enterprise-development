@@ -4,7 +4,11 @@ using CarWash.Contracts.Interfaces;
 using CarWash.Infrastructure.EfCore;
 using Scalar.AspNetCore;
 
+using MySqlConnector;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -15,11 +19,20 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("carwashdb")
-    ?? throw new InvalidOperationException(
-        "Не задана строка подключения 'carwashdb'. Запустите проект через CarWash.AppHost");
+builder.AddMySqlDataSource("carwashdb", settings =>
+{
+    if (!string.IsNullOrEmpty(settings.ConnectionString))
+    {
+        var connectionStringBuilder = new MySqlConnectionStringBuilder(settings.ConnectionString)
+        {
+            AllowUserVariables = true,
+            UseAffectedRows = false
+        };
+        settings.ConnectionString = connectionStringBuilder.ConnectionString;
+    }
+});
 
-builder.Services.AddEfCoreInfrastructure(connectionString);
+builder.Services.AddEfCoreInfrastructure();
 
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -38,5 +51,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+app.MapDefaultEndpoints();
 
 app.Run();

@@ -2,6 +2,7 @@ using CarWash.Domain.Interfaces;
 using CarWash.Infrastructure.EfCore.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MySqlConnector;
 
 namespace CarWash.Infrastructure.EfCore;
 
@@ -14,12 +15,13 @@ public static class DependencyInjection
     /// Регистрирует контекст БД (MySQL) и репозитории
     /// </summary>
     /// <param name="services">Коллекция сервисов</param>
-    /// <param name="connectionString">Строка подключения к MySQL</param>
     /// <returns>Коллекция сервисов</returns>
-    public static IServiceCollection AddEfCoreInfrastructure(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddEfCoreInfrastructure(this IServiceCollection services)
     {
-        services.AddDbContext<CarWashDbContext>(options =>
-            options.UseMySql(connectionString, CarWashDbContext.MySqlVersion));
+        services.AddDbContext<CarWashDbContext>((serviceProvider, options) =>
+            options.UseMySql(
+                serviceProvider.GetRequiredService<MySqlDataSource>(),
+                CarWashDbContext.MySqlVersion));
 
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
