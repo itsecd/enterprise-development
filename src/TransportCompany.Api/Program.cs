@@ -7,6 +7,8 @@ using TransportCompany.Infrastructure.MsSqlServer.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
 {
     var defaultResponseFactory = options.InvalidModelStateResponseFactory;
@@ -31,12 +33,15 @@ builder.Services.AddOpenApi();
 
 builder.AddSqlServerDbContext<TransportCompanyDbContext>("TransportCompanyDb");
 
+// Репозитории
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IVehicleModelRepository, VehicleModelRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<ITripRepository, TripRepository>();
+builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 
+// Сервисы
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IVehicleModelService, VehicleModelService>();
@@ -73,6 +78,8 @@ app.Use(async (context, next) =>
             context.Request.ContentType);
     }
 });
+
+app.MapDefaultEndpoints();
 
 app.MapControllers();
 

@@ -20,8 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\TransportCompany.Application\TransportCompany.Application.csproj" />
     <ProjectReference Include="..\TransportCompany.Contracts\TransportCompany.Contracts.csproj" />
-    <ProjectReference Include="..\TransportCompany.Infrastructure.InMemory\TransportCompany.Infrastructure.InMemory.csproj" />
     <ProjectReference Include="..\TransportCompany.Infrastructure.MsSqlServer\TransportCompany.Infrastructure.MsSqlServer.csproj" />
+    <ProjectReference Include="..\TransportCompany.ServiceDefaults\TransportCompany.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

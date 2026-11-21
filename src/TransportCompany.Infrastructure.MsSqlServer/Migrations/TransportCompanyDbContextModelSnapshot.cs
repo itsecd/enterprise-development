@@ -132,6 +132,9 @@ namespace TransportCompany.Infrastructure.MsSqlServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PassportNumber")
+                        .IsUnique();
+
                     b.ToTable("Drivers");
 
                     b.HasData(
@@ -410,8 +413,8 @@ namespace TransportCompany.Infrastructure.MsSqlServer.Migrations
 
                     b.Property<string>("LicensePlate")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<double?>("LoadCapacity")
                         .HasColumnType("float");
@@ -420,6 +423,9 @@ namespace TransportCompany.Infrastructure.MsSqlServer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LicensePlate")
+                        .IsUnique();
 
                     b.HasIndex("ModelId");
 

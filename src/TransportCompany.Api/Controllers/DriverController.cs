@@ -83,6 +83,7 @@ public class DriverController(IDriverService service, ILogger<DriverController> 
     [HttpPut("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] DriverEditDto dto, CancellationToken cancellationToken)
     {
@@ -107,6 +108,7 @@ public class DriverController(IDriverService service, ILogger<DriverController> 
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {

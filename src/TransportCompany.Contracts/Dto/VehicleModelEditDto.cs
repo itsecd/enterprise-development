@@ -11,11 +11,12 @@ public class VehicleModelEditDto
     /// <summary>
     /// Тип кузова
     /// </summary>
+    [Range(0, 11, ErrorMessage = "Номер типа кузова должен быть от 0 до 11")]
     public required BodyType BodyType { get; init; }
 
     /// <summary>
     /// Объём кузова в м^3
     /// </summary>
-    [Range(0, 200, ErrorMessage = "Объем кузова должен быть положительным (но до 200 м^2)")]
+    [Range(0, 200, ErrorMessage = "Объем кузова должен быть положительным (до 200 м^3)")]
     public required double BodyVolume { get; init; }
 }

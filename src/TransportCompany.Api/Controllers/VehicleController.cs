@@ -83,6 +83,7 @@ public class VehicleController(IVehicleService service, ILogger<VehicleControlle
     [HttpPut("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Update(int id, [FromBody] VehicleEditDto dto, CancellationToken cancellationToken)
     {
@@ -107,6 +108,7 @@ public class VehicleController(IVehicleService service, ILogger<VehicleControlle
     /// </summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {

@@ -11,28 +11,24 @@ public class TripEditDto
     /// <summary>
     /// Идентификатор водителя
     /// </summary>
-    [Required]
-    [Range(1, int.MaxValue)]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор водителя должен быть больше 0")]
     public required int DriverId { get; init; }
 
     /// <summary>
     /// Идентификатор транспортного средства
     /// </summary>
-    [Required]
-    [Range(1, int.MaxValue)]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор транспортного средства должен быть больше 0")]
     public required int VehicleId { get; init; }
 
     /// <summary>
     /// Идентификатор клиента
     /// </summary>
-    [Required]
-    [Range(1, int.MaxValue)]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор клиента должен быть больше 0")]
     public required int ClientId { get; init; }
 
     /// <summary>
     /// Дата рейса
     /// </summary>
-    [Required]
     public required DateTime Date { get; init; }
 
     /// <summary>
@@ -50,6 +46,7 @@ public class TripEditDto
     /// <summary>
     /// Статус рейса
     /// </summary>
+    [Range(0, 2, ErrorMessage = "Номер статуса рейса должен быть от 0 до 2")]
     public required TripStatus Status { get; init; }
 
     /// <summary>

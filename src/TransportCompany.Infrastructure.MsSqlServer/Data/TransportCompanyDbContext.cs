@@ -31,6 +31,7 @@ public class TransportCompanyDbContext(DbContextOptions<TransportCompanyDbContex
         {
             entity.HasKey(d => d.Id);
             entity.Property(d => d.PassportNumber).HasMaxLength(20);
+            entity.HasIndex(d => d.PassportNumber).IsUnique();
             entity.Property(d => d.FullName).HasMaxLength(100);
         });
 
@@ -42,7 +43,8 @@ public class TransportCompanyDbContext(DbContextOptions<TransportCompanyDbContex
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.HasKey(v => v.Id);
-            entity.Property(v => v.LicensePlate).HasMaxLength(15);
+            entity.Property(v => v.LicensePlate).HasMaxLength(9);
+            entity.HasIndex(v => v.LicensePlate).IsUnique();
 
             entity.HasOne(v => v.Model)
                 .WithMany()
@@ -72,8 +74,10 @@ public class TransportCompanyDbContext(DbContextOptions<TransportCompanyDbContex
                 .HasForeignKey(t => t.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
         SeedData(modelBuilder);
     }
+
     private static void SeedData(ModelBuilder modelBuilder)
     {
         var models = TestData.GetVehicleModels();

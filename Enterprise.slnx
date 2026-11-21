@@ -6,6 +6,7 @@
     <Project Path="src/TransportCompany.Contracts/TransportCompany.Contracts.csproj" />
     <Project Path="src/TransportCompany.Infrastructure.InMemory/TransportCompany.Infrastructure.InMemory.csproj" />
     <Project Path="src/TransportCompany.Infrastructure.MsSqlServer/TransportCompany.Infrastructure.MsSqlServer.csproj" />
+    <Project Path="src/TransportCompany.ServiceDefaults/TransportCompany.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Project Path="src/TransportCompany.Domain/TransportCompany.Domain.csproj" />

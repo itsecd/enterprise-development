@@ -24,6 +24,6 @@ public class VehicleEditDto
     /// <summary>
     /// Идентификатор модели
     /// </summary>
-    [Required(ErrorMessage = "Модель ТС обязательна")]
+    [Range(1, int.MaxValue, ErrorMessage = "Идентификатор модели должен быть больше 0")]
     public required int ModelId { get; init; }
 }

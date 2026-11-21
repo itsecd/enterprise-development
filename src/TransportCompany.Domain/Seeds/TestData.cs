@@ -8,7 +8,7 @@ namespace TransportCompany.Domain.Seeds;
 /// </summary>
 public static class TestData
 {
-    private static readonly DateTime BaseDate = new(2026, 3, 1, 12, 0, 0, DateTimeKind.Utc);
+    private static readonly DateTime _baseDate = new(2026, 3, 1, 12, 0, 0, DateTimeKind.Utc);
 
     /// <summary>
     /// Создаёт список моделей транспортных средств
@@ -83,15 +83,15 @@ public static class TestData
     /// </summary>
     public static List<Trip> GetTrips(List<Vehicle> vehicles, List<Driver> drivers, List<Client> clients) =>
     [
-        new Trip { Id = 1, DriverId = 1, VehicleId = 1, ClientId = 1, Origin = "Москва", Destination = "Казань", Driver = drivers[0], Vehicle = vehicles[0], Client = clients[0], Date = BaseDate.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
-        new Trip { Id = 2, DriverId = 2, VehicleId = 2, ClientId = 2, Origin = "Самара", Destination = "Уфа", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[1], Date = BaseDate.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
-        new Trip { Id = 3, DriverId = 2, VehicleId = 2, ClientId = 3, Origin = "Уфа", Destination = "Пермь", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[2], Date = BaseDate.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
-        new Trip { Id = 4, DriverId = 3, VehicleId = 4, ClientId = 4, Origin = "Ростов", Destination = "Краснодар", Driver = drivers[2], Vehicle = vehicles[3], Client = clients[3], Date = BaseDate.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
-        new Trip { Id = 5, DriverId = 3, VehicleId = 3, ClientId = 5, Origin = "Сочи", Destination = "Москва", Driver = drivers[2], Vehicle = vehicles[2], Client = clients[4], Date = BaseDate.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
-        new Trip { Id = 6, DriverId = 4, VehicleId = 6, ClientId = 6, Origin = "Новосибирск", Destination = "Омск", Driver = drivers[3], Vehicle = vehicles[5], Client = clients[5], Date = BaseDate.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
-        new Trip { Id = 7, DriverId = 4, VehicleId = 7, ClientId = 7, Origin = "Омск", Destination = "Тюмень", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[6], Date = BaseDate.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
-        new Trip { Id = 8, DriverId = 4, VehicleId = 7, ClientId = 8, Origin = "Тюмень", Destination = "Екатеринбург", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[7], Date = BaseDate.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
-        new Trip { Id = 9, DriverId = 5, VehicleId = 7, ClientId = 9, Origin = "Екатеринбург", Destination = "Челябинск", Driver = drivers[4], Vehicle = vehicles[6], Client = clients[8], Date = BaseDate.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
-        new Trip { Id = 10, DriverId = 6, VehicleId = 10, ClientId = 10, Origin = "Волгоград", Destination = "Астрахань", Driver = drivers[5], Vehicle = vehicles[9], Client = clients[9], Date = BaseDate.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
+        new Trip { Id = 1, DriverId = 1, VehicleId = 1, ClientId = 1, Origin = "Москва", Destination = "Казань", Driver = drivers[0], Vehicle = vehicles[0], Client = clients[0], Date = _baseDate.AddDays(-20), CargoWeight = 15.0, TransportationCost = 15000m, Status = TripStatus.InTransit },
+        new Trip { Id = 2, DriverId = 2, VehicleId = 2, ClientId = 2, Origin = "Самара", Destination = "Уфа", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[1], Date = _baseDate.AddDays(-15), CargoWeight = 12.5, TransportationCost = 12000m, Status = TripStatus.Completed },
+        new Trip { Id = 3, DriverId = 2, VehicleId = 2, ClientId = 3, Origin = "Уфа", Destination = "Пермь", Driver = drivers[1], Vehicle = vehicles[1], Client = clients[2], Date = _baseDate.AddDays(-10), CargoWeight = 20.0, TransportationCost = 18000m, Status = TripStatus.Planned },
+        new Trip { Id = 4, DriverId = 3, VehicleId = 4, ClientId = 4, Origin = "Ростов", Destination = "Краснодар", Driver = drivers[2], Vehicle = vehicles[3], Client = clients[3], Date = _baseDate.AddDays(-5), CargoWeight = 8.5, TransportationCost = 9000m, Status = TripStatus.Completed },
+        new Trip { Id = 5, DriverId = 3, VehicleId = 3, ClientId = 5, Origin = "Сочи", Destination = "Москва", Driver = drivers[2], Vehicle = vehicles[2], Client = clients[4], Date = _baseDate.AddDays(-2), CargoWeight = 25.0, TransportationCost = 22000m, Status = TripStatus.InTransit },
+        new Trip { Id = 6, DriverId = 4, VehicleId = 6, ClientId = 6, Origin = "Новосибирск", Destination = "Омск", Driver = drivers[3], Vehicle = vehicles[5], Client = clients[5], Date = _baseDate.AddDays(1), CargoWeight = 10.0, TransportationCost = 11000m, Status = TripStatus.Planned },
+        new Trip { Id = 7, DriverId = 4, VehicleId = 7, ClientId = 7, Origin = "Омск", Destination = "Тюмень", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[6], Date = _baseDate.AddDays(3), CargoWeight = 18.5, TransportationCost = 16500m, Status = TripStatus.Planned },
+        new Trip { Id = 8, DriverId = 4, VehicleId = 7, ClientId = 8, Origin = "Тюмень", Destination = "Екатеринбург", Driver = drivers[3], Vehicle = vehicles[6], Client = clients[7], Date = _baseDate.AddDays(-8), CargoWeight = 22.0, TransportationCost = 20000m, Status = TripStatus.Completed },
+        new Trip { Id = 9, DriverId = 5, VehicleId = 7, ClientId = 9, Origin = "Екатеринбург", Destination = "Челябинск", Driver = drivers[4], Vehicle = vehicles[6], Client = clients[8], Date = _baseDate.AddDays(-1), CargoWeight = 14.0, TransportationCost = 13500m, Status = TripStatus.InTransit },
+        new Trip { Id = 10, DriverId = 6, VehicleId = 10, ClientId = 10, Origin = "Волгоград", Destination = "Астрахань", Driver = drivers[5], Vehicle = vehicles[9], Client = clients[9], Date = _baseDate.AddDays(-2), CargoWeight = 13.0, TransportationCost = 12500m, Status = TripStatus.InTransit }
     ];
 }
