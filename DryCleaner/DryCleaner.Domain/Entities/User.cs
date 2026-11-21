@@ -14,16 +14,19 @@ public class User
     /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
-    public int Id { get; set; }
+    [Column("id")]
+    public required int Id { get; set; }
 
     /// <summary>
     /// Имя пользователя.
     /// </summary>
-    public string Username { get; set; } = null!;
+    [Column("username")]
+    public required string Username { get; set; } = null!;
 
     /// <summary>
     /// Хэш пароля.
     /// </summary>
-    public string PasswordHash { get; set; } = null!;
+    [Column("password_hash")]
+    public required string PasswordHash { get; set; } = null!;
 }
 
