@@ -1,5 +1,4 @@
-﻿using DryCleaner.Application.Contracts.Client;
-using DryCleaner.Application.Contracts.User;
+﻿using DryCleaner.Application.Contracts.User;
 using DryCleaner.Domain.Entities;
 
 namespace DryCleaner.Application.Mappers;

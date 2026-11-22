@@ -2,8 +2,8 @@
 using DryCleaner.Application.Contracts.Auth;
 using DryCleaner.Application.Contracts.ServiceInterfaces;
 using DryCleaner.Application.Mappers;
-using DryCleaner.Domain.Interfaces;
 using DryCleaner.Domain.Entities;
+using DryCleaner.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

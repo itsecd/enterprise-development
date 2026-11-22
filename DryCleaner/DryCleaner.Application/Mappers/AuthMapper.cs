@@ -15,7 +15,7 @@ internal class AuthMapper
     /// <returns>Новая экземпляр сущности User.</returns>
     public static User Map(LoginRequest request)
     {
-        return new User {Id = 0, Username = request.Username, PasswordHash = "" };
+        return new User { Id = 0, Username = request.Username, PasswordHash = "" };
     }
 
     /// <summary>
