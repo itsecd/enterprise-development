@@ -1,3 +1,4 @@
+
 using DryCleaner.Api;
 using DryCleaner.Application.Contracts.ServiceInterfaces;
 using DryCleaner.Application.Services;
@@ -6,14 +7,16 @@ using DryCleaner.Domain.Interfaces;
 using DryCleaner.Infrastructure.EfCore.Repositories;
 using DryCleaner.Infrastructure.EFCore;
 using DryCleaner.ServiceDefaults;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.AddNpgsqlDbContext<DryCleanerDbContext>("Postgres");
 
@@ -21,12 +24,17 @@ builder.Services.AddTransient<IRepository<ProductCategory, int>, ProductCategory
 builder.Services.AddTransient<IRepository<Product, int>, ProductEfCoreRepository>();
 builder.Services.AddTransient<IRepository<Client, int>, ClientEfCoreRepository>();
 builder.Services.AddTransient<IRepository<Order, int>, OrderEfCoreRepository>();
+builder.Services.AddTransient<IUserRepository, UserEfCoreRepository>();
 
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddControllers();
 
@@ -70,6 +78,7 @@ if (app.Environment.IsDevelopment())
 app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
