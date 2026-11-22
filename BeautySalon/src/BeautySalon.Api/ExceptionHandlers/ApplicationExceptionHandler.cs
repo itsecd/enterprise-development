@@ -24,7 +24,7 @@ public class ApplicationExceptionHandler(ILogger<ApplicationExceptionHandler> lo
             return false;
         }
 
-        logger.LogWarning(exception, "Запрос завершился ошибкой {Status}: {Message}", status, exception.Message);
+        logger.LogError(exception, "Запрос завершился ошибкой {Status}: {Message}", status, exception.Message);
 
         httpContext.Response.StatusCode = status;
         await httpContext.Response.WriteAsJsonAsync(
