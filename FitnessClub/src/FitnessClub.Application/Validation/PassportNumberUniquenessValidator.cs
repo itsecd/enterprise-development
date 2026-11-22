@@ -15,19 +15,29 @@ public class PassportNumberUniquenessValidator(
         Person? personBeingUpdated = null,
         CancellationToken cancellationToken = default)
     {
-        var clients = await clientRepository.GetAllAsync(cancellationToken);
-        if (clients.Any(client =>
-                client.PassportNumber == passportNumber &&
-                (personBeingUpdated is not Client currentClient || client.Id != currentClient.Id)))
+        var clientExists = personBeingUpdated is Client currentClient
+            ? await clientRepository.AnyAsync(
+                client => client.PassportNumber == passportNumber &&
+                    client.Id != currentClient.Id,
+                cancellationToken)
+            : await clientRepository.AnyAsync(
+                client => client.PassportNumber == passportNumber,
+                cancellationToken);
+        if (clientExists)
         {
             logger.LogWarning("Такой паспорт уже существует");
             throw new ConflictException(
                 $"Человек с таким паспортным номером уже существует.");
         }
-        var trainers = await trainerRepository.GetAllAsync(cancellationToken);
-        if (trainers.Any(trainer =>
-                trainer.PassportNumber == passportNumber &&
-                (personBeingUpdated is not Trainer currentTrainer || trainer.Id != currentTrainer.Id)))
+        var trainerExists = personBeingUpdated is Trainer currentTrainer
+            ? await trainerRepository.AnyAsync(
+                trainer => trainer.PassportNumber == passportNumber &&
+                    trainer.Id != currentTrainer.Id,
+                cancellationToken)
+            : await trainerRepository.AnyAsync(
+                trainer => trainer.PassportNumber == passportNumber,
+                cancellationToken);
+        if (trainerExists)
         {
             logger.LogWarning("Такой паспорт уже существует");
             throw new ConflictException(

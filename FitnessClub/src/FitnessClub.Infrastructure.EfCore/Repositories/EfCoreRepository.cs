@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Interfaces;
 using FitnessClub.Infrastructure.EfCore.Persistence;
@@ -9,6 +10,7 @@ namespace FitnessClub.Infrastructure.EfCore.Repositories;
 /// Реализует базовые операции репозитория средствами Entity Framework Core
 /// </summary>
 /// <typeparam name="TEntity">Тип сущности</typeparam>
+/// <param name="dbContext">Контекст базы данных</param>
 public class EfCoreRepository<TEntity>(
     FitnessClubDbContext dbContext) : IRepository<TEntity>
     where TEntity : Entity
@@ -75,4 +77,9 @@ public class EfCoreRepository<TEntity>(
         await dbContext.SaveChangesAsync(cancellationToken);
         return true;
     }
+    /// <inheritdoc/>
+    public Task<bool> AnyAsync(
+        Expression<Func<TEntity, bool>> predicate, 
+        CancellationToken cancellationToken = default)
+        => Entities.AnyAsync(predicate, cancellationToken);
 }

@@ -69,8 +69,7 @@ public class ClientService(
     /// </summary>
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var allBookings = await bookingRepository.GetAllAsync(cancellationToken);
-        if (allBookings.Any(b => b.Client.Id == id))
+        if (await bookingRepository.AnyAsync(b => b.Client.Id == id, cancellationToken))
             throw new ConflictException("Невозможно удалить клиента, так как существуют бронирования для него.");
         var deleted = await clientRepository.DeleteAsync(id, cancellationToken);
         if (deleted)

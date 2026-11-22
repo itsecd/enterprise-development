@@ -11,6 +11,7 @@ var migrations = builder
     .WaitFor(db);
 
 builder.AddProject<Projects.FitnessClub_Api>("fitnessclub-api")
+    .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // це шоб все здорово было
     .WithHttpEndpoint(name: "http")
     .WithUrl("/scalar/v1", "Scalar")
     .WithHttpHealthCheck("/health")

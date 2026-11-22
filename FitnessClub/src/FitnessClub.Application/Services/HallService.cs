@@ -65,8 +65,7 @@ public class HallService(
     /// </summary>
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var allBookings = await bookingsRepository.GetAllAsync(cancellationToken);
-        if (allBookings.Any(b => b.Hall.Id == id))
+        if (await bookingsRepository.AnyAsync(b => b.Hall.Id == id, cancellationToken))
             throw new ConflictException("Невозможно удалить зал, так как существуют бронирования для него.");
         var deleted = await hallRepository.DeleteAsync(id, cancellationToken);
         if (deleted)

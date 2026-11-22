@@ -65,11 +65,8 @@ public class SpecializationService(
     /// </summary>
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var allTrainers = await trainerRepository.GetAllAsync(cancellationToken);
-        if (allTrainers.Any(t => t.Specialization.Id == id))
-        {
+        if (await trainerRepository.AnyAsync(t => t.Specialization.Id == id, cancellationToken))
             throw new ConflictException("Невозможно удалить специализацию, так как она назначена тренерам.");
-        }
         var deleted = await specializationRepository.DeleteAsync(id, cancellationToken);
         if (deleted)
         {    

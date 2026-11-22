@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using FitnessClub.Domain.Entities;
 namespace FitnessClub.Domain.Interfaces;
 /// <summary>
@@ -39,4 +40,14 @@ public interface IRepository<TEntity> where TEntity : Entity
     /// <param name="cancellationToken">Токен отмены операции</param>
     /// <returns>Удалил или нет</returns>
     public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Проверить, существует ли хотя бы одна сущность, соответствующая условию
+    /// </summary>
+    /// <param name="predicate">Условие поиска сущности</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>
+    /// <see langword="true"/>, если найдена хотя бы одна подходящая сущность;
+    /// иначе <see langword="false"/>
+    /// </returns>
+    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
 }
