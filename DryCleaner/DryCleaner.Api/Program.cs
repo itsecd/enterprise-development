@@ -25,6 +25,7 @@ builder.Services.AddTransient<IRepository<Product, int>, ProductEfCoreRepository
 builder.Services.AddTransient<IRepository<Client, int>, ClientEfCoreRepository>();
 builder.Services.AddTransient<IRepository<Order, int>, OrderEfCoreRepository>();
 builder.Services.AddTransient<IUserRepository, UserEfCoreRepository>();
+builder.Services.AddScoped<IAnalyticRepository, AnalyticEfCoreRepository>();
 
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
