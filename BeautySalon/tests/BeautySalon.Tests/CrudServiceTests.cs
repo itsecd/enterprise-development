@@ -1,27 +1,15 @@
 using BeautySalon.Application.Exceptions;
-using BeautySalon.Application.Services;
 using BeautySalon.Contracts.Dto;
-using BeautySalon.Infrastructure.InMemory;
 using BeautySalon.Shared.Enums;
 
 namespace BeautySalon.Tests;
 
 /// <summary>
-/// Тесты CRUD-сервисов поверх in-memory репозиториев. У каждого теста своё хранилище.
+/// Тесты CRUD-сервисов поверх in-memory репозиториев
 /// </summary>
-public class CrudServiceTests
+public class CrudServiceTests(CrudServiceFixture fixture) : IClassFixture<CrudServiceFixture>
 {
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
-
-    private readonly BeautySalonDataStore _store = new();
-
-    private ClientService CreateClientService() => new(new ClientRepository(_store));
-
-    private AppointmentService CreateAppointmentService() => new(
-        new AppointmentRepository(_store),
-        new ClientRepository(_store),
-        new MasterRepository(_store),
-        new ServiceRepository(_store));
 
     private static ClientEditDto CreateClientDto(string fullName) => new()
     {
@@ -42,7 +30,7 @@ public class CrudServiceTests
     [Fact]
     public async Task CreateClient_ValidDto_AssignsIdAndReturnsDto()
     {
-        var service = CreateClientService();
+        var service = fixture.CreateClientService();
         var dto = CreateClientDto("Сидорова Ольга Петровна");
 
         var created = await service.CreateAsync(dto, Ct);
@@ -55,7 +43,7 @@ public class CrudServiceTests
     [Fact]
     public async Task UpdateClient_Existing_ReturnsUpdatedDto()
     {
-        var service = CreateClientService();
+        var service = fixture.CreateClientService();
 
         var updated = await service.UpdateAsync(1, CreateClientDto("Новое Имя"), Ct);
 
@@ -67,7 +55,7 @@ public class CrudServiceTests
     [Fact]
     public async Task UpdateClient_NotFound_ThrowsNotFound()
     {
-        var service = CreateClientService();
+        var service = fixture.CreateClientService();
 
         var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
             service.UpdateAsync(999, CreateClientDto("Никто"), Ct));
@@ -78,7 +66,7 @@ public class CrudServiceTests
     [Fact]
     public async Task GetClientById_NotFound_ThrowsNotFound()
     {
-        var service = CreateClientService();
+        var service = fixture.CreateClientService();
 
         await Assert.ThrowsAsync<NotFoundException>(() => service.GetByIdAsync(999, Ct));
     }
@@ -86,7 +74,7 @@ public class CrudServiceTests
     [Fact]
     public async Task DeleteClient_ExistingThenMissing_DeletesThenThrowsNotFound()
     {
-        var service = CreateClientService();
+        var service = fixture.CreateClientService();
 
         await service.DeleteAsync(10, Ct);
 
@@ -97,7 +85,7 @@ public class CrudServiceTests
     [Fact]
     public async Task CreateAppointment_ValidReferences_ReturnsDtoWithNames()
     {
-        var service = CreateAppointmentService();
+        var service = fixture.CreateAppointmentService();
 
         var created = await service.CreateAsync(CreateAppointmentDto(2, 1, 1), Ct);
 
@@ -110,7 +98,7 @@ public class CrudServiceTests
     [Fact]
     public async Task CreateAppointment_UnknownClient_ThrowsReferenceNotFound()
     {
-        var service = CreateAppointmentService();
+        var service = fixture.CreateAppointmentService();
 
         var exception = await Assert.ThrowsAsync<ReferenceNotFoundException>(() =>
             service.CreateAsync(CreateAppointmentDto(999, 1, 1), Ct));
@@ -121,7 +109,7 @@ public class CrudServiceTests
     [Fact]
     public async Task UpdateAppointment_UnknownMaster_ThrowsAndKeepsOldData()
     {
-        var service = CreateAppointmentService();
+        var service = fixture.CreateAppointmentService();
 
         await Assert.ThrowsAsync<ReferenceNotFoundException>(() =>
             service.UpdateAsync(1, CreateAppointmentDto(2, 999, 1), Ct));
