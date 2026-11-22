@@ -21,9 +21,9 @@ public static class ServiceMapper
         new()
         {
             Name = dto.Name,
-            Category = dto.Category!.Value,
-            Price = dto.Price!.Value,
-            Duration = dto.Duration!.Value
+            Category = dto.Category,
+            Price = dto.Price,
+            Duration = dto.Duration
         };
 
     /// <summary>
@@ -32,8 +32,8 @@ public static class ServiceMapper
     public static void UpdateEntity(this Service service, ServiceEditDto dto)
     {
         service.Name = dto.Name;
-        service.Category = dto.Category!.Value;
-        service.Price = dto.Price!.Value;
-        service.Duration = dto.Duration!.Value;
+        service.Category = dto.Category;
+        service.Price = dto.Price;
+        service.Duration = dto.Duration;
     }
 }

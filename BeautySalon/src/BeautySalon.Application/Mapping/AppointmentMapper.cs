@@ -32,7 +32,7 @@ public static class AppointmentMapper
             Client = client,
             Master = master,
             Service = service,
-            DateTime = dto.DateTime!.Value,
+            DateTime = dto.DateTime,
             IsRegularClient = dto.IsRegularClient
         };
 
@@ -45,7 +45,7 @@ public static class AppointmentMapper
         appointment.Client = client;
         appointment.Master = master;
         appointment.Service = service;
-        appointment.DateTime = dto.DateTime!.Value;
+        appointment.DateTime = dto.DateTime;
         appointment.IsRegularClient = dto.IsRegularClient;
     }
 }

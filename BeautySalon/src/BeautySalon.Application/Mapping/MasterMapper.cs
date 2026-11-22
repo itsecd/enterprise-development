@@ -22,10 +22,10 @@ public static class MasterMapper
         new()
         {
             FullName = dto.FullName,
-            Gender = dto.Gender!.Value,
+            Gender = dto.Gender,
             PassportNumber = dto.PassportNumber,
-            Specialization = dto.Specialization!.Value,
-            WorkExperience = dto.WorkExperience!.Value
+            Specialization = dto.Specialization,
+            WorkExperience = dto.WorkExperience
         };
 
     /// <summary>
@@ -34,9 +34,9 @@ public static class MasterMapper
     public static void UpdateEntity(this Master master, MasterEditDto dto)
     {
         master.FullName = dto.FullName;
-        master.Gender = dto.Gender!.Value;
+        master.Gender = dto.Gender;
         master.PassportNumber = dto.PassportNumber;
-        master.Specialization = dto.Specialization!.Value;
-        master.WorkExperience = dto.WorkExperience!.Value;
+        master.Specialization = dto.Specialization;
+        master.WorkExperience = dto.WorkExperience;
     }
 }

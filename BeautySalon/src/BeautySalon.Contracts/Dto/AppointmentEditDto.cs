@@ -10,26 +10,25 @@ public record AppointmentEditDto
     /// <summary>
     /// Идентификатор клиента
     /// </summary>
-    [Required, Range(1, int.MaxValue)]
-    public int? ClientId { get; init; }
+    [Range(1, int.MaxValue)]
+    public required int ClientId { get; init; }
 
     /// <summary>
     /// Идентификатор мастера
     /// </summary>
-    [Required, Range(1, int.MaxValue)]
-    public int? MasterId { get; init; }
+    [Range(1, int.MaxValue)]
+    public required int MasterId { get; init; }
 
     /// <summary>
     /// Идентификатор услуги
     /// </summary>
-    [Required, Range(1, int.MaxValue)]
-    public int? ServiceId { get; init; }
+    [Range(1, int.MaxValue)]
+    public required int ServiceId { get; init; }
 
     /// <summary>
     /// Дата и время приёма
     /// </summary>
-    [Required]
-    public DateTime? DateTime { get; init; }
+    public required DateTime DateTime { get; init; }
 
     /// <summary>
     /// Признак постоянного клиента

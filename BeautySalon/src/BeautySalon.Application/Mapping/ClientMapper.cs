@@ -21,8 +21,8 @@ public static class ClientMapper
         new()
         {
             FullName = dto.FullName,
-            Gender = dto.Gender!.Value,
-            BirthDate = dto.BirthDate!.Value,
+            Gender = dto.Gender,
+            BirthDate = dto.BirthDate,
             PhoneNumber = dto.PhoneNumber
         };
 
@@ -32,8 +32,8 @@ public static class ClientMapper
     public static void UpdateEntity(this Client client, ClientEditDto dto)
     {
         client.FullName = dto.FullName;
-        client.Gender = dto.Gender!.Value;
-        client.BirthDate = dto.BirthDate!.Value;
+        client.Gender = dto.Gender;
+        client.BirthDate = dto.BirthDate;
         client.PhoneNumber = dto.PhoneNumber;
     }
 }

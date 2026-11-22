@@ -71,9 +71,9 @@ public class AppointmentService(
     private async Task<(Client Client, Master Master, Service Service)> ResolveReferencesAsync(
         AppointmentEditDto dto, CancellationToken cancellationToken)
     {
-        var clientId = dto.ClientId!.Value;
-        var masterId = dto.MasterId!.Value;
-        var serviceId = dto.ServiceId!.Value;
+        var clientId = dto.ClientId;
+        var masterId = dto.MasterId;
+        var serviceId = dto.ServiceId;
 
         var client = await clientRepository.GetByIdAsync(clientId, cancellationToken)
             ?? throw new ReferenceNotFoundException("Клиент", clientId);

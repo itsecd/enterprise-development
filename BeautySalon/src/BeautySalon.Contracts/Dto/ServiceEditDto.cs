@@ -17,18 +17,18 @@ public record ServiceEditDto
     /// <summary>
     /// Категория услуги
     /// </summary>
-    [Required, EnumDataType(typeof(Category))]
-    public Category? Category { get; init; }
+    [EnumDataType(typeof(Category))]
+    public required Category Category { get; init; }
 
     /// <summary>
     /// Цена услуги
     /// </summary>
-    [Required, Range(typeof(decimal), "0", "1000000")]
-    public decimal? Price { get; init; }
+    [Range(typeof(decimal), "0", "1000000")]
+    public required decimal Price { get; init; }
 
     /// <summary>
     /// Продолжительность услуги (от 5 минут до 12 часов), например «01:30:00»
     /// </summary>
-    [Required, Range(typeof(TimeSpan), "00:05:00", "12:00:00")]
-    public TimeSpan? Duration { get; init; }
+    [Range(typeof(TimeSpan), "00:05:00", "12:00:00")]
+    public required TimeSpan Duration { get; init; }
 }

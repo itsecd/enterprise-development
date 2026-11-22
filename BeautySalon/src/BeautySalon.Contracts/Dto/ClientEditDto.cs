@@ -15,16 +15,15 @@ public record ClientEditDto : IValidatableObject
     public required string FullName { get; init; }
 
     /// <summary>
-    /// Пол. Nullable, чтобы отсутствие значения в запросе ловилось атрибутом Required
+    /// Пол
     /// </summary>
-    [Required, EnumDataType(typeof(Gender))]
-    public Gender? Gender { get; init; }
+    [EnumDataType(typeof(Gender))]
+    public required Gender Gender { get; init; }
 
     /// <summary>
     /// Дата рождения (должна быть в прошлом)
     /// </summary>
-    [Required]
-    public DateOnly? BirthDate { get; init; }
+    public required DateOnly BirthDate { get; init; }
 
     /// <summary>
     /// Номер телефона

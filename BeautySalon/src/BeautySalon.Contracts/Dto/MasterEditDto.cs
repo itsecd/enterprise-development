@@ -17,8 +17,8 @@ public record MasterEditDto
     /// <summary>
     /// Пол
     /// </summary>
-    [Required, EnumDataType(typeof(Gender))]
-    public Gender? Gender { get; init; }
+    [EnumDataType(typeof(Gender))]
+    public required Gender Gender { get; init; }
 
     /// <summary>
     /// Номер паспорта в формате «1234 567890»
@@ -29,12 +29,12 @@ public record MasterEditDto
     /// <summary>
     /// Специализация
     /// </summary>
-    [Required, EnumDataType(typeof(Specialization))]
-    public Specialization? Specialization { get; init; }
+    [EnumDataType(typeof(Specialization))]
+    public required Specialization Specialization { get; init; }
 
     /// <summary>
     /// Стаж работы (лет)
     /// </summary>
-    [Required, Range(0, 80)]
-    public int? WorkExperience { get; init; }
+    [Range(0, 80)]
+    public required int WorkExperience { get; init; }
 }
