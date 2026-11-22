@@ -69,16 +69,25 @@ public class UserEfCoreRepository(DryCleanerDbContext context)
         await context.Users.ToListAsync();
 
     /// <summary>
-    /// Обновляет данные существующего пользователя.
+    /// Обновляет пользователя.
     /// </summary>
-    /// <param name="entity">Экземпляр пользователя с обновлёнными данными.</param>
-    /// <returns>Актуальный экземпляр пользователя после сохранения изменений.</returns>
+    /// <param name="entity">Сущность пользователя с обновлёнными данными.</param>
+    /// <returns>Обновлённая сущность пользователя.</returns>
+    /// <exception cref="KeyNotFoundException">
+    /// Выбрасывается, если пользователь с указанным идентификатором не найден.
+    /// </exception>
     public async Task<User> Update(User entity)
     {
+        var existingUser = await context.Users.FindAsync(entity.Id);
+
+        if (existingUser is null)
+            throw new KeyNotFoundException(
+                $"User with id {entity.Id} not found.");
+
         context.Users.Update(entity);
         await context.SaveChangesAsync();
 
-        return (await Read(entity.Id))!;
+        return entity;
     }
 
     /// <summary>

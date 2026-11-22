@@ -75,15 +75,21 @@ public class ProductEfCoreRepository(DryCleanerDbContext context) : IRepository<
     }
 
     /// <summary>
-    /// Обновляет данные существующего товара.
+    /// Обновляет товар.
     /// </summary>
-    /// <param name="entity">Экземпляр товара с обновлёнными данными.</param>
-    /// <returns>Актуальный экземпляр товара после сохранения изменений.</returns>
+    /// <param name="entity">Сущность товара с обновлёнными данными.</param>
+    /// <returns>Обновлённая сущность товара.</returns>
     public async Task<Product> Update(Product entity)
     {
-        context.Products.Update(entity);
+        var existingEntity = await context.Set<Product>().FindAsync(entity.Id);
+
+        if (existingEntity is null)
+            throw new KeyNotFoundException(
+                $"Product with id {entity.Id} not found.");
+
+        context.Set<Product>().Update(entity);
         await context.SaveChangesAsync();
 
-        return (await Read(entity.Id))!;
+        return entity;
     }
 }

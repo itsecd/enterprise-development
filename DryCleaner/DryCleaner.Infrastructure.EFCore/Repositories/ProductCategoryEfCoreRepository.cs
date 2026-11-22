@@ -65,15 +65,21 @@ public class ProductCategoryEfCoreRepository(DryCleanerDbContext context) : IRep
     public async Task<IList<ProductCategory>> ReadAll() => await context.ProductCategories.ToListAsync();
 
     /// <summary>
-    /// Обновляет данные существующей категории товаров.
+    /// Обновляет категорию товара.
     /// </summary>
-    /// <param name="entity">Экземпляр категории товаров с обновлёнными данными.</param>
-    /// <returns>Актуальный экземпляр категории товаров после сохранения изменений.</returns>
+    /// <param name="entity">Сущность категории с обновлёнными данными.</param>
+    /// <returns>Обновлённая сущность категории.</returns>
     public async Task<ProductCategory> Update(ProductCategory entity)
     {
-        context.ProductCategories.Update(entity);
+        var existingEntity = await context.Set<ProductCategory>().FindAsync(entity.Id);
+
+        if (existingEntity is null)
+            throw new KeyNotFoundException(
+                $"ProductCategory with id {entity.Id} not found.");
+
+        context.Set<ProductCategory>().Update(entity);
         await context.SaveChangesAsync();
 
-        return (await Read(entity.Id))!;
+        return entity;
     }
 }

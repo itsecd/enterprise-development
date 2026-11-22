@@ -65,15 +65,21 @@ public class ClientEfCoreRepository(DryCleanerDbContext context) : IRepository<C
     public async Task<IList<Client>> ReadAll() => await context.Clients.ToListAsync();
 
     /// <summary>
-    /// Обновляет данные существующего клиента.
+    /// Обновляет клиента.
     /// </summary>
-    /// <param name="entity">Экземпляр клиента с обновлёнными данными.</param>
-    /// <returns>Актуальный экземпляр клиента после сохранения изменений.</returns>
+    /// <param name="entity">Сущность клиента с обновлёнными данными.</param>
+    /// <returns>Обновлённая сущность клиента.</returns>
     public async Task<Client> Update(Client entity)
     {
-        context.Clients.Update(entity);
+        var existingEntity = await context.Set<Client>().FindAsync(entity.Id);
+
+        if (existingEntity is null)
+            throw new KeyNotFoundException(
+                $"Client with id {entity.Id} not found.");
+
+        context.Set<Client>().Update(entity);
         await context.SaveChangesAsync();
 
-        return (await Read(entity.Id))!;
+        return entity;
     }
 }

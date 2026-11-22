@@ -76,15 +76,21 @@ public class OrderEfCoreRepository(DryCleanerDbContext context) : IRepository<Or
     }
 
     /// <summary>
-    /// Обновляет данные существующего заказа.
+    /// Обновляет заказ.
     /// </summary>
-    /// <param name="entity">Экземпляр заказа с обновлёнными данными.</param>
-    /// <returns>Актуальный экземпляр заказа после сохранения изменений.</returns>
+    /// <param name="entity">Сущность заказа с обновлёнными данными.</param>
+    /// <returns>Обновлённая сущность заказа.</returns>
     public async Task<Order> Update(Order entity)
     {
-        context.Orders.Update(entity);
+        var existingEntity = await context.Set<Order>().FindAsync(entity.Id);
+
+        if (existingEntity is null)
+            throw new KeyNotFoundException(
+                $"Order with id {entity.Id} not found.");
+
+        context.Set<Order>().Update(entity);
         await context.SaveChangesAsync();
 
-        return (await Read(entity.Id))!;
+        return entity;
     }
 }
