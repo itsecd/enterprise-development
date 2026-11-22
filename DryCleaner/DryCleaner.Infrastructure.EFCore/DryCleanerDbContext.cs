@@ -1,6 +1,7 @@
 ﻿using DryCleaner.Domain.Data;
 using DryCleaner.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace DryCleaner.Infrastructure.EFCore;
 
@@ -10,6 +11,11 @@ namespace DryCleaner.Infrastructure.EFCore;
 /// <param name="options">Настройки контекста базы данных</param>
 public class DryCleanerDbContext(DbContextOptions options) : DbContext(options)
 {
+
+    /// <summary>
+    /// Набор пользователей, хранящихся в базе данных.
+    /// </summary>
+    public DbSet<User> Users { get; set; }
 
     /// <summary>
     /// Набор клиентов, хранящихся в базе данных.
@@ -38,6 +44,25 @@ public class DryCleanerDbContext(DbContextOptions options) : DbContext(options)
     /// <param name="modelBuilder">Строитель модели базы данных.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.Entity<User>(builder =>
+        {
+            builder.HasKey(x => x.Id);
+
+            builder.HasIndex(x => x.Username)
+                .IsUnique();
+
+            builder.Property(x => x.Username)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(x => x.PasswordHash)
+                .IsRequired();
+
+            builder.HasData(DataSeed.Users);
+        });
+
+
         modelBuilder.Entity<Client>(builder =>
         {
             builder.HasKey(s => s.Id);
