@@ -9,6 +9,16 @@ namespace DryCleaner.Domain.Data;
 /// </summary>
 public static class DataSeed
 {
+    public static List<User> Users { get; } =
+    [
+        new User
+        {
+        Id = 1,
+        Username = "admin",
+        PasswordHash = "AQAAAAIAAYagAAAAEIf8B0jhyplI69G3c4Tj0kZ3sA0TafSXla7cpdR8EE4KxexN8d6NVoX4h7G4LAiPzA=="
+        }
+    ];
+
     /// <summary>
     /// Набор тестовых данных для категорий товаров
     /// </summary>
