@@ -1,29 +1,32 @@
-using BeautySalon.Application.Services;
-using BeautySalon.Contracts.Interfaces;
+using BeautySalon.Domain.Entities;
 using BeautySalon.Infrastructure.InMemory;
 
 namespace BeautySalon.Tests;
 
 /// <summary>
-/// Фикстура для аналитических тестов: in-memory данные из сида и реальный сервис аналитики поверх репозиториев.
-/// Данные только читаются, поэтому фикстуру можно разделять между тестами.
+/// Фикстура с тестовыми данными из in-memory хранилища
 /// </summary>
 public class BeautySalonFixture
 {
-    /// <summary>
-    /// Хранилище с тестовыми данными (для получения ожидаемых значений)
-    /// </summary>
-    public BeautySalonDataStore DataStore { get; } = new();
+    private readonly BeautySalonDataStore _dataStore = new();
 
     /// <summary>
-    /// Тестируемый сервис аналитики
+    /// Клиенты салона
     /// </summary>
-    public IAnalyticsService Analytics { get; }
+    public List<Client> Clients => _dataStore.Clients;
 
-    public BeautySalonFixture()
-    {
-        Analytics = new AnalyticsService(
-            new MasterRepository(DataStore),
-            new AppointmentRepository(DataStore));
-    }
+    /// <summary>
+    /// Мастера салона
+    /// </summary>
+    public List<Master> Masters => _dataStore.Masters;
+
+    /// <summary>
+    /// Услуги салона
+    /// </summary>
+    public List<Service> Services => _dataStore.Services;
+
+    /// <summary>
+    /// Записи на приём
+    /// </summary>
+    public List<Appointment> Appointments => _dataStore.Appointments;
 }
