@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeautySalon.Shared\BeautySalon.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
