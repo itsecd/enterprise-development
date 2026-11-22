@@ -20,11 +20,10 @@ public class AnalyticsServiceTests
         _data = new DataSeeder();
         var repositories = new TestRepositories(_data);
         _service = new AnalyticsService(
-            repositories.Restaurants,
-            repositories.Clients,
-            repositories.Categories,
-            repositories.Orders);
+        repositories.Restaurants,
+        repositories.Orders);
     }
+
 
     /// <summary>
     /// Проверяет получение пяти ресторанов с сортировкой по количеству заказов

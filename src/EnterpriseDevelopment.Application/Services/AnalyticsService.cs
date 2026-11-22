@@ -9,10 +9,11 @@ namespace EnterpriseDevelopment.Application.Services;
 /// </summary>
 public class AnalyticsService(
     IRestaurantRepository restaurantRepository,
-    IClientRepository clientRepository,
-    ICategoryRepository categoryRepository,
     IOrderRepository orderRepository) : IAnalyticsService
+
+
 {
+
     /// <summary>
     /// Получает пять ресторанов с наибольшим количеством заказов
     /// </summary>
@@ -23,7 +24,7 @@ public class AnalyticsService(
             .GroupBy(order => order.RestaurantId)
             .Select(group => new TopRestaurantDto(
                 group.Key,
-                restaurantRepository.GetById(group.Key)?.Name ?? string.Empty,
+                group.First().Restaurant?.Name ?? string.Empty,
                 group.Count()))
             .OrderByDescending(item => item.OrderCount)
             .ThenBy(item => item.RestaurantId)
@@ -56,6 +57,7 @@ public class AnalyticsService(
             .ToList();
     }
 
+
     /// <summary>
     /// Получает уникальных клиентов указанного ресторана
     /// </summary>
@@ -67,20 +69,19 @@ public class AnalyticsService(
             throw new KeyNotFoundException("Ресторан не найден");
         }
 
-        var clientIds = orderRepository.GetAll()
+        return orderRepository.GetAll()
             .Where(order => order.RestaurantId == restaurantId)
-            .Select(order => order.ClientId)
-            .Distinct()
-            .ToHashSet();
-
-        return clientRepository.GetAll()
-            .Where(client => clientIds.Contains(client.Id))
-            .Select(client => new RestaurantClientDto(
-                client.Id,
-                client.FullName,
-                client.PhoneNumber))
+            .Where(order => order.Client is not null)
+            .GroupBy(order => order.ClientId)
+            .Select(group => new RestaurantClientDto(
+                group.Key,
+                group.First().Client!.FullName,
+                group.First().Client!.PhoneNumber))
+            .OrderBy(client => client.ClientId)
             .ToList();
     }
+
+
 
     /// <summary>
     /// Получает статистику заказанных блюд по категориям за указанный период
@@ -104,12 +105,14 @@ public class AnalyticsService(
             .GroupBy(dish => dish.CategoryId)
             .Select(group => new CategoryStatisticsDto(
                 group.Key,
-                categoryRepository.GetById(group.Key)?.Name ?? string.Empty,
+                group.First().Category?.Name ?? string.Empty,
                 group.Count()))
             .OrderByDescending(item => item.OrderCount)
             .ThenBy(item => item.CategoryId)
             .ToList();
     }
+
+
 
     /// <summary>
     /// Получает клиентов с наибольшей суммой заказов
@@ -122,6 +125,7 @@ public class AnalyticsService(
             .Select(group => new
             {
                 ClientId = group.Key,
+                FullName = group.First().Client?.FullName ?? string.Empty,
                 TotalSpent = group.Sum(order => order.TotalAmount)
             })
             .ToList();
@@ -138,7 +142,7 @@ public class AnalyticsService(
             .OrderBy(client => client.ClientId)
             .Select(client => new TopClientDto(
                 client.ClientId,
-                clientRepository.GetById(client.ClientId)?.FullName ?? string.Empty,
+                client.FullName,
                 client.TotalSpent))
             .ToList();
     }
