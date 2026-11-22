@@ -11,12 +11,16 @@ public static class ServiceMapper
     /// <summary>
     /// Преобразует услугу в DTO для чтения
     /// </summary>
+    /// <param name="service">Услуга</param>
+    /// <returns>DTO услуги</returns>
     public static ServiceDto ToDto(this Service service) =>
         new(service.Id, service.Name, service.Category, service.Price, service.Duration);
 
     /// <summary>
     /// Создаёт новую услугу из DTO (идентификатор назначит репозиторий)
     /// </summary>
+    /// <param name="dto">Данные для создания</param>
+    /// <returns>Новая услуга</returns>
     public static Service ToEntity(this ServiceEditDto dto) =>
         new()
         {
@@ -29,6 +33,8 @@ public static class ServiceMapper
     /// <summary>
     /// Переносит данные из DTO в существующую услугу
     /// </summary>
+    /// <param name="service">Обновляемая услуга</param>
+    /// <param name="dto">Новые данные</param>
     public static void UpdateEntity(this Service service, ServiceEditDto dto)
     {
         service.Name = dto.Name;

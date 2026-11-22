@@ -11,6 +11,8 @@ public static class MasterMapper
     /// <summary>
     /// Преобразует мастера в DTO для чтения
     /// </summary>
+    /// <param name="master">Мастер</param>
+    /// <returns>DTO мастера</returns>
     public static MasterDto ToDto(this Master master) =>
         new(master.Id, master.FullName, master.Gender, master.PassportNumber,
             master.Specialization, master.WorkExperience);
@@ -18,6 +20,8 @@ public static class MasterMapper
     /// <summary>
     /// Создаёт нового мастера из DTO (идентификатор назначит репозиторий)
     /// </summary>
+    /// <param name="dto">Данные для создания</param>
+    /// <returns>Новый мастер</returns>
     public static Master ToEntity(this MasterEditDto dto) =>
         new()
         {
@@ -31,6 +35,8 @@ public static class MasterMapper
     /// <summary>
     /// Переносит данные из DTO в существующего мастера
     /// </summary>
+    /// <param name="master">Обновляемый мастер</param>
+    /// <param name="dto">Новые данные</param>
     public static void UpdateEntity(this Master master, MasterEditDto dto)
     {
         master.FullName = dto.FullName;
