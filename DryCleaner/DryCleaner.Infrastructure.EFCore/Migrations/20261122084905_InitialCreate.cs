@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace DryCleaner.Infrastructure.EfCore.Migrations
+namespace DryCleaner.Infrastructure.EFCore.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -13,6 +14,20 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "clients",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    phone = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_clients", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "product_category",
                 columns: table => new
@@ -29,17 +44,17 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "students",
+                name: "user",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    phone = table.Column<string>(type: "text", nullable: true)
+                    username = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    password_hash = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_students", x => x.id);
+                    table.PrimaryKey("PK_user", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,17 +94,34 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
                 {
                     table.PrimaryKey("PK_order", x => x.id);
                     table.ForeignKey(
+                        name: "FK_order_clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "clients",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_order_product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "product",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_order_students_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "students",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "clients",
+                columns: new[] { "id", "name", "phone" },
+                values: new object[,]
+                {
+                    { 1, "Иванов Иван Иванович", "+79990000001" },
+                    { 2, "Петров Петр Петрович", "+79990000002" },
+                    { 3, "Сидорова Анна Сергеевна", "+79990000003" },
+                    { 4, "Кузнецов Алексей Владимирович", "+79990000004" },
+                    { 5, "Смирнова Елена Андреевна", "+79990000005" },
+                    { 6, "Попов Дмитрий Сергеевич", "+79990000006" },
+                    { 7, "Васильева Ольга Николаевна", "+79990000007" },
+                    { 8, "Новиков Андрей Павлович", "+79990000008" },
+                    { 9, "Морозова Мария Игоревна", "+79990000009" },
+                    { 10, "Волков Сергей Александрович", "+79990000010" }
                 });
 
             migrationBuilder.InsertData(
@@ -110,21 +142,9 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "students",
-                columns: new[] { "id", "name", "phone" },
-                values: new object[,]
-                {
-                    { 1, "Иванов Иван Иванович", "+79990000001" },
-                    { 2, "Петров Петр Петрович", "+79990000002" },
-                    { 3, "Сидорова Анна Сергеевна", "+79990000003" },
-                    { 4, "Кузнецов Алексей Владимирович", "+79990000004" },
-                    { 5, "Смирнова Елена Андреевна", "+79990000005" },
-                    { 6, "Попов Дмитрий Сергеевич", "+79990000006" },
-                    { 7, "Васильева Ольга Николаевна", "+79990000007" },
-                    { 8, "Новиков Андрей Павлович", "+79990000008" },
-                    { 9, "Морозова Мария Игоревна", "+79990000009" },
-                    { 10, "Волков Сергей Александрович", "+79990000010" }
-                });
+                table: "user",
+                columns: new[] { "id", "password_hash", "username" },
+                values: new object[] { 1, "AQAAAAIAAYagAAAAEIf8B0jhyplI69G3c4Tj0kZ3sA0TafSXla7cpdR8EE4KxexN8d6NVoX4h7G4LAiPzA==", "admin" });
 
             migrationBuilder.InsertData(
                 table: "product",
@@ -174,6 +194,12 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
                 name: "IX_product_CategoryId",
                 table: "product",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_user_username",
+                table: "user",
+                column: "username",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -183,10 +209,13 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
                 name: "order");
 
             migrationBuilder.DropTable(
-                name: "product");
+                name: "user");
 
             migrationBuilder.DropTable(
-                name: "students");
+                name: "clients");
+
+            migrationBuilder.DropTable(
+                name: "product");
 
             migrationBuilder.DropTable(
                 name: "product_category");

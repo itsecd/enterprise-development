@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace DryCleaner.Infrastructure.EfCore.Migrations
+namespace DryCleaner.Infrastructure.EFCore.Migrations
 {
     [DbContext(typeof(DryCleanerDbContext))]
-    [Migration("20261108094446_InitialCreate")]
+    [Migration("20261122084905_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -45,7 +45,7 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("students");
+                    b.ToTable("clients");
 
                     b.HasData(
                         new
@@ -435,6 +435,42 @@ namespace DryCleaner.Infrastructure.EfCore.Migrations
                             CleaningPrice = 900m,
                             Name = "Обувь",
                             RecommendedCleaningType = "Специальная чистка"
+                        });
+                });
+
+            modelBuilder.Entity("DryCleaner.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("user");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PasswordHash = "AQAAAAIAAYagAAAAEIf8B0jhyplI69G3c4Tj0kZ3sA0TafSXla7cpdR8EE4KxexN8d6NVoX4h7G4LAiPzA==",
+                            Username = "admin"
                         });
                 });
 
