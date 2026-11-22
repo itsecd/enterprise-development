@@ -22,6 +22,7 @@
     <ProjectReference Include="..\FitnessClub.Domain\FitnessClub.Domain.csproj" />
 	<ProjectReference Include="..\FitnessClub.Infrastructure.MsSqlServer\FitnessClub.Infrastructure.MsSqlServer.csproj" />
     <ProjectReference Include="..\FitnessClub.Shared\FitnessClub.Shared.csproj" />
+    <ProjectReference Include="..\FitnessClub.ServiceDefaults\FitnessClub.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

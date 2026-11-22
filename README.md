@@ -34,6 +34,7 @@
 - Миграции применяются автоматически при старте сервера.
 - Оркестратор .NET Aspire (`AppHost`) запускает SQL Server в контейнере, создаёт базу `fitnessclub`, передаёт серверу строку подключения и запускает сервер только после готовности базы.
 - Каскадное удаление: при удалении клиента или тренера удаляются и их записи на занятия. Специализацию, назначенную тренерам, удалить нельзя (ответ 400).
+- Проект `FitnessClub.ServiceDefaults` с общими настройками Aspire (OpenTelemetry, health checks, устойчивые HTTP-клиенты) подключён к серверу.
 
 ## Технологический стек
 
@@ -97,6 +98,7 @@ FitnessClub.slnx
 │   │   ├── ExceptionHandling/                      — глобальный обработчик исключений
 │   │   └── Program.cs                              — конфигурация DI, OpenAPI, Scalar, middleware
 │   │
+│   ├── FitnessClub.ServiceDefaults/                — общие настройки Aspire: телеметрия, health checks
 │   └── FitnessClub.AppHost/                        — оркестратор .NET Aspire: SQL Server, база данных и сервер
 │
 └── tests/

@@ -2,6 +2,7 @@
 using FitnessClub.Infrastructure.MsSqlServer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FitnessClub.Infrastructure.MsSqlServer.DependencyInjection;
 
@@ -11,23 +12,21 @@ namespace FitnessClub.Infrastructure.MsSqlServer.DependencyInjection;
 public static class MsSqlServerServiceCollectionExtensions
 {
     /// <summary>
-    /// Регистрирует контекст базы данных и репозитории на базе Entity Framework
+    /// Регистрирует контекст базы данных через Aspire-интеграцию (с телеметрией) и репозитории на базе Entity Framework
     /// </summary>
-    /// <param name="services">Коллекция сервисов</param>
-    /// <param name="connectionString">Строка подключения к базе</param>
-    /// <returns>Та же коллекция сервисов</returns>
-    public static IServiceCollection AddMsSqlServerPersistence(this IServiceCollection services, string? connectionString)
+    /// <param name="builder">Построитель приложения</param>
+    /// <param name="connectionName">Имя подключения, заданное в AppHost (имя ресурса базы данных)</param>
+    /// <returns>Тот же построитель приложения</returns>
+    public static IHostApplicationBuilder AddMsSqlServerPersistence(this IHostApplicationBuilder builder, string connectionName)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+        builder.AddSqlServerDbContext<FitnessClubDbContext>(connectionName);
 
-        services.AddDbContext<FitnessClubDbContext>(options => options.UseSqlServer(connectionString));
+        builder.Services.AddScoped<IClientRepository, EfClientRepository>();
+        builder.Services.AddScoped<ITrainerRepository, EfTrainerRepository>();
+        builder.Services.AddScoped<ISpecializationRepository, EfSpecializationRepository>();
+        builder.Services.AddScoped<IEnrollmentRepository, EfEnrollmentRepository>();
 
-        services.AddScoped<IClientRepository, EfClientRepository>();
-        services.AddScoped<ITrainerRepository, EfTrainerRepository>();
-        services.AddScoped<ISpecializationRepository, EfSpecializationRepository>();
-        services.AddScoped<IEnrollmentRepository, EfEnrollmentRepository>();
-
-        return services;
+        return builder;
     }
 
     /// <summary>

@@ -7,7 +7,8 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();
-builder.Services.AddMsSqlServerPersistence(builder.Configuration.GetConnectionString("fitnessclub"));
+builder.AddMsSqlServerPersistence("fitnessclub");
+builder.AddServiceDefaults();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -29,6 +30,7 @@ var app = builder.Build();
 await app.Services.ApplyMigrationsAsync();
 
 app.UseExceptionHandler();
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
