@@ -15,6 +15,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/FitnessClub.Application.Tests/FitnessClub.Application.Tests.csproj" />
-    <!-- <Project Path="tests/FitnessClub.IntegrationTests/FitnessClub.IntegrationTests.csproj" /> -->
+    <!-- <Project Path="tests/FitnessClub.Integration.Tests/FitnessClub.Integration.Tests.csproj" /> -->
   </Folder>
 </Solution>
