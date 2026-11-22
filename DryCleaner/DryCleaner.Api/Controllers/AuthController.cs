@@ -1,10 +1,8 @@
-﻿using DryCleaner.Application.Contracts.Auth;
+﻿
+using DryCleaner.Application.Contracts.Auth;
+using DryCleaner.Application.Contracts.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace DryCleaner.Api.Controllers;
 
@@ -14,31 +12,32 @@ namespace DryCleaner.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [AllowAnonymous]
-public class AuthController(IConfiguration config) : ControllerBase
+public class AuthController(
+    IAuthService authService,
+    ILogger<AuthController> logger) : ControllerBase
 {
     /// <summary>
-    /// Вход по логину и паролю
+    /// Выполняет вход пользователя в систему.
     /// </summary>
-    /// <param name="request">Данные для аутентификации</param>
-    /// <returns>JWT-токен.</returns>
+    /// <param name="request">Данные для аутентификации.</param>
+    /// <returns>JWT-токен или Unauthorized, если данные неверны.</returns>
     [HttpPost("login")]
-    public ActionResult<LoginResponse> Login(LoginRequest request)
+    [ProducesResponseType(typeof(LoginResponse), 200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
     {
-        if (request.Username != config["Auth:Username"] ||
-            request.Password != config["Auth:Password"])
+        try
         {
-            return Unauthorized();
+            var result = await authService.LoginAsync(request);
+
+            return result == null ? Unauthorized() : Ok(result);
         }
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
-
-        var token = new JwtSecurityToken(
-            issuer: config["Jwt:Issuer"],
-            audience: config["Jwt:Audience"],
-            claims: [new Claim(ClaimTypes.Name, request.Username)],
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(config["Jwt:ExpireMinutes"]!)),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-
-        return new LoginResponse { Token = new JwtSecurityTokenHandler().WriteToken(token) };
+        catch (Exception ex)
+        {
+            logger.LogError("{method} method of {Pcontroller} was called with parameter: Username={username}. Ended with an error: {errorText}",
+                nameof(Login), GetType().Name, request.Username, ex.Message);
+            return StatusCode(500, $"{ex.Message}");
+        }
     }
 }
