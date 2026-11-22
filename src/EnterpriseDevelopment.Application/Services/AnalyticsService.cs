@@ -112,25 +112,36 @@ public class AnalyticsService(
     }
 
     /// <summary>
-    /// Получает клиента с наибольшей суммой заказов
+    /// Получает клиентов с наибольшей суммой заказов
     /// </summary>
     /// <returns>Коллекция клиентов с максимальной суммой заказов</returns>
     public IEnumerable<TopClientDto> GetTopClients()
     {
-        return orderRepository.GetAll()
+        var clients = orderRepository.GetAll()
             .GroupBy(order => order.ClientId)
             .Select(group => new
             {
                 ClientId = group.Key,
                 TotalSpent = group.Sum(order => order.TotalAmount)
             })
-            .OrderByDescending(item => item.TotalSpent)
-            .ThenBy(item => item.ClientId)
-            .Take(1)
-            .Select(item => new TopClientDto(
-                item.ClientId,
-                clientRepository.GetById(item.ClientId)?.FullName ?? string.Empty,
-                item.TotalSpent))
+            .ToList();
+
+        if (clients.Count == 0)
+        {
+            return [];
+        }
+
+        var maxSpent = clients.Max(client => client.TotalSpent);
+
+        return clients
+            .Where(client => client.TotalSpent == maxSpent)
+            .OrderBy(client => client.ClientId)
+            .Select(client => new TopClientDto(
+                client.ClientId,
+                clientRepository.GetById(client.ClientId)?.FullName ?? string.Empty,
+                client.TotalSpent))
             .ToList();
     }
+
 }
+
