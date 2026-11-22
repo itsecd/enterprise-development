@@ -30,10 +30,3 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
-
-/// <summary>
-/// Точка входа API салона красоты. Класс открыт для интеграционных тестов.
-/// </summary>
-public partial class Program
-{
-}
