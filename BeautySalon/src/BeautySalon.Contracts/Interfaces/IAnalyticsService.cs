@@ -11,6 +11,7 @@ public interface IAnalyticsService
     /// Мастера со стажем не менее указанного
     /// </summary>
     /// <param name="minExperienceYears">Минимальный стаж в годах</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     public Task<IReadOnlyList<MasterDto>> GetExperiencedMastersAsync(
         int minExperienceYears = 5, CancellationToken cancellationToken = default);
 
@@ -19,6 +20,7 @@ public interface IAnalyticsService
     /// </summary>
     /// <param name="masterId">Идентификатор мастера</param>
     /// <param name="date">Дата</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Список свободных окон. Если мастера нет, сервис выбрасывает исключение «не найдено»</returns>
     public Task<IReadOnlyList<TimeSlotDto>> GetFreeSlotsAsync(
         int masterId, DateOnly date, CancellationToken cancellationToken = default);
@@ -27,6 +29,7 @@ public interface IAnalyticsService
     /// Топ наиболее популярных услуг по количеству записей
     /// </summary>
     /// <param name="top">Сколько услуг вернуть</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     public Task<IReadOnlyList<PopularServiceDto>> GetPopularServicesAsync(
         int top = 5, CancellationToken cancellationToken = default);
 
@@ -35,6 +38,7 @@ public interface IAnalyticsService
     /// </summary>
     /// <param name="year">Год</param>
     /// <param name="month">Месяц (1–12)</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     public Task<IReadOnlyList<RepeatClientDto>> GetRepeatClientsAsync(
         int year, int month, CancellationToken cancellationToken = default);
 

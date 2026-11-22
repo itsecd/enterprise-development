@@ -18,6 +18,7 @@ public class AnalyticsController(IAnalyticsService service) : ControllerBase
     /// Мастера со стажем не менее указанного
     /// </summary>
     /// <param name="minExperience">Минимальный стаж в годах (по умолчанию 5)</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Список мастеров</response>
     /// <response code="400">Некорректные параметры</response>
     [HttpGet("experienced-masters")]
@@ -33,6 +34,7 @@ public class AnalyticsController(IAnalyticsService service) : ControllerBase
     /// </summary>
     /// <param name="masterId">Идентификатор мастера</param>
     /// <param name="date">Дата в формате ГГГГ-ММ-ДД</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Список свободных окон</response>
     /// <response code="400">Некорректные параметры</response>
     /// <response code="404">Мастер не найден</response>
@@ -50,6 +52,7 @@ public class AnalyticsController(IAnalyticsService service) : ControllerBase
     /// Топ наиболее популярных услуг по количеству записей
     /// </summary>
     /// <param name="top">Сколько услуг вернуть (по умолчанию 5)</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Список услуг с количеством записей</response>
     /// <response code="400">Некорректные параметры</response>
     [HttpGet("popular-services")]
@@ -65,6 +68,7 @@ public class AnalyticsController(IAnalyticsService service) : ControllerBase
     /// </summary>
     /// <param name="year">Год</param>
     /// <param name="month">Месяц (1–12)</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Клиенты с количеством записей</response>
     /// <response code="400">Некорректные параметры</response>
     [HttpGet("repeat-clients")]

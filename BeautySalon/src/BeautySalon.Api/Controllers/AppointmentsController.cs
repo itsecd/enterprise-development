@@ -24,6 +24,7 @@ public class AppointmentsController(IAppointmentService service) : ControllerBas
     /// Получить запись на приём по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Найдено</response>
     /// <response code="404">Не найдено</response>
     [HttpGet("{id:int}")]
@@ -36,6 +37,7 @@ public class AppointmentsController(IAppointmentService service) : ControllerBas
     /// Создать запись на приём
     /// </summary>
     /// <param name="dto">Данные для создания</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="201">Создано</response>
     /// <response code="400">Некорректные данные</response>
     [HttpPost]
@@ -52,6 +54,7 @@ public class AppointmentsController(IAppointmentService service) : ControllerBas
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="dto">Новые данные</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="200">Изменено, возвращён обновлённый объект</response>
     /// <response code="400">Некорректные данные</response>
     /// <response code="404">Не найдено</response>
@@ -67,6 +70,7 @@ public class AppointmentsController(IAppointmentService service) : ControllerBas
     /// Удалить запись на приём
     /// </summary>
     /// <param name="id">Идентификатор</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="204">Удалено</response>
     /// <response code="404">Не найдено</response>
     [HttpDelete("{id:int}")]

@@ -16,12 +16,14 @@ public interface IClientService
     /// Получает клиента по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     public Task<ClientDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Создаёт клиента
     /// </summary>
     /// <param name="dto">Данные для создания</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Созданный объект с назначенным идентификатором</returns>
     public Task<ClientDto> CreateAsync(ClientEditDto dto, CancellationToken cancellationToken = default);
 
@@ -30,6 +32,7 @@ public interface IClientService
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="dto">Новые данные</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Обновлённый объект</returns>
     public Task<ClientDto> UpdateAsync(int id, ClientEditDto dto, CancellationToken cancellationToken = default);
 
@@ -37,5 +40,6 @@ public interface IClientService
     /// Удаляет клиента
     /// </summary>
     /// <param name="id">Идентификатор</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     public Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
