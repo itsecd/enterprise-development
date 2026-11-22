@@ -32,6 +32,7 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAnalyticService, AnalyticService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
