@@ -81,7 +81,9 @@ public class AnalyticsServiceTests(AnalyticsServiceFixture fixture) : IClassFixt
     }
 
     /// <summary>
-    /// Вывести топ 5 наиболее популярных услуг
+    /// Вывести топ 5 наиболее популярных услуг.
+    /// В тестовых данных есть услуги с одинаковыми названиями (Маникюр, Макияж, Брови) —
+    /// это разные услуги с разными идентификаторами, поэтому считаются отдельно
     /// </summary>
     [Fact]
     public async Task GetPopularServices_OrderedByAppointmentCount_ReturnsTop5()
@@ -90,10 +92,10 @@ public class AnalyticsServiceTests(AnalyticsServiceFixture fixture) : IClassFixt
         var expected = new[]
         {
             (Name: "Стрижка", Count: 2),
-            (Name: "Маникюр", Count: 2),
-            (Name: "Макияж", Count: 2),
-            (Name: "Брови", Count: 2),
-            (Name: "Ресницы", Count: 2)
+            (Name: "Ресницы", Count: 2),
+            (Name: "Маникюр", Count: 1),
+            (Name: "Макияж", Count: 1),
+            (Name: "Брови", Count: 1)
         };
 
         // Act

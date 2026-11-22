@@ -76,8 +76,8 @@ public class AnalyticsService(
         var appointments = await appointmentRepository.GetAllAsync(cancellationToken);
 
         return [.. appointments
-            .GroupBy(a => a.Service.Name)
-            .Select(g => new PopularServiceDto(g.Key, g.Count()))
+            .GroupBy(a => a.Service.Id)
+            .Select(g => new PopularServiceDto(g.First().Service.Name, g.Count()))
             .OrderByDescending(s => s.AppointmentsCount)
             .Take(top)];
     }
