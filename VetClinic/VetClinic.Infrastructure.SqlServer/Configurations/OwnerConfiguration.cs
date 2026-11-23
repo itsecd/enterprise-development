@@ -13,7 +13,7 @@ public class OwnerConfiguration : IEntityTypeConfiguration<Owner>
     public void Configure(EntityTypeBuilder<Owner> builder)
     {
         builder.HasKey(o => o.Id);
-        builder.Property(o => o.FullName).HasMaxLength(200).IsRequired();
+        builder.Property(o => o.FullName).IsRequired();
         builder.Property(o => o.Address).HasMaxLength(250).IsRequired();
         builder.Property(o => o.Phone).HasMaxLength(20).IsRequired();
 

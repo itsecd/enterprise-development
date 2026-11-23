@@ -11,9 +11,11 @@ namespace VetClinic.Application.Services;
 /// </summary>
 /// <param name="breeds">Репозиторий пород</param>
 /// <param name="pets">Репозиторий питомцев</param>
+/// <param name="transaction">Общая транзакция проверки питомцев и сохранения породы</param>
 public class BreedService(
     IBreedRepository breeds,
-    IPetRepository pets) : IBreedService
+    IPetRepository pets,
+    IClinicTransaction transaction) : IBreedService
 {
     /// <inheritdoc/>
     public async Task<IReadOnlyList<BreedDto>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -38,23 +40,24 @@ public class BreedService(
     }
 
     /// <inheritdoc/>
-    public async Task<BreedDto?> UpdateAsync(int id, BreedEditDto dto, CancellationToken cancellationToken = default)
-    {
-        var entity = await breeds.GetByIdAsync(id, cancellationToken);
-        if (entity is null)
+    public Task<BreedDto?> UpdateAsync(int id, BreedEditDto dto, CancellationToken cancellationToken = default) =>
+        transaction.ExecuteSerializableAsync<BreedDto?>(async token =>
         {
-            return null;
-        }
+            var entity = await breeds.GetByIdAsync(id, token);
+            if (entity is null)
+            {
+                return null;
+            }
 
-        if (entity.Species != dto.Species && await pets.AnyByBreedAsync(id, cancellationToken))
-        {
-            throw new ConflictException($"Вид породы «{entity.Name}» нельзя изменить: к ней привязаны питомцы");
-        }
+            if (entity.Species != dto.Species && await pets.AnyByBreedAsync(id, token))
+            {
+                throw new ConflictException($"Вид породы «{entity.Name}» нельзя изменить: к ней привязаны питомцы");
+            }
 
-        entity.Apply(dto);
-        await breeds.UpdateAsync(entity, cancellationToken);
-        return entity.ToDto();
-    }
+            entity.Apply(dto);
+            await breeds.SaveChangesAsync(token);
+            return entity.ToDto();
+        }, cancellationToken);
 
     /// <inheritdoc/>
     public async Task DeleteAsync(int id, CancellationToken cancellationToken = default) =>

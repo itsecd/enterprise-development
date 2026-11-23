@@ -27,8 +27,5 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .HasForeignKey(a => a.VetId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Navigation(a => a.Pet).AutoInclude();
-        builder.Navigation(a => a.Vet).AutoInclude();
     }
 }

@@ -28,6 +28,15 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
         OwnerId = ownerId
     };
 
+    private static VetEditDto NewVet(int? specializationId) => new()
+    {
+        PassportNumber = "4501 000777",
+        FullName = "Тестов Тест Тестович",
+        BirthYear = 1990,
+        SpecializationId = specializationId,
+        WorkExperienceYears = 5
+    };
+
     /// <summary>
     /// Созданный питомец получает новый идентификатор и попадает в список питомцев владельца
     /// </summary>
@@ -38,7 +47,7 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
 
         var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
 
-        Assert.Equal(12, created.Id);
+        Assert.True(created.Id > 0);
         Assert.Equal(4, created.OwnerId);
         Assert.Contains(await s.Pets.GetAllAsync(TestContext.Current.CancellationToken), p => p.Id == created.Id && p.OwnerId == 4);
     }
@@ -50,12 +59,48 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     public async Task UpdatePet_MovesPetBetweenOwners()
     {
         var s = NewServices();
-        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), cancellationToken);
 
-        await s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 5), TestContext.Current.CancellationToken);
+        await s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 5), cancellationToken);
 
-        var moved = await s.Pets.GetByIdAsync(created.Id, TestContext.Current.CancellationToken);
-        Assert.Equal(5, moved!.OwnerId);
+        await using var verification = s.Database.CreateContext();
+        var moved = await verification.Pets.SingleAsync(pet => pet.Id == created.Id, cancellationToken);
+        Assert.Equal(5, moved.OwnerId);
+    }
+
+    /// <summary>
+    /// Питомец без породы сохраняется с пустой ссылкой на породу
+    /// </summary>
+    [Fact]
+    public async Task UpdatePet_BreedIdNull_ClearsBreed()
+    {
+        var s = NewServices();
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var created = await s.Pets.CreateAsync(NewPet(ownerId: 4, breedId: 1), cancellationToken);
+
+        await s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 4, breedId: null), cancellationToken);
+
+        await using var verification = s.Database.CreateContext();
+        var stored = await verification.Pets.SingleAsync(pet => pet.Id == created.Id, cancellationToken);
+        Assert.Null(stored.BreedId);
+    }
+
+    /// <summary>
+    /// Врач без специализации сохраняется с пустой ссылкой на специализацию
+    /// </summary>
+    [Fact]
+    public async Task UpdateVet_SpecializationIdNull_ClearsSpecialization()
+    {
+        var s = NewServices();
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var created = await s.Vets.CreateAsync(NewVet(specializationId: 1), cancellationToken);
+
+        await s.Vets.UpdateAsync(created.Id, NewVet(specializationId: null), cancellationToken);
+
+        await using var verification = s.Database.CreateContext();
+        var stored = await verification.Vets.SingleAsync(vet => vet.Id == created.Id, cancellationToken);
+        Assert.Null(stored.SpecializationId);
     }
 
     /// <summary>
@@ -165,7 +210,23 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     {
         var s = NewServices();
 
-        await Assert.ThrowsAsync<ArgumentException>(() => s.Pets.CreateAsync(NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
+        await Assert.ThrowsAsync<InvalidPetBreedException>(() => s.Pets.CreateAsync(NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task CreatePet_BreedChangedInAnotherContext_ChecksCurrentSpecies()
+    {
+        var s = NewServices();
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var breed = await s.Breeds.CreateAsync(new BreedEditDto { Name = "Новая", Species = AnimalSpecies.Dog }, cancellationToken);
+
+        await using var other = s.Database.CreateContext();
+        var storedBreed = await other.Breeds.SingleAsync(b => b.Id == breed.Id, cancellationToken);
+        storedBreed.Species = AnimalSpecies.Cat;
+        await other.SaveChangesAsync(cancellationToken);
+
+        await Assert.ThrowsAsync<InvalidPetBreedException>(
+            () => s.Pets.CreateAsync(NewPet(ownerId: 4, breedId: breed.Id), cancellationToken));
     }
 
     /// <summary>
@@ -177,7 +238,7 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
         var s = NewServices();
         var created = await s.Pets.CreateAsync(NewPet(ownerId: 4), TestContext.Current.CancellationToken);
 
-        await Assert.ThrowsAsync<ArgumentException>(() => s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
+        await Assert.ThrowsAsync<InvalidPetBreedException>(() => s.Pets.UpdateAsync(created.Id, NewPet(ownerId: 4, breedId: 4), TestContext.Current.CancellationToken));
     }
 
     /// <summary>

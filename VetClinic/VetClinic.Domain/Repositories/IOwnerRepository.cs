@@ -8,8 +8,8 @@ namespace VetClinic.Domain.Repositories;
 public interface IOwnerRepository : IRepository<Owner>
 {
     /// <summary>
-    /// Владельцы, у которых больше одного питомца, по ФИО, вместе с питомцами
+    /// Владельцы с несколькими питомцами, отсортированные по ФИО
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task<IReadOnlyList<Owner>> GetWithMultiplePetsOrderedByFullNameAsync(CancellationToken cancellationToken = default);
+    public Task<IReadOnlyList<OwnerPetsCount>> GetWithMultiplePetsOrderedByFullNameAsync(CancellationToken cancellationToken = default);
 }

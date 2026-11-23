@@ -28,11 +28,10 @@ public interface IRepository<TEntity>
     public Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Сохранить изменения сущности, полученной из репозитория
+    /// Сохранить все отслеживаемые изменения в текущем контексте
     /// </summary>
-    /// <param name="entity">Изменённая сущность</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить сущность по идентификатору

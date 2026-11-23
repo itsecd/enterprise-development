@@ -23,12 +23,11 @@ public static class OwnerMapping
     /// <summary>
     /// Преобразовать владельца в DTO с количеством питомцев
     /// </summary>
-    /// <param name="entity">Владелец</param>
-    public static OwnerPetsCountDto ToDtoWithPetsCount(this Owner entity) => new()
+    public static OwnerPetsCountDto ToDto(this OwnerPetsCount owner) => new()
     {
-        Id = entity.Id,
-        FullName = entity.FullName,
-        PetsCount = entity.Pets.Count
+        Id = owner.Id,
+        FullName = owner.FullName,
+        PetsCount = owner.PetsCount
     };
 
     /// <summary>

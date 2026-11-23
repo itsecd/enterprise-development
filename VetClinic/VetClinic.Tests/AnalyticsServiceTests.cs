@@ -56,11 +56,11 @@ public class AnalyticsServiceTests(AnalyticsServiceFixture fixture) : IClassFixt
     /// Владельцы, у которых больше одного питомца, по ФИО
     /// </summary>
     [Fact]
-    public async Task GetOwnersWithMultiplePets_SeedData_ReturnsOwnersOrderedByFullName()
+    public async Task GetOwnersWithMultiplePets_SeedData_ReturnsOwnersOrderedByFullNameWithCounts()
     {
         var result = await _service.GetOwnersWithMultiplePetsOrderedByFullNameAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal([1, 2, 3], result.Select(o => o.Id));
+        Assert.Equal([(1, 2), (2, 2), (3, 2)], result.Select(o => (o.Id, o.PetsCount)));
     }
 
     /// <summary>

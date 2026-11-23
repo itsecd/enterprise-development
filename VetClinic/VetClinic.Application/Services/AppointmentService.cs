@@ -53,7 +53,7 @@ public class AppointmentService(
         entity.Pet = await GetPetAsync(dto.PetId, cancellationToken);
         entity.Vet = await GetVetAsync(dto.VetId, cancellationToken);
         entity.Apply(dto);
-        await appointments.UpdateAsync(entity, cancellationToken);
+        await appointments.SaveChangesAsync(cancellationToken);
         return entity.ToDto();
     }
 

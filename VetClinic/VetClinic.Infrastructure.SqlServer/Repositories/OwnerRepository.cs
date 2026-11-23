@@ -11,12 +11,11 @@ namespace VetClinic.Infrastructure.SqlServer.Repositories;
 public class OwnerRepository(VetClinicDbContext context) : EfRepository<Owner>(context), IOwnerRepository
 {
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<Owner>> GetWithMultiplePetsOrderedByFullNameAsync(CancellationToken cancellationToken = default) =>
+    public async Task<IReadOnlyList<OwnerPetsCount>> GetWithMultiplePetsOrderedByFullNameAsync(CancellationToken cancellationToken = default) =>
         await Entities
-            .AsNoTrackingWithIdentityResolution()
-            .Include(o => o.Pets)
             .Where(o => o.Pets.Count > 1)
             .OrderBy(o => o.FullName)
             .ThenBy(o => o.Id)
+            .Select(o => new OwnerPetsCount(o.Id, o.FullName, o.Pets.Count))
             .ToListAsync(cancellationToken);
 }

@@ -20,8 +20,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .WithMany()
             .HasForeignKey(p => p.BreedId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        builder.Navigation(p => p.Breed).AutoInclude();
-        builder.Navigation(p => p.Owner).AutoInclude();
     }
 }

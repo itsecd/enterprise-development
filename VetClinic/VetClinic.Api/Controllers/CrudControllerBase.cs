@@ -116,14 +116,16 @@ public abstract class CrudControllerBase<TDto, TEditDto>(
     /// <param name="cancellationToken">Токен отмены</param>
     /// <response code="204">Записи больше нет</response>
     /// <response code="401">Нужен токен доступа</response>
+    /// <response code="409">Конфликт при удалении записи</response>
     [Authorize]
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         await service.DeleteAsync(id, cancellationToken);
-        logger.LogInformation("{Controller}: удалена запись {Id}", GetType().Name, id);
+        logger.LogInformation("{Controller}: обработан запрос на удаление записи {Id}", GetType().Name, id);
         return NoContent();
     }
 

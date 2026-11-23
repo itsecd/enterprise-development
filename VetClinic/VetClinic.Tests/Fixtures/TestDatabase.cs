@@ -23,11 +23,15 @@ public sealed class TestDatabase : IAsyncDisposable
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
-        Context = new VetClinicDbContext(new DbContextOptionsBuilder<VetClinicDbContext>()
-            .UseSqlite(_connection)
-            .Options);
+        Context = CreateContext();
         Context.Database.EnsureCreated();
     }
+
+    /// <summary>
+    /// Создаёт отдельный контекст для проверки сохранённых данных
+    /// </summary>
+    public VetClinicDbContext CreateContext() =>
+        new(new DbContextOptionsBuilder<VetClinicDbContext>().UseSqlite(_connection).Options);
 
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()

@@ -1,4 +1,5 @@
 using VetClinic.Application.Services;
+using VetClinic.Infrastructure.SqlServer;
 using VetClinic.Infrastructure.SqlServer.Repositories;
 
 namespace VetClinic.Tests.Fixtures;
@@ -29,6 +30,7 @@ public sealed class CrudServicesFixture : IAsyncDisposable
         var database = new TestDatabase();
         _databases.Add(database);
         var context = database.Context;
+        var transaction = new ClinicTransaction(context);
 
         var ownerRepo = new OwnerRepository(context);
         var petRepo = new PetRepository(context);
@@ -40,9 +42,9 @@ public sealed class CrudServicesFixture : IAsyncDisposable
         return new CrudServices(
             database,
             new OwnerService(ownerRepo),
-            new PetService(petRepo, ownerRepo, breedRepo),
+            new PetService(petRepo, ownerRepo, breedRepo, transaction),
             new AppointmentService(appointmentRepo, petRepo, vetRepo),
-            new BreedService(breedRepo, petRepo),
+            new BreedService(breedRepo, petRepo, transaction),
             new VetService(vetRepo, specializationRepo));
     }
 

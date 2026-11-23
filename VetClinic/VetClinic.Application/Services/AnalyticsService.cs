@@ -44,7 +44,7 @@ public class AnalyticsService(
     public async Task<IReadOnlyList<OwnerPetsCountDto>> GetOwnersWithMultiplePetsOrderedByFullNameAsync(CancellationToken cancellationToken = default)
     {
         var result = await owners.GetWithMultiplePetsOrderedByFullNameAsync(cancellationToken);
-        return [.. result.Select(o => o.ToDtoWithPetsCount())];
+        return [.. result.Select(o => o.ToDto())];
     }
 
     /// <inheritdoc/>

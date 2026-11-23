@@ -44,7 +44,7 @@ public class OwnerService(
         }
 
         entity.Apply(dto);
-        await owners.UpdateAsync(entity, cancellationToken);
+        await owners.SaveChangesAsync(cancellationToken);
         return entity.ToDto();
     }
 

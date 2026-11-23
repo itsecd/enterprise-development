@@ -1,21 +1,20 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using VetClinic.Application.Exceptions;
 
 namespace VetClinic.Api.Middleware;
 
 /// <summary>
-/// Превращает <see cref="ArgumentException"/> из сервисов в ответ 400 с ProblemDetails
+/// Возвращает 400, если указанная порода относится к другому виду
 /// </summary>
-/// <param name="problemDetails">Сервис формирования ProblemDetails</param>
-/// <param name="logger">Логгер</param>
-public class ArgumentExceptionHandler(
+public class InvalidPetBreedExceptionHandler(
     IProblemDetailsService problemDetails,
-    ILogger<ArgumentExceptionHandler> logger) : IExceptionHandler
+    ILogger<InvalidPetBreedExceptionHandler> logger) : IExceptionHandler
 {
     /// <inheritdoc/>
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        if (exception is not ArgumentException)
+        if (exception is not InvalidPetBreedException)
         {
             return false;
         }

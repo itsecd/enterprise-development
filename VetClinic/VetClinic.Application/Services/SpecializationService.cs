@@ -44,7 +44,7 @@ public class SpecializationService(
         }
 
         entity.Apply(dto);
-        await specializations.UpdateAsync(entity, cancellationToken);
+        await specializations.SaveChangesAsync(cancellationToken);
         return entity.ToDto();
     }
 

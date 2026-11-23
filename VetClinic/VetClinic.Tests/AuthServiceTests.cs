@@ -1,5 +1,7 @@
+using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using VetClinic.Application.Auth;
 using VetClinic.Contracts.Dto.Auth;
 using VetClinic.Infrastructure.SqlServer.Repositories;
@@ -12,6 +14,9 @@ namespace VetClinic.Tests;
 /// </summary>
 public sealed class AuthServiceTests : IAsyncDisposable
 {
+    private const string Issuer = "VetClinic.Tests";
+    private const string Audience = "VetClinic.Tests.Client";
+    private const string SigningKey = "test-signing-key-at-least-32-characters";
     private readonly TestDatabase _database = new();
     private readonly AuthService _service;
 
@@ -22,24 +27,31 @@ public sealed class AuthServiceTests : IAsyncDisposable
     {
         var options = Options.Create(new JwtOptions
         {
-            Issuer = "VetClinic.Tests",
-            Audience = "VetClinic.Tests",
-            Key = "test-signing-key-at-least-32-characters"
+            Issuer = Issuer,
+            Audience = Audience,
+            Key = SigningKey
         });
         _service = new AuthService(new UserRepository(_database.Context), options, TimeProvider.System);
     }
 
-    /// <summary>
-    /// Верный пароль дает токен с издателем из настроек и сроком в будущем
-    /// </summary>
     [Fact]
-    public async Task Login_ValidPassword_ReturnsToken()
+    public async Task Login_ValidPassword_ReturnsValidSignedToken()
     {
         var token = await _service.LoginAsync(new LoginDto { Username = "admin", Password = "Vet2026!" }, TestContext.Current.CancellationToken);
 
         Assert.NotNull(token);
-        Assert.Equal("VetClinic.Tests", new JsonWebToken(token.AccessToken).Issuer);
-        Assert.True(token.ExpiresAt > DateTime.UtcNow);
+        var validation = await new JsonWebTokenHandler().ValidateTokenAsync(token.AccessToken, new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SigningKey)),
+            ValidIssuer = Issuer,
+            ValidAudience = Audience,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        });
+        Assert.True(validation.IsValid, validation.Exception?.Message);
+        Assert.Equal(new DateTimeOffset(token.ExpiresAt).ToUnixTimeSeconds(),
+            new DateTimeOffset(validation.SecurityToken.ValidTo).ToUnixTimeSeconds());
     }
 
     /// <summary>

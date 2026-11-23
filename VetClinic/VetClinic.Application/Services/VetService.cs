@@ -49,7 +49,7 @@ public class VetService(
 
         entity.Specialization = await GetSpecializationAsync(dto.SpecializationId, cancellationToken);
         entity.Apply(dto);
-        await vets.UpdateAsync(entity, cancellationToken);
+        await vets.SaveChangesAsync(cancellationToken);
         return entity.ToDto();
     }
 

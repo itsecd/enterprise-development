@@ -44,6 +44,7 @@ public static class PetMapping
     {
         entity.Nickname = dto.Nickname;
         entity.Species = dto.Species;
+        entity.BreedId = dto.BreedId;
         entity.BirthDate = dto.BirthDate;
         entity.Weight = dto.Weight;
     }

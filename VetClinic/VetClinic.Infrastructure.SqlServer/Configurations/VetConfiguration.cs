@@ -15,13 +15,11 @@ public class VetConfiguration : IEntityTypeConfiguration<Vet>
         builder.HasKey(v => v.Id);
         builder.Property(v => v.PassportNumber).HasMaxLength(11).IsRequired();
         builder.HasIndex(v => v.PassportNumber).IsUnique();
-        builder.Property(v => v.FullName).HasMaxLength(200).IsRequired();
+        builder.Property(v => v.FullName).IsRequired();
 
         builder.HasOne(v => v.Specialization)
             .WithMany()
             .HasForeignKey(v => v.SpecializationId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        builder.Navigation(v => v.Specialization).AutoInclude();
     }
 }

@@ -5,7 +5,7 @@ namespace VetClinic.Contracts.Dto.Vets;
 /// <summary>
 /// Данные врача для создания и изменения
 /// </summary>
-public class VetEditDto
+public class VetEditDto : IValidatableObject
 {
     /// <summary>
     /// Номер паспорта в формате 0000 000000
@@ -18,14 +18,12 @@ public class VetEditDto
     /// ФИО врача
     /// </summary>
     [Required]
-    [MaxLength(200)]
     public required string FullName { get; init; }
 
     /// <summary>
-    /// Год рождения
+    /// Год рождения, не раньше 1900 и не позже текущего года
     /// </summary>
     [Required]
-    [Range(1900, 2200)]
     public required int BirthYear { get; init; }
 
     /// <summary>
@@ -40,4 +38,16 @@ public class VetEditDto
     [Required]
     [Range(0, 80)]
     public required int WorkExperienceYears { get; init; }
+
+    /// <inheritdoc/>
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        var currentYear = DateTime.Now.Year;
+        if (BirthYear < 1900 || BirthYear > currentYear)
+        {
+            yield return new ValidationResult(
+                $"Год рождения должен быть от 1900 до {currentYear}",
+                [nameof(BirthYear)]);
+        }
+    }
 }

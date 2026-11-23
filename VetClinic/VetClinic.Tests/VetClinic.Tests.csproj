@@ -18,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\VetClinic.Api\VetClinic.Api.csproj" />
     <ProjectReference Include="..\VetClinic.Application\VetClinic.Application.csproj" />
     <ProjectReference Include="..\VetClinic.Domain\VetClinic.Domain.csproj" />
     <ProjectReference Include="..\VetClinic.Infrastructure.SqlServer\VetClinic.Infrastructure.SqlServer.csproj" />

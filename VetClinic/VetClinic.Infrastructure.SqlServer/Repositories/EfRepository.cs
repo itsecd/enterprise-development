@@ -4,8 +4,7 @@ using VetClinic.Domain.Repositories;
 namespace VetClinic.Infrastructure.SqlServer.Repositories;
 
 /// <summary>
-/// Базовый репозиторий поверх EF Core: списки читаются без отслеживания, а одна запись — с отслеживанием,
-/// поэтому UpdateAsync только сохраняет изменения найденной сущности; удаление каскадное на стороне базы
+/// Базовый репозиторий EF Core. Списки читаются без отслеживания, поиск по ID отслеживает сущность.
 /// </summary>
 /// <typeparam name="TEntity">Тип сущности</typeparam>
 /// <param name="context">Контекст базы данных</param>
@@ -34,13 +33,13 @@ public abstract class EfRepository<TEntity>(VetClinicDbContext context) : IRepos
     public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         Entities.Add(entity);
-        await Context.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
         return entity;
     }
 
     /// <inheritdoc/>
-    public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) =>
-        await Context.SaveChangesAsync(cancellationToken);
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+        Context.SaveChangesAsync(cancellationToken);
 
     /// <inheritdoc/>
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
@@ -52,7 +51,7 @@ public abstract class EfRepository<TEntity>(VetClinicDbContext context) : IRepos
         }
 
         Entities.Remove(entity);
-        await Context.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
         return true;
     }
 }

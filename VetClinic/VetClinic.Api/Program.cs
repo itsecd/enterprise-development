@@ -20,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddSqlServerDbContext<VetClinicDbContext>("vetclinic");
 
+builder.Services.AddScoped<IClinicTransaction, ClinicTransaction>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IVetRepository, VetRepository>();
@@ -54,7 +55,7 @@ builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<KeyNotFoundExceptionHandler>();
-builder.Services.AddExceptionHandler<ArgumentExceptionHandler>();
+builder.Services.AddExceptionHandler<InvalidPetBreedExceptionHandler>();
 builder.Services.AddExceptionHandler<ConflictExceptionHandler>();
 builder.Services.AddExceptionHandler<DbUpdateExceptionHandler>();
 builder.Services.AddProblemDetails();
