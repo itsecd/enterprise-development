@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<OutputType>Exe</OutputType>
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="xunit.v3" Version="4.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MuseumSystem.Domain\MuseumSystem.Domain.csproj" />
+		<ProjectReference Include="..\MuseumSystem.Services\MuseumSystem.Services.csproj" />
+		<ProjectReference Include="..\MuseumSystem.Contracts\MuseumSystem.Contracts.csproj" />
+		<ProjectReference Include="..\MuseumSystem.Infrastructure.InMemory\MuseumSystem.Infrastructure.InMemory.csproj" />
+		<ProjectReference Include="..\MuseumSystem.Shared\MuseumSystem.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+</Project>

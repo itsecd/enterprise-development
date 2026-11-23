@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.14" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.18.7" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MuseumSystem.Services\MuseumSystem.Services.csproj" />
+    <ProjectReference Include="..\MuseumSystem.Contracts\MuseumSystem.Contracts.csproj" />
+    <ProjectReference Include="..\MuseumSystem.Infrastructure.InMemory\MuseumSystem.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\MuseumSystem.Shared\MuseumSystem.Shared.csproj" />
+    <ProjectReference Include="..\MuseumSystem.ServiceDefaults\MuseumSystem.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\MuseumSystem.Infrastructure.EfCore\MuseumSystem.Infrastructure.EfCore.csproj" />
+  </ItemGroup>
+
+</Project>
