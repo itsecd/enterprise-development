@@ -1,0 +1,30 @@
+using Museum.Domain.Entities;
+
+namespace Museum.Domain.Repositories;
+
+/// <summary>
+/// Репозиторий связей между экскурсиями и выставками.
+/// </summary>
+public interface IExcursionExhibitionRepository
+    : IRepository<ExcursionExhibition, (int ExcursionId, int ExhibitionId)>
+{
+    /// <summary>
+    /// Проверяет, включена ли выставка хотя бы в одну экскурсию.
+    /// </summary>
+    /// <param name="exhibitionId">Идентификатор выставки.</param>
+    /// <returns>True, если связь найдена.</returns>
+    public bool ExistsForExhibition(int exhibitionId);
+
+    /// <summary>
+    /// Заменяет связи экскурсии с выставками.
+    /// </summary>
+    /// <param name="excursion">Экскурсия, для которой обновляются связи.</param>
+    /// <param name="exhibitions">Новый список выставок.</param>
+    public void ReplaceForExcursion(Excursion excursion, IReadOnlyList<Exhibition> exhibitions);
+
+    /// <summary>
+    /// Удаляет связи экскурсии с выставками.
+    /// </summary>
+    /// <param name="excursion">Экскурсия, для которой удаляются связи.</param>
+    public void RemoveForExcursion(Excursion excursion);
+}
