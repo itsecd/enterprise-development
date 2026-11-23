@@ -1,9 +1,18 @@
+using Microsoft.Extensions.Configuration;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
-var database = builder.AddPostgres("postgres")
-    .WithImageTag("18.3")
-    .WithDataVolume()
-    .AddDatabase("fitnessgym");
+var password = builder.AddParameter("postgres-password", secret: true);
+var postgres = builder.AddPostgres("postgres", password: password)
+    .WithImageTag("18.3");
+
+// В тестах данные живут только в контейнере и не используют рабочий том.
+if (builder.Configuration.GetValue("UseVolumes", true))
+{
+    postgres.WithDataVolume("fitnessgym-postgres-data");
+}
+
+var database = postgres.AddDatabase("fitnessgym");
 
 var migrations = builder.AddProject<Projects.FitnessGym_MigrationService>("migrations")
     .WithReference(database)

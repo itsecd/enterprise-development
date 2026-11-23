@@ -22,18 +22,13 @@ public sealed class PostgreSqlDatabase : IAsyncDisposable
         }.ConnectionString;
     }
 
-    public static bool IsConfigured =>
-        !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FITNESSGYM_TEST_CONNECTION_STRING"));
-
     public string ConnectionString { get; }
 
     public FitnessGymDbContext CreateContext() => new(new DbContextOptionsBuilder<FitnessGymDbContext>()
         .UseNpgsql(ConnectionString).Options);
 
-    public static async Task<PostgreSqlDatabase> CreateAsync()
+    public static async Task<PostgreSqlDatabase> CreateAsync(string connectionString)
     {
-        var connectionString = Environment.GetEnvironmentVariable("FITNESSGYM_TEST_CONNECTION_STRING")
-                               ?? throw new InvalidOperationException("Не задан FITNESSGYM_TEST_CONNECTION_STRING.");
         var database = new PostgreSqlDatabase(connectionString);
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(TestContext.Current.CancellationToken);

@@ -5,6 +5,7 @@ using FitnessGym.Api.Controllers;
 using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Exceptions;
 using FitnessGym.Tests.Seeds;
+using FitnessGym.Tests.Integration;
 using FitnessGym.Infrastructure.PostgreSql.Repositories;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
@@ -19,15 +20,16 @@ namespace FitnessGym.Tests.PostgreSql;
 /// <summary>
 /// Проверки настоящего PostgreSQL: миграции, SQL-запросы, ограничения и HTTP API.
 /// </summary>
-public class PostgreSqlTests
+[Collection("Aspire")]
+[Trait("Category", "Integration")]
+public class PostgreSqlTests(AspireFixture fixture)
 {
     private static readonly DateTime _seedTime = new(2026, 11, 8, 12, 0, 0);
 
-    [Fact(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Fact]
     public async Task MigrationsShouldSeedOnceAndSupportRollback()
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         await using var context = database.CreateContext();
         var token = TestContext.Current.CancellationToken;
         Assert.False(context.Database.HasPendingModelChanges());
@@ -49,15 +51,14 @@ public class PostgreSqlTests
         Assert.Equal(26, await context.Sessions.CountAsync(token));
     }
 
-    [Theory(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Theory]
     [InlineData("clients", "fullName")]
     [InlineData("trainers", "fullName")]
     [InlineData("specializations", "name")]
     [InlineData("sessions", "hallName")]
     public async Task HttpCrudShouldPersistAcrossApiRestarts(string resource, string field)
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         var token = TestContext.Current.CancellationToken;
         var payload = ApiTests.CreatePayload(resource);
         int id;
@@ -95,11 +96,10 @@ public class PostgreSqlTests
         Assert.Equal(26, await context.Sessions.CountAsync(token));
     }
 
-    [Fact(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Fact]
     public async Task DetachedNavigationObjectsShouldNotBeInsertedOrUpdated()
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         var token = TestContext.Current.CancellationToken;
         var data = ClubDataSeeder.Create(_seedTime);
         var trainer = data.Trainers[0];
@@ -143,11 +143,10 @@ public class PostgreSqlTests
         }
     }
 
-    [Fact(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Fact]
     public async Task AnalyticsShouldExecuteInPostgreSqlAndRespectTimeBoundaries()
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         await using var context = database.CreateContext();
         var clients = new PostgreSqlClientRepository(context);
         var trainers = new PostgreSqlTrainerRepository(context);
@@ -179,11 +178,10 @@ public class PostgreSqlTests
             session => session.StartsAt == new DateTime(2026, 12, 1));
     }
 
-    [Fact(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Fact]
     public async Task ForeignKeysShouldProtectReferencesEvenWithoutServiceChecks()
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         await using (var context = database.CreateContext())
         {
             await Assert.ThrowsAsync<EntityReferenceException>(() => new PostgreSqlClientRepository(context).DeleteAsync(0));
@@ -207,11 +205,10 @@ public class PostgreSqlTests
         }
     }
 
-    [Fact(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Fact]
     public async Task CheckConstraintFailuresShouldNotBeMisclassifiedAsReferenceConflicts()
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         await using var context = database.CreateContext();
         await Assert.ThrowsAsync<DbUpdateException>(() => new PostgreSqlTrainingSessionRepository(context)
             .AddAsync(new TrainingSession
@@ -221,11 +218,10 @@ public class PostgreSqlTests
             }));
     }
 
-    [Fact(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Fact]
     public async Task HttpQueriesAndValidationShouldUseDatabaseRepositories()
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         await using var factory = CreateFactory(database);
         using var client = factory.CreateClient();
         var token = TestContext.Current.CancellationToken;
@@ -250,8 +246,7 @@ public class PostgreSqlTests
             (await client.GetAsync("/api/halls/Test/availability?at=2026-11-01T10:00:00Z", token)).StatusCode);
     }
 
-    [Theory(SkipUnless = nameof(PostgreSqlDatabase.IsConfigured), SkipType = typeof(PostgreSqlDatabase),
-        Skip = "Для PostgreSQL задайте FITNESSGYM_TEST_CONNECTION_STRING.")]
+    [Theory]
     [InlineData(null, -1, true)]
     [InlineData(null, 0, false)]
     [InlineData(null, 59, false)]
@@ -265,7 +260,7 @@ public class PostgreSqlTests
     public async Task HallAvailabilityShouldRespectEffectiveSessionEnd(
         int? durationMinutes, int minutesFromStart, bool expectedAvailability)
     {
-        await using var database = await PostgreSqlDatabase.CreateAsync();
+        await using var database = await PostgreSqlDatabase.CreateAsync(fixture.ConnectionString);
         await using var context = database.CreateContext();
         var sessions = new PostgreSqlTrainingSessionRepository(context);
         var start = new DateTime(2026, 11, 8, 23, 30, 0);

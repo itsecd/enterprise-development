@@ -8,20 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:18.3
-        env:
-          POSTGRES_PASSWORD: fitnessgym-test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      FITNESSGYM_TEST_CONNECTION_STRING: Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=fitnessgym-test
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
