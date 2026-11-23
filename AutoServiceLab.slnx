@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="AutoServiceLab.Api/AutoServiceLab.Api.csproj" />
+  <Project Path="AutoServiceLab.Application.Contracts/AutoServiceLab.Application.Contracts.csproj" />
+  <Project Path="AutoServiceLab.Application/AutoServiceLab.Application.csproj" />
+  <Project Path="AutoServiceLab.Domain/AutoServiceLab.Domain.csproj" />
+  <Project Path="AutoServiceLab.Infrastructure.InMemory/AutoServiceLab.Infrastructure.InMemory.csproj" />
+  <Project Path="AutoServiceLab.Shared/AutoServiceLab.Shared.csproj" Id="a42500a3-8d6e-456d-b63c-5a7a06f5413b" />
+  <Project Path="AutoServiceLab.Tests/AutoServiceLab.Tests.csproj" />
+</Solution>
