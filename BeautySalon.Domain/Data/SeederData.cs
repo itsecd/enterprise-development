@@ -309,7 +309,7 @@ public static class SeederData
         [
             CreateAppointment(1, new DateTime(2023, 10, 1, 10, 0, 0), 1, 101, 201, false),
             CreateAppointment(2, new DateTime(2023, 10, 1, 12, 0, 0), 2, 101, 203, false),
-            CreateAppointment(3, new DateTime(2023, 10, 1, 13, 0, 0), 3, 101, 205, false),
+            CreateAppointment(3, new DateTime(2023, 10, 1, 14, 0, 0), 3, 101, 205, false),
 
             CreateAppointment(4, new DateTime(2023, 11, 1, 14, 0, 0), 1, 102, 201, true),
             CreateAppointment(5, new DateTime(2023, 11, 1, 15, 0, 0), 1, 102, 201, true),

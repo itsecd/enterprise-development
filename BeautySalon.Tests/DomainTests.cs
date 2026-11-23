@@ -102,7 +102,8 @@ public class DomainTests
     public void ShouldReturnRepeatAppointmentCountsForLastMonth()
     {
         // Arrange
-        var lastMonth = DateTime.Now.AddDays(-30);
+        var referenceDate = new DateTime(2023, 10, 31);
+        var lastMonth = referenceDate.AddDays(-30);
 
         // Act
         var repeatClients = SeederData.Appointments
