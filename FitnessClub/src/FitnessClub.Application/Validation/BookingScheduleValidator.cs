@@ -26,30 +26,42 @@ public class BookingScheduleValidator(
         int? excludingBookingId = null,
         CancellationToken cancellationToken = default)
     {
-        var allBookings = await bookingRepository.GetAllAsync(cancellationToken);
         var end = candidate.DateTime + candidate.Duration;
-        var overlappingBookings = allBookings
-            .Where(existing =>
-                existing.Id != excludingBookingId &&
+
+        var hallBusy = await bookingRepository.AnyAsync(
+            existing => 
+                existing.Id == excludingBookingId &&
+                existing.Hall.Id == candidate.Hall.Id &&
                 existing.DateTime < end &&
-                candidate.DateTime < existing.DateTime + existing.Duration)
-            .ToList();
-        if (await bookingRepository.AnyAsync(b =>
-                b.Hall.Id == candidate.Hall.Id, cancellationToken))
+                candidate.DateTime < existing.DateTime + existing.Duration,
+                cancellationToken);
+        if (hallBusy)
         {
             logger.LogWarning("Зал {HallId} уже занят в выбранное время", candidate.Hall.Id);
             throw new ConflictException(
                 "Зал уже занят в выбранное время.");
         }
-        if (await bookingRepository.AnyAsync(b =>
-                b.Trainer.Id == candidate.Trainer.Id, cancellationToken))
+        var trainerBusy = await bookingRepository.AnyAsync(
+            existing => 
+                existing.Id == excludingBookingId &&
+                existing.Trainer.Id == candidate.Trainer.Id &&
+                existing.DateTime < end &&
+                candidate.DateTime < existing.DateTime + existing.Duration,
+                cancellationToken);
+        if (trainerBusy)
         {
             logger.LogWarning("У тренера {TrainerId} уже есть занятие в выбранное время", candidate.Trainer.Id);
             throw new ConflictException(
                 "У тренера уже есть занятие в выбранное время.");
         }
-        if (await bookingRepository.AnyAsync(b =>
-                b.Client.Id == candidate.Client.Id, cancellationToken))
+        var clientBusy = await bookingRepository.AnyAsync(
+            existing =>
+                existing.Id == excludingBookingId &&
+                existing.Client.Id == candidate.Client.Id &&
+                existing.DateTime < end &&
+                candidate.DateTime < existing.DateTime + existing.Duration,
+                cancellationToken);
+        if (clientBusy)
         {
             logger.LogWarning("У клиента {ClientId} уже есть занятие в выбранное время", candidate.Client.Id);
             throw new ConflictException(
