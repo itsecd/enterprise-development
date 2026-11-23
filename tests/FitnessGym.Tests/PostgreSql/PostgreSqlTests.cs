@@ -130,9 +130,8 @@ public class PostgreSqlTests
         await using (var context = database.CreateContext())
         {
             var stored = await new PostgreSqlTrainingSessionRepository(context).GetByIdAsync(0);
-            Assert.Equal(1, stored!.Client.Id);
-            Assert.Equal(1, stored.Trainer.Id);
-            Assert.NotNull(stored.Trainer.Specialization);
+            Assert.Equal(1, stored!.ClientId);
+            Assert.Equal(1, stored.TrainerId);
             Assert.Equal(12, await context.Clients.CountAsync(token));
             Assert.Equal(13, await context.Trainers.CountAsync(token));
             Assert.Equal("Пилатес", (await context.Specializations.SingleAsync(item => item.Id == 1, token)).Name);
