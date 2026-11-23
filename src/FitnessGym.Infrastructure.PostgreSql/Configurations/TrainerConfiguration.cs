@@ -13,8 +13,9 @@ public class TrainerConfiguration : IEntityTypeConfiguration<Trainer>
             "CK_Trainers_ExperienceYears", "\"ExperienceYears\" BETWEEN 0 AND 100"));
         builder.HasKey(trainer => trainer.Id);
         builder.Property(trainer => trainer.Id).HasIdentityOptions(startValue: 100);
-        builder.Property(trainer => trainer.PassportNumber).IsRequired();
-        builder.Property(trainer => trainer.FullName).IsRequired();
+        builder.Property(trainer => trainer.PassportNumber).IsRequired().HasMaxLength(TextLimits.PassportNumber);
+        builder.Property(trainer => trainer.FullName).IsRequired().HasMaxLength(TextLimits.FullName);
+        builder.HasIndex(trainer => trainer.PassportNumber).IsUnique();
         builder.HasOne(trainer => trainer.Specialization).WithMany()
             .HasForeignKey(trainer => trainer.SpecializationId).OnDelete(DeleteBehavior.Restrict);
     }

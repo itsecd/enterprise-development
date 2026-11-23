@@ -80,6 +80,11 @@ public abstract class PostgreSqlRepository<TEntity>(FitnessGymDbContext context)
             await context.SaveChangesAsync();
         }
         catch (DbUpdateException exception) when (
+            exception.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            throw new EntityConflictException(exception);
+        }
+        catch (DbUpdateException exception) when (
             exception.InnerException is PostgresException
             {
                 SqlState: PostgresErrorCodes.ForeignKeyViolation or PostgresErrorCodes.RestrictViolation,

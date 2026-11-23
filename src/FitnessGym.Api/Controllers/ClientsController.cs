@@ -40,6 +40,7 @@ public class ClientsController(IClientService service) : ControllerBase
     [HttpPost]
     [ProducesResponseType<ClientDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<ClientDto>> AddClient(UpsertClientDto client)
     {
         var created = await service.AddClientAsync(client);
@@ -53,6 +54,7 @@ public class ClientsController(IClientService service) : ControllerBase
     [ProducesResponseType<ClientDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<ClientDto>> UpdateClient(int id, UpsertClientDto client)
     {
         var updated = await service.UpdateClientAsync(id, client);

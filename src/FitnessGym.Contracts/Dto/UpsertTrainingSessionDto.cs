@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitnessGym.Domain.Entities;
 
 namespace FitnessGym.Contracts.Dto;
 
@@ -36,6 +37,7 @@ public class UpsertTrainingSessionDto : IValidatableObject
     /// Название зала, в котором проходит занятие.
     /// </summary>
     [Required(ErrorMessage = "Не указано название зала")]
+    [MaxLength(TextLimits.HallName, ErrorMessage = "Максимальная длина поля — {1} символов")]
     public string HallName { get; init; } = string.Empty;
 
     /// <summary>

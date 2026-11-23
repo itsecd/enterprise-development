@@ -11,6 +11,7 @@ public class SpecializationConfiguration : IEntityTypeConfiguration<Specializati
         builder.ToTable("Specializations");
         builder.HasKey(specialization => specialization.Id);
         builder.Property(specialization => specialization.Id).HasIdentityOptions(startValue: 100);
-        builder.Property(specialization => specialization.Name).IsRequired();
+        builder.Property(specialization => specialization.Name).IsRequired().HasMaxLength(TextLimits.SpecializationName);
+        builder.HasIndex(specialization => specialization.Name).IsUnique();
     }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitnessGym.Domain.Entities;
 
 namespace FitnessGym.Contracts.Dto;
 
@@ -12,5 +13,6 @@ public class UpsertSpecializationDto
     /// </summary>
     [Required(ErrorMessage = "Не указано название специализации")]
     [MinLength(2, ErrorMessage = "Название специализации слишком короткое")]
+    [MaxLength(TextLimits.SpecializationName, ErrorMessage = "Максимальная длина поля — {1} символов")]
     public string Name { get; init; } = string.Empty;
 }

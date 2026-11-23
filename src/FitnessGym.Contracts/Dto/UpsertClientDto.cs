@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FitnessGym.Domain.Entities;
 using FitnessGym.Domain.Enums;
 
 namespace FitnessGym.Contracts.Dto;
@@ -12,12 +13,14 @@ public class UpsertClientDto : IValidatableObject
     /// Номер паспорта.
     /// </summary>
     [Required(ErrorMessage = "Не указан номер паспорта")]
+    [MaxLength(TextLimits.PassportNumber, ErrorMessage = "Максимальная длина поля — {1} символов")]
     public string PassportNumber { get; init; } = string.Empty;
 
     /// <summary>
     /// ФИО.
     /// </summary>
     [Required(ErrorMessage = "Не указано ФИО")]
+    [MaxLength(TextLimits.FullName, ErrorMessage = "Максимальная длина поля — {1} символов")]
     public string FullName { get; init; } = string.Empty;
 
     /// <summary>
@@ -38,6 +41,7 @@ public class UpsertClientDto : IValidatableObject
     /// </summary>
     [Required(ErrorMessage = "Не указан телефон")]
     [Phone(ErrorMessage = "Некорректный номер телефона")]
+    [MaxLength(TextLimits.Phone, ErrorMessage = "Максимальная длина поля — {1} символов")]
     public string Phone { get; init; } = string.Empty;
 
     /// <summary>

@@ -19,7 +19,7 @@ public class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : IExcepti
         var statusCode = exception switch
         {
             ValidationException => StatusCodes.Status400BadRequest,
-            EntityInUseException or EntityReferenceException => StatusCodes.Status409Conflict,
+            EntityInUseException or EntityReferenceException or EntityConflictException => StatusCodes.Status409Conflict,
             _ => StatusCodes.Status500InternalServerError,
         };
 
@@ -44,7 +44,7 @@ public class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : IExcepti
         problem.Title = statusCode switch
         {
             StatusCodes.Status400BadRequest => "Некорректные данные запроса.",
-            StatusCodes.Status409Conflict => "Операция нарушает связи между записями.",
+            StatusCodes.Status409Conflict => "Конфликт данных.",
             _ => "Произошла внутренняя ошибка сервера.",
         };
         problem.Detail = statusCode == StatusCodes.Status500InternalServerError ? null : exception.Message;

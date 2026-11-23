@@ -15,7 +15,7 @@ public class TrainingSessionConfiguration : IEntityTypeConfiguration<TrainingSes
         // Занятия задаются по местному времени клуба, без часового пояса.
         builder.Property(session => session.StartsAt).HasColumnType("timestamp without time zone");
         builder.Property(session => session.EndsAt).HasColumnType("timestamp without time zone");
-        builder.Property(session => session.HallName).IsRequired();
+        builder.Property(session => session.HallName).IsRequired().HasMaxLength(TextLimits.HallName);
         builder.HasOne(session => session.Client).WithMany()
             .HasForeignKey(session => session.ClientId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(session => session.Trainer).WithMany()

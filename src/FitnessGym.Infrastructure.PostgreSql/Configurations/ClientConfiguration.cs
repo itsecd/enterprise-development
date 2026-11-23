@@ -16,9 +16,10 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             "CK_Clients_SubscriptionDates", "\"SubscriptionEnd\" >= \"SubscriptionStart\""));
         builder.HasKey(client => client.Id);
         builder.Property(client => client.Id).HasIdentityOptions(startValue: 100);
-        builder.Property(client => client.PassportNumber).IsRequired();
-        builder.Property(client => client.FullName).IsRequired();
-        builder.Property(client => client.Phone).IsRequired();
+        builder.Property(client => client.PassportNumber).IsRequired().HasMaxLength(TextLimits.PassportNumber);
+        builder.Property(client => client.FullName).IsRequired().HasMaxLength(TextLimits.FullName);
+        builder.Property(client => client.Phone).IsRequired().HasMaxLength(TextLimits.Phone);
+        builder.HasIndex(client => client.PassportNumber).IsUnique();
         builder.HasIndex(client => client.SubscriptionEnd);
     }
 }

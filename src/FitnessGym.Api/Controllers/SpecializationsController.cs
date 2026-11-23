@@ -40,6 +40,7 @@ public class SpecializationsController(ISpecializationService service) : Control
     [HttpPost]
     [ProducesResponseType<SpecializationDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<SpecializationDto>> AddSpecialization(UpsertSpecializationDto specialization)
     {
         var created = await service.AddSpecializationAsync(specialization);
@@ -53,6 +54,7 @@ public class SpecializationsController(ISpecializationService service) : Control
     [ProducesResponseType<SpecializationDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<SpecializationDto>> UpdateSpecialization(int id, UpsertSpecializationDto specialization)
     {
         var updated = await service.UpdateSpecializationAsync(id, specialization);

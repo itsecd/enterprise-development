@@ -31,7 +31,7 @@ public class PostgreSqlTests
         await using var context = database.CreateContext();
         var token = TestContext.Current.CancellationToken;
         Assert.False(context.Database.HasPendingModelChanges());
-        Assert.Equal(2, (await context.Database.GetAppliedMigrationsAsync(token)).Count());
+        Assert.Equal(3, (await context.Database.GetAppliedMigrationsAsync(token)).Count());
         await context.Database.MigrateAsync(token);
         Assert.Equal(10, await context.Specializations.CountAsync(token));
         Assert.Equal(12, await context.Clients.CountAsync(token));
@@ -109,6 +109,7 @@ public class PostgreSqlTests
         {
             var repository = new PostgreSqlTrainerRepository(context);
             Assert.True(await repository.UpdateAsync(0, trainer));
+            trainer.PassportNumber = "4699 888888";
             var added = await repository.AddAsync(trainer);
             Assert.True(added.Id >= 100);
         }

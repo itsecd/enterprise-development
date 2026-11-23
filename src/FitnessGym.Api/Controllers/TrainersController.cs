@@ -41,6 +41,7 @@ public class TrainersController(ITrainerService service) : ControllerBase
     [HttpPost]
     [ProducesResponseType<TrainerDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<TrainerDto>> AddTrainer(UpsertTrainerDto trainer)
     {
         var created = await service.AddTrainerAsync(trainer);
@@ -54,6 +55,7 @@ public class TrainersController(ITrainerService service) : ControllerBase
     [ProducesResponseType<TrainerDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<TrainerDto>> UpdateTrainer(int id, UpsertTrainerDto trainer)
     {
         var updated = await service.UpdateTrainerAsync(id, trainer);
