@@ -40,6 +40,7 @@ public class AppointmentController(
     /// <summary>
     /// Возвращает запись по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор записи.</param>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,6 +68,7 @@ public class AppointmentController(
     /// <summary>
     /// Создает новую запись.
     /// </summary>
+    /// <param name="request">Данные новой записи.</param>
     [HttpPost]
     [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -114,6 +116,8 @@ public class AppointmentController(
     /// <summary>
     /// Обновляет запись.
     /// </summary>
+    /// <param name="id">Идентификатор записи.</param>
+    /// <param name="request">Новые данные записи.</param>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -166,6 +170,7 @@ public class AppointmentController(
     /// <summary>
     /// Удаляет запись по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор записи.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

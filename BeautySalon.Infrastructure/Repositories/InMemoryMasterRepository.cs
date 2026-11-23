@@ -9,15 +9,32 @@ namespace BeautySalon.Infrastructure.Repositories;
 /// </summary>
 public class InMemoryMasterRepository : IMasterRepository
 {
-    public IEnumerable<Master> GetAll() => SeederData.Masters;
-    public Master? GetById(int id) => SeederData.Masters.FirstOrDefault(m => m.Id == id);
-    
+    private readonly List<Master> _masters;
+
+    /// <summary>
+    /// Инициализирует репозиторий, копируя данные из SeederData.
+    /// </summary>
+    public InMemoryMasterRepository()
+    {
+        _masters = SeederData.Masters.ToList();
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<Master> GetAll() => _masters;
+
+    /// <inheritdoc />
+    public Master? GetById(int id) => _masters.FirstOrDefault(m => m.Id == id);
+
+    /// <inheritdoc />
     public void Add(Master master)
     {
-        master.Id = SeederData.Masters.Count > 0 ? SeederData.Masters.Max(m => m.Id) + 1 : 1;
-        SeederData.Masters.Add(master);
+        master.Id = _masters.Count > 0 ? _masters.Max(m => m.Id) + 1 : 1;
+        _masters.Add(master);
     }
-    
+
+    /// <inheritdoc />
     public void Update(Master master) { }
-    public void Delete(Master master) => SeederData.Masters.Remove(master);
+
+    /// <inheritdoc />
+    public void Delete(Master master) => _masters.Remove(master);
 }

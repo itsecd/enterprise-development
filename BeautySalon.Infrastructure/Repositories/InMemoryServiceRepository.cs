@@ -9,15 +9,32 @@ namespace BeautySalon.Infrastructure.Repositories;
 /// </summary>
 public class InMemoryServiceRepository : IServiceRepository
 {
-    public IEnumerable<Service> GetAll() => SeederData.Services;
-    public Service? GetById(int id) => SeederData.Services.FirstOrDefault(s => s.Id == id);
-    
+    private readonly List<Service> _services;
+
+    /// <summary>
+    /// Инициализирует репозиторий, копируя данные из SeederData.
+    /// </summary>
+    public InMemoryServiceRepository()
+    {
+        _services = SeederData.Services.ToList();
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<Service> GetAll() => _services;
+
+    /// <inheritdoc />
+    public Service? GetById(int id) => _services.FirstOrDefault(s => s.Id == id);
+
+    /// <inheritdoc />
     public void Add(Service service)
     {
-        service.Id = SeederData.Services.Count > 0 ? SeederData.Services.Max(s => s.Id) + 1 : 1;
-        SeederData.Services.Add(service);
+        service.Id = _services.Count > 0 ? _services.Max(s => s.Id) + 1 : 1;
+        _services.Add(service);
     }
-    
+
+    /// <inheritdoc />
     public void Update(Service service) { }
-    public void Delete(Service service) => SeederData.Services.Remove(service);
+
+    /// <inheritdoc />
+    public void Delete(Service service) => _services.Remove(service);
 }

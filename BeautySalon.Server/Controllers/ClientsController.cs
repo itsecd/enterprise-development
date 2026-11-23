@@ -36,6 +36,7 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     /// <summary>
     /// Возвращает клиента по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор клиента.</param>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,6 +64,7 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     /// <summary>
     /// Создает нового клиента.
     /// </summary>
+    /// <param name="request">Данные нового клиента.</param>
     [HttpPost]
     [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -96,6 +98,8 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     /// <summary>
     /// Обновляет данные клиента по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор клиента.</param>
+    /// <param name="request">Новые данные клиента.</param>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -133,6 +137,7 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     /// <summary>
     /// Удаляет клиента по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор клиента.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

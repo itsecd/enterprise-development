@@ -5,19 +5,36 @@ using BeautySalon.Domain.Repositories;
 namespace BeautySalon.Infrastructure.Repositories;
 
 /// <summary>
-/// In memory реализация репозитория оплаты.
+/// In memory реализация репозитория записей.
 /// </summary>
 public class InMemoryAppointmentRepository : IAppointmentRepository
 {
-    public IEnumerable<Appointment> GetAll() => SeederData.Appointments;
-    public Appointment? GetById(int id) => SeederData.Appointments.FirstOrDefault(a => a.Id == id);
-    
+    private readonly List<Appointment> _appointments;
+
+    /// <summary>
+    /// Инициализирует репозиторий, копируя данные из SeederData.
+    /// </summary>
+    public InMemoryAppointmentRepository()
+    {
+        _appointments = SeederData.Appointments.ToList();
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<Appointment> GetAll() => _appointments;
+
+    /// <inheritdoc />
+    public Appointment? GetById(int id) => _appointments.FirstOrDefault(a => a.Id == id);
+
+    /// <inheritdoc />
     public void Add(Appointment appointment)
     {
-        appointment.Id = SeederData.Appointments.Count > 0 ? SeederData.Appointments.Max(a => a.Id) + 1 : 1;
-        SeederData.Appointments.Add(appointment);
+        appointment.Id = _appointments.Count > 0 ? _appointments.Max(a => a.Id) + 1 : 1;
+        _appointments.Add(appointment);
     }
-    
+
+    /// <inheritdoc />
     public void Update(Appointment appointment) { }
-    public void Delete(Appointment appointment) => SeederData.Appointments.Remove(appointment);
+
+    /// <inheritdoc />
+    public void Delete(Appointment appointment) => _appointments.Remove(appointment);
 }

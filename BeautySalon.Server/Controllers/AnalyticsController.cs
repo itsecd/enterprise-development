@@ -19,6 +19,7 @@ public class AnalyticsController(
     /// <summary>
     /// Мастера со стажем не менее указанного количества лет.
     /// </summary>
+    /// <param name="minYears">Минимальный стаж работы в годах (по умолчанию 5).</param>
     [HttpGet("masters-with-experience")]
     [ProducesResponseType(typeof(MastersWithExperienceResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -58,6 +59,7 @@ public class AnalyticsController(
     /// <summary>
     /// Временные промежутки между записями выбранного мастера.
     /// </summary>
+    /// <param name="masterId">Идентификатор мастера.</param>
     [HttpGet("master-gaps/{masterId:int}")]
     [ProducesResponseType(typeof(MasterGapsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,6 +129,7 @@ public class AnalyticsController(
     /// <summary>
     /// Топ самых популярных услуг.
     /// </summary>
+    /// <param name="take">Количество услуг в топе (по умолчанию 5).</param>
     [HttpGet("top-services")]
     [ProducesResponseType(typeof(IEnumerable<TopServiceItem>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -161,6 +164,7 @@ public class AnalyticsController(
     /// <summary>
     /// Клиенты с повторными записями за указанный период.
     /// </summary>
+    /// <param name="days">Период в днях (по умолчанию 30).</param>
     [HttpGet("repeat-clients")]
     [ProducesResponseType(typeof(RepeatClientsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

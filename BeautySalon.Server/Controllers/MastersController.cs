@@ -35,6 +35,7 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     /// <summary>
     /// Возвращает мастера по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор мастера.</param>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,6 +63,7 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     /// <summary>
     /// Создает нового мастера.
     /// </summary>
+    /// <param name="request">Данные нового мастера.</param>
     [HttpPost]
     [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -96,6 +98,8 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     /// <summary>
     /// Обновляет данные мастера по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор мастера.</param>
+    /// <param name="request">Новые данные мастера.</param>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -134,6 +138,7 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     /// <summary>
     /// Удаляет мастера по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор мастера.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

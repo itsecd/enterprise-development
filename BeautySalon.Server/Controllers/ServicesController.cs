@@ -35,6 +35,7 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     /// <summary>
     /// Возвращает услугу по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор услуги.</param>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,7 +63,7 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     /// <summary>
     /// Создает новую услугу.
     /// </summary>
-    [HttpPost]
+    /// <param name="request">Данные новой услуги.</param>
     [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -95,6 +96,8 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     /// <summary>
     /// Обновляет данные услуги по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор услуги.</param>
+    /// <param name="request">Новые данные услуги.</param>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -132,6 +135,7 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     /// <summary>
     /// Удаляет услугу по идентификатору.
     /// </summary>
+    /// <param name="id">Идентификатор услуги.</param>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

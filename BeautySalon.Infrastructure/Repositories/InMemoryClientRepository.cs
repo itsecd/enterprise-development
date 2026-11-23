@@ -9,17 +9,32 @@ namespace BeautySalon.Infrastructure.Repositories;
 /// </summary>
 public class InMemoryClientRepository : IClientRepository
 {
-    public IEnumerable<Client> GetAll() => SeederData.Clients;
+    private readonly List<Client> _clients;
 
-    public Client? GetById(int id) => SeederData.Clients.FirstOrDefault(c => c.Id == id);
-
-    public void Add(Client client)
+    /// <summary>
+    /// Инициализирует репозиторий, копируя данные из SeederData.
+    /// </summary>
+    public InMemoryClientRepository()
     {
-        client.Id = SeederData.Clients.Count > 0 ? SeederData.Clients.Max(c => c.Id) + 1 : 1;
-        SeederData.Clients.Add(client);
+        _clients = SeederData.Clients.ToList();
     }
 
+    /// <inheritdoc />
+    public IEnumerable<Client> GetAll() => _clients;
+
+    /// <inheritdoc />
+    public Client? GetById(int id) => _clients.FirstOrDefault(c => c.Id == id);
+
+    /// <inheritdoc />
+    public void Add(Client client)
+    {
+        client.Id = _clients.Count > 0 ? _clients.Max(c => c.Id) + 1 : 1;
+        _clients.Add(client);
+    }
+
+    /// <inheritdoc />
     public void Update(Client client) { }
 
-    public void Delete(Client client) => SeederData.Clients.Remove(client);
+    /// <inheritdoc />
+    public void Delete(Client client) => _clients.Remove(client);
 }
