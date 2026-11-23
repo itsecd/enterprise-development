@@ -1,5 +1,4 @@
-﻿using Museum.Api.Services;
-using Museum.Domain.Data;
+﻿using Museum.Tests.Fixtures;
 using Museum.Domain.Enums;
 
 namespace Museum.Tests.Api;
@@ -7,8 +6,9 @@ namespace Museum.Tests.Api;
 /// <summary>
 /// Проверяет аналитические запросы сервера.
 /// </summary>
-public class AnalyticsServiceTests
+public class AnalyticsServiceTests(MuseumFixture fixture) : IClassFixture<MuseumFixture>
 {
+    /// <summary>Проверяет топ-5 выставок по числу посетителей.</summary>
     [Fact]
     public void TopFiveExhibitionsByVisitorCount()
     {
@@ -21,7 +21,7 @@ public class AnalyticsServiceTests
             (4, 1)
         };
 
-        var service = new MuseumAnalyticsService(DataSeeder.Seed());
+        var service = fixture.AnalyticsService;
 
         var result = service.GetTopExhibitions()
             .Select(x => (x.ExhibitionId, x.VisitorCount))
@@ -30,6 +30,7 @@ public class AnalyticsServiceTests
         Assert.Equal(expected, result);
     }
 
+    /// <summary>Проверяет экскурсии с минимальным числом участников.</summary>
     [Fact]
     public void ToursWithMinimumParticipantCount()
     {
@@ -39,7 +40,7 @@ public class AnalyticsServiceTests
             (10, 0)
         };
 
-        var service = new MuseumAnalyticsService(DataSeeder.Seed());
+        var service = fixture.AnalyticsService;
 
         var result = service.GetMinParticipantTours()
             .Select(x => (x.TourId, x.ParticipantCount))
@@ -48,6 +49,7 @@ public class AnalyticsServiceTests
         Assert.Equal(expected, result);
     }
 
+    /// <summary>Проверяет статистику посещаемости по темам за период.</summary>
     [Fact]
     public void AttendanceSummaryByExhibitionTheme()
     {
@@ -60,7 +62,7 @@ public class AnalyticsServiceTests
             (ExhibitionTheme.Ethnography, 0, 0m, 0.0, 0, 0)
         };
 
-        var service = new MuseumAnalyticsService(DataSeeder.Seed());
+        var service = fixture.AnalyticsService;
 
         var result = service.GetAttendanceByTheme(
                 new DateOnly(2026, 1, 10),
@@ -78,6 +80,7 @@ public class AnalyticsServiceTests
         Assert.Equal(expected, result);
     }
 
+    /// <summary>Проверяет экскурсии в выбранном зале за период.</summary>
     [Fact]
     public void ToursInSelectedHallForPeriod()
     {
@@ -86,7 +89,7 @@ public class AnalyticsServiceTests
             1, 2, 3
         };
 
-        var service = new MuseumAnalyticsService(DataSeeder.Seed());
+        var service = fixture.AnalyticsService;
 
         var result = service.GetToursInHall(
                 1,
@@ -98,6 +101,7 @@ public class AnalyticsServiceTests
         Assert.Equal(expected, result);
     }
 
+    /// <summary>Проверяет список посетителей экскурсии по ФИО.</summary>
     [Fact]
     public void VisitorsOfSelectedTourSortedByFullName()
     {
@@ -108,7 +112,7 @@ public class AnalyticsServiceTests
             (3, "Вера Смирнова")
         };
 
-        var service = new MuseumAnalyticsService(DataSeeder.Seed());
+        var service = fixture.AnalyticsService;
 
         var result = service.GetTourVisitors(1)!
             .Select(x => (x.VisitorId, x.FullName))

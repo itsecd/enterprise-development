@@ -16,7 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Museum.Domain\Museum.Domain.csproj" />
-    <ProjectReference Include="..\Museum.Api\Museum.Api.csproj" />
+    <ProjectReference Include="..\Museum.Application\Museum.Application.csproj" />
+    <ProjectReference Include="..\Museum.Contracts\Museum.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
