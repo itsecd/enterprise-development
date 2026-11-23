@@ -1,5 +1,6 @@
 using BeautySalon.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using BeautySalon.Domain.Data;
 
 namespace BeautySalon.Infrastructure.Data;
 
@@ -32,6 +33,7 @@ public class BeautySalonDbContext(DbContextOptions<BeautySalonDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
+        // Настройка связей
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Client)
             .WithMany(c => c.Appointments)
@@ -49,5 +51,25 @@ public class BeautySalonDbContext(DbContextOptions<BeautySalonDbContext> options
             .WithMany(s => s.Appointments)
             .HasForeignKey(a => a.ServiceId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Client>().HasData(SeederData.Clients);
+        modelBuilder.Entity<Master>().HasData(SeederData.Masters);
+        modelBuilder.Entity<Service>().HasData(SeederData.Services);
+
+        // Для Appointment нужно игнорировать навигационные свойства при HasData
+        modelBuilder.Entity<Appointment>().HasData(
+            SeederData.Appointments.Select(a => new Appointment
+            {
+                Id = a.Id,
+                StartTime = a.StartTime,
+                IsRegularClient = a.IsRegularClient,
+                ClientId = a.ClientId,
+                MasterId = a.MasterId,
+                ServiceId = a.ServiceId,
+                Client = null!,
+                Master = null!,
+                Service = null!
+            })
+        );
     }
 }
