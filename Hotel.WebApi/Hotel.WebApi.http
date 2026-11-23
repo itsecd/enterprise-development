@@ -1,0 +1,37 @@
+@host = http://localhost:5164
+
+### Получить всех клиентов
+GET {{host}}/api/Clients
+Accept: application/json
+
+### Получить клиента по Id
+GET {{host}}/api/Clients/1
+Accept: application/json
+
+### Получить все номера
+GET {{host}}/api/Rooms
+Accept: application/json
+
+### Получить все типы номеров
+GET {{host}}/api/RoomTypes
+Accept: application/json
+
+### Получить все бронирования
+GET {{host}}/api/Bookings
+Accept: application/json
+
+### Топ-5 клиентов по сумме проживания
+GET {{host}}/api/Analytics/top5-clients
+Accept: application/json
+
+### Номера в текущих бронированиях
+GET {{host}}/api/Analytics/current-bookings
+Accept: application/json
+
+### Клиенты, проживавшие в номерах категории Standart
+GET {{host}}/api/Analytics/clients-by-room-type/Standart
+Accept: application/json
+
+### Топ-5 часто бронируемых номеров
+GET {{host}}/api/Analytics/top5-rooms
+Accept: application/json
