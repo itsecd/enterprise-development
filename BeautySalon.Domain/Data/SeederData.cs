@@ -307,32 +307,32 @@ public static class SeederData
         // Записи
         Appointments = 
         [
-            CreateAppointment(1, DateTime.Today.AddDays(-10).AddHours(10), 1, 101, 201, false),
-            CreateAppointment(2, DateTime.Today.AddDays(-10).AddHours(12), 2, 101, 203, false),
-            CreateAppointment(3, DateTime.Today.AddDays(-10).AddHours(14), 3, 101, 205, false),
+            CreateAppointment(1, new DateTime(2023, 10, 1, 10, 0, 0), 1, 101, 201, false),
+            CreateAppointment(2, new DateTime(2023, 10, 1, 12, 0, 0), 2, 101, 203, false),
+            CreateAppointment(3, new DateTime(2023, 10, 1, 13, 0, 0), 3, 101, 205, false),
 
-            CreateAppointment(4, DateTime.Today.AddDays(-5).AddHours(10), 1, 102, 201, true),
-            CreateAppointment(5, DateTime.Today.AddDays(-4).AddHours(10), 1, 102, 201, true),
-            CreateAppointment(6, DateTime.Today.AddDays(-3).AddHours(10), 2, 102, 201, false),
-            CreateAppointment(7, DateTime.Today.AddDays(-2).AddHours(10), 3, 102, 201, false),
+            CreateAppointment(4, new DateTime(2023, 11, 1, 14, 0, 0), 1, 102, 201, true),
+            CreateAppointment(5, new DateTime(2023, 11, 1, 15, 0, 0), 1, 102, 201, true),
+            CreateAppointment(6, new DateTime(2023, 11, 1, 17, 0, 0), 2, 102, 201, false),
+            CreateAppointment(7, new DateTime(2023, 11, 1, 19, 0, 0), 3, 102, 201, false),
 
-            CreateAppointment(8, DateTime.Today.AddDays(-5).AddHours(10), 2, 103, 202, false),
-            CreateAppointment(9, DateTime.Today.AddDays(-4).AddHours(10), 3, 103, 202, false),
-            CreateAppointment(10, DateTime.Today.AddDays(-3).AddHours(10), 1, 103, 202, true),
-            CreateAppointment(11, DateTime.Today.AddDays(-2).AddHours(10), 1, 103, 202, true),
+            CreateAppointment(8, new DateTime(2023, 10, 2, 10, 0, 0), 2, 103, 202, false),
+            CreateAppointment(9, new DateTime(2023, 10, 1, 14, 0, 0), 3, 103, 202, false),
+            CreateAppointment(10, new DateTime(2023, 10, 2, 12, 0, 0), 1, 103, 202, true),
+            CreateAppointment(11, new DateTime(2023, 10, 1, 11, 0, 0), 1, 103, 202, true),
 
-            CreateAppointment(12, DateTime.Today.AddDays(-2).AddHours(14), 2, 104, 203, false),
-            CreateAppointment(13, DateTime.Today.AddDays(-1).AddHours(10), 3, 104, 203, false),
+            CreateAppointment(12, new DateTime(2023, 11, 2, 12, 0, 0), 2, 104, 203, false),
+            CreateAppointment(13, new DateTime(2023, 12, 1, 16, 0, 0), 3, 104, 203, false),
 
-            CreateAppointment(14, DateTime.Today.AddDays(-1).AddHours(10), 3, 102, 204, false),
-            CreateAppointment(15, DateTime.Today.AddDays(-1).AddHours(14), 2, 103, 204, false),
+            CreateAppointment(14, new DateTime(2023, 10, 5, 10, 0, 0), 3, 102, 204, false),
+            CreateAppointment(15, new DateTime(2023, 10, 5, 14, 0, 0), 2, 103, 204, false),
 
-            CreateAppointment(16, DateTime.Today.AddDays(-7).AddHours(10), 4, 104, 206, false),
-            CreateAppointment(17, DateTime.Today.AddDays(-45).AddHours(10), 4, 104, 206, false),
+            CreateAppointment(16, new DateTime(2023, 9, 5, 10, 0, 0), 4, 104, 206, false),
+            CreateAppointment(17, new DateTime(2023, 12, 7, 14, 0, 0), 4, 104, 206, false),
 
-            CreateAppointment(18, DateTime.Today.AddDays(-20).AddHours(10), 5, 105, 207, false),
-            CreateAppointment(19, DateTime.Today.AddDays(-15).AddHours(10), 6, 106, 208, false),
-            CreateAppointment(20, DateTime.Today.AddDays(-12).AddHours(10), 7, 108, 209, false)
+            CreateAppointment(18, new DateTime(2023, 9, 12, 10, 0, 0), 5, 105, 207, false),
+            CreateAppointment(19, new DateTime(2023, 9, 11, 14, 0, 0), 6, 106, 208, false),
+            CreateAppointment(20, new DateTime(2023, 11, 3, 12, 0, 0), 7, 108, 209, false)
         ];
     }
 
