@@ -11,15 +11,15 @@ public class ItemCategoryRepository()
     : InMemoryRepository<ItemCategory>(DataSeed.Categories.ToList())
 {
     /// <inheritdoc />
-    public override Task<ItemCategory?> UpdateAsync(ItemCategory entity)
+    public override async Task<ItemCategory?> UpdateAsync(ItemCategory entity)
     {
-        var existing = GetByIdAsync(entity.Id).Result;
-        if (existing is null) return Task.FromResult<ItemCategory?>(null);
+        var existing = await GetByIdAsync(entity.Id);
+        if (existing is null) return null;
 
         existing.Name = entity.Name;
         existing.RecommendedCleaning = entity.RecommendedCleaning;
         existing.Price = entity.Price;
 
-        return Task.FromResult<ItemCategory?>(existing);
+        return existing;
     }
 }
