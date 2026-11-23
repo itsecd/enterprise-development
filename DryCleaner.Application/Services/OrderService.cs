@@ -99,7 +99,7 @@ public class OrderService(
     }
 
     /// <inheritdoc />
-    public async Task<OrderDto> UpdateAsync(OrderCreateUpdateDto dto, int id)
+    public async Task<OrderDto?> UpdateAsync(OrderCreateUpdateDto dto, int id)
     {
         var customer = await customerRepository.GetByIdAsync(dto.CustomerId) ?? throw new KeyNotFoundException($"Клиент с идентификатором {dto.CustomerId} не найден");
 

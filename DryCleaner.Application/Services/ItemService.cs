@@ -66,7 +66,7 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
     }
 
     /// <inheritdoc />
-    public async Task<ItemDto> UpdateAsync(ItemCreateUpdateDto dto, int id)
+    public async Task<ItemDto?> UpdateAsync(ItemCreateUpdateDto dto, int id)
     {
         var category = await categoryRepository.GetByIdAsync(dto.CategoryId) ?? throw new KeyNotFoundException($"Категория с идентификатором {dto.CategoryId} не найдена");
 

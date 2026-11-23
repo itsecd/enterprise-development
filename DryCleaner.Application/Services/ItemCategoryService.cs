@@ -54,7 +54,7 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
     }
 
     /// <inheritdoc />
-    public async Task<ItemCategoryDto> UpdateAsync(ItemCategoryCreateUpdateDto dto, int id)
+    public async Task<ItemCategoryDto?> UpdateAsync(ItemCategoryCreateUpdateDto dto, int id)
     {
         var category = new ItemCategory
         {

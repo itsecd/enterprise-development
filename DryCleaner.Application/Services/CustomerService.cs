@@ -57,7 +57,7 @@ public class CustomerService(IRepository<Customer> customerRepository) : ICustom
     }
 
     /// <inheritdoc />
-    public async Task<CustomerDto> UpdateAsync(CustomerCreateUpdateDto dto, int id)
+    public async Task<CustomerDto?> UpdateAsync(CustomerCreateUpdateDto dto, int id)
     {
         var customer = new Customer
         {
