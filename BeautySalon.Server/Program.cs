@@ -1,8 +1,11 @@
 using BeautySalon.Domain.Repositories;
 using BeautySalon.Infrastructure.Repositories;
 using System.Text.Json.Serialization;
+using BeautySalon.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 // Добавляем поддержку контроллеров
 builder.Services.AddControllers()
@@ -12,13 +15,18 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// Добавляем Swagger для документации API
-builder.Services.AddOpenApi();
+// Регистрация DbContext через Aspire
+builder.AddSqlServerDbContext<BeautySalonDbContext>("beauty-salon-db");
 
-builder.Services.AddSingleton<IClientRepository, InMemoryClientRepository>();
-builder.Services.AddSingleton<IMasterRepository, InMemoryMasterRepository>();
-builder.Services.AddSingleton<IServiceRepository, InMemoryServiceRepository>();
-builder.Services.AddSingleton<IAppointmentRepository, InMemoryAppointmentRepository>();
+// Регистрация EF Core репозиториев
+builder.Services.AddScoped<IClientRepository, EfClientRepository>();
+builder.Services.AddScoped<IMasterRepository, EfMasterRepository>();
+builder.Services.AddScoped<IServiceRepository, EfServiceRepository>();
+builder.Services.AddScoped<IAppointmentRepository, EfAppointmentRepository>();
+
+// Добавляем Swagger для документации API
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -30,5 +38,6 @@ app.UseSwaggerUI(options =>
 });;
 
 app.MapControllers();
+app.MapDefaultEndpoints();
 
 app.Run();
