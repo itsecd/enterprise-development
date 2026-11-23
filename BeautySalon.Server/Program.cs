@@ -2,6 +2,7 @@ using BeautySalon.Domain.Repositories;
 using BeautySalon.Infrastructure.Repositories;
 using System.Text.Json.Serialization;
 using BeautySalon.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<BeautySalonDbContext>();
+    // Применяем миграции (создаем БД и таблицы, если их нет)
+    dbContext.Database.Migrate(); 
+}
 
 // Настраиваем Swagger UI
 app.MapOpenApi();
