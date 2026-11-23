@@ -28,10 +28,11 @@ public class SpecializationService(
     /// <summary>
     /// Получить специализацию по идентификатору
     /// </summary>
-    public async Task<SpecializationDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<SpecializationDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var specialization = await specializationRepository.GetByIdAsync(id, cancellationToken);
-        return specialization?.ToDto();
+        var specialization = await specializationRepository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException($"Специализация с ID {id} не найдена.");
+        return specialization.ToDto();
     }
     /// <summary>
     /// Добавить специализацию
@@ -46,13 +47,13 @@ public class SpecializationService(
     /// <summary>
     /// Обновить специализацию
     /// </summary>
-    public async Task<SpecializationDto?> UpdateAsync(int id, SpecializationEditDto editDto, CancellationToken cancellationToken = default)
+    public async Task<SpecializationDto> UpdateAsync(int id, SpecializationEditDto editDto, CancellationToken cancellationToken = default)
     {
         var specialization = await specializationRepository.GetByIdAsync(id, cancellationToken);
         if (specialization is null)
         {
             logger.LogWarning("Специализация {SpecializationId} не найдена для обновления", id);
-            return null;
+            throw new NotFoundException($"Специализация с ID {id} не найдена.");
         }
         specialization.UpdateEntity(editDto);
         await specializationRepository.UpdateAsync(specialization, cancellationToken);

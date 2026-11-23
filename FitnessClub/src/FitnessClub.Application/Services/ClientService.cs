@@ -30,10 +30,11 @@ public class ClientService(
     /// <summary>
     /// Получить клиента по идентификатору
     /// </summary>
-    public async Task<ClientDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<ClientDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var client = await clientRepository.GetByIdAsync(id, cancellationToken);
-        return client?.ToDto();
+        var client = await clientRepository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException($"Клиент с ID {id} не найден.");
+        return client.ToDto();
     }
     /// <summary>
     /// Добавить клиента
@@ -49,13 +50,13 @@ public class ClientService(
     /// <summary>
     /// Обновить данные клиента
     /// </summary>
-    public async Task<ClientDto?> UpdateAsync(int id, ClientEditDto editDto, CancellationToken cancellationToken = default)
+    public async Task<ClientDto> UpdateAsync(int id, ClientEditDto editDto, CancellationToken cancellationToken = default)
     {
         var client = await clientRepository.GetByIdAsync(id, cancellationToken);
         if (client is null)
         {
             logger.LogWarning("Клиент {ClientId} не найден для обновления", id);
-            return null;
+            throw new NotFoundException($"Клиент с ID {id} не найден.");
         }
         await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, client, cancellationToken);
         client.UpdateEntity(editDto);

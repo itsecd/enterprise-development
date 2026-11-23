@@ -40,8 +40,7 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TDto>> GetById(int id, CancellationToken cancellationToken)
     {
-        var entity = await service.GetByIdAsync(id, cancellationToken);
-        return entity is null ? NotFound() : Ok(entity);
+        return Ok(await service.GetByIdAsync(id, cancellationToken));
     }
 
     /// <summary>
@@ -74,8 +73,7 @@ public abstract class CrudControllerBase<TDto, TEditDto>
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TDto>> Update(int id, TEditDto dto, CancellationToken cancellationToken)
     {
-        var updated = await service.UpdateAsync(id, dto, cancellationToken);
-        return updated is null ? NotFound() : Ok(updated);
+        return Ok(await service.UpdateAsync(id, dto, cancellationToken));
     }
 
     /// <summary>

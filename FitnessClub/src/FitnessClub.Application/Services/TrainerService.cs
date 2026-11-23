@@ -31,10 +31,11 @@ public class TrainerService(
     /// <summary>
     /// Получить тренера по идентификатору
     /// </summary>
-    public async Task<TrainerDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<TrainerDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var trainer = await trainerRepository.GetByIdAsync(id, cancellationToken);
-        return trainer?.ToDto();
+        var trainer = await trainerRepository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException($"Тренер с ID {id} не найден.");
+        return trainer.ToDto();
     }
     /// <summary>
     /// Добавить тренера
@@ -52,13 +53,13 @@ public class TrainerService(
     /// <summary>
     /// Обновить данные тренера
     /// </summary>
-    public async Task<TrainerDto?> UpdateAsync(int id, TrainerEditDto editDto, CancellationToken cancellationToken = default)
+    public async Task<TrainerDto> UpdateAsync(int id, TrainerEditDto editDto, CancellationToken cancellationToken = default)
     {
         var trainer = await trainerRepository.GetByIdAsync(id, cancellationToken);
         if (trainer is null)
         {
             logger.LogWarning("Тренер {TrainerId} не найден для обновления", id);
-            return null;
+            throw new NotFoundException($"Тренер с ID {id} не найден.");
         }
         await passportNumberValidator.EnsureUniqueAsync(editDto.PassportNumber, trainer, cancellationToken);
         var specialization = await specializationRepository.GetByIdAsync(editDto.SpecializationId, cancellationToken) 

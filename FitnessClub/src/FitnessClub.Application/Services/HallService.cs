@@ -28,10 +28,11 @@ public class HallService(
     /// <summary>
     /// Получить зал по идентификатору
     /// </summary>
-    public async Task<HallDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<HallDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var hall = await hallRepository.GetByIdAsync(id, cancellationToken);
-        return hall?.ToDto();
+        var hall = await hallRepository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException($"Зал с ID {id} не найден.");
+        return hall.ToDto();
     }
     /// <summary>
     /// Добавить зал
@@ -46,13 +47,13 @@ public class HallService(
     /// <summary>
     /// Обновить данные зала
     /// </summary>
-    public async Task<HallDto?> UpdateAsync(int id, HallEditDto editDto, CancellationToken cancellationToken = default)
+    public async Task<HallDto> UpdateAsync(int id, HallEditDto editDto, CancellationToken cancellationToken = default)
     {
         var hall = await hallRepository.GetByIdAsync(id, cancellationToken);
         if (hall is null)
         {
             logger.LogWarning("Зал {HallId} не найден для обновления", id);
-            return null;
+            throw new NotFoundException($"Зал с ID {id} не найден.");
         }
         hall.UpdateEntity(editDto);
         await hallRepository.UpdateAsync(hall, cancellationToken);

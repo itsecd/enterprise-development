@@ -33,10 +33,11 @@ public class BookingService(
     /// <summary>
     /// Получить бронирование по идентификатору
     /// </summary>
-    public async Task<BookingDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<BookingDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var booking = await bookingRepository.GetByIdAsync(id, cancellationToken);
-        return booking?.ToDto();
+        var booking = await bookingRepository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException($"Бронирование с ID {id} не найдено.");
+        return booking.ToDto();
     }
     /// <summary>
     /// Создать бронирование с проверкой доступности
@@ -62,13 +63,13 @@ public class BookingService(
     /// <summary>
     /// Обновить бронирование с проверкой доступности
     /// </summary>
-    public async Task<BookingDto?> UpdateAsync(int id, BookingEditDto editDto, CancellationToken cancellationToken = default)
+    public async Task<BookingDto> UpdateAsync(int id, BookingEditDto editDto, CancellationToken cancellationToken = default)
     {
         var existingBooking = await bookingRepository.GetByIdAsync(id, cancellationToken);
         if (existingBooking is null)
         {
             logger.LogWarning("Бронирование {BookingId} не найдено для обновления", id);
-            return null;
+            throw new NotFoundException($"Бронирование с ID {id} не найдено.");
         }
         var (client, trainer, hall) = await GetBookingReferencesAsync(editDto, cancellationToken);
         var candidateBooking = editDto.ToEntity(client, trainer, hall);

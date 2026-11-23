@@ -23,8 +23,8 @@ public interface ICrudService<TDto, TEditDto>
     /// </summary>
     /// <param name="id">Идентификатор ресурса</param>
     /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>DTO ресурса или <see langword="null"/>, если он не найден</returns>
-    public Task<TDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    /// <returns>DTO найденного ресурса</returns>
+    public Task<TDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Создаёт ресурс
@@ -40,8 +40,8 @@ public interface ICrudService<TDto, TEditDto>
     /// <param name="id">Идентификатор обновляемого ресурса</param>
     /// <param name="editDto">Данные для обновления</param>
     /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>DTO обновлённого ресурса или <see langword="null"/>, если он не найден</returns>
-    public Task<TDto?> UpdateAsync(int id, TEditDto editDto, CancellationToken cancellationToken = default);
+    /// <returns>DTO обновлённого ресурса</returns>
+    public Task<TDto> UpdateAsync(int id, TEditDto editDto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удаляет ресурс
