@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace BeautySalon.Infrastructure.Migrations
+namespace BeautySalon.Infrastructure.EfCore.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -162,7 +162,7 @@ namespace BeautySalon.Infrastructure.Migrations
                 {
                     { 1, 1, false, 101, 201, new DateTime(2023, 10, 1, 10, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2, false, 101, 203, new DateTime(2023, 10, 1, 12, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, 3, false, 101, 205, new DateTime(2023, 10, 1, 13, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, 3, false, 101, 205, new DateTime(2023, 10, 1, 14, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 4, 1, true, 102, 201, new DateTime(2023, 11, 1, 14, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 5, 1, true, 102, 201, new DateTime(2023, 11, 1, 15, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 6, 2, false, 102, 201, new DateTime(2023, 11, 1, 17, 0, 0, 0, DateTimeKind.Unspecified) },

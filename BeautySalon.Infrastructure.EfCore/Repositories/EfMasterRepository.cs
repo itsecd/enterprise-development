@@ -1,8 +1,9 @@
 using BeautySalon.Domain.Entities;
 using BeautySalon.Domain.Repositories;
-using BeautySalon.Infrastructure.Data;
+using BeautySalon.Infrastructure.EfCore.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace BeautySalon.Infrastructure.Repositories;
+namespace BeautySalon.Infrastructure.EfCore.Repositories;
 
 public class EfMasterRepository(BeautySalonDbContext context) : IMasterRepository
 {

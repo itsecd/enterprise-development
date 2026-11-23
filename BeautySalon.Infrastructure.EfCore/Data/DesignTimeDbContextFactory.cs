@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace BeautySalon.Infrastructure.Data;
+namespace BeautySalon.Infrastructure.EfCore.Data;
 
 /// <summary>
 /// Фабрика для создания DbContext во время выполнения команд миграции.

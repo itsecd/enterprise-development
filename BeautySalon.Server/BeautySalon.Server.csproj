@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeautySalon.Domain\BeautySalon.Domain.csproj" />
+    <ProjectReference Include="..\BeautySalon.Infrastructure.EfCore\BeautySalon.Infrastructure.EfCore.csproj" />
     <ProjectReference Include="..\BeautySalon.Infrastructure\BeautySalon.Infrastructure.csproj" />
     <ProjectReference Include="..\BeautySalon.Contracts\BeautySalon.Contracts.csproj" />
     <ProjectReference Include="..\BeautySalon.ServiceDefaults\BeautySalon.ServiceDefaults.csproj" />

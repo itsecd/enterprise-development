@@ -1,8 +1,8 @@
+using BeautySalon.Domain.Data;
 using BeautySalon.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using BeautySalon.Domain.Data;
 
-namespace BeautySalon.Infrastructure.Data;
+namespace BeautySalon.Infrastructure.EfCore.Data;
 
 /// <summary>
 /// Контекст базы данных для салона красоты.

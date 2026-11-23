@@ -1,7 +1,7 @@
 using BeautySalon.Domain.Repositories;
-using BeautySalon.Infrastructure.Repositories;
+using BeautySalon.Infrastructure.EfCore.Repositories;
 using System.Text.Json.Serialization;
-using BeautySalon.Infrastructure.Data;
+using BeautySalon.Infrastructure.EfCore.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
