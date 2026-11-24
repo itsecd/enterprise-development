@@ -9,27 +9,27 @@ namespace DryCleaner.Application.Services;
 /// <summary>
 /// Аналитическая информация
 /// </summary>
-public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsService
+public class AnalyticsService(IOrderRepository orderRepository) : IAnalyticsService
 {
     /// <inheritdoc />
     public async Task<IList<OrderInProgressDto>> GetOrdersInProgressAsync()
     {
-        return (await orderRepository.GetAllAsync())
-            .Where(o => o.Status == OrderStatus.InProgress)
-            .OrderBy(o => o.AcceptanceDate)
-            .Select(o => new OrderInProgressDto(
-                o.Id,
-                $"{o.Customer.LastName} {o.Customer.FirstName}",
-                o.AcceptanceDate,
-                o.Status.ToString()))
+        var orders = await orderRepository.GetInProgressOrdersAsync();
+
+        return orders.Select(o => new OrderInProgressDto(
+            o.Id,
+            $"{o.Customer.LastName} {o.Customer.FirstName}",
+            o.AcceptanceDate,
+            o.Status.ToString()))
             .ToList();
     }
 
     /// <inheritdoc />
     public async Task<IList<CustomerOrderCountDto>> GetTop5CustomersByItemsAsync(DateOnly periodStart, DateOnly periodEnd)
     {
-        return (await orderRepository.GetAllAsync())
-            .Where(o => o.AcceptanceDate >= periodStart && o.AcceptanceDate <= periodEnd)
+        var orders = await orderRepository.GetOrdersByPeriodAsync(periodStart, periodEnd);
+
+        return orders
             .GroupBy(o => o.CustomerId)
             .Select(group => new CustomerOrderCountDto(
                 group.Key,
@@ -44,16 +44,12 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     /// <inheritdoc />
     public async Task<IList<OrderProcessingTimeDto>> GetCustomersWithLongestProcessingAsync()
     {
-        var orders = await orderRepository.GetAllAsync();
-        if (orders.Count == 0)
-        {
-            return [];
-        }
+        var orders = await orderRepository.GetOrdersWithMaxCompletionDaysAsync();
+        if (!orders.Any()) return new List<OrderProcessingTimeDto>();
 
-        var maxDays = orders.Max(o => o.CompletionDays);
+        var maxDays = orders.First().CompletionDays;
 
         return orders
-            .Where(o => o.CompletionDays == maxDays)
             .Select(o => o.Customer)
             .DistinctBy(c => c.Id)
             .OrderBy(c => c.LastName)
@@ -68,8 +64,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     /// <inheritdoc />
     public async Task<IList<CategoryPopularityDto>> GetTop5PopularCategoriesAsync(DateOnly start, DateOnly end)
     {
-        return (await orderRepository.GetAllAsync())
-            .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
+        var orders = await orderRepository.GetOrdersByPeriodAsync(start, end);
+
+        return orders
             .GroupBy(o => o.Item.CategoryId)
             .Select(group => new CategoryPopularityDto(
                 group.Key,
@@ -84,8 +81,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     /// <inheritdoc />
     public async Task<IList<CategoryPopularityDto>> GetTop5UnpopularCategoriesAsync(DateOnly start, DateOnly end)
     {
-        return (await orderRepository.GetAllAsync())
-            .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
+        var orders = await orderRepository.GetOrdersByPeriodAsync(start, end);
+
+        return orders
             .GroupBy(o => o.Item.CategoryId)
             .Select(group => new CategoryPopularityDto(
                 group.Key,
@@ -101,7 +99,9 @@ public class AnalyticsService(IRepository<Order> orderRepository) : IAnalyticsSe
     /// <inheritdoc />
     public async Task<TotalSpentCustomerDto?> GetCustomerWithMaxTotalSpentAsync()
     {
-        return (await orderRepository.GetAllAsync())
+        var orders = await orderRepository.GetAllWithDetailsAsync();
+
+        return orders
             .GroupBy(o => o.CustomerId)
             .Select(group => new TotalSpentCustomerDto(
                 group.Key,

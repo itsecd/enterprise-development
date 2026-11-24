@@ -1,5 +1,6 @@
 ﻿using DryCleaner.Domain.Entities;
 using DryCleaner.Domain.Repositories;
+using DryCleaner.Shared.Enums;
 using DryCleaner.Infrastructure.EfCore.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace DryCleaner.Infrastructure.EfCore.Repositories;
 /// <summary>
 /// Реализация репозитория заказов с использованием EfCore
 /// </summary>
-public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
+public class OrderRepository(DryCleanerDbContext context) : IOrderRepository
 {
     /// <inheritdoc />
     public async Task<IList<Order>> GetAllAsync()
@@ -63,5 +64,49 @@ public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
         context.Orders.Remove(entity);
         await context.SaveChangesAsync();
         return true;
+    }
+
+    /// <inheritdoc />
+    public async Task<IList<Order>> GetInProgressOrdersAsync()
+    {
+        return await context.Orders
+            .Include(o => o.Customer)
+            .Where(o => o.Status == OrderStatus.InProgress)
+            .OrderBy(o => o.AcceptanceDate)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<IList<Order>> GetOrdersByPeriodAsync(DateOnly start, DateOnly end)
+    {
+        return await context.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Item).ThenInclude(i => i.Category)
+            .Where(o => o.AcceptanceDate >= start && o.AcceptanceDate <= end)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<IList<Order>> GetOrdersWithMaxCompletionDaysAsync()
+    {
+        var maxDays = await context.Orders.MaxAsync(o => o.CompletionDays);
+
+        return await context.Orders
+            .Include(o => o.Customer)
+            .Where(o => o.CompletionDays == maxDays)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<IList<Order>> GetAllWithDetailsAsync()
+    {
+        return await context.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Item).ThenInclude(i => i.Category)
+            .AsNoTracking()
+            .ToListAsync();
     }
 }

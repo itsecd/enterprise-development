@@ -42,7 +42,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
 builder.Services.AddScoped<IRepository<Item>, ItemRepository>();
 builder.Services.AddScoped<IRepository<ItemCategory>, ItemCategoryRepository>();
-builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IRepository<Order>>(sp => sp.GetRequiredService<IOrderRepository>());
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IItemService, ItemService>();
