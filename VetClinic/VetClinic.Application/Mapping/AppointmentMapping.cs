@@ -29,6 +29,8 @@ public static class AppointmentMapping
     public static Appointment ToEntity(this AppointmentEditDto dto) => new()
     {
         DateTime = dto.DateTime,
+        PetId = dto.PetId,
+        VetId = dto.VetId,
         RoomNumber = dto.RoomNumber,
         IsRepeat = dto.IsRepeat
     };
@@ -43,5 +45,7 @@ public static class AppointmentMapping
         entity.DateTime = dto.DateTime;
         entity.RoomNumber = dto.RoomNumber;
         entity.IsRepeat = dto.IsRepeat;
+        entity.PetId = dto.PetId;
+        entity.VetId = dto.VetId;
     }
 }

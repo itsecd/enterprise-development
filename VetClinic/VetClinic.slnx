@@ -5,7 +5,9 @@
   <Project Path="VetClinic.Contracts/VetClinic.Contracts.csproj" Id="e58c0535-e6a9-4cf0-b092-cdb1a684eaa9" />
   <Project Path="VetClinic.Domain/VetClinic.Domain.csproj" />
   <Project Path="VetClinic.Shared/VetClinic.Shared.csproj" />
+  <Project Path="VetClinic.Infrastructure.InMemory/VetClinic.Infrastructure.InMemory.csproj" />
   <Project Path="VetClinic.Infrastructure.SqlServer/VetClinic.Infrastructure.SqlServer.csproj" />
   <Project Path="VetClinic.ServiceDefaults/VetClinic.ServiceDefaults.csproj" />
   <Project Path="VetClinic.Tests/VetClinic.Tests.csproj" />
+  <Project Path="VetClinic.IntegrationTests/VetClinic.IntegrationTests.csproj" />
 </Solution>

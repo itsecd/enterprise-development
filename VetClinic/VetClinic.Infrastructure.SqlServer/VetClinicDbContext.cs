@@ -60,6 +60,13 @@ public class VetClinicDbContext(DbContextOptions<VetClinicDbContext> options) : 
     {
         var seed = new VetClinicSeed();
 
+        modelBuilder.Entity<User>().HasData(seed.Users.Select(u => new
+        {
+            u.Id,
+            u.Username,
+            u.PasswordHash
+        }));
+
         modelBuilder.Entity<Owner>().HasData(seed.Owners.Select(o => new
         {
             o.Id,

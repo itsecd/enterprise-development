@@ -1,33 +1,29 @@
 using VetClinic.Application.Services;
-using VetClinic.Infrastructure.SqlServer.Repositories;
+using VetClinic.Domain.Seeds;
+using VetClinic.Infrastructure.InMemory.Repositories;
 
 namespace VetClinic.Tests.Fixtures;
 
 /// <summary>
-/// Сервис аналитики поверх одной базы на весь класс тестов, тесты данные только читают
+/// Сервис аналитики поверх репозиториев в памяти, тесты данные только читают
 /// </summary>
-public sealed class AnalyticsServiceFixture : IAsyncDisposable
+public sealed class AnalyticsServiceFixture
 {
-    private readonly TestDatabase _database = new();
-
     /// <summary>
     /// Сервис аналитики
     /// </summary>
     public AnalyticsService Service { get; }
 
     /// <summary>
-    /// Создает сервис аналитики поверх EF-репозиториев
+    /// Создает сервис аналитики поверх репозиториев в памяти
     /// </summary>
     public AnalyticsServiceFixture()
     {
-        var context = _database.Context;
+        var seed = new VetClinicSeed();
         Service = new AnalyticsService(
-            new OwnerRepository(context),
-            new PetRepository(context),
-            new VetRepository(context),
-            new AppointmentRepository(context));
+            new OwnerRepository(seed),
+            new PetRepository(seed),
+            new VetRepository(seed),
+            new AppointmentRepository(seed));
     }
-
-    /// <inheritdoc/>
-    public ValueTask DisposeAsync() => _database.DisposeAsync();
 }

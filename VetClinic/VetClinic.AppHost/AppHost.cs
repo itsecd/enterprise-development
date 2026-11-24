@@ -1,7 +1,10 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var sql = builder.AddSqlServer("sql")
-    .WithDataVolume();
+var sql = builder.AddSqlServer("sql");
+if (!bool.TryParse(builder.Configuration["SqlDataVolume"], out var useDataVolume) || useDataVolume)
+{
+    sql.WithDataVolume();
+}
 
 var database = sql.AddDatabase("vetclinic");
 

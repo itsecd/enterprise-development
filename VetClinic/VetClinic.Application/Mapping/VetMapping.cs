@@ -31,6 +31,7 @@ public static class VetMapping
         PassportNumber = dto.PassportNumber,
         FullName = dto.FullName,
         BirthYear = dto.BirthYear,
+        SpecializationId = dto.SpecializationId,
         WorkExperienceYears = dto.WorkExperienceYears
     };
 

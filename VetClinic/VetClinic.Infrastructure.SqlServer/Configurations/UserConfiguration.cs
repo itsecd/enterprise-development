@@ -16,12 +16,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Username).HasMaxLength(100).IsRequired();
         builder.HasIndex(u => u.Username).IsUnique();
         builder.Property(u => u.PasswordHash).HasMaxLength(200).IsRequired();
-
-        builder.HasData(new User
-        {
-            Id = 1,
-            Username = "admin",
-            PasswordHash = "AQAAAAIAAYagAAAAEKdgA90st4O6skWJJR/QM+V9mf+uHaN30zJ/xJ1ni1C6w/497fhpJc+dFpELkXldww=="
-        });
     }
 }

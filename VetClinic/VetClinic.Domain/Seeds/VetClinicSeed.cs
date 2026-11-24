@@ -44,6 +44,19 @@ public class VetClinicSeed
     ];
 
     /// <summary>
+    /// Пользователи API
+    /// </summary>
+    public List<User> Users { get; } =
+    [
+        new()
+        {
+            Id = 1,
+            Username = "admin",
+            PasswordHash = "AQAAAAIAAYagAAAAEKdgA90st4O6skWJJR/QM+V9mf+uHaN30zJ/xJ1ni1C6w/497fhpJc+dFpELkXldww=="
+        }
+    ];
+
+    /// <summary>
     /// Владельцы питомцев
     /// </summary>
     public List<Owner> Owners { get; }
