@@ -30,7 +30,7 @@ public class BookingScheduleValidator(
 
         var hallBusy = await bookingRepository.AnyAsync(
             existing => 
-                existing.Id == excludingBookingId &&
+                existing.Id != excludingBookingId &&
                 existing.Hall.Id == candidate.Hall.Id &&
                 existing.DateTime < end &&
                 candidate.DateTime < existing.DateTime + existing.Duration,
@@ -43,7 +43,7 @@ public class BookingScheduleValidator(
         }
         var trainerBusy = await bookingRepository.AnyAsync(
             existing => 
-                existing.Id == excludingBookingId &&
+                existing.Id != excludingBookingId &&
                 existing.Trainer.Id == candidate.Trainer.Id &&
                 existing.DateTime < end &&
                 candidate.DateTime < existing.DateTime + existing.Duration,
@@ -56,7 +56,7 @@ public class BookingScheduleValidator(
         }
         var clientBusy = await bookingRepository.AnyAsync(
             existing =>
-                existing.Id == excludingBookingId &&
+                existing.Id != excludingBookingId &&
                 existing.Client.Id == candidate.Client.Id &&
                 existing.DateTime < end &&
                 candidate.DateTime < existing.DateTime + existing.Duration,
