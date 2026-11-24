@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.19.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Carwash.Application.Contracts\Carwash.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Carwash.Application\Carwash.Application.csproj" />
+    <ProjectReference Include="..\Carwash.Domain\Carwash.Domain.csproj" />
+    <ProjectReference Include="..\Carwash.Infrastructure.EfCore\Carwash.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\Carwash.ServiceDefaults\Carwash.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>
