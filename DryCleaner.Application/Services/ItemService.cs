@@ -96,7 +96,9 @@ public class ItemService(IRepository<Item> itemRepository, IRepository<ItemCateg
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        return await itemRepository.DeleteAsync(id);
+        {
+            return await itemRepository.DeleteAsync(id);
+        }
     }
 
     private static ItemDto MapToDto(Item item) => new(

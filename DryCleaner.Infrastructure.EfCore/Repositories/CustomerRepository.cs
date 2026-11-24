@@ -47,8 +47,15 @@ public class CustomerRepository(DryCleanerDbContext context) : IRepository<Custo
         var entity = await context.Customers.FindAsync(id);
         if (entity == null) return false;
 
-        context.Customers.Remove(entity);
-        await context.SaveChangesAsync();
-        return true;
+        try
+        {
+            context.Customers.Remove(entity);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateException)
+        {
+            throw new InvalidOperationException("Невозможно удалить клиента, так как у него есть заказы");
+        }
     }
 }

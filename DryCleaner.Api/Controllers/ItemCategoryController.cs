@@ -158,6 +158,11 @@ public class ItemCategoryController(IItemCategoryService service, IItemService i
             }
             return NoContent();
         }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogWarning(ex, "Категория изделия не может быть удалена из-за связанных сущностей");
+            return BadRequest(new { Message = ex.Message });
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Ошибка при удалении категории");

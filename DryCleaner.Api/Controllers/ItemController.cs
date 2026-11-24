@@ -162,6 +162,11 @@ public class ItemController(IItemService service, IOrderService orderService, IL
             }
             return NoContent();
         }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogWarning(ex, "Предмет не может быть удален из-за связанных сущностей");
+            return BadRequest(new { Message = ex.Message });
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Ошибка при удалении изделия");

@@ -168,6 +168,11 @@ public class CustomerController(ICustomerService service, IOrderService orderSer
             }
             return NoContent();
         }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogWarning(ex, "Клиент не может быть удален из-за связанных сущностей");
+            return BadRequest(new { Message = ex.Message });
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Ошибка при удалении клиента");

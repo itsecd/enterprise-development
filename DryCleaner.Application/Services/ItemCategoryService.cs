@@ -80,6 +80,8 @@ public class ItemCategoryService(IRepository<ItemCategory> categoryRepository) :
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(int id)
     {
-        return await categoryRepository.DeleteAsync(id);
+        {
+            return await categoryRepository.DeleteAsync(id);
+        }
     }
 }

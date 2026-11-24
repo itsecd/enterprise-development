@@ -47,8 +47,15 @@ public class ItemCategoryRepository(DryCleanerDbContext context) : IRepository<I
         var entity = await context.ItemCategories.FindAsync(id);
         if (entity == null) return false;
 
-        context.ItemCategories.Remove(entity);
-        await context.SaveChangesAsync();
-        return true;
+        try
+        {
+            context.ItemCategories.Remove(entity);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateException)
+        {
+            throw new InvalidOperationException("Невозможно удалить категорию изделия, так как используется предмет с данной категорией");
+        }
     }
 }

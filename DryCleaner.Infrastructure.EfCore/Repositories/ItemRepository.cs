@@ -58,8 +58,15 @@ public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
         var entity = await context.Items.FindAsync(id);
         if (entity == null) return false;
 
-        context.Items.Remove(entity);
-        await context.SaveChangesAsync();
-        return true;
+        try
+        {
+            context.Items.Remove(entity);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateException)
+        {
+            throw new InvalidOperationException("Невозможно удалить предмет, так как он используется в заказе");
+        }
     }
 }
