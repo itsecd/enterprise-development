@@ -1,4 +1,4 @@
-namespace EnterpriseDevelopment.Domain.Entities;
+namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
 /// Категория блюд.
@@ -13,5 +13,5 @@ public class DishCategory
     /// <summary>
     /// Название категории.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 }

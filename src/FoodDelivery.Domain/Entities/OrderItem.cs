@@ -1,4 +1,4 @@
-namespace EnterpriseDevelopment.Domain.Entities;
+namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
 /// Позиция заказа: блюдо и его количество.

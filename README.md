@@ -52,11 +52,11 @@ dotnet test
 Для запуска только тестового проекта:
 
 ```bash
-dotnet test tests/EnterpriseDevelopment.Domain.Tests/EnterpriseDevelopment.Domain.Tests.csproj
+dotnet test tests/FoodDelivery.Domain.Tests/FoodDelivery.Domain.Tests.csproj
 ```
 
 Для запуска тестов непосредственно как xUnit v3 executable:
 
 ```bash
-dotnet run --project tests/EnterpriseDevelopment.Domain.Tests/EnterpriseDevelopment.Domain.Tests.csproj
+dotnet run --project tests/FoodDelivery.Domain.Tests/FoodDelivery.Domain.Tests.csproj
 ```

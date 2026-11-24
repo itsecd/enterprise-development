@@ -1,4 +1,4 @@
-namespace EnterpriseDevelopment.Domain.Entities;
+namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
 /// Заказ клиента в службе доставки еды.

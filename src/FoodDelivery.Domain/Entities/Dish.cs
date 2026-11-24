@@ -1,4 +1,4 @@
-namespace EnterpriseDevelopment.Domain.Entities;
+namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
 /// Блюдо ресторана.
@@ -13,12 +13,12 @@ public class Dish
     /// <summary>
     /// Название блюда.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
     /// <summary>
     /// Вес блюда в граммах.
     /// </summary>
-    public int WeightInGrams { get; set; }
+    public int Weight { get; set; }
 
     /// <summary>
     /// Стоимость блюда.

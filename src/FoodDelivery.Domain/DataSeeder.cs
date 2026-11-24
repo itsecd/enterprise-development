@@ -1,6 +1,6 @@
-using EnterpriseDevelopment.Domain.Entities;
+using FoodDelivery.Domain.Entities;
 
-namespace EnterpriseDevelopment.Domain;
+namespace FoodDelivery.Domain;
 
 /// <summary>
 /// Набор данных для первой лабораторной работы.
@@ -80,19 +80,19 @@ public class DataSeeder
     {
         Dishes =
         [
-            new() { Id = 1, Name = "Маргарита", WeightInGrams = 450, Price = 550m, CategoryId = 1, Category = DishCategories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
-            new() { Id = 2, Name = "Пепперони", WeightInGrams = 470, Price = 650m, CategoryId = 1, Category = DishCategories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
-            new() { Id = 3, Name = "Филадельфия", WeightInGrams = 300, Price = 690m, CategoryId = 2, Category = DishCategories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
-            new() { Id = 4, Name = "Калифорния", WeightInGrams = 280, Price = 620m, CategoryId = 2, Category = DishCategories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
-            new() { Id = 5, Name = "Чизбургер", WeightInGrams = 320, Price = 490m, CategoryId = 3, Category = DishCategories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
-            new() { Id = 6, Name = "Двойной бургер", WeightInGrams = 420, Price = 690m, CategoryId = 3, Category = DishCategories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
-            new() { Id = 7, Name = "Цезарь", WeightInGrams = 250, Price = 420m, CategoryId = 4, Category = DishCategories[3], RestaurantId = 4, Restaurant = Restaurants[3] },
-            new() { Id = 8, Name = "Том Ям", WeightInGrams = 380, Price = 590m, CategoryId = 5, Category = DishCategories[4], RestaurantId = 5, Restaurant = Restaurants[4] },
-            new() { Id = 9, Name = "Карбонара", WeightInGrams = 360, Price = 520m, CategoryId = 6, Category = DishCategories[5], RestaurantId = 6, Restaurant = Restaurants[5] },
-            new() { Id = 10, Name = "Чизкейк", WeightInGrams = 180, Price = 350m, CategoryId = 7, Category = DishCategories[6], RestaurantId = 7, Restaurant = Restaurants[6] },
-            new() { Id = 11, Name = "Капучино", WeightInGrams = 300, Price = 220m, CategoryId = 8, Category = DishCategories[7], RestaurantId = 8, Restaurant = Restaurants[7] },
-            new() { Id = 12, Name = "Омлет с овощами", WeightInGrams = 280, Price = 390m, CategoryId = 9, Category = DishCategories[8], RestaurantId = 9, Restaurant = Restaurants[8] },
-            new() { Id = 13, Name = "Круассан", WeightInGrams = 120, Price = 190m, CategoryId = 10, Category = DishCategories[9], RestaurantId = 10, Restaurant = Restaurants[9] }
+            new() { Id = 1, Name = "Маргарита", Weight = 450, Price = 550m, CategoryId = 1, Category = DishCategories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
+            new() { Id = 2, Name = "Пепперони", Weight = 470, Price = 650m, CategoryId = 1, Category = DishCategories[0], RestaurantId = 1, Restaurant = Restaurants[0] },
+            new() { Id = 3, Name = "Филадельфия", Weight = 300, Price = 690m, CategoryId = 2, Category = DishCategories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
+            new() { Id = 4, Name = "Калифорния", Weight = 280, Price = 620m, CategoryId = 2, Category = DishCategories[1], RestaurantId = 2, Restaurant = Restaurants[1] },
+            new() { Id = 5, Name = "Чизбургер", Weight = 320, Price = 490m, CategoryId = 3, Category = DishCategories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
+            new() { Id = 6, Name = "Двойной бургер", Weight = 420, Price = 690m, CategoryId = 3, Category = DishCategories[2], RestaurantId = 3, Restaurant = Restaurants[2] },
+            new() { Id = 7, Name = "Цезарь", Weight = 250, Price = 420m, CategoryId = 4, Category = DishCategories[3], RestaurantId = 4, Restaurant = Restaurants[3] },
+            new() { Id = 8, Name = "Том Ям", Weight = 380, Price = 590m, CategoryId = 5, Category = DishCategories[4], RestaurantId = 5, Restaurant = Restaurants[4] },
+            new() { Id = 9, Name = "Карбонара", Weight = 360, Price = 520m, CategoryId = 6, Category = DishCategories[5], RestaurantId = 6, Restaurant = Restaurants[5] },
+            new() { Id = 10, Name = "Чизкейк", Weight = 180, Price = 350m, CategoryId = 7, Category = DishCategories[6], RestaurantId = 7, Restaurant = Restaurants[6] },
+            new() { Id = 11, Name = "Капучино", Weight = 300, Price = 220m, CategoryId = 8, Category = DishCategories[7], RestaurantId = 8, Restaurant = Restaurants[7] },
+            new() { Id = 12, Name = "Омлет с овощами", Weight = 280, Price = 390m, CategoryId = 9, Category = DishCategories[8], RestaurantId = 9, Restaurant = Restaurants[8] },
+            new() { Id = 13, Name = "Круассан", Weight = 120, Price = 190m, CategoryId = 10, Category = DishCategories[9], RestaurantId = 10, Restaurant = Restaurants[9] }
         ];
 
         Orders =

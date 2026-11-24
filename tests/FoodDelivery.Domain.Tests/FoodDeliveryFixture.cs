@@ -1,6 +1,6 @@
-using EnterpriseDevelopment.Domain;
+using FoodDelivery.Domain;
 
-namespace EnterpriseDevelopment.Domain.Tests;
+namespace FoodDelivery.Domain.Tests;
 
 /// <summary>
 /// Набор тестовых данных.

@@ -1,4 +1,4 @@
-namespace EnterpriseDevelopment.Domain.Entities;
+namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
 /// Ресторан службы доставки еды.
@@ -13,12 +13,12 @@ public class Restaurant
     /// <summary>
     /// Название ресторана.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
     /// <summary>
     /// Адрес ресторана.
     /// </summary>
-    public string Address { get; set; } = string.Empty;
+    public required string Address { get; set; }
 
     /// <summary>
     /// Рейтинг ресторана.
