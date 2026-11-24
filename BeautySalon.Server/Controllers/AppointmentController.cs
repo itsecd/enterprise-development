@@ -23,12 +23,13 @@ public class AppointmentController(
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<AppointmentResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<AppointmentResponse>> GetAll()
+    public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetAll()
     {
         try
         {
             logger.LogInformation("Запрос на получение списка всех записей.");
-            return Ok(appointmentRepository.GetAll().Select(MapToResponse));
+            var items = await appointmentRepository.GetAllAsync(); 
+            return Ok(items.Select(MapToResponse));
         }
         catch (Exception ex)
         {
@@ -45,12 +46,12 @@ public class AppointmentController(
     [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<AppointmentResponse> GetById(int id)
+    public async Task<ActionResult<AppointmentResponse>> GetById(int id)
     {
         try
         {
             logger.LogInformation("Запрос на получение записи с ID: {AppointmentId}", id);
-            var appointment = appointmentRepository.GetById(id);
+            var appointment = await appointmentRepository.GetByIdAsync(id);
             if (appointment is null)
             {
                 logger.LogWarning("Запись с ID {AppointmentId} не найдена.", id);
@@ -73,15 +74,15 @@ public class AppointmentController(
     [ProducesResponseType(typeof(AppointmentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<AppointmentResponse> Create([FromBody] AppointmentRequest request)
+    public async Task<ActionResult<AppointmentResponse>> Create([FromBody] AppointmentRequest request)
     {
         try
         {
             logger.LogInformation("Запрос на создание новой записи.");
             
-            var client = clientRepository.GetById(request.ClientId);
-            var master = masterRepository.GetById(request.MasterId);
-            var service = serviceRepository.GetById(request.ServiceId);
+            var client = await clientRepository.GetByIdAsync(request.ClientId);
+            var master = await masterRepository.GetByIdAsync(request.MasterId);
+            var service = await serviceRepository.GetByIdAsync(request.ServiceId);
 
             if (client is null || master is null || service is null)
             {
@@ -101,7 +102,7 @@ public class AppointmentController(
                 Service = service
             };
 
-            appointmentRepository.Add(appointment);
+            await appointmentRepository.AddAsync(appointment);
             
             logger.LogInformation("Запись успешно создана с ID: {AppointmentId}", appointment.Id);
             return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, MapToResponse(appointment));
@@ -123,22 +124,22 @@ public class AppointmentController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Update(int id, [FromBody] AppointmentRequest request)
+    public async Task<IActionResult> Update(int id, [FromBody] AppointmentRequest request)
     {
         try
         {
             logger.LogInformation("Запрос на обновление записи с ID: {AppointmentId}", id);
             
-            var appointment = appointmentRepository.GetById(id);
+            var appointment = await appointmentRepository.GetByIdAsync(id);
             if (appointment is null)
             {
                 logger.LogWarning("Запись с ID {AppointmentId} не найдена для обновления.", id);
                 return NotFound();
             }
 
-            var client = clientRepository.GetById(request.ClientId);
-            var master = masterRepository.GetById(request.MasterId);
-            var service = serviceRepository.GetById(request.ServiceId);
+            var client = await clientRepository.GetByIdAsync(request.ClientId);
+            var master = await masterRepository.GetByIdAsync(request.MasterId);
+            var service = await serviceRepository.GetByIdAsync(request.ServiceId);
 
             if (client is null || master is null || service is null)
             {
@@ -155,7 +156,7 @@ public class AppointmentController(
             appointment.ServiceId = service.Id;
             appointment.Service = service;
 
-            appointmentRepository.Update(appointment);
+            await appointmentRepository.UpdateAsync(appointment);
             
             logger.LogInformation("Запись с ID {AppointmentId} успешно обновлена.", id);
             return NoContent();
@@ -174,16 +175,16 @@ public class AppointmentController(
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос на удаление записи с ID: {AppointmentId}", id);
             
-            var appointment = appointmentRepository.GetById(id);
+            var appointment = await appointmentRepository.GetByIdAsync(id);
             if (appointment is not null)
             {
-                appointmentRepository.Delete(appointment);
+                await appointmentRepository.DeleteAsync(appointment);
                 logger.LogInformation("Запись с ID {AppointmentId} успешно удалена.", id);
             }
             else

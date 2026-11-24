@@ -18,12 +18,13 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ServiceResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<ServiceResponse>> GetAll()
+    public async Task<ActionResult<IEnumerable<ServiceResponse>>> GetAll()
     {
         try
         {
             logger.LogInformation("Запрос на получение списка всех услуг.");
-            return Ok(serviceRepository.GetAll().Select(MapToResponse));
+            var items = await serviceRepository.GetAllAsync(); 
+            return Ok(items.Select(MapToResponse));
         }
         catch (Exception ex)
         {
@@ -40,12 +41,12 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ServiceResponse> GetById(int id)
+    public async Task<ActionResult<ServiceResponse>> GetById(int id)
     {
         try
         {
             logger.LogInformation("Запрос на получение услуги с ID: {ServiceId}", id);
-            var service = serviceRepository.GetById(id);
+            var service = await serviceRepository.GetByIdAsync(id);
             if (service is null)
             {
                 logger.LogWarning("Услуга с ID {ServiceId} не найдена.", id);
@@ -67,7 +68,7 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ServiceResponse> Create([FromBody] ServiceRequest request)
+    public async Task<ActionResult<ServiceResponse>> Create([FromBody] ServiceRequest request)
     {
         try
         {
@@ -81,7 +82,7 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
                 Duration = request.Duration
             };
 
-            serviceRepository.Add(service);
+            await serviceRepository.AddAsync(service);
             
             logger.LogInformation("Услуга успешно создана с ID: {ServiceId}", service.Id);
             return CreatedAtAction(nameof(GetById), new { id = service.Id }, MapToResponse(service));
@@ -102,13 +103,13 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Update(int id, [FromBody] ServiceRequest request)
+    public async Task<IActionResult> Update(int id, [FromBody] ServiceRequest request)
     {
         try
         {
             logger.LogInformation("Запрос на обновление услуги с ID: {ServiceId}", id);
             
-            var service = serviceRepository.GetById(id);
+            var service =  await serviceRepository.GetByIdAsync(id);
             if (service is null)
             {
                 logger.LogWarning("Услуга с ID {ServiceId} не найдена для обновления.", id);
@@ -120,7 +121,7 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
             service.Cost = request.Cost;
             service.Duration = request.Duration;
 
-            serviceRepository.Update(service);
+            await serviceRepository.UpdateAsync(service);
             
             logger.LogInformation("Услуга с ID {ServiceId} успешно обновлена.", id);
             return NoContent();
@@ -139,16 +140,16 @@ public class ServicesController(IServiceRepository serviceRepository, ILogger<Se
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос на удаление услуги с ID: {ServiceId}", id);
             
-            var service = serviceRepository.GetById(id);
+            var service = await serviceRepository.GetByIdAsync(id);
             if (service is not null)
             {
-                serviceRepository.Delete(service);
+                await serviceRepository.DeleteAsync(service);
                 logger.LogInformation("Услуга с ID {ServiceId} успешно удалена.", id);
             }
             else

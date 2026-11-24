@@ -8,36 +8,36 @@ namespace BeautySalon.Infrastructure.EfCore.Repositories;
 public class EfAppointmentRepository(BeautySalonDbContext context) : IAppointmentRepository
 {
     /// <inheritdoc />
-    public IEnumerable<Appointment> GetAll() => context.Appointments
+    public async Task<IEnumerable<Appointment>> GetAllAsync() => await context.Appointments
         .Include(a => a.Client)
         .Include(a => a.Master)
         .Include(a => a.Service)
-        .ToList();
+        .ToListAsync();
 
     /// <inheritdoc />
-    public Appointment? GetById(int id) => context.Appointments
+    public async Task<Appointment?> GetByIdAsync(int id) => await context.Appointments
         .Include(a => a.Client)
         .Include(a => a.Master)
         .Include(a => a.Service)
-        .FirstOrDefault(a => a.Id == id);
+        .FirstOrDefaultAsync(a => a.Id == id);
 
     /// <inheritdoc />
-    public void Add(Appointment appointment)
-    {
-        context.Appointments.Add(appointment);
-        context.SaveChanges();
+    public async Task AddAsync(Appointment entity) 
+    { 
+        context.Appointments.Add(entity); 
+        await context.SaveChangesAsync(); 
     }
 
     /// <inheritdoc />
-    public void Update(Appointment appointment)
-    {
-        context.Appointments.Update(appointment);
-        context.SaveChanges();
+    public async Task UpdateAsync(Appointment entity) 
+    { 
+        context.Appointments.Update(entity); 
+        await context.SaveChangesAsync(); 
     }
 
-    public void Delete(Appointment appointment)
-    {
-        context.Appointments.Remove(appointment);
-        context.SaveChanges();
+    public async Task DeleteAsync(Appointment entity) 
+    { 
+        context.Appointments.Remove(entity); 
+        await context.SaveChangesAsync(); 
     }
 }

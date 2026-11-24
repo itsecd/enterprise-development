@@ -20,21 +20,26 @@ public class InMemoryAppointmentRepository : IAppointmentRepository
     }
 
     /// <inheritdoc />
-    public IEnumerable<Appointment> GetAll() => _appointments;
+    public Task<IEnumerable<Appointment>> GetAllAsync() => Task.FromResult<IEnumerable<Appointment>>(_appointments);
 
     /// <inheritdoc />
-    public Appointment? GetById(int id) => _appointments.FirstOrDefault(a => a.Id == id);
+    public Task<Appointment?> GetByIdAsync(int id) => Task.FromResult(_appointments.FirstOrDefault(a => a.Id == id));
 
     /// <inheritdoc />
-    public void Add(Appointment appointment)
+    public Task AddAsync(Appointment entity)
     {
-        appointment.Id = _appointments.Count > 0 ? _appointments.Max(a => a.Id) + 1 : 1;
-        _appointments.Add(appointment);
+        entity.Id = _appointments.Count > 0 ? _appointments.Max(a => a.Id) + 1 : 1;
+        _appointments.Add(entity);
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public void Update(Appointment appointment) { }
+    public Task UpdateAsync(Appointment entity) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public void Delete(Appointment appointment) => _appointments.Remove(appointment);
+    public Task DeleteAsync(Appointment entity)
+    {
+        _appointments.Remove(entity);
+        return Task.CompletedTask;
+    }
 }

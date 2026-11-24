@@ -11,29 +11,29 @@ namespace BeautySalon.Infrastructure.EfCore.Repositories;
 public class EfClientRepository(BeautySalonDbContext context) : IClientRepository
 {
     /// <inheritdoc />
-    public IEnumerable<Client> GetAll() => context.Clients.ToList();
+    public async Task<IEnumerable<Client>> GetAllAsync() => await context.Clients.ToListAsync();
 
     /// <inheritdoc />
-    public Client? GetById(int id) => context.Clients.FirstOrDefault(c => c.Id == id);
+    public async Task<Client?> GetByIdAsync(int id) => await context.Clients.FirstOrDefaultAsync(c => c.Id == id);
 
     /// <inheritdoc />
-    public void Add(Client client)
+    public async Task AddAsync(Client entity)
     {
-        context.Clients.Add(client);
-        context.SaveChanges();
+        context.Clients.Add(entity);
+        await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
-    public void Update(Client client)
+    public async Task UpdateAsync(Client entity)
     {
-        context.Clients.Update(client);
-        context.SaveChanges();
+        context.Clients.Update(entity);
+        await context.SaveChangesAsync();
     }
 
     /// <inheritdoc />
-    public void Delete(Client client)
+    public async Task DeleteAsync(Client entity)
     {
-        context.Clients.Remove(client);
-        context.SaveChanges();
+        context.Clients.Remove(entity);
+        await context.SaveChangesAsync();
     }
 }

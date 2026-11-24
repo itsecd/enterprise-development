@@ -18,12 +18,13 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<MasterResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<MasterResponse>> GetAll()
+    public async Task<ActionResult<IEnumerable<MasterResponse>>> GetAll()
     {
         try
         {
             logger.LogInformation("Запрос на получение списка всех мастеров.");
-            return Ok(masterRepository.GetAll().Select(MapToResponse));
+            var items = await masterRepository.GetAllAsync(); 
+            return Ok(items.Select(MapToResponse));
         }
         catch (Exception ex)
         {
@@ -40,12 +41,12 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<MasterResponse> GetById(int id)
+    public async Task<ActionResult<MasterResponse>> GetById(int id)
     {
         try
         {
             logger.LogInformation("Запрос на получение мастера с ID: {MasterId}", id);
-            var master = masterRepository.GetById(id);
+            var master = await  masterRepository.GetByIdAsync(id);
             if (master is null)
             {
                 logger.LogWarning("Мастер с ID {MasterId} не найден.", id);
@@ -68,7 +69,7 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     [ProducesResponseType(typeof(MasterResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<MasterResponse> Create([FromBody] MasterRequest request)
+    public async Task<ActionResult<MasterResponse>> Create([FromBody] MasterRequest request)
     {
         try
         {
@@ -83,7 +84,7 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
                 ExperienceYears = request.ExperienceYears
             };
 
-            masterRepository.Add(master);
+            await masterRepository.AddAsync(master);
             
             logger.LogInformation("Мастер успешно создан с ID: {MasterId}", master.Id);
             return CreatedAtAction(nameof(GetById), new { id = master.Id }, MapToResponse(master));
@@ -104,13 +105,13 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Update(int id, [FromBody] MasterRequest request)
+    public async Task<IActionResult> Update(int id, [FromBody] MasterRequest request)
     {
         try
         {
             logger.LogInformation("Запрос на обновление мастера с ID: {MasterId}", id);
             
-            var master = masterRepository.GetById(id);
+            var master = await masterRepository.GetByIdAsync(id);
             if (master is null)
             {
                 logger.LogWarning("Мастер с ID {MasterId} не найден для обновления.", id);
@@ -123,7 +124,7 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
             master.Specialization = request.Specialization;
             master.ExperienceYears = request.ExperienceYears;
 
-            masterRepository.Update(master);
+            await masterRepository.UpdateAsync(master);
             
             logger.LogInformation("Мастер с ID {MasterId} успешно обновлен.", id);
             return NoContent();
@@ -142,16 +143,16 @@ public class MastersController(IMasterRepository masterRepository, ILogger<Maste
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос на удаление мастера с ID: {MasterId}", id);
             
-            var master = masterRepository.GetById(id);
+            var master = await masterRepository.GetByIdAsync(id);
             if (master is not null)
             {
-                masterRepository.Delete(master);
+                await masterRepository.DeleteAsync(master);
                 logger.LogInformation("Мастер с ID {MasterId} успешно удален.", id);
             }
             else

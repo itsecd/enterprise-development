@@ -23,13 +23,13 @@ public class AnalyticsController(
     [HttpGet("masters-with-experience")]
     [ProducesResponseType(typeof(MastersWithExperienceResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<MastersWithExperienceResponse> GetMastersWithExperience([FromQuery] int minYears = 5)
+    public async Task<ActionResult<MastersWithExperienceResponse>> GetMastersWithExperience([FromQuery] int minYears = 5)
     {
         try
         {
             logger.LogInformation("Запрос аналитики: мастера со стажем от {MinYears} лет.", minYears);
             
-            var masters = masterRepository.GetAll()
+            var masters = (await masterRepository.GetAllAsync())
                 .Where(m => m.ExperienceYears >= minYears)
                 .Select(m => new MasterExperienceItem
                 {
@@ -64,20 +64,20 @@ public class AnalyticsController(
     [ProducesResponseType(typeof(MasterGapsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<MasterGapsResponse> GetMasterTimeGaps(int masterId)
+    public async Task<ActionResult<MasterGapsResponse>> GetMasterTimeGaps(int masterId)
     {
         try
         {
             logger.LogInformation("Запрос аналитики: окошки для мастера с ID {MasterId}.", masterId);
             
-            var master = masterRepository.GetById(masterId);
+            var master = await masterRepository.GetByIdAsync(masterId);
             if (master is null)
             {
                 logger.LogWarning("Мастер с ID {MasterId} не найден для аналитики окошек.", masterId);
                 return NotFound($"Мастер с id '{masterId}' не найден.");
             }
 
-            var appointments = appointmentRepository.GetAll()
+            var appointments = (await appointmentRepository.GetAllAsync())
                 .Where(a => a.MasterId == masterId)
                 .OrderBy(a => a.StartTime)
                 .ToList();
@@ -133,19 +133,22 @@ public class AnalyticsController(
     [HttpGet("top-services")]
     [ProducesResponseType(typeof(IEnumerable<TopServiceItem>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<TopServiceItem>> GetTopServices([FromQuery] int take = 5)
+    public async Task<ActionResult<IEnumerable<TopServiceItem>>> GetTopServices([FromQuery] int take = 5)
     {
         try
         {
             logger.LogInformation("Запрос аналитики: топ {Take} популярных услуг.", take);
             
-            var top = appointmentRepository.GetAll()
+            var appointments = await appointmentRepository.GetAllAsync();
+            var services = (await serviceRepository.GetAllAsync()).ToDictionary(s => s.Id);
+
+            var top = appointments
                 .GroupBy(a => a.ServiceId)
                 .Select(g => new TopServiceItem
                 {
                     ServiceId = g.Key,
-                    ServiceName = serviceRepository.GetById(g.Key)!.Name,
-                    Category = serviceRepository.GetById(g.Key)!.Category,
+                    ServiceName = services.TryGetValue(g.Key, out var service) ? service.Name : "Неизвестная услуга",
+                    Category = services.TryGetValue(g.Key, out var s) ? s.Category : "Неизвестно",
                     AppointmentCount = g.Count()
                 })
                 .OrderByDescending(x => x.AppointmentCount)
@@ -168,7 +171,7 @@ public class AnalyticsController(
     [HttpGet("repeat-clients")]
     [ProducesResponseType(typeof(RepeatClientsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<RepeatClientsResponse> GetRepeatClients([FromQuery] int days = 30)
+    public async Task<ActionResult<RepeatClientsResponse>> GetRepeatClients([FromQuery] int days = 30)
     {
         try
         {
@@ -176,14 +179,17 @@ public class AnalyticsController(
             
             var threshold = DateTime.Now.AddDays(-days);
 
-            var repeats = appointmentRepository.GetAll()
+            var appointments = await appointmentRepository.GetAllAsync();
+            var clients = (await clientRepository.GetAllAsync()).ToDictionary(c => c.Id);
+            
+            var repeats = appointments
                 .Where(a => a.StartTime >= threshold)
                 .GroupBy(a => a.ClientId)
                 .Where(g => g.Count() > 1)
                 .Select(g => new RepeatClientItem
                 {
                     ClientId = g.Key,
-                    ClientName = clientRepository.GetById(g.Key)!.FullName,
+                    ClientName = clients.TryGetValue(g.Key, out var client) ? client.FullName : "Неизвестный клиент",
                     RepeatCount = g.Count()
                 })
                 .OrderByDescending(x => x.RepeatCount)
@@ -209,21 +215,28 @@ public class AnalyticsController(
     [HttpGet("clients-multiple-masters")]
     [ProducesResponseType(typeof(ClientsMultipleMastersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ClientsMultipleMastersResponse> GetClientsWithMultipleMasters()
+    public async Task<ActionResult<ClientsMultipleMastersResponse>> GetClientsWithMultipleMasters()
     {
         try
         {
             logger.LogInformation("Запрос аналитики: клиенты у нескольких мастеров.");
             
-            var result = appointmentRepository.GetAll()
+            var appointments = await appointmentRepository.GetAllAsync();
+            var clients = (await clientRepository.GetAllAsync()).ToDictionary(c => c.Id);
+
+            var result = appointments
                 .GroupBy(a => a.ClientId)
                 .Where(g => g.Select(a => a.MasterId).Distinct().Count() > 1)
-                .Select(g => new ClientMultipleMastersItem
+                .Select(g =>
                 {
-                    ClientId = g.Key,
-                    FullName = clientRepository.GetById(g.Key)!.FullName,
-                    BirthDate = clientRepository.GetById(g.Key)!.BirthDate,
-                    UniqueMastersCount = g.Select(a => a.MasterId).Distinct().Count()
+                    clients.TryGetValue(g.Key, out var client); 
+                    return new ClientMultipleMastersItem
+                    {
+                        ClientId = g.Key,
+                        FullName = client?.FullName ?? "Неизвестный клиент",
+                        BirthDate = client?.BirthDate ?? DateTime.MinValue,
+                        UniqueMastersCount = g.Select(a => a.MasterId).Distinct().Count()
+                    };
                 })
                 .OrderBy(x => x.BirthDate)
                 .ToList();

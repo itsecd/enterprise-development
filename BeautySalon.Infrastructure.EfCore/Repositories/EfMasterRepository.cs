@@ -8,29 +8,29 @@ namespace BeautySalon.Infrastructure.EfCore.Repositories;
 public class EfMasterRepository(BeautySalonDbContext context) : IMasterRepository
 {
     /// <inheritdoc />
-    public IEnumerable<Master> GetAll() => context.Masters.ToList();
+    public async Task<IEnumerable<Master>> GetAllAsync() => await context.Masters.ToListAsync();
 
     /// <inheritdoc />
-    public Master? GetById(int id) => context.Masters.FirstOrDefault(m => m.Id == id);
+    public async Task<Master?> GetByIdAsync(int id) => await context.Masters.FirstOrDefaultAsync(m => m.Id == id);
 
     /// <inheritdoc />
-    public void Add(Master master) 
+    public async Task AddAsync(Master entity) 
     { 
-        context.Masters.Add(master); 
-        context.SaveChanges(); 
+        context.Masters.Add(entity); 
+        await context.SaveChangesAsync(); 
     }
 
     /// <inheritdoc />
-    public void Update(Master master) 
+    public async Task UpdateAsync(Master entity)
     { 
-        context.Masters.Update(master); 
-        context.SaveChanges(); 
+        context.Masters.Update(entity); 
+        await context.SaveChangesAsync(); 
     }
 
     /// <inheritdoc />
-    public void Delete(Master master) 
+    public async Task DeleteAsync(Master entity) 
     { 
-        context.Masters.Remove(master); 
-        context.SaveChanges(); 
+        context.Masters.Remove(entity); 
+        await context.SaveChangesAsync(); 
     }
 }

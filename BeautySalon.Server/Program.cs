@@ -34,7 +34,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<BeautySalonDbContext>();
-    dbContext.Database.Migrate(); 
+    await dbContext.Database.MigrateAsync(); 
 }
 
 // Настраиваем Swagger UI

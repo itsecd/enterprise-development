@@ -8,29 +8,29 @@ namespace BeautySalon.Infrastructure.EfCore.Repositories;
 public class EfServiceRepository(BeautySalonDbContext context) : IServiceRepository
 {
     /// <inheritdoc />
-    public IEnumerable<Service> GetAll() => context.Services.ToList();
+    public async Task<IEnumerable<Service>> GetAllAsync() => await context.Services.ToListAsync();
 
     /// <inheritdoc />
-    public Service? GetById(int id) => context.Services.FirstOrDefault(s => s.Id == id);
+    public async Task<Service?> GetByIdAsync(int id) => await context.Services.FirstOrDefaultAsync(s => s.Id == id);
 
     /// <inheritdoc />
-    public void Add(Service service) 
+    public async Task AddAsync(Service entity) 
     { 
-        context.Services.Add(service); 
-        context.SaveChanges(); 
+        context.Services.Add(entity); 
+        await context.SaveChangesAsync(); 
     }
 
     /// <inheritdoc />
-    public void Update(Service service)
-    {
-        context.Services.Update(service); 
-        context.SaveChanges(); 
+    public async Task UpdateAsync(Service entity) 
+    { 
+        context.Services.Update(entity); 
+        await context.SaveChangesAsync(); 
     }
 
     /// <inheritdoc />
-    public void Delete(Service service) 
+    public async Task DeleteAsync(Service entity) 
     { 
-        context.Services.Remove(service); 
-        context.SaveChanges(); 
+        context.Services.Remove(entity); 
+        await context.SaveChangesAsync(); 
     }
 }

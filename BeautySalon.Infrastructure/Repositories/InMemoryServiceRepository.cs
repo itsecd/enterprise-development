@@ -20,21 +20,26 @@ public class InMemoryServiceRepository : IServiceRepository
     }
 
     /// <inheritdoc />
-    public IEnumerable<Service> GetAll() => _services;
+    public Task<IEnumerable<Service>> GetAllAsync() => Task.FromResult<IEnumerable<Service>>(_services);
 
     /// <inheritdoc />
-    public Service? GetById(int id) => _services.FirstOrDefault(s => s.Id == id);
+    public Task<Service?> GetByIdAsync(int id) => Task.FromResult(_services.FirstOrDefault(s => s.Id == id));
 
     /// <inheritdoc />
-    public void Add(Service service)
+    public Task AddAsync(Service entity)
     {
-        service.Id = _services.Count > 0 ? _services.Max(s => s.Id) + 1 : 1;
-        _services.Add(service);
+        entity.Id = _services.Count > 0 ? _services.Max(s => s.Id) + 1 : 1;
+        _services.Add(entity);
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public void Update(Service service) { }
+    public Task UpdateAsync(Service entity) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public void Delete(Service service) => _services.Remove(service);
+    public Task DeleteAsync(Service entity)
+    {
+        _services.Remove(entity);
+        return Task.CompletedTask;
+    }
 }

@@ -20,21 +20,26 @@ public class InMemoryMasterRepository : IMasterRepository
     }
 
     /// <inheritdoc />
-    public IEnumerable<Master> GetAll() => _masters;
+    public Task<IEnumerable<Master>> GetAllAsync() => Task.FromResult<IEnumerable<Master>>(_masters);
 
     /// <inheritdoc />
-    public Master? GetById(int id) => _masters.FirstOrDefault(m => m.Id == id);
+    public Task<Master?> GetByIdAsync(int id) => Task.FromResult(_masters.FirstOrDefault(m => m.Id == id));
 
     /// <inheritdoc />
-    public void Add(Master master)
+    public Task AddAsync(Master entity)
     {
-        master.Id = _masters.Count > 0 ? _masters.Max(m => m.Id) + 1 : 1;
-        _masters.Add(master);
+        entity.Id = _masters.Count > 0 ? _masters.Max(m => m.Id) + 1 : 1;
+        _masters.Add(entity);
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public void Update(Master master) { }
+    public Task UpdateAsync(Master entity) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public void Delete(Master master) => _masters.Remove(master);
+    public Task DeleteAsync(Master entity)
+    {
+        _masters.Remove(entity);
+        return Task.CompletedTask;
+    }
 }

@@ -18,13 +18,13 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ClientResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<ClientResponse>> GetAll()
+    public async Task<ActionResult<IEnumerable<ClientResponse>>> GetAll()
     {
         try
         {
             logger.LogInformation("Запрос на получение списка всех клиентов.");
-            var clients = clientRepository.GetAll().Select(MapToResponse);
-            return Ok(clients);
+            var clients = await clientRepository.GetAllAsync();
+            return Ok(clients.Select(MapToResponse));
         }
         catch (Exception ex)
         {
@@ -41,12 +41,12 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ClientResponse> GetById(int id)
+    public async Task<ActionResult<ClientResponse>> GetById(int id)
     {
         try
         {
             logger.LogInformation("Запрос на получение клиента с ID: {ClientId}", id);
-            var client = clientRepository.GetById(id);
+            var client = await clientRepository.GetByIdAsync(id);
             if (client is null)
             {
                 logger.LogWarning("Клиент с ID {ClientId} не найден.", id);
@@ -69,7 +69,7 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<ClientResponse> Create([FromBody] ClientRequest request)
+    public async Task<ActionResult<ClientResponse>> Create([FromBody] ClientRequest request)
     {
         try
         {
@@ -83,7 +83,7 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
                 Phone = request.Phone
             };
 
-            clientRepository.Add(client);
+            await clientRepository.AddAsync(client);
             
             logger.LogInformation("Клиент успешно создан с ID: {ClientId}", client.Id);
             return CreatedAtAction(nameof(GetById), new { id = client.Id }, MapToResponse(client));
@@ -104,13 +104,13 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Update(int id, [FromBody] ClientRequest request)
+    public async Task<IActionResult> Update(int id, [FromBody] ClientRequest request)
     {
         try
         {
             logger.LogInformation("Запрос на обновление клиента с ID: {ClientId}", id);
             
-            var client = clientRepository.GetById(id);
+            var client = await clientRepository.GetByIdAsync(id);
             if (client is null)
             {
                 logger.LogWarning("Клиент с ID {ClientId} не найден для обновления.", id);
@@ -122,7 +122,7 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
             client.BirthDate = request.BirthDate;
             client.Phone = request.Phone;
 
-            clientRepository.Update(client);
+            await clientRepository.UpdateAsync(client);
             
             logger.LogInformation("Клиент с ID {ClientId} успешно обновлен.", id);
             return NoContent();
@@ -141,16 +141,16 @@ public class ClientsController(IClientRepository clientRepository, ILogger<Clien
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             logger.LogInformation("Запрос на удаление клиента с ID: {ClientId}", id);
             
-            var client = clientRepository.GetById(id);
+            var client = await clientRepository.GetByIdAsync(id);
             if (client is not null)
             {
-                clientRepository.Delete(client);
+                await clientRepository.DeleteAsync(client);
                 logger.LogInformation("Клиент с ID {ClientId} успешно удален.", id);
             }
             else
