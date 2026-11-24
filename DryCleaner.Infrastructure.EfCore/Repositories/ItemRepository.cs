@@ -33,10 +33,21 @@ public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
     /// <inheritdoc />
     public async Task<Item?> UpdateAsync(Item entity)
     {
-        var existing = await context.Items.FindAsync(entity.Id);
+        var existing = await context.Items
+            .Include(i => i.Category)
+            .FirstOrDefaultAsync(i => i.Id == entity.Id);
+
         if (existing == null) return null;
 
-        context.Entry(existing).CurrentValues.SetValues(entity);
+        existing.Name = entity.Name;
+        existing.CategoryId = entity.CategoryId;
+        existing.Material = entity.Material;
+
+        if (entity.Category != null)
+        {
+            existing.Category = entity.Category;
+        }
+
         await context.SaveChangesAsync();
         return existing;
     }

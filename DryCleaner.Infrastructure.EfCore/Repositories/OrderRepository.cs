@@ -42,7 +42,11 @@ public class OrderRepository(DryCleanerDbContext context) : IRepository<Order>
     /// <inheritdoc />
     public async Task<Order?> UpdateAsync(Order entity)
     {
-        var existing = await context.Orders.FindAsync(entity.Id);
+        var existing = await context.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Item).ThenInclude(i => i.Category)
+            .FirstOrDefaultAsync(o => o.Id == entity.Id);
+
         if (existing == null) return null;
 
         context.Entry(existing).CurrentValues.SetValues(entity);
