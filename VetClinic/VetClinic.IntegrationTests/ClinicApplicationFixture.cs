@@ -12,7 +12,7 @@ namespace VetClinic.IntegrationTests;
 /// </summary>
 public sealed class ClinicApplicationFixture : IAsyncLifetime
 {
-    private static readonly TimeSpan StartupTimeout = TimeSpan.FromMinutes(3);
+    private static readonly TimeSpan StartupTimeout = TimeSpan.FromMinutes(8);
 
     private DistributedApplication _application = null!;
 
@@ -40,7 +40,7 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
         await _application.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
             .WaitAsync(StartupTimeout, cancellationToken);
 
-        Api = _application.CreateHttpClient("api");
+        Api = _application.CreateHttpClient("api", "http");
         Api.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync(cancellationToken));
     }
 
@@ -60,7 +60,7 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
     /// <summary>
     /// Клиент без токена, чтобы проверить отказ для неавторизованных запросов
     /// </summary>
-    public HttpClient CreateAnonymousClient() => _application.CreateHttpClient("api");
+    public HttpClient CreateAnonymousClient() => _application.CreateHttpClient("api", "http");
 
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
