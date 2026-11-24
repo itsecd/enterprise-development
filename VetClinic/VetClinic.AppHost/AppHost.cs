@@ -11,7 +11,7 @@ var database = sql.AddDatabase("vetclinic");
 builder.AddProject<Projects.VetClinic_Api>("api")
     .WithReference(database)
     .WaitFor(database)
-    .WithHttpHealthCheck("/health")
+    .WithHttpHealthCheck("/health", endpointName: "http")
     .WithUrlForEndpoint("https", url =>
     {
         url.Url = "/scalar/v1";

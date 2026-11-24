@@ -37,11 +37,43 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
         _application = await builder.BuildAsync();
         await _application.StartAsync(cancellationToken);
 
-        await _application.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
+        await _application.ResourceNotifications.WaitForResourceAsync("api", KnownResourceStates.Running, cancellationToken)
             .WaitAsync(StartupTimeout, cancellationToken);
 
         Api = _application.CreateHttpClient("api", "http");
+        await WaitForApiAsync(cancellationToken);
         Api.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync(cancellationToken));
+    }
+
+    /// <summary>
+    /// Ждёт, пока API ответит на проверку работоспособности
+    /// </summary>
+    /// <param name="cancellationToken">Токен отмены</param>
+    /// <remarks>
+    /// Проверка идёт по http: на сборочном сервере сертификат разработчика не доверенный,
+    /// поэтому проверка Aspire по https всегда остаётся нездоровой
+    /// </remarks>
+    private async Task WaitForApiAsync(CancellationToken cancellationToken)
+    {
+        var deadline = DateTime.UtcNow + StartupTimeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            try
+            {
+                using var response = await Api.GetAsync("health", cancellationToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+            }
+            catch (HttpRequestException)
+            {
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+        }
+
+        throw new TimeoutException($"API не ответил на /health за {StartupTimeout.TotalMinutes} минут");
     }
 
     /// <summary>
