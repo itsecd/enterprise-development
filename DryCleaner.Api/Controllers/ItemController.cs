@@ -105,10 +105,6 @@ public class ItemController(IItemService service, IOrderService orderService, IL
             var created = await service.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Ошибка при создании изделия" });
-        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Ошибка при создании изделия");

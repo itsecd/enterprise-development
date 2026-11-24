@@ -16,10 +16,8 @@ public record OrderCreateUpdateDto(
 
     int ItemId,
 
-    [Required(ErrorMessage = "Дата приема обязательна для заполнения!")]
     DateOnly AcceptanceDate,
 
-    [Required(ErrorMessage = "Срок выполнения обязателен для заполнения!")]
     [Range(1, 365, ErrorMessage = "Некорректный срок выполнения!")]
     int CompletionDays,
 

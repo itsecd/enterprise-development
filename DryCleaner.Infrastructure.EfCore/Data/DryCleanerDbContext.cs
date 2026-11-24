@@ -3,13 +3,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DryCleaner.Infrastructure.EfCore.Data;
 
+/// <summary>
+/// Контекст базы данных EfCore
+/// </summary>
 public class DryCleanerDbContext(DbContextOptions<DryCleanerDbContext> options) : DbContext(options)
 {
+    /// <summary>
+    /// Таблица клиентов химчистки
+    /// </summary>
     public DbSet<Customer> Customers => Set<Customer>();
+    /// <summary>
+    /// Таблица изделий
+    /// </summary>
     public DbSet<Item> Items => Set<Item>();
+    /// <summary>
+    /// Таблица категорий изделий
+    /// </summary>
     public DbSet<ItemCategory> ItemCategories => Set<ItemCategory>();
+    /// <summary>
+    /// Таблица заказов
+    /// </summary>
     public DbSet<Order> Orders => Set<Order>();
 
+    /// <summary>
+    /// Настраивает модель базы данных
+    /// </summary>
+    /// <param name="modelBuilder">Построитель модели, используемый EF Core</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
