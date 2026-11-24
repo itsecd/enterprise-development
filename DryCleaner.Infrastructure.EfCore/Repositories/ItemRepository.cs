@@ -13,13 +13,13 @@ public class ItemRepository(DryCleanerDbContext context) : IRepository<Item>
     /// <inheritdoc />
     public async Task<IList<Item>> GetAllAsync()
     {
-        return await context.Items.AsNoTracking().ToListAsync();
+        return await context.Items.Include(i => i.Category).AsNoTracking().ToListAsync();
     }
 
     /// <inheritdoc />
     public async Task<Item?> GetByIdAsync(int id)
     {
-        return await context.Items.FindAsync(id);
+        return await context.Items.Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == id);
     }
 
     /// <inheritdoc />
