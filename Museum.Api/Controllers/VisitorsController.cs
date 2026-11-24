@@ -1,132 +1,119 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Contracts;
-using Museum.Domain.Data;
-using Museum.Domain.Entities;
+using Museum.Application.Repositories;
+using Museum.Contracts;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>
+/// REST API для посетителей.
+/// </summary>
 [ApiController]
 [Route("api/visitors")]
-public class VisitorsController(MuseumContext context) : ControllerBase
+public class VisitorsController(VisitorsRepository repository, ILogger<VisitorsController> logger) : ControllerBase
 {
+    /// <summary>Возвращает посетители.</summary>
     [HttpGet]
-    public ActionResult<IEnumerable<VisitorResponse>> GetAll()
+    [ProducesResponseType(typeof(IReadOnlyList<VisitorResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IReadOnlyList<VisitorResponse>> GetAll()
     {
-        lock (context)
+        try
         {
-            var visitors = context.Visitors
-                .OrderBy(visitor => visitor.Id)
-                .Select(ToResponse)
-                .ToList();
-
-            return Ok(visitors);
+            return Ok(repository.GetAll());
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: получение списка посетителей");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Возвращает посетителя по идентификатору.</summary>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(VisitorResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<VisitorResponse> GetById(int id)
     {
-        lock (context)
+        try
         {
-            var visitor = context.Visitors
-                .FirstOrDefault(visitor => visitor.Id == id);
-
-            if (visitor is null)
-                return NotFound();
-
-            return Ok(ToResponse(visitor));
+            var result = repository.GetById(id);
+            if (result is null) return NotFound();
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: получение записи Visitor");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Создаёт посетителя.</summary>
     [HttpPost]
+    [ProducesResponseType(typeof(VisitorResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<VisitorResponse> Create(VisitorRequest request)
     {
-        if (!IsValid(request))
-            return BadRequest("Invalid visitor data.");
-
-        lock (context)
+        try
         {
-            var nextId = context.Visitors.Count == 0
-                ? 1
-                : context.Visitors.Max(visitor => visitor.Id) + 1;
-
-            var visitor = new Visitor
-            {
-                Id = nextId,
-                FullName = request.FullName,
-                Phone = request.Phone,
-                BirthDate = request.BirthDate
-            };
-
-            context.Visitors.Add(visitor);
-
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = visitor.Id },
-                ToResponse(visitor));
+            if (!IsValid(request))
+                return BadRequest("Invalid visitor data.");
+            var result = repository.Create(request);
+            logger.LogInformation("Создана запись Visitor с Id={Id}", result.Id);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: создание записи Visitor");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Изменяет посетителя.</summary>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Update(int id, VisitorRequest request)
     {
-        if (!IsValid(request))
-            return BadRequest("Invalid visitor data.");
-
-        lock (context)
+        try
         {
-            var visitor = context.Visitors
-                .FirstOrDefault(visitor => visitor.Id == id);
-
-            if (visitor is null)
-                return NotFound();
-
-            visitor.FullName = request.FullName;
-            visitor.Phone = request.Phone;
-            visitor.BirthDate = request.BirthDate;
-
+            if (!IsValid(request))
+                return BadRequest("Invalid visitor data.");
+            if (!repository.Update(id, request)) return NotFound();
+            logger.LogInformation("Изменена запись Visitor с Id={Id}", id);
             return NoContent();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: изменение записи Visitor");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Удаляет посетителя.</summary>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int id)
     {
-        lock (context)
+        try
         {
-            var visitor = context.Visitors
-                .FirstOrDefault(visitor => visitor.Id == id);
-
-            if (visitor is null)
-                return NotFound();
-
-            var tickets = context.Tickets
-                .Where(ticket => ticket.VisitorId == id)
-                .ToList();
-
-            foreach (var ticket in tickets)
-            {
-                ticket.Tour.Tickets.Remove(ticket);
-                visitor.Tickets.Remove(ticket);
-                context.Tickets.Remove(ticket);
-            }
-
-            context.Visitors.Remove(visitor);
-
+            if (!repository.Delete(id)) return NotFound();
+            logger.LogInformation("Удалена запись Visitor: Id={Id}", id);
             return NoContent();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: удаление записи Visitor");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
-    private static VisitorResponse ToResponse(Visitor visitor)
-    {
-        return new VisitorResponse(
-            visitor.Id,
-            visitor.FullName,
-            visitor.Phone,
-            visitor.BirthDate
-        );
-    }
-
+    /// <summary>Проверяет данные запроса.</summary>
     private static bool IsValid(VisitorRequest request)
     {
         return !string.IsNullOrWhiteSpace(request.FullName)

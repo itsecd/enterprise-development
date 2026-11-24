@@ -1,170 +1,122 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Contracts;
-using Museum.Domain.Data;
-using Museum.Domain.Entities;
+using Museum.Application.Repositories;
+using Museum.Contracts;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>
+/// REST API для связей экскурсий и выставок.
+/// </summary>
 [ApiController]
 [Route("api/tour-exhibitions")]
-public class TourExhibitionsController(MuseumContext context) : ControllerBase
+public class TourExhibitionsController(TourExhibitionsRepository repository, ILogger<TourExhibitionsController> logger) : ControllerBase
 {
+    /// <summary>Возвращает связи экскурсий и выставок.</summary>
     [HttpGet]
-    public ActionResult<IEnumerable<TourExhibitionResponse>> GetAll()
+    [ProducesResponseType(typeof(IReadOnlyList<TourExhibitionResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IReadOnlyList<TourExhibitionResponse>> GetAll()
     {
-        lock (context)
+        try
         {
-            var relations = context.TourExhibitions
-                .OrderBy(relation => relation.TourId)
-                .ThenBy(relation => relation.ExhibitionId)
-                .Select(ToResponse)
-                .ToList();
-
-            return Ok(relations);
+            return Ok(repository.GetAll());
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: получение списка связей экскурсий и выставок");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Возвращает связь экскурсии и выставки по идентификатору.</summary>
     [HttpGet("{tourId:int}/{exhibitionId:int}")]
-    public ActionResult<TourExhibitionResponse> GetById(
-        int tourId,
-        int exhibitionId)
+    [ProducesResponseType(typeof(TourExhibitionResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<TourExhibitionResponse> GetById(int tourId, int exhibitionId)
     {
-        lock (context)
+        try
         {
-            var relation = context.TourExhibitions
-                .FirstOrDefault(relation =>
-                    relation.TourId == tourId &&
-                    relation.ExhibitionId == exhibitionId);
-
-            if (relation is null)
-                return NotFound();
-
-            return Ok(ToResponse(relation));
+            var result = repository.GetById(tourId, exhibitionId);
+            if (result is null) return NotFound();
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: получение записи TourExhibition");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Создаёт связь экскурсии и выставки.</summary>
     [HttpPost]
-    public ActionResult<TourExhibitionResponse> Create(
-        TourExhibitionRequest request)
+    [ProducesResponseType(typeof(TourExhibitionResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<TourExhibitionResponse> Create(TourExhibitionRequest request)
     {
-        lock (context)
+        try
         {
-            var tour = context.Tours
-                .FirstOrDefault(tour => tour.Id == request.TourId);
-
-            var exhibition = context.Exhibitions
-                .FirstOrDefault(exhibition =>
-                    exhibition.Id == request.ExhibitionId);
-
-            if (tour is null || exhibition is null)
+            var (status, result) = repository.Create(request);
+            if (status == RepositoryChangeResult.InvalidReference)
                 return BadRequest("Tour or exhibition not found.");
-
-            var exists = context.TourExhibitions.Any(relation =>
-                relation.TourId == request.TourId &&
-                relation.ExhibitionId == request.ExhibitionId);
-
-            if (exists)
+            if (status == RepositoryChangeResult.Conflict)
                 return Conflict("This relation already exists.");
-
-            var relation = new TourExhibition
-            {
-                TourId = tour.Id,
-                ExhibitionId = exhibition.Id,
-                Tour = tour,
-                Exhibition = exhibition
-            };
-
-            context.TourExhibitions.Add(relation);
-            tour.TourExhibitions.Add(relation);
-            exhibition.TourExhibitions.Add(relation);
-
-            return CreatedAtAction(
-                nameof(GetById),
-                new
-                {
-                    tourId = relation.TourId,
-                    exhibitionId = relation.ExhibitionId
-                },
-                ToResponse(relation));
+            logger.LogInformation("Создана связь TourId={TourId}, ExhibitionId={ExhibitionId}", result!.TourId, result.ExhibitionId);
+            return CreatedAtAction(nameof(GetById),
+                new { tourId = result.TourId, exhibitionId = result.ExhibitionId }, result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: создание записи TourExhibition");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Изменяет связь экскурсии и выставки.</summary>
     [HttpPut("{tourId:int}/{exhibitionId:int}")]
-    public IActionResult Update(
-        int tourId,
-        int exhibitionId,
-        TourExhibitionRequest request)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult Update(int tourId, int exhibitionId, TourExhibitionRequest request)
     {
-        lock (context)
+        try
         {
-            var relation = context.TourExhibitions
-                .FirstOrDefault(relation =>
-                    relation.TourId == tourId &&
-                    relation.ExhibitionId == exhibitionId);
-
-            if (relation is null)
-                return NotFound();
-
-            var newTour = context.Tours
-                .FirstOrDefault(tour => tour.Id == request.TourId);
-
-            var newExhibition = context.Exhibitions
-                .FirstOrDefault(exhibition =>
-                    exhibition.Id == request.ExhibitionId);
-
-            if (newTour is null || newExhibition is null)
+            var status = repository.Update(tourId, exhibitionId, request);
+            if (status == RepositoryChangeResult.NotFound) return NotFound();
+            if (status == RepositoryChangeResult.InvalidReference)
                 return BadRequest("Tour or exhibition not found.");
-
-            var exists = context.TourExhibitions.Any(other =>
-                !ReferenceEquals(other, relation) &&
-                other.TourId == request.TourId &&
-                other.ExhibitionId == request.ExhibitionId);
-
-            if (exists)
-                return Conflict("This relation already exists.");
-
-            relation.Tour.TourExhibitions.Remove(relation);
-            relation.Exhibition.TourExhibitions.Remove(relation);
-
-            relation.TourId = newTour.Id;
-            relation.ExhibitionId = newExhibition.Id;
-            relation.Tour = newTour;
-            relation.Exhibition = newExhibition;
-
-            newTour.TourExhibitions.Add(relation);
-            newExhibition.TourExhibitions.Add(relation);
-
+            if (status == RepositoryChangeResult.Conflict) return Conflict("This relation already exists.");
+            logger.LogInformation("Изменена запись TourExhibition: TourId={TourId}, ExhibitionId={ExhibitionId}", tourId, exhibitionId);
             return NoContent();
         }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: изменение записи TourExhibition");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
+        }
     }
 
+    /// <summary>Удаляет связь экскурсии и выставки.</summary>
     [HttpDelete("{tourId:int}/{exhibitionId:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int tourId, int exhibitionId)
     {
-        lock (context)
+        try
         {
-            var relation = context.TourExhibitions
-                .FirstOrDefault(relation =>
-                    relation.TourId == tourId &&
-                    relation.ExhibitionId == exhibitionId);
-
-            if (relation is null)
-                return NotFound();
-
-            relation.Tour.TourExhibitions.Remove(relation);
-            relation.Exhibition.TourExhibitions.Remove(relation);
-            context.TourExhibitions.Remove(relation);
-
+            if (!repository.Delete(tourId, exhibitionId)) return NotFound();
+            logger.LogInformation("Удалена запись TourExhibition: TourId={TourId}, ExhibitionId={ExhibitionId}", tourId, exhibitionId);
             return NoContent();
         }
-    }
-
-    private static TourExhibitionResponse ToResponse(
-        TourExhibition relation)
-    {
-        return new TourExhibitionResponse(
-            relation.TourId,
-            relation.ExhibitionId
-        );
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: удаление записи TourExhibition");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
+        }
     }
 }

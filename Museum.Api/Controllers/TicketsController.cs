@@ -1,156 +1,124 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Museum.Api.Contracts;
-using Museum.Domain.Data;
-using Museum.Domain.Entities;
+using Museum.Application.Repositories;
+using Museum.Contracts;
 
 namespace Museum.Api.Controllers;
 
+/// <summary>
+/// REST API для билетов.
+/// </summary>
 [ApiController]
 [Route("api/tickets")]
-public class TicketsController(MuseumContext context) : ControllerBase
+public class TicketsController(TicketsRepository repository, ILogger<TicketsController> logger) : ControllerBase
 {
+    /// <summary>Возвращает билеты.</summary>
     [HttpGet]
-    public ActionResult<IEnumerable<TicketResponse>> GetAll()
+    [ProducesResponseType(typeof(IReadOnlyList<TicketResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IReadOnlyList<TicketResponse>> GetAll()
     {
-        lock (context)
+        try
         {
-            var tickets = context.Tickets
-                .OrderBy(ticket => ticket.Id)
-                .Select(ToResponse)
-                .ToList();
-
-            return Ok(tickets);
+            return Ok(repository.GetAll());
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: получение списка билетов");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Возвращает билет по идентификатору.</summary>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(TicketResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<TicketResponse> GetById(int id)
     {
-        lock (context)
+        try
         {
-            var ticket = context.Tickets
-                .FirstOrDefault(ticket => ticket.Id == id);
-
-            if (ticket is null)
-                return NotFound();
-
-            return Ok(ToResponse(ticket));
+            var result = repository.GetById(id);
+            if (result is null) return NotFound();
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: получение записи Ticket");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Создаёт билет.</summary>
     [HttpPost]
+    [ProducesResponseType(typeof(TicketResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<TicketResponse> Create(TicketRequest request)
     {
-        if (!IsValid(request))
-            return BadRequest("Invalid ticket data.");
-
-        lock (context)
+        try
         {
-            var tour = context.Tours
-                .FirstOrDefault(tour => tour.Id == request.TourId);
-
-            var visitor = context.Visitors
-                .FirstOrDefault(visitor => visitor.Id == request.VisitorId);
-
-            if (tour is null || visitor is null)
+            if (!IsValid(request))
+                return BadRequest("Invalid ticket data.");
+            var result = repository.Create(request);
+            if (result is null)
                 return BadRequest("Tour or visitor not found.");
-
-            var nextId = context.Tickets.Count == 0
-                ? 1
-                : context.Tickets.Max(ticket => ticket.Id) + 1;
-
-            var ticket = new Ticket
-            {
-                Id = nextId,
-                TourId = tour.Id,
-                VisitorId = visitor.Id,
-                Type = request.Type,
-                Price = request.Price,
-                Tour = tour,
-                Visitor = visitor
-            };
-
-            context.Tickets.Add(ticket);
-            tour.Tickets.Add(ticket);
-            visitor.Tickets.Add(ticket);
-
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = ticket.Id },
-                ToResponse(ticket));
+            logger.LogInformation("Создана запись Ticket с Id={Id}", result!.Id);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: создание записи Ticket");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Изменяет билет.</summary>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Update(int id, TicketRequest request)
     {
-        if (!IsValid(request))
-            return BadRequest("Invalid ticket data.");
-
-        lock (context)
+        try
         {
-            var ticket = context.Tickets
-                .FirstOrDefault(ticket => ticket.Id == id);
-
-            if (ticket is null)
-                return NotFound();
-
-            var tour = context.Tours
-                .FirstOrDefault(tour => tour.Id == request.TourId);
-
-            var visitor = context.Visitors
-                .FirstOrDefault(visitor => visitor.Id == request.VisitorId);
-
-            if (tour is null || visitor is null)
+            if (!IsValid(request))
+                return BadRequest("Invalid ticket data.");
+            var status = repository.Update(id, request);
+            if (status == RepositoryChangeResult.NotFound) return NotFound();
+            if (status == RepositoryChangeResult.InvalidReference)
                 return BadRequest("Tour or visitor not found.");
-
-            ticket.Tour.Tickets.Remove(ticket);
-            ticket.Visitor.Tickets.Remove(ticket);
-
-            ticket.TourId = tour.Id;
-            ticket.VisitorId = visitor.Id;
-            ticket.Type = request.Type;
-            ticket.Price = request.Price;
-            ticket.Tour = tour;
-            ticket.Visitor = visitor;
-
-            tour.Tickets.Add(ticket);
-            visitor.Tickets.Add(ticket);
-
+            logger.LogInformation("Изменена запись Ticket: Id={Id}", id);
             return NoContent();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: изменение записи Ticket");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
+    /// <summary>Удаляет билет.</summary>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Delete(int id)
     {
-        lock (context)
+        try
         {
-            var ticket = context.Tickets
-                .FirstOrDefault(ticket => ticket.Id == id);
-
-            if (ticket is null)
-                return NotFound();
-
-            ticket.Tour.Tickets.Remove(ticket);
-            ticket.Visitor.Tickets.Remove(ticket);
-            context.Tickets.Remove(ticket);
-
+            if (!repository.Delete(id)) return NotFound();
+            logger.LogInformation("Удалена запись Ticket: Id={Id}", id);
             return NoContent();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Ошибка: удаление записи Ticket");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
         }
     }
 
-    private static TicketResponse ToResponse(Ticket ticket)
-    {
-        return new TicketResponse(
-            ticket.Id,
-            ticket.TourId,
-            ticket.VisitorId,
-            ticket.Type,
-            ticket.Price
-        );
-    }
-
+    /// <summary>Проверяет данные запроса.</summary>
     private static bool IsValid(TicketRequest request)
     {
         return request.TourId > 0

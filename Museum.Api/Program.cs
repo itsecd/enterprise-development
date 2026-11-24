@@ -1,4 +1,5 @@
-using Museum.Api.Services;
+using Museum.Application.Services;
+using Museum.Application.Repositories;
 using Museum.Domain.Data;
 using Scalar.AspNetCore;
 
@@ -9,6 +10,11 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<MuseumContext>(_ => DataSeeder.Seed());
 builder.Services.AddScoped<MuseumAnalyticsService>();
+builder.Services.AddScoped<ExhibitionsRepository>();
+builder.Services.AddScoped<ToursRepository>();
+builder.Services.AddScoped<VisitorsRepository>();
+builder.Services.AddScoped<TicketsRepository>();
+builder.Services.AddScoped<TourExhibitionsRepository>();
 
 var app = builder.Build();
 
