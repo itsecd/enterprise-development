@@ -86,6 +86,11 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IList<CategoryPopularityDto>>> GetPopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
+        if (end < start)
+        {
+            logger.LogWarning("Некорректный период: дата окончания раньше даты начала");
+            return BadRequest("Дата окончания не может быть раньше даты начала");
+        }
         try
         {
             logger.LogInformation("Запрос: Наиболее популярные категории");
@@ -106,6 +111,11 @@ public class AnalyticsController(IAnalyticsService analyticsService, ILogger<Ana
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IList<CategoryPopularityDto>>> GetUnpopularCategories([FromQuery] DateOnly start, [FromQuery] DateOnly end)
     {
+        if (end < start)
+        {
+            logger.LogWarning("Некорректный период: дата окончания раньше даты начала");
+            return BadRequest("Дата окончания не может быть раньше даты начала");
+        }
         try
         {
             logger.LogInformation("Запрос: Наименее популярные категории");
