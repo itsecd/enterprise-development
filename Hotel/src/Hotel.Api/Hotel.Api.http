@@ -1,0 +1,79 @@
+@baseUrl = http://localhost:3621
+
+### Все клиенты
+GET {{baseUrl}}/api/clients
+
+### Клиент по ID
+GET {{baseUrl}}/api/clients/1
+
+### Клиенты, проживавшие в номерах категории Standard
+GET {{baseUrl}}/api/clients/by-room-type/Standard
+
+### Топ-5 клиентов по стоимости проживания
+GET {{baseUrl}}/api/clients/top-spenders
+
+### Все типы номеров
+GET {{baseUrl}}/api/room-types
+
+### Тип номера по ID
+GET {{baseUrl}}/api/room-types/1
+
+### Все номера
+GET {{baseUrl}}/api/rooms
+
+### Номера, занятые на 10 марта 2025 года (дата из исходных тестовых данных)
+GET {{baseUrl}}/api/rooms/current-bookings?date=2025-03-10
+
+### Топ-5 наиболее часто бронируемых номеров
+GET {{baseUrl}}/api/rooms/most-booked
+
+### Количество бронирований по каждому номеру
+GET {{baseUrl}}/api/rooms/booking-counts
+
+### Все бронирования
+GET {{baseUrl}}/api/bookings
+
+### Создание клиента
+POST {{baseUrl}}/api/clients
+Content-Type: application/json
+
+{
+  "passportNumber": "9000 123456",
+  "fullName": "Тестовый Клиент",
+  "birthDate": "1995-05-20",
+  "citizenship": "РФ"
+}
+
+### Создание типа номера
+POST {{baseUrl}}/api/room-types
+Content-Type: application/json
+
+{
+  "category": "Standard",
+  "area": 22,
+  "bedCount": 2,
+  "hasBathroom": true,
+  "pricePerNight": 2500
+}
+
+### Создание номера с существующим типом
+POST {{baseUrl}}/api/rooms
+Content-Type: application/json
+
+{
+  "roomNumber": "601",
+  "floor": 6,
+  "hasBalcony": true,
+  "roomTypeId": 2
+}
+
+### Создание бронирования для существующего клиента и номера
+POST {{baseUrl}}/api/bookings
+Content-Type: application/json
+
+{
+  "clientId": 1,
+  "roomId": 10,
+  "checkInDate": "2026-12-01",
+  "nights": 3
+}
