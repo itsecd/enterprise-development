@@ -1,29 +1,29 @@
-using DryCleaner.Domain.Entities;
+п»їusing DryCleaner.Domain.Entities;
 
 namespace DryCleaner.Domain.Repositories;
 
 /// <summary>
-/// Репозиторий для работы с заказами
+/// Р РµРїРѕР·РёС‚РѕСЂРёР№ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р·Р°РєР°Р·Р°РјРё
 /// </summary>
 public interface IOrderRepository : IRepository<Order>
 {
     /// <summary>
-    /// Получить заказы в обработке
+    /// РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·С‹ РІ РѕР±СЂР°Р±РѕС‚РєРµ
     /// </summary>
     Task<IList<Order>> GetInProgressOrdersAsync();
 
     /// <summary>
-    /// Получить заказы за указанный период
+    /// РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·С‹ Р·Р° СѓРєР°Р·Р°РЅРЅС‹Р№ РїРµСЂРёРѕРґ
     /// </summary>
     Task<IList<Order>> GetOrdersByPeriodAsync(DateOnly start, DateOnly end);
 
     /// <summary>
-    /// Получить заказы с наибольшим сроком выполнения
+    /// РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·С‹ СЃ РЅР°РёР±РѕР»СЊС€РёРј СЃСЂРѕРєРѕРј РІС‹РїРѕР»РЅРµРЅРёСЏ
     /// </summary>
     Task<IList<Order>> GetOrdersWithMaxCompletionDaysAsync();
 
     /// <summary>
-    /// Получить все заказы с подгруженными клиентами и изделиями
+    /// РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ Р·Р°РєР°Р·С‹ СЃ РїРѕРґРіСЂСѓР¶РµРЅРЅС‹РјРё РєР»РёРµРЅС‚Р°РјРё Рё РёР·РґРµР»РёСЏРјРё
     /// </summary>
     Task<IList<Order>> GetAllWithDetailsAsync();
 }
