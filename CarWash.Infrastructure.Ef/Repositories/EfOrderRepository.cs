@@ -40,7 +40,7 @@ public class EfOrderRepository(CarWashDbContext context) : EfRepository<Order>(c
     /// <inheritdoc />
     public async Task<IReadOnlyList<Car>> GetCarsCurrentlyAtWashAsync(CancellationToken cancellationToken = default)
     {
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
         return await Context.Cars.AsNoTracking().Where(car => Context.Orders.Any(order => order.CarId == car.Id
                 && order.StartTime <= now && order.StartTime.AddMinutes(order.WashService.DurationMinutes) > now))
             .OrderBy(car => car.Id).ToListAsync(cancellationToken);
@@ -49,11 +49,11 @@ public class EfOrderRepository(CarWashDbContext context) : EfRepository<Order>(c
     /// <inheritdoc />
     public async Task<DateTime> GetBoxAvailableFromAsync(int boxNumber, CancellationToken cancellationToken = default)
     {
-        var now = DateTime.Now;
-        var end = await Context.Orders.Where(order => order.BoxNumber == boxNumber && order.StartTime <= now
+        var now = DateTime.UtcNow;
+        var end = await Context.Orders.AsNoTracking().Where(order => order.BoxNumber == boxNumber && order.StartTime <= now
                 && order.StartTime.AddMinutes(order.WashService.DurationMinutes) > now)
             .Select(order => (DateTime?)order.StartTime.AddMinutes(order.WashService.DurationMinutes))
-            .OrderBy(value => value).FirstOrDefaultAsync(cancellationToken);
+            .MaxAsync(cancellationToken);
         return end ?? now;
     }
 }

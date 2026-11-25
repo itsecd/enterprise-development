@@ -93,9 +93,9 @@ public static class CarWashMapper
         CarId = car.Id,
         WashService = service,
         WashServiceId = service.Id,
-        StartTime = request.StartTime.Kind == DateTimeKind.Utc
-            ? request.StartTime.ToLocalTime()
-            : request.StartTime,
+        StartTime = request.StartTime.Kind == DateTimeKind.Unspecified
+            ? DateTime.SpecifyKind(request.StartTime, DateTimeKind.Utc)
+            : request.StartTime.ToUniversalTime(),
         BoxNumber = request.BoxNumber
     };
 

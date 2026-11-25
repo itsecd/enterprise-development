@@ -41,8 +41,11 @@ public class InMemoryOrderRepository(CarWashData data) : InMemoryRepository<Orde
     /// <inheritdoc />
     public Task<DateTime> GetBoxAvailableFromAsync(int boxNumber, CancellationToken cancellationToken = default)
     {
-        var order = Items.Values.Where(order => order.BoxNumber == boxNumber && order.IsInProgress)
-            .OrderBy(order => order.EndTime).FirstOrDefault();
-        return Task.FromResult(order?.EndTime ?? DateTime.Now);
+        var now = DateTime.UtcNow;
+        var end = Items.Values.Where(order => order.BoxNumber == boxNumber && order.StartTime <= now)
+            .Select(order => (DateTime?)order.EndTime)
+            .Where(value => value > now)
+            .Max();
+        return Task.FromResult(end ?? now);
     }
 }

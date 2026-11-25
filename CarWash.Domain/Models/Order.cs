@@ -41,7 +41,7 @@ public class Order : IEntity
     public required Car Car { get; set; }
 
     /// <summary>
-    /// Дата и время начала обслуживания
+    /// Дата и время начала обслуживания в UTC
     /// </summary>
     public required DateTime StartTime { get; set; }
 
@@ -59,6 +59,12 @@ public class Order : IEntity
     /// <summary>
     /// Автомобиль находится на мойке
     /// </summary>
-    public bool IsInProgress =>
-        DateTime.Now >= StartTime && DateTime.Now < EndTime;
+    public bool IsInProgress
+    {
+        get
+        {
+            var now = DateTime.UtcNow;
+            return now >= StartTime && now < EndTime;
+        }
+    }
 }

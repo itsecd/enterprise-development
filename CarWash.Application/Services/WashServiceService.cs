@@ -32,7 +32,8 @@ public class WashServiceService(IWashServiceRepository services, IOrderRepositor
     public async Task UpdateAsync(int id, WashServiceRequest request, CancellationToken cancellationToken = default)
     {
         var service = await services.GetByIdAsync(id, cancellationToken) ?? throw new EntityNotFoundException("Услуга не найдена.");
-        var latestStart = DateTime.MaxValue.AddMinutes(-request.DurationMinutes);
+        var latestStart = DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc)
+            .AddMinutes(-request.DurationMinutes);
         if (await orders.AnyAsync(order => order.WashServiceId == id && order.StartTime > latestStart,
                 cancellationToken))
             throw new RequestValidationException(nameof(request.DurationMinutes),

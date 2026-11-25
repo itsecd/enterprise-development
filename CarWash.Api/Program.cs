@@ -50,7 +50,6 @@ await using (var scope = app.Services.CreateAsyncScope())
 }
 
 app.UseExceptionHandler();
-app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {

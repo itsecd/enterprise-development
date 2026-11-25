@@ -69,15 +69,9 @@ public class OrderService(
         var service = await services.GetByIdAsync(request.WashServiceId, cancellationToken)
             ?? throw new EntityNotFoundException("Услуга не найдена.");
         var order = request.ToDomain(customer, car, service);
-        try
-        {
-            _ = order.EndTime;
-        }
-        catch (ArgumentOutOfRangeException)
-        {
+        if (order.StartTime > DateTime.MaxValue.AddMinutes(-service.DurationMinutes))
             throw new RequestValidationException(nameof(request.StartTime),
                 "Время окончания заказа выходит за допустимые границы даты.");
-        }
         return order;
     }
 }

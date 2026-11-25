@@ -12,6 +12,5 @@
   <ItemGroup>
     <ProjectReference Include="../CarWash.Api/CarWash.Api.csproj" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.5.4" />
-    <PackageReference Include="MessagePack" Version="2.5.307" />
   </ItemGroup>
 </Project>

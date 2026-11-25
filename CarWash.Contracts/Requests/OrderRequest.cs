@@ -26,7 +26,7 @@ public class OrderRequest
     public required int WashServiceId { get; set; }
 
     /// <summary>
-    /// Дата и время начала обслуживания
+    /// Дата и время начала обслуживания. Если смещение не указано, время считается указанным в UTC.
     /// </summary>
     public required DateTime StartTime { get; set; }
 

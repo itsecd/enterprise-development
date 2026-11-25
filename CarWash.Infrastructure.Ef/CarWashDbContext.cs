@@ -55,7 +55,7 @@ public class CarWashDbContext(DbContextOptions<CarWashDbContext> options) : DbCo
         modelBuilder.Entity<Order>(entity =>
         {
             entity.Property(order => order.Id).HasIdentityOptions(startValue: 17);
-            entity.Property(order => order.StartTime).HasColumnType("timestamp without time zone");
+            entity.Property(order => order.StartTime).HasColumnType("timestamp with time zone");
             entity.Ignore(order => order.EndTime);
             entity.Ignore(order => order.IsInProgress);
             entity.HasOne(order => order.Customer).WithMany().HasForeignKey(order => order.CustomerId)
@@ -66,7 +66,7 @@ public class CarWashDbContext(DbContextOptions<CarWashDbContext> options) : DbCo
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        var data = new CarWashData(CarWashData.MigrationReferenceTime);
+        var data = new CarWashData();
         modelBuilder.Entity<Customer>().HasData(data.Customers.Select(customer => new
         {
             customer.Id, customer.FullName, customer.Phone
@@ -78,10 +78,6 @@ public class CarWashDbContext(DbContextOptions<CarWashDbContext> options) : DbCo
         modelBuilder.Entity<WashService>().HasData(data.WashServices.Select(service => new
         {
             service.Id, service.Name, service.Category, service.Cost, service.DurationMinutes
-        }));
-        modelBuilder.Entity<Order>().HasData(data.Orders.Select(order => new
-        {
-            order.Id, order.CustomerId, order.CarId, order.WashServiceId, order.StartTime, order.BoxNumber
         }));
     }
 }

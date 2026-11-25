@@ -8,11 +8,6 @@ namespace CarWash.Domain.Data;
 public class CarWashData
 {
     /// <summary>
-    /// Постоянная опорная дата начальных данных для миграций базы
-    /// </summary>
-    public static DateTime MigrationReferenceTime { get; } = new(2026, 1, 1, 12, 0, 0);
-
-    /// <summary>
     /// Автомобили
     /// </summary>
     public IReadOnlyList<Car> Cars { get; }
@@ -35,7 +30,7 @@ public class CarWashData
     /// <summary>
     /// Создать набор данных с одним выполняющимся заказом относительно опорного времени
     /// </summary>
-    /// <param name="referenceTime">Опорное время; для тестов по умолчанию используется текущее время</param>
+    /// <param name="referenceTime">Опорное время в UTC; по умолчанию используется текущее время</param>
     public CarWashData(DateTime? referenceTime = null)
     {
         Customers =
@@ -86,7 +81,7 @@ public class CarWashData
             new() { Id = 10, Name = "Нанесение воска", Category = CarCategory.Sedan, Cost = 700m, DurationMinutes = 25 }
         ];
 
-        var now = referenceTime ?? DateTime.Now;
+        var now = referenceTime ?? DateTime.UtcNow;
         var orders = new List<Order>();
         for (var customerIndex = 0; customerIndex < 5; customerIndex++)
         {
