@@ -134,3 +134,206 @@
 
 Чтобы задать вопрос по лабораторной, воспользуйтесь [соотвествующим разделом дискуссий](https://github.com/itsecd/enterprise-development/discussions/categories/questions) или заведите [ишью](https://github.com/itsecd/enterprise-development/issues/new).  
 Если у вас появились идеи/пожелания/прочие полезные мысли по преподаваемой дисциплине, их можно оставить [здесь](https://github.com/itsecd/enterprise-development/discussions/categories/ideas).
+
+
+# Лабораторная работа №3 — ORM «Химчистка»
+
+Учебный проект по дисциплине «Разработка корпоративных приложений» на платформе **.NET 10**.
+
+## Предметная область
+
+В базе данных химчистки хранятся сведения о принятых изделиях, клиентах и заказах.
+
+- **Изделие** — наименование, категория, материал.
+- **Категория изделия** — справочник: название, рекомендуемый вид чистки, стоимость.
+- **Клиент** — ФИО, телефон.
+- **Заказ** — клиент, изделие, дата приёма, срок выполнения, статус.
+
+Данные хранятся в **базе данных MySQL**. Для работы с БД используется **Entity Framework Core** с провайдером **Pomelo**.
+
+## Технологии
+
+- .NET 10
+- ASP.NET Core Web API
+- **Entity Framework Core 9** (ORM)
+- **Pomelo.EntityFrameworkCore.MySql** (провайдер MySQL)
+- **Aspire.Pomelo.EntityFrameworkCore.MySql** (интеграция с Aspire)
+- **MySQL** (база данных)
+- **.NET Aspire** (оркестрация)
+- **Docker** (контейнеризация БД)
+- JWT (аутентификация и авторизация)
+- ASP.NET Core Identity PasswordHasher (хеширование паролей)
+- Microsoft.AspNetCore.OpenApi
+- Scalar UI
+- xUnit v3
+- LINQ
+- GitHub Actions
+
+## Архитектура
+
+Проект разделён на слои (Clean Architecture):
+
+- **Domain** — доменные сущности (`Client`, `Order`, `Item`, `Category`), интерфейсы репозиториев, тестовые данные (`DataSeed`).
+- **Contracts** — DTO для чтения и записи, интерфейсы сервисов (`IApplicationService`, `IAnalyticsService`, `IOrderService`).
+- **Application** — бизнес-логика (сервисы `ClientService`, `OrderService`, `ItemService`, `CategoryService`, `AnalyticsService`, `Mapper`).
+- **Infrastructure.EFCore** — реализация репозиториев через EF Core, `DryCleanerDbContext`, миграции.
+- **Infrastructure.InMemory** — реализация репозиториев с хранением данных в памяти.
+- **Api** — контроллеры (`CrudControllerBase`, `AnalyticsController`, `AuthController`), глобальный `ExceptionHandlingMiddleware`, настройка DI в `Program.cs`.
+- **AppHost** — проект Aspire для оркестрации базы данных и API.
+- **ServiceDefaults** — общие настройки для API (OpenTelemetry, HealthChecks).
+- **Tests** — xUnit-тесты аналитических запросов.
+
+## Структура
+
+```text
+enterprise-development/
+├── .github/
+│   └── workflows/
+│       └── tests.yml
+├── docs/
+│   ├── tests_results.png
+│   ├── auth_login.jpg
+│   ├── auth_token.jpg
+│   ├── scalar_example.jpg
+│   ├── aspire_dashboard.jpg
+│   └── aspire_urls.jpg
+├── DryCleaner/
+│   ├── src/
+│   │   ├── DryCleaner.Domain/
+│   │   ├── DryCleaner.Contracts/
+│   │   ├── DryCleaner.Application/
+│   │   ├── DryCleaner.Infrastructure.EFCore/
+│   │   ├── DryCleaner.Infrastructure.InMemory/
+│   │   ├── DryCleaner.Api/
+│   │   ├── DryCleaner.AppHost/
+│   │   └── DryCleaner.ServiceDefaults/
+│   ├── tests/
+│   │   └── DryCleaner.Tests/
+│   └── DryCleaner.slnx
+└── README.md
+```
+
+## Функциональность
+
+- **CRUD для всех сущностей**.
+- **Аналитика**:
+  - Заказы в обработке, упорядоченные по дате.
+  - Топ-5 клиентов по количеству заказов за период.
+  - Клиенты с самыми долгими заказами.
+  - Топ-5 популярных/непопулярных категорий за год.
+  - Клиент, потративший наибольшую сумму.
+- **Регистрация пользователей** — создание учётных записей с хешированием паролей.
+- **Авторизация** — JWT-токены. Все контроллеры (кроме `Auth`) защищены атрибутом `[Authorize]`.
+- **Документация** — OpenAPI (Microsoft.AspNetCore.OpenApi) + Scalar UI с русскими описаниями эндпоинтов.
+- **База данных** — MySQL, развёрнутая в Docker-контейнере через Aspire.
+- **Миграции** — создание таблиц и заполнение начальными данными (`HasData`).
+- **Связанные DTO** — заказы возвращают вложенные `ClientDto` и `ItemDto`, а изделия содержат `CategoryDto`. Связанные сущности загружаются через `Include()` и `ThenInclude()`.
+
+## Регистрация и авторизация
+
+В приложении реализована регистрация новых пользователей и вход с использованием JWT.
+
+### Регистрация
+
+Для создания учётной записи используется эндпоинт:
+
+`POST /api/Auth/register`
+
+Пример запроса:
+
+```json
+{
+  "username": "testuser",
+  "password": "TestPassword123!"
+}
+```
+
+Пароль пользователя сохраняется в базе данных в виде хеша с использованием `PasswordHasher`.
+
+### Авторизация
+
+Для получения JWT-токена используется эндпоинт:
+
+`POST /api/Auth/login`
+
+Пример запроса:
+
+```json
+{
+  "username": "testuser",
+  "password": "TestPassword123!"
+}
+```
+
+После успешного входа API возвращает JWT-токен, который необходимо использовать для доступа к защищённым эндпоинтам.
+
+## Запуск
+
+> **Требования:** Установленный **Docker Desktop** (должен быть запущен) и **.NET 10 SDK**.
+
+1. Перейти в папку `DryCleaner`.
+2. Запустить проект Aspire:
+
+   ```bash
+   dotnet run --project src/DryCleaner.AppHost
+   ```
+
+3. Aspire автоматически:
+   - Поднимет контейнер с MySQL.
+   - Создаст базу данных `drycleanerdb`.
+   - Запустит API и применит миграции в окружении Development.
+   - Заполнит базу начальными данными из `DataSeed`.
+
+4. Открыть **Aspire Dashboard** (ссылка появится в консоли).
+
+5. Открыть **Scalar UI** по адресу:
+
+   https://localhost:51203/scalar
+
+   Спецификация OpenAPI доступна по адресу:
+
+   https://localhost:51203/openapi/v1.json
+
+   > HTTP- и HTTPS-порты API закреплены в конфигурации Aspire AppHost.
+
+6. Зарегистрировать пользователя через `POST /api/Auth/register`, указав логин и пароль.
+
+7. Авторизоваться через `POST /api/Auth/login`, используя данные зарегистрированного пользователя.
+
+8. Скопировать полученный JWT-токен и вставить его в поле **Bearer Token** в Scalar.
+
+9. После авторизации можно выполнять CRUD-операции и аналитические запросы.
+
+## Тестирование
+
+Для запуска тестов из каталога `DryCleaner` выполнить:
+
+```bash
+dotnet test DryCleaner.slnx
+```
+
+## Примеры работы
+
+### Aspire Dashboard
+
+![Aspire Dashboard](./docs/aspire_dashboard.jpg)
+
+### Адреса ресурсов Aspire
+
+![Aspire URLs](./docs/aspire_urls.jpg)
+
+### Авторизация
+
+![Авторизация](./docs/auth_login.jpg)
+
+### JWT-токен
+
+![JWT-токен](./docs/auth_token.jpg)
+
+### Scalar UI
+
+![Scalar UI](./docs/scalar_example.jpg)
+
+### Результаты тестирования
+
+![Результаты тестирования](./docs/tests_results.jpg)
