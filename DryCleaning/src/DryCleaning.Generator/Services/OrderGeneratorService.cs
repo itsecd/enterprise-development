@@ -36,7 +36,9 @@ public class OrderGeneratorService(
             await producer.SendAsync(batch, stoppingToken);
             sent += batch.Count;
 
-            await Task.Delay(TimeSpan.FromSeconds(settings.WaitTime), stoppingToken);
+            // После последней пачки ждать уже нечего
+            if (sent < settings.PayloadLimit)
+                await Task.Delay(TimeSpan.FromSeconds(settings.WaitTime), stoppingToken);
         }
 
         logger.LogInformation("Генератор завершил работу: отправлено {Sent} заказов", sent);
