@@ -13,12 +13,13 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
 {
     private static readonly TimeSpan StartupTimeout = TimeSpan.FromMinutes(8);
 
-    private DistributedApplication _application = null!;
+    private DistributedApplication? _application;
+    private HttpClient? _api;
 
     /// <summary>
     /// Клиент API, готовый к запросам после запуска приложения
     /// </summary>
-    public HttpClient Api { get; private set; } = null!;
+    public HttpClient Api => _api ?? throw new InvalidOperationException("Приложение не запущено");
 
     /// <summary>
     /// Поднимает приложение на чистом томе, чтобы тесты не зависели от данных разработчика
@@ -33,14 +34,15 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
         var builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.VetClinic_AppHost>(
             ["--SqlDataVolume=false"], cancellationToken);
         builder.Configuration["AppHost:FilePath"] = string.Empty;
-        _application = await builder.BuildAsync();
-        await _application.StartAsync(cancellationToken);
+        var application = await builder.BuildAsync();
+        await application.StartAsync(cancellationToken);
 
-        await _application.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
+        await application.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
             .WaitAsync(StartupTimeout, cancellationToken);
 
-        Api = _application.CreateHttpClient("api", "http");
-        Api.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync(cancellationToken));
+        _application = application;
+        _api = application.CreateHttpClient("api", "http");
+        _api.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync(cancellationToken));
     }
 
     /// <summary>
@@ -52,20 +54,30 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
         using var response = await Api.PostAsJsonAsync("api/auth/login",
             new { username = "admin", password = "Vet2026!" }, cancellationToken);
         response.EnsureSuccessStatusCode();
-        var token = await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken);
-        return token!.AccessToken;
+        var token = await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken)
+            ?? throw new InvalidOperationException("Ответ входа не содержит токен");
+        return token.AccessToken;
     }
 
     /// <summary>
     /// Клиент без токена, чтобы проверить отказ для неавторизованных запросов
     /// </summary>
-    public HttpClient CreateAnonymousClient() => _application.CreateHttpClient("api", "http");
+    public HttpClient CreateAnonymousClient() => Application.CreateHttpClient("api", "http");
+
+    /// <summary>
+    /// Запущенное приложение
+    /// </summary>
+    private DistributedApplication Application =>
+        _application ?? throw new InvalidOperationException("Приложение не запущено");
 
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
     {
-        Api?.Dispose();
-        await _application.DisposeAsync();
+        _api?.Dispose();
+        if (_application is not null)
+        {
+            await _application.DisposeAsync();
+        }
     }
 
     /// <summary>
