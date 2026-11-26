@@ -10,6 +10,7 @@ var kafka = builder.AddKafka("drycleaning-kafka")
     .WithKafkaUI();
 
 var kafkaTopic = builder.AddParameter("KafkaTopic");
+var kafkaConsumerGroup = builder.AddParameter("KafkaConsumerGroup");
 var batchSize = builder.AddParameter("GeneratorBatchSize");
 var payloadLimit = builder.AddParameter("GeneratorPayloadLimit");
 var waitTime = builder.AddParameter("GeneratorWaitTime");
@@ -23,6 +24,8 @@ builder.AddProject<Projects.DryCleaning_Generator>("generator")
     .WaitFor(kafka);
 
 builder.AddProject<Projects.DryCleaning_Api>("api")
+    .WithEnvironment("Kafka__TopicName", kafkaTopic)
+    .WithEnvironment("Kafka__ConsumerGroup", kafkaConsumerGroup)
     .WithReference(db)
     .WithReference(kafka)
     .WaitFor(db)

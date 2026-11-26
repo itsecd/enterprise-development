@@ -19,6 +19,7 @@
     <ProjectReference Include="..\DryCleaning.Application\DryCleaning.Application.csproj" />
     <ProjectReference Include="..\DryCleaning.ServiceDefaults\DryCleaning.ServiceDefaults.csproj" />
     <ProjectReference Include="..\DryCleaning.Infrastructure.EfCore\DryCleaning.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\DryCleaning.Infrastructure.Kafka\DryCleaning.Infrastructure.Kafka.csproj" />
   </ItemGroup>
 
 </Project>

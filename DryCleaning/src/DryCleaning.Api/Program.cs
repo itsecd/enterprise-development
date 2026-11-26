@@ -1,8 +1,11 @@
+using Confluent.Kafka;
 using DryCleaning.Application.Services;
+using DryCleaning.Contracts.Dto;
 using DryCleaning.Contracts.Interfaces;
 using DryCleaning.Domain.Interfaces;
 using DryCleaning.Infrastructure.EfCore.Data;
 using DryCleaning.Infrastructure.EfCore.Repositories;
+using DryCleaning.Infrastructure.Kafka;
 using DryCleaning.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +44,19 @@ builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IItemCategoryService, ItemCategoryService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+// Потребитель Kafka: адрес брокера приходит от Aspire, чтение начинается с самого раннего непрочитанного сообщения
+builder.AddKafkaConsumer<Null, IList<OrderCreateDto>>("drycleaning-kafka",
+    settings =>
+    {
+        settings.Config.GroupId = builder.Configuration["Kafka:ConsumerGroup"]
+            ?? throw new KeyNotFoundException("В конфигурации не задана группа потребителей Kafka:ConsumerGroup");
+        settings.Config.AutoOffsetReset = AutoOffsetReset.Earliest;
+        settings.Config.AllowAutoCreateTopics = true;
+    },
+    consumerBuilder => consumerBuilder.SetValueDeserializer(new OrderBatchDeserializer()));
+builder.Services.AddHostedService<OrderKafkaConsumer>();
+
 var app = builder.Build();
 
 // В режиме разработки применяем миграции при запуске: создаются таблицы и начальные данные
