@@ -1,0 +1,79 @@
+using VetClinic.Application.Services;
+using VetClinic.Shared;
+using VetClinic.Tests.Fixtures;
+
+namespace VetClinic.Tests;
+
+/// <summary>
+/// Тесты сервиса аналитики: те же запросы, что и в лабораторной 1, но через репозитории и DTO
+/// </summary>
+public class AnalyticsServiceTests(AnalyticsServiceFixture fixture) : IClassFixture<AnalyticsServiceFixture>
+{
+    private readonly AnalyticsService _service = fixture.Service;
+
+    /// <summary>
+    /// Все ветеринары, специализирующиеся на выбранном виде животных
+    /// </summary>
+    [Theory]
+    [InlineData(AnimalSpecies.Dog, new[] { 1, 6, 10 })]
+    [InlineData(AnimalSpecies.Cat, new[] { 2, 7 })]
+    [InlineData(AnimalSpecies.Hamster, new[] { 8 })]
+    public async Task GetVetsBySpecies_SeedData_ReturnsMatchingVets(AnimalSpecies species, int[] expectedIds)
+    {
+        var result = await _service.GetVetsBySpeciesAsync(species, TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedIds, result.Select(v => v.Id));
+    }
+
+    /// <summary>
+    /// Питомцы врача упорядочены по кличке и не повторяются
+    /// </summary>
+    [Theory]
+    [InlineData(1, new[] { "Буян", "Жучка", "Рекс", "Тоби" })]
+    [InlineData(6, new[] { "Буян", "Лаки" })]
+    public async Task GetPetsByVet_SeedData_ReturnsPetsOrderedByNickname(int vetId, string[] expectedNicknames)
+    {
+        var result = await _service.GetPetsByVetOrderedByNicknameAsync(vetId, TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedNicknames, result.Select(p => p.Nickname));
+    }
+
+    /// <summary>
+    /// Количество повторных приемов выбранной породы
+    /// </summary>
+    [Theory]
+    [InlineData(1, 3)]
+    [InlineData(3, 1)]
+    [InlineData(4, 0)]
+    public async Task GetRepeatAppointmentCountByBreed_SeedData_ReturnsExpectedCount(int breedId, int expected)
+    {
+        var result = await _service.GetRepeatAppointmentCountByBreedAsync(breedId, TestContext.Current.CancellationToken);
+
+        Assert.Equal(expected, result);
+    }
+
+    /// <summary>
+    /// Владельцы, у которых больше одного питомца, по ФИО
+    /// </summary>
+    [Fact]
+    public async Task GetOwnersWithMultiplePets_SeedData_ReturnsOwnersOrderedByFullNameWithCounts()
+    {
+        var result = await _service.GetOwnersWithMultiplePetsOrderedByFullNameAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal([(1, 2), (2, 2), (3, 2)], result.Select(o => (o.Id, o.PetsCount)));
+    }
+
+    /// <summary>
+    /// Приемы за месяц в выбранном кабинете
+    /// </summary>
+    [Theory]
+    [InlineData("101", 2024, 6, new[] { 1, 2, 3, 13 })]
+    [InlineData("205", 2024, 6, new[] { 4, 5 })]
+    [InlineData("101", 2024, 5, new[] { 8, 9 })]
+    public async Task GetAppointmentsByRoomAndMonth_SeedData_ReturnsAppointmentsInRoom(string room, int year, int month, int[] expectedIds)
+    {
+        var result = await _service.GetAppointmentsByRoomAndMonthAsync(room, year, month, TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedIds, result.Select(a => a.Id));
+    }
+}
