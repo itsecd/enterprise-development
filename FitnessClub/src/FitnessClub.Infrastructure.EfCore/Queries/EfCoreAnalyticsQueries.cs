@@ -109,32 +109,20 @@ public class EfCoreAnalyticsQueries(FitnessClubDbContext dbContext) : IAnalytics
         int count,
         CancellationToken cancellationToken)
     {
-        var bookingCounts = dbContext.Bookings
+        return await dbContext.Bookings
             .AsNoTracking()
-            .GroupBy(booking => EF.Property<int>(booking, "TrainerId"))
-            .Select(group => new
+            .GroupBy(booking => new
             {
-                TrainerId = group.Key,
-                BookingCount = group.Count()
-            });
-
-        return await bookingCounts
-            .Join(
-                dbContext.Trainers.AsNoTracking(),
-                counts => counts.TrainerId,
-                trainer => trainer.Id,
-                (counts, trainer) => new
-                {
-                    counts.BookingCount,
-                    Trainer = trainer
-                })
-            .OrderByDescending(result => result.BookingCount)
-            .ThenBy(result => result.Trainer.Id)
+                booking.Trainer.Id,
+                booking.Trainer.FullName
+            })
+            .OrderByDescending(group => group.Count())
+            .ThenBy(group => group.Key.Id)
             .Take(count)
-            .Select(result => new PopularTrainerDto(
-                result.Trainer.Id,
-                result.Trainer.FullName,
-                result.BookingCount))
+            .Select(group => new PopularTrainerDto(
+                group.Key.Id,
+                group.Key.FullName,
+                group.Count()))
             .ToListAsync(cancellationToken);
     }
 

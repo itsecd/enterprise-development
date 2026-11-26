@@ -1,4 +1,9 @@
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+
 var builder = DistributedApplication.CreateBuilder(args);
+
+builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly());
 
 var mysqlPassword = builder.AddParameter("mysql-password", secret: true);
 var mysql = builder.AddMySql("mysql", mysqlPassword, port: 3306)
