@@ -11,7 +11,8 @@ namespace DryCleaning.Infrastructure.Kafka;
 
 /// <summary>
 /// Фоновая служба: читает пачки заказов из топика Kafka
-/// и передаёт каждый заказ в сервис заказов для сохранения
+/// и передаёт каждый заказ в сервис заказов для сохранения.
+/// Ошибки Kafka не останавливают приложение: API продолжает отвечать на запросы
 /// </summary>
 /// <param name="configuration">Конфигурация приложения</param>
 /// <param name="consumer">Потребитель Kafka</param>
@@ -40,11 +41,11 @@ public class OrderKafkaConsumer(
         // Ожидание сообщения блокирует поток, поэтому сразу освобождаем поток запуска приложения
         await Task.Yield();
 
-        consumer.Subscribe(_topicName);
-        logger.LogInformation("Потребитель подписан на топик {Topic}", _topicName);
-
         try
         {
+            consumer.Subscribe(_topicName);
+            logger.LogInformation("Потребитель подписан на топик {Topic}", _topicName);
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -70,6 +71,12 @@ public class OrderKafkaConsumer(
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             logger.LogInformation("Чтение из топика {Topic} остановлено", _topicName);
+        }
+        catch (Exception exception)
+        {
+            // Необработанное исключение фоновой службы остановило бы всё приложение,
+            // поэтому прекращаем только чтение из Kafka
+            logger.LogError(exception, "Чтение из топика {Topic} прекращено из-за ошибки, заказы из Kafka больше не принимаются", _topicName);
         }
         finally
         {
