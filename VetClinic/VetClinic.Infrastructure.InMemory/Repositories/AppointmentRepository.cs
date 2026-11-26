@@ -18,8 +18,8 @@ public class AppointmentRepository(VetClinicSeed seed) : InMemoryRepository<Appo
 
     /// <inheritdoc/>
     public Task<int> CountRepeatByBreedAsync(int breedId, CancellationToken cancellationToken = default) =>
-        Task.FromResult(Seed.Appointments.Count(appointment => appointment.IsRepeat && appointment.Pet != null
-            && (appointment.Pet.BreedId == breedId || appointment.Pet.Breed?.Id == breedId)));
+        Task.FromResult(Seed.Appointments.Count(appointment => appointment.IsRepeat
+            && Seed.Pets.Any(pet => pet.Id == appointment.PetId && pet.BreedId == breedId)));
 
     /// <inheritdoc/>
     public Task<IReadOnlyList<Appointment>> GetByRoomAndMonthAsync(string roomNumber, int year, int month, CancellationToken cancellationToken = default)

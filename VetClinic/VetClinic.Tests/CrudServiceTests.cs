@@ -37,10 +37,10 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
     };
 
     /// <summary>
-    /// Созданный питомец получает новый идентификатор и попадает в список питомцев владельца
+    /// Созданный питомец получает идентификатор и сохраняется с указанным владельцем
     /// </summary>
     [Fact]
-    public async Task CreatePet_AddsPetToOwner()
+    public async Task CreatePet_SavesPetWithOwner()
     {
         var s = NewServices();
 
@@ -49,6 +49,24 @@ public class CrudServiceTests(CrudServicesFixture fixture) : IClassFixture<CrudS
         Assert.True(created.Id > 0);
         Assert.Equal(4, created.OwnerId);
         Assert.Contains(await s.Pets.GetAllAsync(TestContext.Current.CancellationToken), p => p.Id == created.Id && p.OwnerId == 4);
+    }
+
+    /// <summary>
+    /// Начальные данные содержат внешние ключи связей, как и таблицы базы
+    /// </summary>
+    [Fact]
+    public async Task GetAll_SeedData_ReturnsLinkedIds()
+    {
+        var s = NewServices();
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        var pet = (await s.Pets.GetAllAsync(cancellationToken)).Single(item => item.Id == 1);
+        Assert.Equal(1, pet.OwnerId);
+        Assert.Equal(4, pet.BreedId);
+
+        var appointment = (await s.Appointments.GetAllAsync(cancellationToken)).Single(item => item.Id == 1);
+        Assert.Equal(3, appointment.PetId);
+        Assert.Equal(1, appointment.VetId);
     }
 
     /// <summary>

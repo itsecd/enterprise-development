@@ -111,10 +111,13 @@ public class ApiTests(ClinicApplicationFixture fixture) : IClassFixture<ClinicAp
         var responses = await Task.WhenAll(
             _fixture.Api.PostAsJsonAsync("api/pets", Pet(species: "Dog", breedId: breed.Id), cancellationToken),
             _fixture.Api.PutAsJsonAsync($"api/breeds/{breed.Id}", new { name = "Параллельная", species = "Cat" }, cancellationToken));
-        foreach (var response in responses)
-        {
-            response.Dispose();
-        }
+        using var createPet = responses[0];
+        using var changeBreed = responses[1];
+
+        var allowed = (createPet.StatusCode == HttpStatusCode.Created && changeBreed.StatusCode == HttpStatusCode.Conflict)
+            || (changeBreed.StatusCode == HttpStatusCode.OK && createPet.StatusCode == HttpStatusCode.BadRequest);
+        Assert.True(allowed,
+            $"неожиданные ответы: создание питомца {(int)createPet.StatusCode}, смена вида породы {(int)changeBreed.StatusCode}");
 
         var storedBreed = (await GetAsync<List<BreedResponse>>("api/breeds")).Single(item => item.Id == breed.Id);
         var pets = await GetAsync<List<PetResponse>>("api/pets");

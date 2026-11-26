@@ -23,7 +23,7 @@ public class OwnerRepository(VetClinicSeed seed) : InMemoryRepository<Owner>(see
             .Select(owner => new OwnerPetsCount(
                 owner.Id,
                 owner.FullName,
-                Seed.Pets.Count(pet => pet.Owner == owner || pet.OwnerId == owner.Id)))
+                Seed.Pets.Count(pet => pet.OwnerId == owner.Id)))
             .Where(owner => owner.PetsCount > 1)
             .OrderBy(owner => owner.FullName)
             .ThenBy(owner => owner.Id)

@@ -21,8 +21,7 @@ public class PetRepository(VetClinicSeed seed) : InMemoryRepository<Pet>(seed, s
     {
         var result = Seed.Pets
             .Where(pet => Seed.Appointments.Any(appointment =>
-                (appointment.Pet == pet || appointment.PetId == pet.Id)
-                && (appointment.Vet?.Id == vetId || appointment.VetId == vetId)))
+                appointment.PetId == pet.Id && appointment.VetId == vetId))
             .OrderBy(pet => pet.Nickname)
             .ThenBy(pet => pet.Id)
             .ToList();
@@ -32,5 +31,5 @@ public class PetRepository(VetClinicSeed seed) : InMemoryRepository<Pet>(seed, s
 
     /// <inheritdoc/>
     public Task<bool> AnyByBreedAsync(int breedId, CancellationToken cancellationToken = default) =>
-        Task.FromResult(Seed.Pets.Any(pet => pet.BreedId == breedId || pet.Breed?.Id == breedId));
+        Task.FromResult(Seed.Pets.Any(pet => pet.BreedId == breedId));
 }

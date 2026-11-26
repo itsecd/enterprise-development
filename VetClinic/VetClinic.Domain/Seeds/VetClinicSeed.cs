@@ -161,6 +161,7 @@ public class VetClinicSeed
                 FullName = "Смирнов Антон Валерьевич",
                 BirthYear = 1980,
                 Specialization = Specializations[0],
+                SpecializationId = 1,
                 WorkExperienceYears = 15
             },
             new Vet
@@ -170,6 +171,7 @@ public class VetClinicSeed
                 FullName = "Кузнецов Игорь Петрович",
                 BirthYear = 1975,
                 Specialization = Specializations[1],
+                SpecializationId = 2,
                 WorkExperienceYears = 22
             },
             new Vet
@@ -179,6 +181,7 @@ public class VetClinicSeed
                 FullName = "Попова Наталья Сергеевна",
                 BirthYear = 1988,
                 Specialization = Specializations[2],
+                SpecializationId = 3,
                 WorkExperienceYears = 8
             },
             new Vet
@@ -188,6 +191,7 @@ public class VetClinicSeed
                 FullName = "Новиков Роман Михайлович",
                 BirthYear = 1983,
                 Specialization = Specializations[3],
+                SpecializationId = 4,
                 WorkExperienceYears = 12
             },
             new Vet
@@ -197,6 +201,7 @@ public class VetClinicSeed
                 FullName = "Лебедев Павел Денисович",
                 BirthYear = 1990,
                 Specialization = Specializations[4],
+                SpecializationId = 5,
                 WorkExperienceYears = 6
             },
             new Vet
@@ -206,6 +211,7 @@ public class VetClinicSeed
                 FullName = "Королева Светлана Алексеевна",
                 BirthYear = 1978,
                 Specialization = Specializations[5],
+                SpecializationId = 6,
                 WorkExperienceYears = 18
             },
             new Vet
@@ -215,6 +221,7 @@ public class VetClinicSeed
                 FullName = "Михайлов Денис Юрьевич",
                 BirthYear = 1985,
                 Specialization = Specializations[6],
+                SpecializationId = 7,
                 WorkExperienceYears = 10
             },
             new Vet
@@ -224,6 +231,7 @@ public class VetClinicSeed
                 FullName = "Горбунов Кирилл Олегович",
                 BirthYear = 1992,
                 Specialization = Specializations[7],
+                SpecializationId = 8,
                 WorkExperienceYears = 4
             },
             new Vet
@@ -233,6 +241,7 @@ public class VetClinicSeed
                 FullName = "Титова Ирина Владимировна",
                 BirthYear = 1981,
                 Specialization = Specializations[8],
+                SpecializationId = 9,
                 WorkExperienceYears = 14
             },
             new Vet
@@ -242,6 +251,7 @@ public class VetClinicSeed
                 FullName = "Сорокин Владимир Федорович",
                 BirthYear = 1970,
                 Specialization = Specializations[9],
+                SpecializationId = 10,
                 WorkExperienceYears = 28
             },
         ];
@@ -254,9 +264,11 @@ public class VetClinicSeed
                 Nickname = "Барс",
                 Species = AnimalSpecies.Cat,
                 Breed = Breeds[3],
+                BreedId = 4,
                 BirthDate = new DateTime(2019, 3, 10),
                 Weight = 4.5,
-                Owner = Owners[0]
+                Owner = Owners[0],
+                OwnerId = 1
             },
             new Pet
             {
@@ -264,9 +276,11 @@ public class VetClinicSeed
                 Nickname = "Мурка",
                 Species = AnimalSpecies.Cat,
                 Breed = Breeds[4],
+                BreedId = 5,
                 BirthDate = new DateTime(2020, 7, 22),
                 Weight = 3.8,
-                Owner = Owners[1]
+                Owner = Owners[1],
+                OwnerId = 2
             },
             new Pet
             {
@@ -274,9 +288,11 @@ public class VetClinicSeed
                 Nickname = "Рекс",
                 Species = AnimalSpecies.Dog,
                 Breed = Breeds[0],
+                BreedId = 1,
                 BirthDate = new DateTime(2018, 5, 15),
                 Weight = 28.0,
-                Owner = Owners[2]
+                Owner = Owners[2],
+                OwnerId = 3
             },
             new Pet
             {
@@ -284,9 +300,11 @@ public class VetClinicSeed
                 Nickname = "Буян",
                 Species = AnimalSpecies.Dog,
                 Breed = Breeds[2],
+                BreedId = 3,
                 BirthDate = new DateTime(2017, 9, 3),
                 Weight = 23.5,
-                Owner = Owners[3]
+                Owner = Owners[3],
+                OwnerId = 4
             },
             new Pet
             {
@@ -294,9 +312,11 @@ public class VetClinicSeed
                 Nickname = "Снежок",
                 Species = AnimalSpecies.Rabbit,
                 Breed = Breeds[7],
+                BreedId = 8,
                 BirthDate = new DateTime(2021, 1, 18),
                 Weight = 1.8,
-                Owner = Owners[4]
+                Owner = Owners[4],
+                OwnerId = 5
             },
             new Pet
             {
@@ -304,9 +324,11 @@ public class VetClinicSeed
                 Nickname = "Кеша",
                 Species = AnimalSpecies.Bird,
                 Breed = Breeds[5],
+                BreedId = 6,
                 BirthDate = new DateTime(2020, 11, 5),
                 Weight = 0.04,
-                Owner = Owners[5]
+                Owner = Owners[5],
+                OwnerId = 6
             },
             new Pet
             {
@@ -314,9 +336,11 @@ public class VetClinicSeed
                 Nickname = "Белка",
                 Species = AnimalSpecies.Hamster,
                 Breed = Breeds[9],
+                BreedId = 10,
                 BirthDate = new DateTime(2022, 6, 1),
                 Weight = 0.15,
-                Owner = Owners[6]
+                Owner = Owners[6],
+                OwnerId = 7
             },
             new Pet
             {
@@ -324,9 +348,11 @@ public class VetClinicSeed
                 Nickname = "Пушок",
                 Species = AnimalSpecies.Rabbit,
                 Breed = Breeds[8],
+                BreedId = 9,
                 BirthDate = new DateTime(2021, 4, 14),
                 Weight = 1.2,
-                Owner = Owners[7]
+                Owner = Owners[7],
+                OwnerId = 8
             },
             new Pet
             {
@@ -334,9 +360,11 @@ public class VetClinicSeed
                 Nickname = "Тоби",
                 Species = AnimalSpecies.Dog,
                 Breed = Breeds[1],
+                BreedId = 2,
                 BirthDate = new DateTime(2019, 8, 28),
                 Weight = 7.0,
-                Owner = Owners[0]
+                Owner = Owners[0],
+                OwnerId = 1
             },
             new Pet
             {
@@ -344,9 +372,11 @@ public class VetClinicSeed
                 Nickname = "Лаки",
                 Species = AnimalSpecies.Dog,
                 Breed = Breeds[0],
+                BreedId = 1,
                 BirthDate = new DateTime(2020, 2, 11),
                 Weight = 25.5,
-                Owner = Owners[2]
+                Owner = Owners[2],
+                OwnerId = 3
             },
             new Pet
             {
@@ -354,9 +384,11 @@ public class VetClinicSeed
                 Nickname = "Жучка",
                 Species = AnimalSpecies.Dog,
                 Breed = Breeds[10],
+                BreedId = 11,
                 BirthDate = new DateTime(2018, 12, 30),
                 Weight = 9.5,
-                Owner = Owners[1]
+                Owner = Owners[1],
+                OwnerId = 2
             },
         ];
 
@@ -378,7 +410,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = true,
                 Pet = Pets[2],
-                Vet = Vets[0]
+                PetId = 3,
+                Vet = Vets[0],
+                VetId = 1
             },
             new Appointment
             {
@@ -387,7 +421,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = true,
                 Pet = Pets[3],
-                Vet = Vets[0]
+                PetId = 4,
+                Vet = Vets[0],
+                VetId = 1
             },
             new Appointment
             {
@@ -396,7 +432,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = true,
                 Pet = Pets[9],
-                Vet = Vets[5]
+                PetId = 10,
+                Vet = Vets[5],
+                VetId = 6
             },
             new Appointment
             {
@@ -405,7 +443,9 @@ public class VetClinicSeed
                 RoomNumber = "205",
                 IsRepeat = false,
                 Pet = Pets[0],
-                Vet = Vets[1]
+                PetId = 1,
+                Vet = Vets[1],
+                VetId = 2
             },
             new Appointment
             {
@@ -414,7 +454,9 @@ public class VetClinicSeed
                 RoomNumber = "205",
                 IsRepeat = true,
                 Pet = Pets[1],
-                Vet = Vets[6]
+                PetId = 2,
+                Vet = Vets[6],
+                VetId = 7
             },
             new Appointment
             {
@@ -423,7 +465,9 @@ public class VetClinicSeed
                 RoomNumber = "303",
                 IsRepeat = false,
                 Pet = Pets[5],
-                Vet = Vets[2]
+                PetId = 6,
+                Vet = Vets[2],
+                VetId = 3
             },
             new Appointment
             {
@@ -432,7 +476,9 @@ public class VetClinicSeed
                 RoomNumber = "303",
                 IsRepeat = true,
                 Pet = Pets[4],
-                Vet = Vets[3]
+                PetId = 5,
+                Vet = Vets[3],
+                VetId = 4
             },
             new Appointment
             {
@@ -441,7 +487,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = true,
                 Pet = Pets[2],
-                Vet = Vets[0]
+                PetId = 3,
+                Vet = Vets[0],
+                VetId = 1
             },
             new Appointment
             {
@@ -450,7 +498,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = false,
                 Pet = Pets[3],
-                Vet = Vets[5]
+                PetId = 4,
+                Vet = Vets[5],
+                VetId = 6
             },
             new Appointment
             {
@@ -459,7 +509,9 @@ public class VetClinicSeed
                 RoomNumber = "205",
                 IsRepeat = false,
                 Pet = Pets[2],
-                Vet = Vets[0]
+                PetId = 3,
+                Vet = Vets[0],
+                VetId = 1
             },
             new Appointment
             {
@@ -468,7 +520,9 @@ public class VetClinicSeed
                 RoomNumber = "205",
                 IsRepeat = false,
                 Pet = Pets[9],
-                Vet = Vets[5]
+                PetId = 10,
+                Vet = Vets[5],
+                VetId = 6
             },
             new Appointment
             {
@@ -477,7 +531,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = false,
                 Pet = Pets[8],
-                Vet = Vets[0]
+                PetId = 9,
+                Vet = Vets[0],
+                VetId = 1
             },
             new Appointment
             {
@@ -486,7 +542,9 @@ public class VetClinicSeed
                 RoomNumber = "101",
                 IsRepeat = false,
                 Pet = Pets[10],
-                Vet = Vets[0]
+                PetId = 11,
+                Vet = Vets[0],
+                VetId = 1
             },
             new Appointment
             {
@@ -495,7 +553,9 @@ public class VetClinicSeed
                 RoomNumber = "404",
                 IsRepeat = true,
                 Pet = Pets[6],
-                Vet = Vets[7]
+                PetId = 7,
+                Vet = Vets[7],
+                VetId = 8
             },
             new Appointment
             {
@@ -504,7 +564,9 @@ public class VetClinicSeed
                 RoomNumber = "404",
                 IsRepeat = false,
                 Pet = Pets[7],
-                Vet = Vets[3]
+                PetId = 8,
+                Vet = Vets[3],
+                VetId = 4
             },
         ];
     }
