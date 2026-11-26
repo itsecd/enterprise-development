@@ -1,6 +1,6 @@
 namespace DryCleaning.Contracts.Dto;
 using System.ComponentModel.DataAnnotations;
-using DryCleaning.Domain.Enum;
+using DryCleaning.Domain.Shared.Enum;
 
 /// <summary>
 /// Данные для изменения заказа

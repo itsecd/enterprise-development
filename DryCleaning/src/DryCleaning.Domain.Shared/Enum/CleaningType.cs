@@ -1,4 +1,4 @@
-namespace DryCleaning.Domain.Enum;
+namespace DryCleaning.Domain.Shared.Enum;
 
 /// <summary>
 /// Виды обработки вещей в химчистке.

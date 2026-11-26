@@ -1,5 +1,5 @@
-using DryCleaning.Domain.Enum;
 using DryCleaning.Domain.Seeds;
+using DryCleaning.Domain.Shared.Enum;
 
 namespace DryCleaning.Tests;
 

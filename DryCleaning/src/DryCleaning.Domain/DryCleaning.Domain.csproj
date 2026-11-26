@@ -4,4 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DryCleaning.Domain.Shared\DryCleaning.Domain.Shared.csproj" />
+  </ItemGroup>
 </Project>

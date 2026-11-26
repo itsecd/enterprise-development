@@ -1,4 +1,4 @@
-using DryCleaning.Domain.Enum;
+using DryCleaning.Domain.Shared.Enum;
 using System.ComponentModel.DataAnnotations;
 
 namespace DryCleaning.Contracts.Dto;

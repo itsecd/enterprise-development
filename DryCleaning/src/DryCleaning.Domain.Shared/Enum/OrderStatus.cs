@@ -1,4 +1,4 @@
-namespace DryCleaning.Domain.Enum;
+namespace DryCleaning.Domain.Shared.Enum;
 
 /// <summary>
 /// Статус заказа в химчистке.

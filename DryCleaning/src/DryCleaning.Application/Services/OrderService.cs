@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using DryCleaning.Contracts.Dto;
 using DryCleaning.Contracts.Interfaces;
 using DryCleaning.Domain;
-using DryCleaning.Domain.Enum;
 using DryCleaning.Domain.Interfaces;
+using DryCleaning.Domain.Shared.Enum;
 
 namespace DryCleaning.Application.Services;
 
