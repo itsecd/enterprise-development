@@ -35,12 +35,12 @@ public sealed class ClinicApplicationFixture : IAsyncLifetime
             ["--SqlDataVolume=false"], cancellationToken);
         builder.Configuration["AppHost:FilePath"] = string.Empty;
         var application = await builder.BuildAsync();
+        _application = application;
         await application.StartAsync(cancellationToken);
 
         await application.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
             .WaitAsync(StartupTimeout, cancellationToken);
 
-        _application = application;
         _api = application.CreateHttpClient("api", "http");
         _api.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync(cancellationToken));
     }
