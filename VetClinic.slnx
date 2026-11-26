@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="VetClinic.Api.Host/VetClinic.Api.Host.csproj" />
+  <Project Path="VetClinic.AppHost/VetClinic.AppHost.csproj" Id="8aa8fdac-ae2a-48c4-9492-fb05e823c796" />
+  <Project Path="VetClinic.Application.Contracts/VetClinic.Application.Contracts.csproj" />
+  <Project Path="VetClinic.Application/VetClinic.Application.csproj" />
+  <Project Path="VetClinic.Domain.Shared/VetClinic.Domain.Shared.csproj" />
+  <Project Path="VetClinic.Domain/VetClinic.Domain.csproj" />
+  <Project Path="VetClinic.EfCore/VetClinic.EfCore.csproj" DisplayName="VetClinic.EfCore" Id="e0451201-6e3a-4a95-949a-7e6cb76aab8f" />
+  <Project Path="VetClinic.InMemory/VetClinic.InMemory.csproj" />
+  <Project Path="VetClinic.ServiceDefaults/VetClinic.ServiceDefaults.csproj" />
+  <Project Path="VetClinic.Tests/VetClinic.Tests.csproj" Id="fceaf182-160a-4a29-8d4a-884804b9fe9d" />
+</Solution>

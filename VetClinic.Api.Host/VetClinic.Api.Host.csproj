@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+	<PackageReference Include="Scalar.AspNetCore" Version="2.18.5" />
+	
+    <ProjectReference Include="..\VetClinic.Application\VetClinic.Application.csproj" />
+    <ProjectReference Include="..\VetClinic.Application.Contracts\VetClinic.Application.Contracts.csproj" />
+    <ProjectReference Include="..\VetClinic.EfCore\VetClinic.EfCore.csproj" />
+    <ProjectReference Include="..\VetClinic.InMemory\VetClinic.InMemory.csproj" />
+    <ProjectReference Include="..\VetClinic.ServiceDefaults\VetClinic.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

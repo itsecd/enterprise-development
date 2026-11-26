@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.Testing" Version="17.0.0" />
+		<PackageReference Include="coverlet.collector" Version="6.0.4" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+		<PackageReference Include="xunit.v3" Version="4.0.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+	</ItemGroup>
+    
+  <ItemGroup>
+    <ProjectReference Include="..\VetClinic.AppHost\VetClinic.AppHost.csproj" />
+    <ProjectReference Include="..\VetClinic.Application\VetClinic.Application.csproj" />
+    <ProjectReference Include="..\VetClinic.Application.Contracts\VetClinic.Application.Contracts.csproj" />
+    <ProjectReference Include="..\VetClinic.Domain\VetClinic.Domain.csproj" />
+    <ProjectReference Include="..\VetClinic.Domain.Shared\VetClinic.Domain.Shared.csproj" />
+    <ProjectReference Include="..\VetClinic.InMemory\VetClinic.InMemory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
