@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DryCleaning.Api\DryCleaning.Api.csproj" />
+    <ProjectReference Include="..\DryCleaning.Generator\DryCleaning.Generator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
