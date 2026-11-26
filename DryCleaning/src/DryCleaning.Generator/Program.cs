@@ -15,9 +15,17 @@ builder.Services.AddOptions<GeneratorOptions>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-// Продюсер Kafka: адрес брокера приходит от Aspire по имени ресурса
-builder.AddKafkaProducer<Null, IList<OrderCreateDto>>("drycleaning-kafka", producerBuilder =>
-    producerBuilder.SetValueSerializer(new OrderBatchSerializer()));
+// Настройки отправки читаются из раздела Kafka: имя топика и повторные попытки
+builder.Services.AddOptions<KafkaOptions>()
+    .BindConfiguration(KafkaOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+// Продюсер Kafka: адрес брокера приходит от Aspire по имени ресурса.
+// Одна попытка отправки длится не дольше 5 секунд, дальше решает наша логика повторов
+builder.AddKafkaProducer<Null, IList<OrderCreateDto>>("drycleaning-kafka",
+    settings => settings.Config.MessageTimeoutMs = 5000,
+    producerBuilder => producerBuilder.SetValueSerializer(new OrderBatchSerializer()));
 
 builder.Services.AddSingleton<IOrderProducer, KafkaOrderProducer>();
 builder.Services.AddHostedService<OrderGeneratorService>();

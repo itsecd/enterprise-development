@@ -27,6 +27,11 @@ public class OrderKafkaConsumer(
         ?? throw new KeyNotFoundException("В конфигурации не задано имя топика Kafka:TopicName");
 
     /// <summary>
+    /// Пауза перед повторной попыткой чтения после ошибки
+    /// </summary>
+    private static readonly TimeSpan _retryDelay = TimeSpan.FromSeconds(2);
+
+    /// <summary>
     /// Цикл работы службы: дождаться сообщения, сохранить заказы из него, ждать следующее
     /// </summary>
     /// <param name="stoppingToken">Токен остановки приложения</param>
@@ -55,8 +60,10 @@ public class OrderKafkaConsumer(
                 }
                 catch (ConsumeException exception) when (!exception.Error.IsFatal)
                 {
-                    logger.LogWarning(exception, "Не удалось прочитать сообщение из топика {Topic}: {Reason}",
-                        _topicName, exception.Error.Reason);
+                    logger.LogWarning("Не удалось прочитать сообщение из топика {Topic}: {Reason}. Повтор через {Delay} с",
+                        _topicName, exception.Error.Reason, _retryDelay.TotalSeconds);
+
+                    await Task.Delay(_retryDelay, stoppingToken);
                 }
             }
         }
