@@ -1,0 +1,101 @@
+using Confluent.Kafka;
+using DryCleaning.Application.Services;
+using DryCleaning.Contracts.Dto;
+using DryCleaning.Contracts.Interfaces;
+using DryCleaning.Domain.Interfaces;
+using DryCleaning.Infrastructure.EfCore.Data;
+using DryCleaning.Infrastructure.EfCore.Repositories;
+using DryCleaning.Infrastructure.Kafka;
+using DryCleaning.ServiceDefaults;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
+
+builder.AddSqlServerDbContext<DryCleaningDbContext>("drycleaning");
+
+// Записываем в лог ошибки проверки запроса до вызова контроллера
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    var defaultResponseFactory = options.InvalidModelStateResponseFactory;
+
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+        var invalidFields = context.ModelState
+            .Where(entry => entry.Value?.Errors.Count > 0)
+            .Select(entry => entry.Key);
+
+        logger.LogWarning("Некорректные данные запроса {Method} {Path}. Поля: {Fields}",
+            context.HttpContext.Request.Method,
+            context.HttpContext.Request.Path,
+            string.Join(", ", invalidFields));
+
+        return defaultResponseFactory(context);
+    };
+});
+builder.Services.AddOpenApi();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IItemCategoryService, ItemCategoryService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+// Потребитель Kafka: адрес брокера приходит от Aspire, чтение начинается с самого раннего непрочитанного сообщения
+builder.AddKafkaConsumer<Null, IList<OrderCreateDto>>("drycleaning-kafka",
+    settings =>
+    {
+        settings.Config.GroupId = builder.Configuration["Kafka:ConsumerGroup"]
+            ?? throw new KeyNotFoundException("В конфигурации не задана группа потребителей Kafka:ConsumerGroup");
+        settings.Config.AutoOffsetReset = AutoOffsetReset.Earliest;
+        settings.Config.AllowAutoCreateTopics = true;
+    },
+    consumerBuilder => consumerBuilder.SetValueDeserializer(new OrderBatchDeserializer()));
+builder.Services.AddHostedService<OrderKafkaConsumer>();
+
+var app = builder.Build();
+
+// В режиме разработки применяем миграции при запуске: создаются таблицы и начальные данные
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DryCleaningDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
+app.MapDefaultEndpoints();
+
+// Документация и интерфейс проверки API доступны в режиме разработки
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "DryCleaning API v1");
+    });
+}
+
+app.UseHttpsRedirection();
+
+// Записываем в лог запросы с неподдерживаемым типом содержимого
+app.Use(async (context, next) =>
+{
+    await next(context);
+
+    if (context.Response.StatusCode == StatusCodes.Status415UnsupportedMediaType)
+    {
+        app.Logger.LogWarning("Ответ 415 на запрос {Method} {Path}. Content-Type: {ContentType}",
+            context.Request.Method,
+            context.Request.Path,
+            context.Request.ContentType);
+    }
+});
+
+app.MapControllers();
+
+app.Run();
