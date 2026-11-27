@@ -1,0 +1,22 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>1ab8ee6e-e71e-467d-80dd-3be4b71175fd</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Aspire.Hosting.MySql" Version="13.6.5" />
+    <PackageReference Include="MySqlConnector" Version="2.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DryCleaner.Api\DryCleaner.Api.csproj" />
+    <ProjectReference Include="..\DryCleaner.Generator.Grpc.Host\DryCleaner.Generator.Grpc.Host.csproj" />
+  </ItemGroup>
+
+</Project>

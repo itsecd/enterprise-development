@@ -1,0 +1,41 @@
+name: Build and Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: DryCleaner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup HTTPS certificate
+        run: |
+          export SSL_CERT_DIR="$HOME/.aspnet/dev-certs/trust:/usr/lib/ssl/certs"
+          echo "SSL_CERT_DIR=$SSL_CERT_DIR" >> "$GITHUB_ENV"
+          dotnet dev-certs https --trust
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test tests/DryCleaner.Tests/DryCleaner.Tests.csproj --no-build --configuration Release
+
+      - name: Run integration tests
+        run: dotnet test tests/DryCleaner.IntegrationTests/DryCleaner.IntegrationTests.csproj --no-build --configuration Release
