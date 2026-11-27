@@ -1,0 +1,65 @@
+﻿using Hotel.Application.Interfaces;
+using Hotel.Contracts.DTO;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Hotel.API.Controllers;
+
+/// <summary>
+/// Контроллер для аналитических запросов
+/// </summary>
+/// <param name="service">Сервис аналитики</param>
+[ApiController]
+[Route("api/analytics")]
+public class AnalyticsController(IAnalyticsService service) : ControllerBase
+{
+    /// <summary>
+    /// Получение клиентов по типу комнаты
+    /// </summary>
+    /// <param name="roomTypeId">Id типа комнаты</param>
+    /// <returns>Список клиентов</returns>
+    [HttpGet("clients-by-room-type/{roomTypeId:int}")]
+    [ProducesResponseType(typeof(IReadOnlyList<ClientDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetClientsByRoomType(int roomTypeId)
+        => Ok(await service.GetClientsByRoomTypeAsync(roomTypeId));
+
+    /// <summary>
+    /// Получение занятых номеров на дату
+    /// </summary>
+    /// <param name="date">Дата (если не указана, берется текущая)</param>
+    /// <returns>Список номеров</returns>
+    [HttpGet("booked-rooms")]
+    [ProducesResponseType(typeof(IReadOnlyList<int>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<int>>> GetBookedRooms([FromQuery] DateTime? date)
+    {
+        var currentDate = date ?? DateTime.Today;
+        return Ok(await service.GetBookedRoomsAsync(currentDate));
+    }
+
+    /// <summary>
+    /// Топ 5 часто бронируемых номеров
+    /// </summary>
+    /// <returns>Список номеров</returns>
+    [HttpGet("top5-booked-rooms")]
+    [ProducesResponseType(typeof(IReadOnlyList<int>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<int>>> GetTop5()
+        => Ok(await service.GetTop5BookedRoomsAsync());
+
+    /// <summary>
+    /// Количество броней на каждый номер
+    /// </summary>
+    /// <returns>Список с количеством броней</returns>
+    [HttpGet("bookings-count")]
+    [ProducesResponseType(typeof(IReadOnlyList<WorkFrequencyDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<WorkFrequencyDto>>> GetCount()
+        => Ok(await service.GetBookingsCountPerRoomAsync());
+
+    /// <summary>
+    /// Получение топ 5 клиентов по стоимости проживания
+    /// </summary>
+    /// <returns>Список клиентов</returns>
+    [HttpGet("top5-clients")]
+    [ProducesResponseType(typeof(IReadOnlyList<TopClientDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<TopClientDto>>> GetTop5Clients()
+        => Ok(await service.GetTop5ClientsByStayAsync());
+}
