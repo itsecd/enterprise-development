@@ -44,6 +44,30 @@ MapCrud("orders", orders, x => x.Id, (x, id) => x.Id = id,
 MapCrud("order-items", items, x => x.Id, (x, id) => x.Id = id,
     x => orders.Any(o => o.Id == x.OrderId) && dishes.Any(d => d.Id == x.DishId), _ => false);
 
+app.MapGet("/api/analytics/top-restaurants", () =>
+{
+    lock (gate) return Results.Ok(orders.GroupBy(o => o.RestaurantId)
+        .Select(g => new { RestaurantId = g.Key, OrderCount = g.Count() })
+        .OrderByDescending(x => x.OrderCount).ThenBy(x => x.RestaurantId).Take(5).ToArray());
+});
+app.MapGet("/api/analytics/fastest-orders", () =>
+{
+    lock (gate)
+    {
+        if (orders.Count == 0) return Results.Ok(Array.Empty<Order>());
+        var minimum = orders.Min(o => o.DeliveryTime);
+        return Results.Ok(orders.Where(o => o.DeliveryTime == minimum).OrderBy(o => o.Id).ToArray());
+    }
+});
+app.MapGet("/api/analytics/restaurants/{id:int}/clients", (int id) =>
+{
+    lock (gate)
+    {
+        if (!restaurants.Any(r => r.Id == id)) return Results.NotFound();
+        var clientIds = orders.Where(o => o.RestaurantId == id).Select(o => o.ClientId).ToHashSet();
+        return Results.Ok(clients.Where(c => clientIds.Contains(c.Id)).OrderBy(c => c.FullName).ToArray());
+    }
+});
 app.Run();
 
 void MapCrud<T>(string path, List<T> data, Func<T, int> getId, Action<T, int> setId,
