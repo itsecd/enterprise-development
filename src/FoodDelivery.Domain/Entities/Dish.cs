@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
@@ -33,6 +35,7 @@ public class Dish
     /// <summary>
     /// Категория блюда.
     /// </summary>
+    [JsonIgnore]
     public DishCategory? Category { get; set; }
 
     /// <summary>
@@ -43,5 +46,6 @@ public class Dish
     /// <summary>
     /// Ресторан, в котором готовится блюдо.
     /// </summary>
+    [JsonIgnore]
     public Restaurant? Restaurant { get; set; }
 }

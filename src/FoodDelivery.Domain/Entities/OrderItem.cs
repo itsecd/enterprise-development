@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace FoodDelivery.Domain.Entities;
 
 /// <summary>
@@ -18,6 +20,7 @@ public class OrderItem
     /// <summary>
     /// Заказ.
     /// </summary>
+    [JsonIgnore]
     public Order? Order { get; set; }
 
     /// <summary>
@@ -28,6 +31,7 @@ public class OrderItem
     /// <summary>
     /// Блюдо.
     /// </summary>
+    [JsonIgnore]
     public Dish? Dish { get; set; }
 
     /// <summary>
