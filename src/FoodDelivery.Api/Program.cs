@@ -68,6 +68,36 @@ app.MapGet("/api/analytics/restaurants/{id:int}/clients", (int id) =>
         return Results.Ok(clients.Where(c => clientIds.Contains(c.Id)).OrderBy(c => c.FullName).ToArray());
     }
 });
+app.MapGet("/api/analytics/category-statistics", (DateTimeOffset start, DateTimeOffset end) =>
+{
+    lock (gate)
+    {
+        if (start >= end) return Results.BadRequest("start must be earlier than end");
+        var result = from item in items
+                     join order in orders on item.OrderId equals order.Id
+                     join dish in dishes on item.DishId equals dish.Id
+                     join category in categories on dish.CategoryId equals category.Id
+                     where order.CreatedAt >= start && order.CreatedAt < end
+                     group order by new { CategoryId = category.Id, CategoryName = category.Name } into g
+                     let categoryOrders = g.DistinctBy(o => o.Id).ToArray()
+                     orderby g.Key.CategoryId
+                     select new { g.Key.CategoryId, g.Key.CategoryName, OrderCount = categoryOrders.Length,
+                         AverageOrderAmount = categoryOrders.Average(o => o.TotalAmount),
+                         TotalOrderAmount = categoryOrders.Sum(o => o.TotalAmount) };
+        return Results.Ok(result.ToArray());
+    }
+});
+app.MapGet("/api/analytics/top-clients", () =>
+{
+    lock (gate)
+    {
+        var spending = orders.GroupBy(o => o.ClientId)
+            .Select(g => new { ClientId = g.Key, TotalSpent = g.Sum(o => o.TotalAmount) }).ToArray();
+        if (spending.Length == 0) return Results.Ok(spending);
+        var maximum = spending.Max(x => x.TotalSpent);
+        return Results.Ok(spending.Where(x => x.TotalSpent == maximum).OrderBy(x => x.ClientId).ToArray());
+    }
+});
 app.Run();
 
 void MapCrud<T>(string path, List<T> data, Func<T, int> getId, Action<T, int> setId,
