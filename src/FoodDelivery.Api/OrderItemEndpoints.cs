@@ -10,6 +10,8 @@ public static class OrderItemEndpoints
     /// <summary>
     /// Регистрирует запросы для работы с коллекцией.
     /// </summary>
+    /// <param name="app">Приложение, в котором регистрируются маршруты.</param>
+    /// <param name="data">Данные службы доставки.</param>
     public static void Map(WebApplication app, FoodDeliveryData data)
     {
         var group = app.MapGroup("/api/order-items");

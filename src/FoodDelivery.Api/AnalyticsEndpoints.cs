@@ -10,6 +10,8 @@ public static class AnalyticsEndpoints
     /// <summary>
     /// Регистрирует аналитические HTTP-запросы.
     /// </summary>
+    /// <param name="app">Приложение, в котором регистрируются маршруты.</param>
+    /// <param name="data">Данные службы доставки.</param>
     public static void Map(WebApplication app, FoodDeliveryData data)
     {
         var clients = data.Clients;

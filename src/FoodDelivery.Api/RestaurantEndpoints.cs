@@ -10,6 +10,8 @@ public static class RestaurantEndpoints
     /// <summary>
     /// Регистрирует запросы для работы с коллекцией.
     /// </summary>
+    /// <param name="app">Приложение, в котором регистрируются маршруты.</param>
+    /// <param name="data">Данные службы доставки.</param>
     public static void Map(WebApplication app, FoodDeliveryData data)
     {
         var group = app.MapGroup("/api/restaurants");
@@ -35,7 +37,6 @@ public static class RestaurantEndpoints
         {
             lock (data.SyncRoot)
             {
-
                 entity.Id = data.Restaurants.Count == 0 ? 1 : data.Restaurants.Max(item => item.Id) + 1;
                 data.Restaurants.Add(entity);
                 return Results.Created($"/api/restaurants/{entity.Id}", entity);

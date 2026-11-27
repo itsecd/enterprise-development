@@ -10,6 +10,8 @@ public static class CategoryEndpoints
     /// <summary>
     /// Регистрирует запросы для работы с коллекцией.
     /// </summary>
+    /// <param name="app">Приложение, в котором регистрируются маршруты.</param>
+    /// <param name="data">Данные службы доставки.</param>
     public static void Map(WebApplication app, FoodDeliveryData data)
     {
         var group = app.MapGroup("/api/categories");
@@ -35,7 +37,6 @@ public static class CategoryEndpoints
         {
             lock (data.SyncRoot)
             {
-
                 entity.Id = data.Categories.Count == 0 ? 1 : data.Categories.Max(item => item.Id) + 1;
                 data.Categories.Add(entity);
                 return Results.Created($"/api/categories/{entity.Id}", entity);

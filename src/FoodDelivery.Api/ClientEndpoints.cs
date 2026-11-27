@@ -10,6 +10,8 @@ public static class ClientEndpoints
     /// <summary>
     /// Регистрирует запросы для работы с коллекцией.
     /// </summary>
+    /// <param name="app">Приложение, в котором регистрируются маршруты.</param>
+    /// <param name="data">Данные службы доставки.</param>
     public static void Map(WebApplication app, FoodDeliveryData data)
     {
         var group = app.MapGroup("/api/clients");
@@ -35,7 +37,6 @@ public static class ClientEndpoints
         {
             lock (data.SyncRoot)
             {
-
                 entity.Id = data.Clients.Count == 0 ? 1 : data.Clients.Max(item => item.Id) + 1;
                 data.Clients.Add(entity);
                 return Results.Created($"/api/clients/{entity.Id}", entity);
